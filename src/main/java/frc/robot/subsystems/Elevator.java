@@ -33,12 +33,15 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
+import frc.robot.generated.TunerConstants;
 
 public class Elevator implements Subsystem {
     private final TalonFX m_elevatorMotor;
@@ -57,26 +60,34 @@ public class Elevator implements Subsystem {
 
 
   /** Creates a new Climber. */
-  public Elevator(TalonFX elevatorMotor, Slot0Configs slot0Configs, SoftwareLimitSwitchConfigs softLimitConfig, 
-  MotionMagicConfigs motionMagicConfigs, MotorOutputConfigs motorOutputConfigs) {
-    m_elevatorMotor = elevatorMotor; 
+  public Elevator() {
+    m_elevatorMotor = TunerConstants.ElevatorConstants.ELEVATOR_MOTOR; 
 
-    m_Slot0Configs = slot0Configs; 
+    m_Slot0Configs = TunerConstants.ElevatorConstants.createSlot0Configs(); 
     m_elevatorMotor.getConfigurator().apply(m_Slot0Configs);
 
-    m_softLimitConfig = softLimitConfig; 
+    m_softLimitConfig = TunerConstants.ElevatorConstants.createSoftLimitConigs(); 
     m_elevatorMotor.getConfigurator().apply(m_softLimitConfig);
 
-    m_motionMagicConfigs = motionMagicConfigs;
-    m_elevatorMotor.getConfigurator().apply(motionMagicConfigs);
+    m_motionMagicConfigs = TunerConstants.ElevatorConstants.createMotionMagicConfigs();
+    m_elevatorMotor.getConfigurator().apply(m_motionMagicConfigs);
 
-    m_motorConfig = motorOutputConfigs;
+    m_motorConfig = TunerConstants.ElevatorConstants.createMotorOutputConfigs();
     m_elevatorMotor.getConfigurator().apply(m_motorConfig);
 
+    Mechanism2d mech = new Mechanism2d(3, 3);
+    MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
 
   }
+
+  public void setPositionRevolutions(double position) {
+    m_elevatorMotor.setControl(m_MMPosition.withPosition(position));
+  }
+
 
   @Override
   public void periodic() {
+
   }
+
 }

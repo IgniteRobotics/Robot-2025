@@ -253,12 +253,5 @@ public class TunerConstants {
         return newConfigs;
     }
 
-    //Elevator Creator
-    public static Elevator createElevator(){
-        Elevator elevator = new Elevator(ELEVATOR_MOTOR, createSlot0Configs(), createSoftLimitConigs(), 
-        createMotionMagicConfigs(), createMotorOutputConfigs());
-        return elevator;
     }
-
-}
 }

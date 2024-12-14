@@ -41,7 +41,7 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.DrivetrainConstants.createDrivetrain();
 
-    public final Elevator elevator = TunerConstants.ElevatorConstants.createElevator();
+    public final Elevator elevator = new Elevator();
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
