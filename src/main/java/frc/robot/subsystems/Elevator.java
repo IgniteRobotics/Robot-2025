@@ -46,16 +46,34 @@ public class Elevator implements Subsystem {
   private Slot0Configs m_Slot0Configs = new Slot0Configs();
   
   private SoftwareLimitSwitchConfigs m_softLimitConfig = new SoftwareLimitSwitchConfigs();
+
   private MotionMagicConfigs m_motionMagicConfigs = new MotionMagicConfigs();
+
   private MotorOutputConfigs m_motorConfig = new MotorOutputConfigs();
+
   private TalonFXConfiguration m_fxCfg = new TalonFXConfiguration();
 
   public MotionMagicVoltage m_MMPosition =   new MotionMagicVoltage(0);
 
 
   /** Creates a new Climber. */
-  public Elevator(TalonFX elevatorMotor) {
+  public Elevator(TalonFX elevatorMotor, Slot0Configs slot0Configs, SoftwareLimitSwitchConfigs softLimitConfig, 
+  MotionMagicConfigs motionMagicConfigs, MotorOutputConfigs motorOutputConfigs) {
     m_elevatorMotor = elevatorMotor; 
+
+    m_Slot0Configs = slot0Configs; 
+    m_elevatorMotor.getConfigurator().apply(m_Slot0Configs);
+
+    m_softLimitConfig = softLimitConfig; 
+    m_elevatorMotor.getConfigurator().apply(m_softLimitConfig);
+
+    m_motionMagicConfigs = motionMagicConfigs;
+    m_elevatorMotor.getConfigurator().apply(motionMagicConfigs);
+
+    m_motorConfig = motorOutputConfigs;
+    m_elevatorMotor.getConfigurator().apply(m_motorConfig);
+
+
   }
 
   @Override

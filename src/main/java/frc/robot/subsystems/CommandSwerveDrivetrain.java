@@ -132,7 +132,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         configureAutoBuilder();
     }
 
-    /**
+    /*
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
      * This constructs the underlying hardware devices, so users should not construct
