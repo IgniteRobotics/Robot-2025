@@ -92,12 +92,11 @@ public class Elevator implements Subsystem {
   private void mechConfigure(){
     mech = new Mechanism2d(3, 3);
     root = mech.getRoot("elevator", 2, 0);
-    arm = root.append(new MechanismLigament2d("elevator", 30, 90));
+    arm = root.append(new MechanismLigament2d("elevator", 1, 90));
     wrist =
         arm.append(
             new MechanismLigament2d("wrist", 0.5, 90, 6, new Color8Bit(Color.kPurple)));
     SmartDashboard.putData("Mech2d", mech);
-    
   }
 
   public void setPositionRevolutions(double position) {
@@ -107,7 +106,7 @@ public class Elevator implements Subsystem {
 
   @Override
   public void periodic() {
-    
+
   }
 
 }
