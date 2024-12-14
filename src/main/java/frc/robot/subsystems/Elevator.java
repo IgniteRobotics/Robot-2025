@@ -45,6 +45,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
+import frc.robot.Preferences.DoublePreference;
 import frc.robot.generated.TunerConstants;
 
 public class Elevator implements Subsystem {
@@ -61,6 +62,9 @@ public class Elevator implements Subsystem {
   private TalonFXConfiguration m_fxCfg = new TalonFXConfiguration();
 
   public MotionMagicVoltage m_MMPosition =   new MotionMagicVoltage(0);
+
+  public DoublePreference armLength = new DoublePreference("armLength", 1);
+  public DoublePreference wristAngle = new DoublePreference("wristAngle", 90);
 
   //Mech stuff
   Mechanism2d mech;
@@ -106,7 +110,16 @@ public class Elevator implements Subsystem {
 
   @Override
   public void periodic() {
+    arm.setLength(armLength.getValue());
+    wrist.setAngle(wristAngle.getValue());
+    SmartDashboard.putData("Mech2d", mech);
+  }
 
+  @Override
+  public void simulationPeriodic() {
+    arm.setLength(armLength.getValue());
+    wrist.setAngle(wristAngle.getValue());
+    SmartDashboard.putData("Mech2d", mech);
   }
 
 }
