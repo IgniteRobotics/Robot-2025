@@ -34,7 +34,11 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -58,6 +62,12 @@ public class Elevator implements Subsystem {
 
   public MotionMagicVoltage m_MMPosition =   new MotionMagicVoltage(0);
 
+  //Mech stuff
+  Mechanism2d mech;
+  MechanismRoot2d root;
+  MechanismLigament2d arm;
+  MechanismLigament2d wrist;
+
 
   /** Creates a new Climber. */
   public Elevator() {
@@ -75,9 +85,19 @@ public class Elevator implements Subsystem {
     m_motorConfig = TunerConstants.ElevatorConstants.createMotorOutputConfigs();
     m_elevatorMotor.getConfigurator().apply(m_motorConfig);
 
-    Mechanism2d mech = new Mechanism2d(3, 3);
-    MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
+    mechConfigure();
 
+  }
+
+  private void mechConfigure(){
+    mech = new Mechanism2d(3, 3);
+    root = mech.getRoot("elevator", 2, 0);
+    arm = root.append(new MechanismLigament2d("elevator", 30, 90));
+    wrist =
+        arm.append(
+            new MechanismLigament2d("wrist", 0.5, 90, 6, new Color8Bit(Color.kPurple)));
+    SmartDashboard.putData("Mech2d", mech);
+    
   }
 
   public void setPositionRevolutions(double position) {
@@ -87,7 +107,7 @@ public class Elevator implements Subsystem {
 
   @Override
   public void periodic() {
-
+    
   }
 
 }
