@@ -109,6 +109,10 @@ public class Elevator implements Subsystem {
   }
   */
 
+  public void setPosition(double angle){
+    m_elevatorMotor.setPosition(angle);
+  }
+
 
   @Override
   public void periodic() {

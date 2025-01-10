@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Elevator;
+import frc.robot.Preferences.DoublePreference;
 
 public class RobotContainer {
 
@@ -38,7 +39,7 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-       
+
     }
 
     public Command getAutonomousCommand() {
