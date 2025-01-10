@@ -63,14 +63,16 @@ public class Elevator implements Subsystem {
 
   public MotionMagicVoltage m_MMPosition =   new MotionMagicVoltage(0);
 
-  public DoublePreference armLength = new DoublePreference("armLength", 1);
-  public DoublePreference wristAngle = new DoublePreference("wristAngle", 90);
 
-  //Mech stuff
+
+  //Mech stuff IF NEEDED
   Mechanism2d mech;
   MechanismRoot2d root;
   MechanismLigament2d arm;
   MechanismLigament2d wrist;
+
+  public DoublePreference armLength = new DoublePreference("armLength", 1);
+  public DoublePreference wristAngle = new DoublePreference("wristAngle", 90);
 
 
   /** Creates a new Climber. */
@@ -89,10 +91,9 @@ public class Elevator implements Subsystem {
     m_motorConfig = TunerConstants.ElevatorConstants.createMotorOutputConfigs();
     m_elevatorMotor.getConfigurator().apply(m_motorConfig);
 
-    mechConfigure();
-
   }
 
+  /* 
   private void mechConfigure(){
     mech = new Mechanism2d(3, 3);
     root = mech.getRoot("elevator", 2, 0);
@@ -106,20 +107,15 @@ public class Elevator implements Subsystem {
   public void setPositionRevolutions(double position) {
     m_elevatorMotor.setControl(m_MMPosition.withPosition(position));
   }
+  */
 
 
   @Override
   public void periodic() {
-    arm.setLength(armLength.getValue());
-    wrist.setAngle(wristAngle.getValue());
-    SmartDashboard.putData("Mech2d", mech);
   }
 
   @Override
   public void simulationPeriodic() {
-    arm.setLength(armLength.getValue());
-    wrist.setAngle(wristAngle.getValue());
-    SmartDashboard.putData("Mech2d", mech);
   }
 
 }
