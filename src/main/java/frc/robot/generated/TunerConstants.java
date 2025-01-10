@@ -21,41 +21,41 @@ public class TunerConstants {
 
 
 
-    public class ElevatorConstants{
+    public class ArmConstants{
 
     //Motor
-    public static final int kElevatorMotorId = 11;
-    public static final TalonFX ELEVATOR_MOTOR = new TalonFX(kElevatorMotorId);
+    public static final int kArmMotorId = 11;
+    public static final TalonFX ARM_MOTOR = new TalonFX(kArmMotorId);
 
 
     //Slot0Configs
 
-    public static final double ELEVATOR_kV = 0;
-    public static final double ELEVATOR_kS = 0;
-    public static final double ELEVATOR_kP = 0;
-    public static final double ELEVATOR_kI = 0;
-    public static final double ELEVATOR_kD = 0;
+    public static final double ARM_kV = 0;
+    public static final double ARM_kS = 0;
+    public static final double ARM_kP = 0;
+    public static final double ARM_kI = 0;
+    public static final double ARM_kD = 0;
 
     public static Slot0Configs createSlot0Configs(){ 
         Slot0Configs slot = new Slot0Configs();
-        slot.kV = ELEVATOR_kV;
-        slot.kS = ELEVATOR_kS;
-        slot.kP = ELEVATOR_kP;
-        slot.kI = ELEVATOR_kI;
-        slot.kD = ELEVATOR_kD;
+        slot.kV = ARM_kV;
+        slot.kS = ARM_kS;
+        slot.kP = ARM_kP;
+        slot.kI = ARM_kI;
+        slot.kD = ARM_kD;
         return slot; 
     }
 
     //SoftLimitConfig
-    public static final double ELEVATOR_FORWARD_SOFT_LIMIT = 100;
-    public static final double ELEVATOR_REVERSE_SOFT_LIMIT = 0;
+    public static final double ARM_FORWARD_SOFT_LIMIT = 100;
+    public static final double ARM_REVERSE_SOFT_LIMIT = 0;
 
     public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
         SoftwareLimitSwitchConfigs newConfigs = new SoftwareLimitSwitchConfigs();
         newConfigs.ForwardSoftLimitEnable = false;
         newConfigs.ReverseSoftLimitEnable = false;
-        newConfigs.ForwardSoftLimitThreshold = ELEVATOR_FORWARD_SOFT_LIMIT;
-        newConfigs.ReverseSoftLimitThreshold = ELEVATOR_REVERSE_SOFT_LIMIT;
+        newConfigs.ForwardSoftLimitThreshold = ARM_FORWARD_SOFT_LIMIT;
+        newConfigs.ReverseSoftLimitThreshold = ARM_REVERSE_SOFT_LIMIT;
         return newConfigs;
     }
 

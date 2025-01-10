@@ -48,8 +48,8 @@ import frc.robot.Robot;
 import frc.robot.Preferences.DoublePreference;
 import frc.robot.generated.TunerConstants;
 
-public class Elevator implements Subsystem {
-    private final TalonFX m_elevatorMotor;
+public class Arm implements Subsystem {
+    private final TalonFX m_armMotor;
 
   private Slot0Configs m_Slot0Configs = new Slot0Configs();
   
@@ -75,21 +75,20 @@ public class Elevator implements Subsystem {
   public DoublePreference wristAngle = new DoublePreference("wristAngle", 90);
 
 
-  /** Creates a new Climber. */
-  public Elevator() {
-    m_elevatorMotor = TunerConstants.ElevatorConstants.ELEVATOR_MOTOR; 
+  public Arm() {
+    m_armMotor = TunerConstants.ArmConstants.ARM_MOTOR; 
 
-    m_Slot0Configs = TunerConstants.ElevatorConstants.createSlot0Configs(); 
-    m_elevatorMotor.getConfigurator().apply(m_Slot0Configs);
+    m_Slot0Configs = TunerConstants.ArmConstants.createSlot0Configs(); 
+    m_armMotor.getConfigurator().apply(m_Slot0Configs);
 
-    m_softLimitConfig = TunerConstants.ElevatorConstants.createSoftLimitConigs(); 
-    m_elevatorMotor.getConfigurator().apply(m_softLimitConfig);
+    m_softLimitConfig = TunerConstants.ArmConstants.createSoftLimitConigs(); 
+    m_armMotor.getConfigurator().apply(m_softLimitConfig);
 
-    m_motionMagicConfigs = TunerConstants.ElevatorConstants.createMotionMagicConfigs();
-    m_elevatorMotor.getConfigurator().apply(m_motionMagicConfigs);
+    m_motionMagicConfigs = TunerConstants.ArmConstants.createMotionMagicConfigs();
+    m_armMotor.getConfigurator().apply(m_motionMagicConfigs);
 
-    m_motorConfig = TunerConstants.ElevatorConstants.createMotorOutputConfigs();
-    m_elevatorMotor.getConfigurator().apply(m_motorConfig);
+    m_motorConfig = TunerConstants.ArmConstants.createMotorOutputConfigs();
+    m_armMotor.getConfigurator().apply(m_motorConfig);
 
   }
 
@@ -110,7 +109,7 @@ public class Elevator implements Subsystem {
   */
 
   public void setPosition(double angle){
-    m_elevatorMotor.setPosition(angle);
+    m_armMotor.setPosition(angle);
   }
 
 

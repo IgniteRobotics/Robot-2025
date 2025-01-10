@@ -19,27 +19,28 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Arm;
 import frc.robot.Preferences.DoublePreference;
 
 public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
-    public final Elevator elevator = new Elevator();
+    public final Arm arm = new Arm();
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
+    public DoublePreference motorAngle = new DoublePreference("armAngle");
+    
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
-
         configureBindings();
     }
 
     private void configureBindings() {
-
+        
     }
 
     public Command getAutonomousCommand() {
