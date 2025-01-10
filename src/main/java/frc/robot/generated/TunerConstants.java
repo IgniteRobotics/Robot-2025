@@ -29,21 +29,56 @@ public class TunerConstants {
 
 
     //Slot0Configs
-
-    public static final double ARM_kV = 0.12;
-    public static final double ARM_kS = 0.24;
-    public static final double ARM_kP = 60;
-    public static final double ARM_kI = 0;
-    public static final double ARM_kD = 2;
+    public static final double ARM_kV_0 = 0.12;
+    public static final double ARM_kS_0 = 0.24;
+    public static final double ARM_kP_0 = 60;
+    public static final double ARM_kI_0 = 0;
+    public static final double ARM_kD_0 = 2;
     public static final GravityTypeValue ARM_kG = GravityTypeValue.Arm_Cosine;
 
     public static Slot0Configs createSlot0Configs(){ 
         Slot0Configs slot = new Slot0Configs();
-        slot.kV = ARM_kV;
-        slot.kS = ARM_kS;
-        slot.kP = ARM_kP;
-        slot.kI = ARM_kI;
-        slot.kD = ARM_kD;
+        slot.kV = ARM_kV_0;
+        slot.kS = ARM_kS_0;
+        slot.kP = ARM_kP_0;
+        slot.kI = ARM_kI_0;
+        slot.kD = ARM_kD_0;
+        slot.kG = ARM_kG.value;
+        return slot; 
+    }
+
+    //Slot1Configs
+    public static final double ARM_kV_1 = 0.12;
+    public static final double ARM_kS_1 = 0.24;
+    public static final double ARM_kP_1 = 60;
+    public static final double ARM_kI_1 = 0;
+    public static final double ARM_kD_1 = 2;
+
+    public static Slot1Configs createSlot1Configs(){
+        Slot1Configs slot = new Slot1Configs();
+        slot.kV = ARM_kV_1;
+        slot.kS = ARM_kS_1;
+        slot.kP = ARM_kP_1;
+        slot.kI = ARM_kI_1;
+        slot.kD = ARM_kD_1;
+        slot.kG = ARM_kG.value;
+        return slot; 
+    }
+
+    //Slot2Configs
+    public static final double ARM_kV_2 = 0.12;
+    public static final double ARM_kS_2 = 0.24;
+    public static final double ARM_kP_2 = 60;
+    public static final double ARM_kI_2 = 0;
+    public static final double ARM_kD_2 = 2;
+
+    public static Slot2Configs createSlot2Configs(){
+        Slot2Configs slot = new Slot2Configs();
+        slot.kV = ARM_kV_2;
+        slot.kS = ARM_kS_2;
+        slot.kP = ARM_kP_2;
+        slot.kI = ARM_kI_2;
+        slot.kD = ARM_kD_2;
         slot.kG = ARM_kG.value;
         return slot; 
     }
