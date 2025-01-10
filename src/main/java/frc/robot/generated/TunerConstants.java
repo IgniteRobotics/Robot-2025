@@ -30,11 +30,12 @@ public class TunerConstants {
 
     //Slot0Configs
 
-    public static final double ARM_kV = 0;
-    public static final double ARM_kS = 0;
-    public static final double ARM_kP = 0;
+    public static final double ARM_kV = 0.12;
+    public static final double ARM_kS = 0.24;
+    public static final double ARM_kP = 60;
     public static final double ARM_kI = 0;
-    public static final double ARM_kD = 0;
+    public static final double ARM_kD = 2;
+    public static final GravityTypeValue ARM_kG = GravityTypeValue.Arm_Cosine;
 
     public static Slot0Configs createSlot0Configs(){ 
         Slot0Configs slot = new Slot0Configs();
@@ -43,11 +44,12 @@ public class TunerConstants {
         slot.kP = ARM_kP;
         slot.kI = ARM_kI;
         slot.kD = ARM_kD;
+        slot.kG = ARM_kG.value;
         return slot; 
     }
 
     //SoftLimitConfig
-    public static final double ARM_FORWARD_SOFT_LIMIT = 100;
+    public static final double ARM_FORWARD_SOFT_LIMIT = 0.42;
     public static final double ARM_REVERSE_SOFT_LIMIT = 0;
 
     public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
