@@ -64,7 +64,9 @@ public class TunerConstants {
     //MotionMagicConfigs
     public static MotionMagicConfigs createMotionMagicConfigs(){
         MotionMagicConfigs newConfigs = new MotionMagicConfigs();
-        //TODO: ADD MORE IF NECESSARY
+        newConfigs.MotionMagicCruiseVelocity = 0; // Unlimited cruise velocity
+        newConfigs.MotionMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
+        newConfigs.MotionMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
         return newConfigs;
     }
 
