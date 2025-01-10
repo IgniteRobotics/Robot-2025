@@ -28,6 +28,8 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -40,13 +42,14 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 import frc.robot.Preferences.DoublePreference;
 import frc.robot.generated.TunerConstants;
 
 @Logged
-public class Arm implements Subsystem {
+public class Arm extends SubsystemBase {
   private final TalonFX m_armMotor;
 
   private Slot0Configs m_Slot0Configs = new Slot0Configs();
@@ -64,8 +67,8 @@ public class Arm implements Subsystem {
   private TalonFXConfiguration m_fxCfg = new TalonFXConfiguration();
 
   public MotionMagicVoltage m_MMPosition =   new MotionMagicVoltage(0);
-
-
+  
+  public SysIdRoutine m_RotSysIdRoutine;
 
   //Mech stuff IF NEEDED
   Mechanism2d mech;
@@ -98,7 +101,13 @@ public class Arm implements Subsystem {
     m_motorConfig = TunerConstants.ArmConstants.createMotorOutputConfigs();
     m_armMotor.getConfigurator().apply(m_motorConfig);
 
-  }
+    m_RotSysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(), 
+      new SysIdRoutine.Mechanism(
+        (Measure<Voltage> volts) -> this.setVoltage(volts.in(Volts)),
+        null, this)
+    );
+  } 
 
   /* 
   private void mechConfigure(){
@@ -120,6 +129,10 @@ public class Arm implements Subsystem {
     m_armMotor.setPosition(angle);
   }
 
+  public void setVoltage(double volts){
+    m_armMotor.setVoltage(volts);
+  }
+
 
   @Override
   public void periodic() {
@@ -127,6 +140,14 @@ public class Arm implements Subsystem {
 
   @Override
   public void simulationPeriodic() {
+  }
+  
+  public Command turnSysIdTestBuilder(double staticTimeout, double dynamicTimeout){ 
+    return m_RotSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withTimeout(staticTimeout)
+      .andThen(m_RotSysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse).withTimeout(staticTimeout))
+      .andThen(m_RotSysIdRoutine.dynamic(SysIdRoutine.Direction.kForward).withTimeout(dynamicTimeout))
+      .andThen(m_RotSysIdRoutine   .dynamic(SysIdRoutine.Direction.kReverse).withTimeout(dynamicTimeout))
+      .finallyDo(() -> this.setVoltage(0));
   }
 
 }
