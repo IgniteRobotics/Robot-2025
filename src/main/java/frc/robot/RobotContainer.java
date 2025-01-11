@@ -29,7 +29,7 @@ public class RobotContainer {
     /* Path follower */
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-    public DoublePreference motorAngle = new DoublePreference("armAngle");
+    public DoublePreference motorAngle = new DoublePreference("armAngle", 90);
 
     //Mech stuff
     Mechanism2d mech = new Mechanism2d(3, 3);
