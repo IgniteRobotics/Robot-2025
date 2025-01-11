@@ -92,7 +92,7 @@ public class Elevator extends SubsystemBase {
   public void simulationPeriodic() {
   }
   
-  public Command turnSysIdTestBuilder(double staticTimeout, double dynamicTimeout){ 
+  public Command RevolSysIdTestBuilder(double staticTimeout, double dynamicTimeout){ 
     return m_RevolSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withTimeout(staticTimeout)
       .andThen(m_RevolSysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse).withTimeout(staticTimeout))
       .andThen(m_RevolSysIdRoutine.dynamic(SysIdRoutine.Direction.kForward).withTimeout(dynamicTimeout))
