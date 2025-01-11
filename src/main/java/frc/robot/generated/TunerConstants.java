@@ -19,13 +19,73 @@ import edu.wpi.first.units.measure.*;
 // https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/tuner-swerve/index.html
 public class TunerConstants {
 
+    public class ElevatorConstants{
+    //Motors
+    public static final int kElevatorMotorLeaderId = 12;
+    public static final int kElevatorMotorFollowerId = 13;
+    public static final TalonFX Elevator_MOTOR_LEADER = new TalonFX(kElevatorMotorLeaderId);
+    public static final TalonFX Elevator_MOTOR_FOLLOWER = new TalonFX(kElevatorMotorFollowerId);
 
+
+    //Slot0Configs
+    public static final double Elevator_kV_0 = 0.12;
+    public static final double Elevator_kS_0 = 0.24;
+    public static final double Elevator_kP_0 = 60;
+    public static final double Elevator_kI_0 = 0;
+    public static final double Elevator_kD_0 = 2;
+    public static final GravityTypeValue Elevator_kG = GravityTypeValue.Elevator_Static;
+
+    public static Slot0Configs createSlot0Configs(){ 
+        Slot0Configs slot = new Slot0Configs();
+        slot.kV = Elevator_kV_0;
+        slot.kS = Elevator_kS_0;
+        slot.kP = Elevator_kP_0;
+        slot.kI = Elevator_kI_0;
+        slot.kD = Elevator_kD_0;
+        slot.kG = Elevator_kG.value;
+        return slot; 
+    }
+
+    //SoftLimitConfig
+    //TODO:EDIT AS NEEDED
+    public static final double ELEVATOR_FORWARD_SOFT_LIMIT = 0.42;
+    public static final double ELEVATOR_REVERSE_SOFT_LIMIT = 0;
+
+    public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
+        SoftwareLimitSwitchConfigs newConfigs = new SoftwareLimitSwitchConfigs();
+        newConfigs.ForwardSoftLimitEnable = false;
+        newConfigs.ReverseSoftLimitEnable = false;
+        newConfigs.ForwardSoftLimitThreshold = ELEVATOR_FORWARD_SOFT_LIMIT;
+        newConfigs.ReverseSoftLimitThreshold = ELEVATOR_REVERSE_SOFT_LIMIT;
+        return newConfigs;
+    }
+
+    //MotionMagicConfigs
+    public static MotionMagicConfigs createMotionMagicConfigs(){
+        MotionMagicConfigs newConfigs = new MotionMagicConfigs();
+        newConfigs.MotionMagicCruiseVelocity = 0; // Unlimited cruise velocity
+        newConfigs.MotionMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
+        newConfigs.MotionMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
+        return newConfigs;
+    }
+
+    //MotorConfigs
+    public static MotorOutputConfigs createMotorOutputConfigs(){
+        MotorOutputConfigs newConfigs = new MotorOutputConfigs();
+        //TODO:ADD MORE IF NECESSARY
+        return newConfigs;
+    }
+
+    }
 
     public class ArmConstants{
 
     //Motor
-    public static final int kArmMotorId = 11;
-    public static final TalonFX ARM_MOTOR = new TalonFX(kArmMotorId);
+    public static final int kArmMotorLeaderId = 9;
+    public static final int kArmMotorFollowerId = 10;
+    public static final TalonFX ARM_MOTOR_Leader = new TalonFX(kArmMotorLeaderId);
+    public static final TalonFX ARM_MOTOR_Follower = new TalonFX(kArmMotorFollowerId);
+
 
 
     //Slot0Configs
