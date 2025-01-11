@@ -2,7 +2,7 @@
   {
     "name": "/Preferences/armLength",
     "type": "double",
-    "value": 10.0,
+    "value": 1.0,
     "properties": {
       "persistent": true
     }
@@ -10,7 +10,7 @@
   {
     "name": "/Preferences/wristAngle",
     "type": "double",
-    "value": 0.0,
+    "value": 100.0,
     "properties": {
       "persistent": true
     }

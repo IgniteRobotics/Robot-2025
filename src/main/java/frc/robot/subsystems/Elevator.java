@@ -63,9 +63,6 @@ public class Elevator implements Subsystem {
 
   public MotionMagicVoltage m_MMPosition =   new MotionMagicVoltage(0);
 
-  public DoublePreference armLength = new DoublePreference("armLength", 1);
-  public DoublePreference wristAngle = new DoublePreference("wristAngle", 90);
-
   //Mech stuff
   Mechanism2d mech;
   MechanismRoot2d root;
@@ -107,19 +104,22 @@ public class Elevator implements Subsystem {
     m_elevatorMotor.setControl(m_MMPosition.withPosition(position));
   }
 
+  public void alterMech(double length, double angle){
+    arm.setLength(length);
+    wrist.setAngle(angle);
+    SmartDashboard.putData("Mech2d", mech);
+
+  }
+
 
   @Override
   public void periodic() {
-    arm.setLength(armLength.getValue());
-    wrist.setAngle(wristAngle.getValue());
-    SmartDashboard.putData("Mech2d", mech);
+    
   }
 
   @Override
   public void simulationPeriodic() {
-    arm.setLength(armLength.getValue());
-    wrist.setAngle(wristAngle.getValue());
-    SmartDashboard.putData("Mech2d", mech);
+
   }
 
 }
