@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "name": "/Preferences/armAngle",
+    "type": "double",
+    "value": 90.0,
+    "properties": {
+      "persistent": true
+    }
+  }
+]
