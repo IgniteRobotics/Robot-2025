@@ -44,6 +44,7 @@ public class RobotContainer {
 
     private void configureBindings() {
         driverController.x().onTrue(new InstantCommand(() -> arm.setPosition(motorAngle.getValue()))) ;
+        driverController.a().onTrue(arm.turnSysIdTestBuilder(2, 2));
     }
 
     public Command getAutonomousCommand() {

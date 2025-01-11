@@ -8,6 +8,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -79,7 +80,8 @@ public class Arm extends SubsystemBase {
   public DoublePreference armLength = new DoublePreference("armLength", 1);
   public DoublePreference wristAngle = new DoublePreference("wristAngle", 90);
 
-
+  //random thing
+  private final VoltageOut m_voltReq = new VoltageOut(0.0);
   public Arm() {
     m_armMotor = TunerConstants.ArmConstants.ARM_MOTOR; 
 
@@ -102,10 +104,16 @@ public class Arm extends SubsystemBase {
     m_armMotor.getConfigurator().apply(m_motorConfig);
 
     m_RotSysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(), 
+      new SysIdRoutine.Config(
+        null,
+        Volts.of(4),
+        null,
+        (state) -> SignalLogger.writeString("state", state.toString())
+      ), 
       new SysIdRoutine.Mechanism(
-        (Measure<Voltage> volts) -> this.setVoltage(volts.in(Volts)),
-        null, this)
+        (volts) -> m_armMotor.setControl(m_voltReq.withOutput(volts.in(Volts))),
+        null, 
+        this)
     );
   } 
 
