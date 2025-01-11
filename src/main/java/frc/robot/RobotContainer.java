@@ -54,7 +54,7 @@ public class RobotContainer {
         m_elevatorAvatar = root.append(new MechanismLigament2d("elevator", 2, 90));
         m_armAvatar = m_elevatorAvatar.append(new MechanismLigament2d("arm", 0.5, 90, 6, 
             new Color8Bit(Color.kPurple)));
-        SmartDashboard.putData("Mech2d", mech);
+        SmartDashboard.putData("Mech2d", mech); 
     }
 
     public Command getAutonomousCommand() {

@@ -4,7 +4,10 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.controls.DynamicMotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -29,7 +32,7 @@ public class Elevator extends SubsystemBase {
 
   private MotorOutputConfigs m_motorConfig = new MotorOutputConfigs();
 
-  public MotionMagicVoltage m_MMPosition = new MotionMagicVoltage(0);
+  public DynamicMotionMagicTorqueCurrentFOC m_MMPosition; 
   
   public SysIdRoutine m_RevolSysIdRoutine;
 
@@ -68,6 +71,9 @@ public class Elevator extends SubsystemBase {
         null, 
         this)
     );
+
+    m_MMPosition = new DynamicMotionMagicTorqueCurrentFOC(0, TunerConstants.ElevatorConstants.Elevator_VELOCITY,
+      TunerConstants.ElevatorConstants.Elevator_ACCELERATION, TunerConstants.ElevatorConstants.Elevator_JERK);
   } 
 
   public void setControl(VoltageOut request){

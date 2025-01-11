@@ -20,6 +20,12 @@ import edu.wpi.first.units.measure.*;
 public class TunerConstants {
 
     public class ElevatorConstants{
+
+    //TODO: EDIT
+    public static final double Elevator_VELOCITY = 2;
+    public static final double Elevator_ACCELERATION = 2;
+    public static final double Elevator_JERK = 2;
+
     //Motors
     public static final int kElevatorMotorLeaderId = 12;
     public static final int kElevatorMotorFollowerId = 13;
