@@ -2,6 +2,9 @@ package frc.robot.generated;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.hardware.*;
@@ -13,7 +16,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.*;
-
+import frc.robot.Zone;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 
@@ -350,4 +353,32 @@ public class TunerConstants {
     }
 
     }
+
+    public class GridConstants{
+
+        private class Zone{
+            public int maxSpeed;
+            public int targetID;
+            
+            public Zone(int speed, int id){
+                maxSpeed = speed;
+                targetID = id;
+            }
+
+            public Zone(int speed){
+                maxSpeed = speed;
+                targetID = null;
+            }
+        }
+
+        public static final Zone OPPONENT_SIDE = Zone(5, null);
+
+
+        public static final double blockWidth = 0.3;
+
+        public static final Zone GRID[][] = new Zone[3][3];
+
+    }
+
+
 }
