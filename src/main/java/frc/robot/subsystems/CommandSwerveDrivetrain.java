@@ -260,9 +260,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     /*Actual driving method */
-    public void drive(double x, double y, double rot){
+    public void drive(double x, double y, double rot, double maxSpeed){
         SwerveRequest.FieldCentric m_driveRequest = new SwerveRequest.FieldCentric()
-            .withDeadband(TunerConstants.DrivetrainConstants.MAX_SPEED * TunerConstants.DrivetrainConstants.DEADBAND_FACTOR)
+            .withDeadband(maxSpeed * TunerConstants.DrivetrainConstants.DEADBAND_FACTOR)
             .withRotationalDeadband(TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED * TunerConstants.DrivetrainConstants.DEADBAND_FACTOR)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
             .withSteerRequestType(SteerRequestType.MotionMagicExpo);

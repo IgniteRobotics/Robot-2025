@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
@@ -16,7 +17,6 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.*;
-import frc.robot.Zone;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 
@@ -28,7 +28,6 @@ public class TunerConstants {
 
         //Max Speed
         //TODO: Fix this
-        public static final double MAX_SPEED = 5;
 
         public static final double MAX_ANGULAR_SPEED = 2*Math.PI;
 
@@ -302,81 +301,101 @@ public class TunerConstants {
 
     public class ElevatorConstants{
 
-    //Motor
-    public static final int kElevatorMotorId = 11;
-    public static final TalonFX ELEVATOR_MOTOR = new TalonFX(kElevatorMotorId);
+        //Motor
+        public static final int kElevatorMotorId = 11;
+        public static final TalonFX ELEVATOR_MOTOR = new TalonFX(kElevatorMotorId);
 
 
-    //Slot0Configs
+        //Slot0Configs
 
-    public static final double ELEVATOR_kV = 0;
-    public static final double ELEVATOR_kS = 0;
-    public static final double ELEVATOR_kP = 0;
-    public static final double ELEVATOR_kI = 0;
-    public static final double ELEVATOR_kD = 0;
+        public static final double ELEVATOR_kV = 0;
+        public static final double ELEVATOR_kS = 0;
+        public static final double ELEVATOR_kP = 0;
+        public static final double ELEVATOR_kI = 0;
+        public static final double ELEVATOR_kD = 0;
 
-    public static Slot0Configs createSlot0Configs(){ 
-        Slot0Configs slot = new Slot0Configs();
-        slot.kV = ELEVATOR_kV;
-        slot.kS = ELEVATOR_kS;
-        slot.kP = ELEVATOR_kP;
-        slot.kI = ELEVATOR_kI;
-        slot.kD = ELEVATOR_kD;
-        return slot; 
-    }
+        public static Slot0Configs createSlot0Configs(){ 
+            Slot0Configs slot = new Slot0Configs();
+            slot.kV = ELEVATOR_kV;
+           slot.kS = ELEVATOR_kS;
+            slot.kP = ELEVATOR_kP;
+            slot.kI = ELEVATOR_kI;
+            slot.kD = ELEVATOR_kD;
+           return slot; 
+        }
 
-    //SoftLimitConfig
-    public static final double ELEVATOR_FORWARD_SOFT_LIMIT = 100;
-    public static final double ELEVATOR_REVERSE_SOFT_LIMIT = 0;
+        //SoftLimitConfig
+        public static final double ELEVATOR_FORWARD_SOFT_LIMIT = 100;
+        public static final double ELEVATOR_REVERSE_SOFT_LIMIT = 0;
 
-    public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
-        SoftwareLimitSwitchConfigs newConfigs = new SoftwareLimitSwitchConfigs();
-        newConfigs.ForwardSoftLimitEnable = false;
-        newConfigs.ReverseSoftLimitEnable = false;
-        newConfigs.ForwardSoftLimitThreshold = ELEVATOR_FORWARD_SOFT_LIMIT;
-        newConfigs.ReverseSoftLimitThreshold = ELEVATOR_REVERSE_SOFT_LIMIT;
-        return newConfigs;
-    }
+        public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
+            SoftwareLimitSwitchConfigs newConfigs = new SoftwareLimitSwitchConfigs();
+            newConfigs.ForwardSoftLimitEnable = false;
+            newConfigs.ReverseSoftLimitEnable = false;
+            newConfigs.ForwardSoftLimitThreshold = ELEVATOR_FORWARD_SOFT_LIMIT;
+             newConfigs.ReverseSoftLimitThreshold = ELEVATOR_REVERSE_SOFT_LIMIT;
+                return newConfigs;
+        }
 
-    //MotionMagicConfigs
-    public static MotionMagicConfigs createMotionMagicConfigs(){
-        MotionMagicConfigs newConfigs = new MotionMagicConfigs();
-        //TODO: ADD MORE IF NECESSARY
-        return newConfigs;
-    }
+        //MotionMagicConfigs
+        public static MotionMagicConfigs createMotionMagicConfigs(){
+            MotionMagicConfigs newConfigs = new MotionMagicConfigs();
+            //TODO: ADD MORE IF NECESSARY
+            return newConfigs;
+        }
 
-    //MotorConfigs
-    public static MotorOutputConfigs createMotorOutputConfigs(){
+        //MotorConfigs
+        public static MotorOutputConfigs createMotorOutputConfigs(){
         MotorOutputConfigs newConfigs = new MotorOutputConfigs();
         //TODO:ADD MORE IF NECESSARY
         return newConfigs;
-    }
-
+        }
     }
 
     public class GridConstants{
 
-        private class Zone{
-            public int maxSpeed;
-            public int targetID;
-            
-            public Zone(int speed, int id){
+        public class Zone{
+            public Integer maxSpeed;
+            public Integer targetID;
+
+
+            public void setMaxSpeed(int speed){
                 maxSpeed = speed;
+            }
+
+            public void setTargetID(int id){
                 targetID = id;
             }
 
-            public Zone(int speed){
-                maxSpeed = speed;
-                targetID = null;
-            }
         }
+       
+        public final Zone OPPONENT_SIDE = new Zone() {{
+            setMaxSpeed(5);
+        }};
 
-        public static final Zone OPPONENT_SIDE = Zone(5, null);
+        public final Zone SAFE = new Zone() {{
+            setMaxSpeed(5);
+        }};
+
+        public final Zone HP = new Zone(){{
+            setMaxSpeed(5);
+            setTargetID(0);
+        }};
+
+        
+
 
 
         public static final double blockWidth = 0.3;
 
-        public static final Zone GRID[][] = new Zone[3][3];
+
+        //public final Zone GRID[][] = {{OPPONENT_SIDE, SAFE, HP}};
+
+        Zone[][] GRID = {
+            {OPPONENT_SIDE, SAFE, HP},
+            {SAFE, HP, HP},
+            {HP, SAFE, HP}
+        };
 
     }
 
