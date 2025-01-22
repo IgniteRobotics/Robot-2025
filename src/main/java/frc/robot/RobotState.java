@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.generated.TunerConstants;
+import frc.zones.Grid;
 import frc.zones.Zone;
 
 public class RobotState {
@@ -12,26 +13,9 @@ public class RobotState {
 
     private static Pose2d robotPose2d;
 
-    public final Zone OPPONENT_SIDE = new Zone() {{
-        setMaxSpeed(5);
-    }};
-
-    public final Zone SAFE = new Zone() {{
-        setMaxSpeed(5);
-    }};
-
-    public final Zone HP = new Zone(){{
-        setMaxSpeed(5);
-        setTargetID(0);
-    }};
-
-    private Zone[][] GRID = {
-        {OPPONENT_SIDE, SAFE, HP},
-        {SAFE, HP, HP},
-        {HP, SAFE, HP}
-    };
-
     private double blockWidth = 0.3;
+
+    private Grid fieldGrid = new Grid();
 
     private RobotState() {
     }
@@ -55,15 +39,12 @@ public class RobotState {
     public double getMaxSpeed(){
     
         if(robotPose2d == null 
-        || (int)(robotPose2d.getX()/blockWidth) > GRID.length || (int)(robotPose2d.getY()/blockWidth) > GRID[0].length
+        || (int)(robotPose2d.getX()/blockWidth) > fieldGrid.GRID.length || (int)(robotPose2d.getY()/blockWidth) > fieldGrid.GRID[0].length
         || robotPose2d.getX() < 0 || robotPose2d.getY() < 0){
             return TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond);
         }
-        return GRID[(int)(robotPose2d.getX()/blockWidth)][ (int)(robotPose2d.getY()/blockWidth)].maxSpeed.doubleValue();
+        return fieldGrid.GRID[(int)(robotPose2d.getX()/blockWidth)][ (int)(robotPose2d.getY()/blockWidth)].maxSpeed.doubleValue();
     }
-
-    
-
     
 
 
