@@ -53,7 +53,10 @@ public class RobotState {
     }
 
     public double getMaxSpeed(){
-        if((int)(robotPose2d.getX()/blockWidth) > GRID.length || (int)(robotPose2d.getY()/blockWidth) > GRID[0].length){
+    
+        if(robotPose2d == null 
+        || (int)(robotPose2d.getX()/blockWidth) > GRID.length || (int)(robotPose2d.getY()/blockWidth) > GRID[0].length
+        || robotPose2d.getX() < 0 || robotPose2d.getY() < 0){
             return TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond);
         }
         return GRID[(int)(robotPose2d.getX()/blockWidth)][ (int)(robotPose2d.getY()/blockWidth)].maxSpeed.doubleValue();
