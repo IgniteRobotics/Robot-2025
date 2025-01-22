@@ -48,8 +48,10 @@ public class RobotContainer {
     public DoublePreference wristAngle = new DoublePreference("wristAngle", 90);
 
     public Supplier<Double> maxSpeed;
+
+    private RobotState m_RobotState = RobotState.getInstance();
     //drive command
-    Command arcadeDrive =  new RunCommand(() -> drivetrain.drive(-joystick.getLeftY(), -joystick.getLeftX(), -joystick.getRightX(), maxSpeed.get()));
+    Command arcadeDrive =  new RunCommand(() -> drivetrain.drive(-joystick.getLeftY(), -joystick.getLeftX(), -joystick.getRightX(), m_RobotState.getMaxSpeed()));
 
     public RobotContainer() {
 

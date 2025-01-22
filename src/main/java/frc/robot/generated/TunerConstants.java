@@ -26,9 +26,6 @@ public class TunerConstants {
 
     public class DrivetrainConstants{
 
-        //Max Speed
-        //TODO: Fix this
-
         public static final double MAX_ANGULAR_SPEED = 2*Math.PI;
 
         public static final double DEADBAND_FACTOR  = 0.1;
@@ -350,53 +347,6 @@ public class TunerConstants {
         //TODO:ADD MORE IF NECESSARY
         return newConfigs;
         }
-    }
-
-    public class GridConstants{
-
-        public class Zone{
-            public Integer maxSpeed;
-            public Integer targetID;
-
-
-            public void setMaxSpeed(int speed){
-                maxSpeed = speed;
-            }
-
-            public void setTargetID(int id){
-                targetID = id;
-            }
-
-        }
-       
-        public final Zone OPPONENT_SIDE = new Zone() {{
-            setMaxSpeed(5);
-        }};
-
-        public final Zone SAFE = new Zone() {{
-            setMaxSpeed(5);
-        }};
-
-        public final Zone HP = new Zone(){{
-            setMaxSpeed(5);
-            setTargetID(0);
-        }};
-
-        
-
-
-
-        public static final double blockWidth = 0.3;
-
-
-        //public final Zone GRID[][] = {{OPPONENT_SIDE, SAFE, HP}};
-
-        Zone[][] GRID = {
-            {OPPONENT_SIDE, SAFE, HP},
-            {SAFE, HP, HP},
-            {HP, SAFE, HP}
-        };
-
     }
 
 
