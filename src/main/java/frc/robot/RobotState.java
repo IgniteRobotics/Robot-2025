@@ -13,9 +13,11 @@ public class RobotState {
 
     private static Pose2d robotPose2d;
 
-    private double blockWidth = 0.3;
+    private final double blockWidth = 0.25;
 
     private Grid fieldGrid = new Grid();
+
+    private Zone currentZone;
 
     private RobotState() {
     }
@@ -28,8 +30,24 @@ public class RobotState {
         return single_instance;
     }
 
+    private void updateZone(){
+        if(robotPose2d == null 
+        || (int)(robotPose2d.getX()/blockWidth) > fieldGrid.GRID.length || (int)(robotPose2d.getY()/blockWidth) > fieldGrid.GRID[0].length
+        || robotPose2d.getX() < 0 || robotPose2d.getY() < 0){
+            currentZone = null;
+        }
+        else{
+            currentZone = fieldGrid.GRID[(int)(robotPose2d.getX()/blockWidth)][ (int)(robotPose2d.getY()/blockWidth)];
+        }
+    }
+
+    public Zone getZone(){
+        return currentZone;
+    }
+
     public synchronized void setPose2d(Pose2d newPose){
         robotPose2d = newPose;
+        updateZone();
     }
 
     public Pose2d getPose2d(){
@@ -37,15 +55,9 @@ public class RobotState {
     }
 
     public double getMaxSpeed(){
-    
-        if(robotPose2d == null 
-        || (int)(robotPose2d.getX()/blockWidth) > fieldGrid.GRID.length || (int)(robotPose2d.getY()/blockWidth) > fieldGrid.GRID[0].length
-        || robotPose2d.getX() < 0 || robotPose2d.getY() < 0){
+        if(getZone() == null){
             return TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond);
         }
-        return fieldGrid.GRID[(int)(robotPose2d.getX()/blockWidth)][ (int)(robotPose2d.getY()/blockWidth)].maxSpeed.doubleValue();
+        else return getZone().maxSpeed.doubleValue();
     }
-    
-
-
 }
