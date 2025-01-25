@@ -51,10 +51,10 @@ public class Arm extends SubsystemBase {
     m_armMotor = TunerConstants.ArmConstants.ARM_MOTOR_Leader; 
 
     m_CANcoder = TunerConstants.ArmConstants.kArmCANcoder;
-    //m_CANcoderConfiguration = new CANcoderConfiguration();
-    //m_CANcoder.getConfigurator().refresh(m_CANcoderConfiguration);
-    //TunerConstants.ArmConstants.createCANcoderConfiguration(m_CANcoderConfiguration);
-    //m_CANcoder.getConfigurator().apply(m_CANcoderConfiguration);
+    m_CANcoderConfiguration = new CANcoderConfiguration();
+    m_CANcoder.getConfigurator().refresh(m_CANcoderConfiguration);
+    TunerConstants.ArmConstants.createCANcoderConfiguration(m_CANcoderConfiguration);
+    m_CANcoder.getConfigurator().apply(m_CANcoderConfiguration);
 
     m_TalonFXConfiguration = TunerConstants.ArmConstants.createTalonFXConfiguration();
     m_armMotor.getConfigurator().apply(m_TalonFXConfiguration);

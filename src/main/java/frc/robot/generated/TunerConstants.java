@@ -192,10 +192,11 @@ public class TunerConstants {
         return newConfigs;
     }
 
+    public static final double MAGNET_OFFSET_ROTATIONS = 0.1257324;
     public static void createCANcoderConfiguration(CANcoderConfiguration cc_cfg){
         cc_cfg.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(0.687));
         cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        cc_cfg.MagnetSensor.withMagnetOffset(Rotations.of(0));
+        cc_cfg.MagnetSensor.withMagnetOffset(Rotations.of(MAGNET_OFFSET_ROTATIONS));
     }
 
     public static TalonFXConfiguration createTalonFXConfiguration(){
