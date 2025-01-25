@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.controls.DynamicMotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -38,7 +39,7 @@ public class Arm extends SubsystemBase {
 
   private MotorOutputConfigs m_motorConfig = new MotorOutputConfigs();
 
-  public MotionMagicVoltage m_MMPosition =   new MotionMagicVoltage(0);
+  public DynamicMotionMagicTorqueCurrentFOC m_MMPosition; 
   
   public SysIdRoutine m_RotSysIdRoutine;
 
@@ -88,6 +89,9 @@ public class Arm extends SubsystemBase {
         null, 
         this)
     );
+
+    m_MMPosition = new DynamicMotionMagicTorqueCurrentFOC(0, TunerConstants.ArmConstants.ARM_VELOCITY_LIMIT,
+      TunerConstants.ArmConstants.ARM_ACCEL_LIMIT, TunerConstants.ArmConstants.ARM_JERK_LIMIT);
   } 
 
   public void setPositionDegrees(double angle){
@@ -95,7 +99,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void setPositionRotations(double rotations){
-    m_armMotor.setPosition(rotations);
+    m_armMotor.setControl(m_MMPosition.withPosition(rotations));
   }
 
   public double getPosition(){

@@ -88,6 +88,11 @@ public class TunerConstants {
 
     public class ArmConstants{
 
+    //TorqueCurrentFOC
+    public static double ARM_VELOCITY_LIMIT = 1;
+    public static double ARM_JERK_LIMIT = 1;
+    public static double ARM_ACCEL_LIMIT = 1;
+
     //Motor
     public static final int kArmMotorLeaderId = 9;
     public static final int kArmMotorFollowerId = 10;
@@ -102,9 +107,9 @@ public class TunerConstants {
     //Slot0Configs
     public static final double ARM_kV_0 = 0.12;
     public static final double ARM_kS_0 = 0.24;
-    public static final double ARM_kP_0 = 0;
+    public static final double ARM_kP_0 = 5;
     public static final double ARM_kI_0 = 0;
-    public static final double ARM_kD_0 = 0;
+    public static final double ARM_kD_0 = 1;
     public static final GravityTypeValue ARM_kG = GravityTypeValue.Arm_Cosine;
 
     public static Slot0Configs createSlot0Configs(){ 
@@ -179,7 +184,8 @@ public class TunerConstants {
     //MotorConfigs
     public static MotorOutputConfigs createMotorOutputConfigs(){
         MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-        //TODO:ADD MORE IF NECESSARY
+        newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+        newConfigs.NeutralMode = NeutralModeValue.Brake;
         return newConfigs;
     }
 
