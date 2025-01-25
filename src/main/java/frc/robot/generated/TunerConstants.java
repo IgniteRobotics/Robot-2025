@@ -19,6 +19,8 @@ import edu.wpi.first.units.measure.*;
 // https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/tuner-swerve/index.html
 public class TunerConstants {
 
+    public static final CANBus CANrio = new CANBus("rio");
+
     public class ElevatorConstants{
 
     //TODO: EDIT
@@ -89,12 +91,13 @@ public class TunerConstants {
     //Motor
     public static final int kArmMotorLeaderId = 9;
     public static final int kArmMotorFollowerId = 10;
-    public static final TalonFX ARM_MOTOR_Leader = new TalonFX(kArmMotorLeaderId);
-    public static final TalonFX ARM_MOTOR_Follower = new TalonFX(kArmMotorFollowerId);
+
+    public static final TalonFX ARM_MOTOR_Leader = new TalonFX(kArmMotorLeaderId, TunerConstants.CANrio);
+    //public static final TalonFX ARM_MOTOR_Follower = new TalonFX(kArmMotorFollowerId);
 
     //CANcoder
-    public static final int kArmCANcoderId = 7;
-    public static final CANcoder kArmCANcoder = new CANcoder(kArmCANcoderId);
+    public static final int kArmCANcoderId = 8;
+    public static final CANcoder kArmCANcoder = new CANcoder(kArmCANcoderId, TunerConstants.CANrio);
 
     //Slot0Configs
     public static final double ARM_kV_0 = 0.12;
@@ -153,12 +156,12 @@ public class TunerConstants {
 
     //SoftLimitConfig
     public static final double ARM_FORWARD_SOFT_LIMIT = 0.42;
-    public static final double ARM_REVERSE_SOFT_LIMIT = 0;
+    public static final double ARM_REVERSE_SOFT_LIMIT = -0.070;
 
     public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
         SoftwareLimitSwitchConfigs newConfigs = new SoftwareLimitSwitchConfigs();
-        newConfigs.ForwardSoftLimitEnable = false;
-        newConfigs.ReverseSoftLimitEnable = false;
+        newConfigs.ForwardSoftLimitEnable = true;
+        newConfigs.ReverseSoftLimitEnable = true;
         newConfigs.ForwardSoftLimitThreshold = ARM_FORWARD_SOFT_LIMIT;
         newConfigs.ReverseSoftLimitThreshold = ARM_REVERSE_SOFT_LIMIT;
         return newConfigs;
@@ -167,7 +170,7 @@ public class TunerConstants {
     //MotionMagicConfigs
     public static MotionMagicConfigs createMotionMagicConfigs(){
         MotionMagicConfigs newConfigs = new MotionMagicConfigs();
-        newConfigs.MotionMagicCruiseVelocity = 0; // Unlimited cruise velocity
+        newConfigs.MotionMagicCruiseVelocity = 0.5; // Unlimited cruise velocity
         newConfigs.MotionMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
         newConfigs.MotionMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
         return newConfigs;
@@ -182,9 +185,9 @@ public class TunerConstants {
 
     public static CANcoderConfiguration createCANcoderConfiguration(){
         CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
-        cc_cfg.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(0.5));
+        cc_cfg.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(0.687));
         cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        cc_cfg.MagnetSensor.withMagnetOffset(Rotations.of(0.4));
+        cc_cfg.MagnetSensor.withMagnetOffset(Rotations.of(0));
         return cc_cfg;
     }
 
@@ -192,8 +195,8 @@ public class TunerConstants {
         TalonFXConfiguration fx_cfg = new TalonFXConfiguration();
         fx_cfg.Feedback.FeedbackRemoteSensorID = kArmCANcoderId;
         fx_cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-        fx_cfg.Feedback.SensorToMechanismRatio = 2;
-        fx_cfg.Feedback.RotorToSensorRatio = 1;
+        fx_cfg.Feedback.SensorToMechanismRatio = 1.0;
+        fx_cfg.Feedback.RotorToSensorRatio = 10.286;
         return fx_cfg;
     }
 
