@@ -32,7 +32,7 @@ public class RobotState {
 
     private void updateZone(){
         if(robotPose2d == null 
-        || (int)(robotPose2d.getX()/blockWidth) > fieldGrid.GRID.length || (int)(robotPose2d.getY()/blockWidth) > fieldGrid.GRID[0].length
+        || (int)(robotPose2d.getX()/blockWidth) >= fieldGrid.GRID.length || (int)(robotPose2d.getY()/blockWidth) >= fieldGrid.GRID[0].length
         || robotPose2d.getX() < 0 || robotPose2d.getY() < 0){
             currentZone = null;
         }
