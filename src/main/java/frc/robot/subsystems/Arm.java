@@ -90,8 +90,16 @@ public class Arm extends SubsystemBase {
     );
   } 
 
-  public void setPosition(double angle){
-    m_armMotor.setPosition(angle);
+  public void setPositionDegrees(double angle){
+    this.setPositionRotations(angle/360.0);
+  }
+
+  public void setPositionRotations(double rotations){
+    m_armMotor.setPosition(rotations);
+  }
+
+  public double getPosition(){
+    return m_armMotor.getPosition().getValueAsDouble();
   }
 
   public void setVoltage(double volts){
@@ -105,12 +113,20 @@ public class Arm extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
   }
+
+  public boolean compareForwardEndpoint(){
+    return getPosition() >= TunerConstants.ArmConstants.ARM_FORWARD_SOFT_LIMIT;
+  }
+
+  public boolean compareReverseEndpoint(){
+    return getPosition() <= TunerConstants.ArmConstants.ARM_REVERSE_SOFT_LIMIT;
+  }
   
-  public Command turnSysIdTestBuilder(double staticTimeout, double dynamicTimeout){ 
-    return m_RotSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withTimeout(staticTimeout)
-      .andThen(m_RotSysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse).withTimeout(staticTimeout))
-      .andThen(m_RotSysIdRoutine.dynamic(SysIdRoutine.Direction.kForward).withTimeout(dynamicTimeout))
-      .andThen(m_RotSysIdRoutine   .dynamic(SysIdRoutine.Direction.kReverse).withTimeout(dynamicTimeout))
+  public Command rotSysIdTestBuilder(){ 
+    return m_RotSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).until(this::compareForwardEndpoint)
+      .andThen(m_RotSysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse).until(this::compareReverseEndpoint))
+      .andThen(m_RotSysIdRoutine.dynamic(SysIdRoutine.Direction.kForward).until(this::compareForwardEndpoint))
+      .andThen(m_RotSysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse).until(this::compareReverseEndpoint))
       .finallyDo(() -> this.setVoltage(0));
   }
 

@@ -38,14 +38,14 @@ public class RobotContainer {
     MechanismLigament2d m_armAvatar;
     
     public RobotContainer() {
-        autoChooser.addOption("Test Arm", arm.turnSysIdTestBuilder(2, 2));
+        autoChooser.addOption("Test Arm", arm.rotSysIdTestBuilder());
         SmartDashboard.putData("Auto Mode", autoChooser);
         configureMech();
         configureBindings();
     }
 
     private void configureBindings() {
-        driverController.x().onTrue(new InstantCommand(() -> arm.setPosition(motorAngle.getValue())).andThen(
+        driverController.x().onTrue(new InstantCommand(() -> arm.setPositionDegrees(motorAngle.getValue())).andThen(
         new InstantCommand(() -> m_armAvatar.setAngle(motorAngle.getValue()))).andThen(    
         new InstantCommand(() -> SmartDashboard.putData("Mech2d", mech))));
     }
