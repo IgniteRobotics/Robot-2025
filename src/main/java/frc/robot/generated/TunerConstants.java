@@ -163,6 +163,9 @@ public class TunerConstants {
     public static final double ARM_FORWARD_SOFT_LIMIT = 0.42;
     public static final double ARM_REVERSE_SOFT_LIMIT = -0.070;
 
+    public static final double SYSID_ARM_FORWARD_SOFT_LIMIT = 0.32;
+    public static final double SYSID_ARM_REVERSE_SOFT_LIMIT = 0.03;
+
     public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
         SoftwareLimitSwitchConfigs newConfigs = new SoftwareLimitSwitchConfigs();
         newConfigs.ForwardSoftLimitEnable = true;

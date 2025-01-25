@@ -50,15 +50,14 @@ public class Arm extends SubsystemBase {
   public Arm() {
     m_armMotor = TunerConstants.ArmConstants.ARM_MOTOR_Leader; 
 
+    m_CANcoder = TunerConstants.ArmConstants.kArmCANcoder;
+    //m_CANcoderConfiguration = new CANcoderConfiguration();
+    //m_CANcoder.getConfigurator().refresh(m_CANcoderConfiguration);
+    //TunerConstants.ArmConstants.createCANcoderConfiguration(m_CANcoderConfiguration);
+    //m_CANcoder.getConfigurator().apply(m_CANcoderConfiguration);
+
     m_TalonFXConfiguration = TunerConstants.ArmConstants.createTalonFXConfiguration();
     m_armMotor.getConfigurator().apply(m_TalonFXConfiguration);
-
-    m_CANcoder = TunerConstants.ArmConstants.kArmCANcoder;
-
-    m_CANcoderConfiguration = new CANcoderConfiguration();
-    m_CANcoder.getConfigurator().refresh(m_CANcoderConfiguration);
-    TunerConstants.ArmConstants.createCANcoderConfiguration(m_CANcoderConfiguration);
-    m_CANcoder.getConfigurator().apply(m_CANcoderConfiguration);
 
     m_Slot0Configs = TunerConstants.ArmConstants.createSlot0Configs(); 
     m_armMotor.getConfigurator().apply(m_Slot0Configs);
@@ -83,7 +82,7 @@ public class Arm extends SubsystemBase {
     m_RotSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(
         null,
-        Volts.of(4),
+        Volts.of(2),
         null,
         (state) -> SignalLogger.writeString("state", state.toString())
       ), 
@@ -115,7 +114,8 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Arm Position", getPosition());
+    SmartDashboard.putNumber("Arm Position From Motor", getPosition());
+    SmartDashboard.putNumber("Arm Position from CANcoder", m_CANcoder.getPosition().getValueAsDouble());
   }
 
   @Override
@@ -123,11 +123,11 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean compareForwardEndpoint(){
-    return getPosition() >= TunerConstants.ArmConstants.ARM_FORWARD_SOFT_LIMIT;
+    return getPosition() >= TunerConstants.ArmConstants.SYSID_ARM_FORWARD_SOFT_LIMIT;
   }
 
   public boolean compareReverseEndpoint(){
-    return getPosition() <= TunerConstants.ArmConstants.ARM_REVERSE_SOFT_LIMIT;
+    return getPosition() <= TunerConstants.ArmConstants.SYSID_ARM_REVERSE_SOFT_LIMIT;
   }
   
   public Command rotSysIdTestBuilder(){ 

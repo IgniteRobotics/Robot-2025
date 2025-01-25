@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -19,6 +20,7 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     m_robotContainer = new RobotContainer();
+    SignalLogger.start();
   }
 
   @Override
