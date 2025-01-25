@@ -102,9 +102,9 @@ public class TunerConstants {
     //Slot0Configs
     public static final double ARM_kV_0 = 0.12;
     public static final double ARM_kS_0 = 0.24;
-    public static final double ARM_kP_0 = 60;
+    public static final double ARM_kP_0 = 0;
     public static final double ARM_kI_0 = 0;
-    public static final double ARM_kD_0 = 2;
+    public static final double ARM_kD_0 = 0;
     public static final GravityTypeValue ARM_kG = GravityTypeValue.Arm_Cosine;
 
     public static Slot0Configs createSlot0Configs(){ 
@@ -121,9 +121,9 @@ public class TunerConstants {
     //Slot1Configs
     public static final double ARM_kV_1 = 0.12;
     public static final double ARM_kS_1 = 0.24;
-    public static final double ARM_kP_1 = 60;
+    public static final double ARM_kP_1 = 0;
     public static final double ARM_kI_1 = 0;
-    public static final double ARM_kD_1 = 2;
+    public static final double ARM_kD_1 = 0;
 
     public static Slot1Configs createSlot1Configs(){
         Slot1Configs slot = new Slot1Configs();
@@ -139,9 +139,9 @@ public class TunerConstants {
     //Slot2Configs
     public static final double ARM_kV_2 = 0.12;
     public static final double ARM_kS_2 = 0.24;
-    public static final double ARM_kP_2 = 60;
+    public static final double ARM_kP_2 = 0;
     public static final double ARM_kI_2 = 0;
-    public static final double ARM_kD_2 = 2;
+    public static final double ARM_kD_2 = 0;
 
     public static Slot2Configs createSlot2Configs(){
         Slot2Configs slot = new Slot2Configs();
@@ -196,7 +196,7 @@ public class TunerConstants {
         fx_cfg.Feedback.FeedbackRemoteSensorID = kArmCANcoderId;
         fx_cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         fx_cfg.Feedback.SensorToMechanismRatio = 1.0;
-        fx_cfg.Feedback.RotorToSensorRatio = 10.286;
+        fx_cfg.Feedback.RotorToSensorRatio = 1.0;
         return fx_cfg;
     }
 
