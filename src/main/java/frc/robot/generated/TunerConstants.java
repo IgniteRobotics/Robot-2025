@@ -92,7 +92,9 @@ public class TunerConstants {
     public static final TalonFX ARM_MOTOR_Leader = new TalonFX(kArmMotorLeaderId);
     public static final TalonFX ARM_MOTOR_Follower = new TalonFX(kArmMotorFollowerId);
 
-
+    //CANcoder
+    public static final int kArmCANcoderId = 7;
+    public static final CANcoder kArmCANcoder = new CANcoder(kArmCANcoderId);
 
     //Slot0Configs
     public static final double ARM_kV_0 = 0.12;
@@ -176,6 +178,23 @@ public class TunerConstants {
         MotorOutputConfigs newConfigs = new MotorOutputConfigs();
         //TODO:ADD MORE IF NECESSARY
         return newConfigs;
+    }
+
+    public static CANcoderConfiguration createCANcoderConfiguration(){
+        CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
+        cc_cfg.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(0.5));
+        cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        cc_cfg.MagnetSensor.withMagnetOffset(Rotations.of(0.4));
+        return cc_cfg;
+    }
+
+    public static TalonFXConfiguration createTalonFXConfiguration(){
+        TalonFXConfiguration fx_cfg = new TalonFXConfiguration();
+        fx_cfg.Feedback.FeedbackRemoteSensorID = kArmCANcoderId;
+        fx_cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        fx_cfg.Feedback.SensorToMechanismRatio = 2;
+        fx_cfg.Feedback.RotorToSensorRatio = 1;
+        return fx_cfg;
     }
 
     }

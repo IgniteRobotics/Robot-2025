@@ -6,6 +6,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.epilogue.Logged;
@@ -17,6 +18,12 @@ import frc.robot.generated.TunerConstants;
 @Logged
 public class Arm extends SubsystemBase {
   private final TalonFX m_armMotor;
+
+  private final CANcoder m_CANcoder;
+
+  private TalonFXConfiguration m_TalonFXConfiguration = new TalonFXConfiguration();
+
+  private CANcoderConfiguration m_CANcoderConfiguration = new CANcoderConfiguration();
 
   private Slot0Configs m_Slot0Configs = new Slot0Configs();
 
@@ -36,8 +43,17 @@ public class Arm extends SubsystemBase {
 
   //random thing
   private final VoltageOut m_voltReq = new VoltageOut(0.0);
+
   public Arm() {
     m_armMotor = TunerConstants.ArmConstants.ARM_MOTOR_Leader; 
+
+    m_TalonFXConfiguration = TunerConstants.ArmConstants.createTalonFXConfiguration();
+    m_armMotor.getConfigurator().apply(m_TalonFXConfiguration);
+
+    m_CANcoder = TunerConstants.ArmConstants.kArmCANcoder;
+
+    m_CANcoderConfiguration = TunerConstants.ArmConstants.createCANcoderConfiguration();
+    m_CANcoder.getConfigurator().apply(m_CANcoderConfiguration);
 
     m_Slot0Configs = TunerConstants.ArmConstants.createSlot0Configs(); 
     m_armMotor.getConfigurator().apply(m_Slot0Configs);
@@ -56,6 +72,8 @@ public class Arm extends SubsystemBase {
 
     m_motorConfig = TunerConstants.ArmConstants.createMotorOutputConfigs();
     m_armMotor.getConfigurator().apply(m_motorConfig);
+
+    
 
     m_RotSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(
