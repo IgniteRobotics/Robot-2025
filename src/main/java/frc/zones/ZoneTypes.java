@@ -2,6 +2,8 @@ package frc.zones;
 
 public class ZoneTypes {
 
+    public final Zone NULL = new Zone();
+
     public final Zone FREE = new Zone() {{
         setMaxSpeed(5);
     
@@ -22,6 +24,18 @@ public class ZoneTypes {
     public final Zone RED_HP_BOTTOM = new Zone(){{
         setMaxSpeed(3.5);
     }};
+
+    public final Zone BLUE_ALGAE_PROC = new Zone(){{
+        setMaxSpeed(2);
+        setTargetID(16);
+
+    }};
+
+    public final Zone RED_ALGAE_PROC = new Zone(){{
+        setMaxSpeed(2);
+        setTargetID(3);
+    }};
+
 
     public class RED_REEF{
         public final Zone RED_REEF_AB = new Zone(){{
