@@ -55,7 +55,9 @@ public class Arm extends SubsystemBase {
 
     m_CANcoder = TunerConstants.ArmConstants.kArmCANcoder;
 
-    m_CANcoderConfiguration = TunerConstants.ArmConstants.createCANcoderConfiguration();
+    m_CANcoderConfiguration = new CANcoderConfiguration();
+    m_CANcoder.getConfigurator().refresh(m_CANcoderConfiguration);
+    TunerConstants.ArmConstants.createCANcoderConfiguration(m_CANcoderConfiguration);
     m_CANcoder.getConfigurator().apply(m_CANcoderConfiguration);
 
     m_Slot0Configs = TunerConstants.ArmConstants.createSlot0Configs(); 

@@ -189,12 +189,10 @@ public class TunerConstants {
         return newConfigs;
     }
 
-    public static CANcoderConfiguration createCANcoderConfiguration(){
-        CANcoderConfiguration cc_cfg = new CANcoderConfiguration();
+    public static void createCANcoderConfiguration(CANcoderConfiguration cc_cfg){
         cc_cfg.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(0.687));
         cc_cfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
         cc_cfg.MagnetSensor.withMagnetOffset(Rotations.of(0));
-        return cc_cfg;
     }
 
     public static TalonFXConfiguration createTalonFXConfiguration(){
