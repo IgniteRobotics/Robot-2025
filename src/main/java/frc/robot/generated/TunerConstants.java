@@ -105,11 +105,11 @@ public class TunerConstants {
     public static final CANcoder kArmCANcoder = new CANcoder(kArmCANcoderId, TunerConstants.CANrio);
 
     //Slot0Configs
-    public static final double ARM_kV_0 = 0.12;
-    public static final double ARM_kS_0 = 0.24;
-    public static final double ARM_kP_0 = 5;
+    public static final double ARM_kV_0 = 1.13;
+    public static final double ARM_kS_0 = 0.067;
+    public static final double ARM_kP_0 = 3.01;
     public static final double ARM_kI_0 = 0;
-    public static final double ARM_kD_0 = 1;
+    public static final double ARM_kD_0 = 1.95;
     public static final GravityTypeValue ARM_kG = GravityTypeValue.Arm_Cosine;
 
     public static Slot0Configs createSlot0Configs(){ 
@@ -179,8 +179,8 @@ public class TunerConstants {
     public static MotionMagicConfigs createMotionMagicConfigs(){
         MotionMagicConfigs newConfigs = new MotionMagicConfigs();
         newConfigs.MotionMagicCruiseVelocity = 0.5; // Unlimited cruise velocity
-        newConfigs.MotionMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
-        newConfigs.MotionMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
+        newConfigs.MotionMagicExpo_kV = 1.13; // kV is around 0.12 V/rps
+        newConfigs.MotionMagicExpo_kA = 0.04993; // Use a slower kA of 0.1 V/(rps/s)
         return newConfigs;
     }
 

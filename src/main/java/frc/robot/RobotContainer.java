@@ -19,8 +19,15 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.Preferences.DoublePreference;
+import frc.robot.generated.TunerConstants;
 
 public class RobotContainer {
+
+    public DoublePreference ArmkP = new DoublePreference("Arm kP", TunerConstants.ArmConstants.ARM_kP_0);
+  
+    public DoublePreference ArmkD = new DoublePreference("Arm kD", TunerConstants.ArmConstants.ARM_kD_0);
+
+    public DoublePreference ArmkI = new DoublePreference("Arm kI", TunerConstants.ArmConstants.ARM_kI_0);
 
     private final static CommandXboxController driverController = new CommandXboxController(0);    
 
@@ -45,9 +52,10 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        driverController.x().onTrue(new InstantCommand(() -> arm.setPositionDegrees(motorAngle.getValue())).andThen(
+        driverController.x().onTrue(new InstantCommand(() -> arm.setPositionDegrees(67)).andThen(
         new InstantCommand(() -> m_armAvatar.setAngle(motorAngle.getValue()))).andThen(    
         new InstantCommand(() -> SmartDashboard.putData("Mech2d", mech))));
+        driverController.y().onTrue(new InstantCommand(() -> arm.setArmPID(ArmkP, ArmkD, ArmkD)));
     }
 
     private void configureMech(){

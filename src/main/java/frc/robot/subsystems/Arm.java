@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Preferences.DoublePreference;
 import frc.robot.generated.TunerConstants;
 
 @Logged
@@ -28,11 +29,7 @@ public class Arm extends SubsystemBase {
 
   private CANcoderConfiguration m_CANcoderConfiguration = new CANcoderConfiguration();
 
-  private Slot0Configs m_Slot0Configs = new Slot0Configs();
-
-  private Slot1Configs m_Slot1Configs = new Slot1Configs();
-
-  private Slot2Configs m_Slot2Configs = new Slot2Configs();
+  private Slot0Configs slot0Configs = new Slot0Configs();
   
   private SoftwareLimitSwitchConfigs m_softLimitConfig = new SoftwareLimitSwitchConfigs();
 
@@ -40,7 +37,7 @@ public class Arm extends SubsystemBase {
 
   private MotorOutputConfigs m_motorConfig = new MotorOutputConfigs();
 
-  public DynamicMotionMagicTorqueCurrentFOC m_MMPosition; 
+  public MotionMagicVoltage m_MMPosition; 
   
   public SysIdRoutine m_RotSysIdRoutine;
 
@@ -51,6 +48,7 @@ public class Arm extends SubsystemBase {
     m_armMotor = TunerConstants.ArmConstants.ARM_MOTOR_Leader; 
 
     m_CANcoder = TunerConstants.ArmConstants.kArmCANcoder;
+
     m_CANcoderConfiguration = new CANcoderConfiguration();
     m_CANcoder.getConfigurator().refresh(m_CANcoderConfiguration);
     TunerConstants.ArmConstants.createCANcoderConfiguration(m_CANcoderConfiguration);
@@ -58,15 +56,6 @@ public class Arm extends SubsystemBase {
 
     m_TalonFXConfiguration = TunerConstants.ArmConstants.createTalonFXConfiguration();
     m_armMotor.getConfigurator().apply(m_TalonFXConfiguration);
-
-    m_Slot0Configs = TunerConstants.ArmConstants.createSlot0Configs(); 
-    m_armMotor.getConfigurator().apply(m_Slot0Configs);
-
-    m_Slot1Configs = TunerConstants.ArmConstants.createSlot1Configs();
-    m_armMotor.getConfigurator().apply(m_Slot1Configs);
-
-    m_Slot2Configs = TunerConstants.ArmConstants.createSlot2Configs();
-    m_armMotor.getConfigurator().apply(m_Slot2Configs);
 
     m_softLimitConfig = TunerConstants.ArmConstants.createSoftLimitConigs(); 
     m_armMotor.getConfigurator().apply(m_softLimitConfig);
@@ -77,7 +66,8 @@ public class Arm extends SubsystemBase {
     m_motorConfig = TunerConstants.ArmConstants.createMotorOutputConfigs();
     m_armMotor.getConfigurator().apply(m_motorConfig);
 
-    
+    slot0Configs = TunerConstants.ArmConstants.createSlot0Configs();
+    m_armMotor.getConfigurator().apply(slot0Configs);
 
     m_RotSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(
@@ -92,8 +82,8 @@ public class Arm extends SubsystemBase {
         this)
     );
 
-    m_MMPosition = new DynamicMotionMagicTorqueCurrentFOC(0, TunerConstants.ArmConstants.ARM_VELOCITY_LIMIT,
-      TunerConstants.ArmConstants.ARM_ACCEL_LIMIT, TunerConstants.ArmConstants.ARM_JERK_LIMIT);
+    m_MMPosition = new MotionMagicVoltage(0);
+    //m_armMotor.setControl(m_MMPosition.withSlot(0));
   } 
 
   public void setPositionDegrees(double angle){
@@ -101,7 +91,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void setPositionRotations(double rotations){
-    m_armMotor.setControl(m_MMPosition.withPosition(rotations));
+    m_armMotor.setControl(m_MMPosition.withSlot(0).withPosition(rotations));
   }
 
   public double getPosition(){
@@ -136,6 +126,12 @@ public class Arm extends SubsystemBase {
       .andThen(m_RotSysIdRoutine.dynamic(SysIdRoutine.Direction.kForward).until(this::compareForwardEndpoint))
       .andThen(m_RotSysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse).until(this::compareReverseEndpoint))
       .finallyDo(() -> this.setVoltage(0));
+  }
+
+  //temporary method
+  public void setArmPID(DoublePreference P, DoublePreference D, DoublePreference I){
+    slot0Configs = new Slot0Configs().withKP(P.getValue()).withKD(D.getValue()).withKI(I.getValue());
+    m_armMotor.getConfigurator().apply(slot0Configs);
   }
 
 }
