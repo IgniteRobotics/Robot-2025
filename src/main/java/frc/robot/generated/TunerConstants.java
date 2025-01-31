@@ -105,21 +105,23 @@ public class TunerConstants {
     public static final CANcoder kArmCANcoder = new CANcoder(kArmCANcoderId, TunerConstants.CANrio);
 
     //Slot0Configs
-    public static final double ARM_kV_0 = 1.13;
-    public static final double ARM_kS_0 = 0.067;
-    public static final double ARM_kP_0 = 3.01;
+    public static final double ARM_kG_0 = 0.1648046875;
+    public static final double ARM_kS_0 = 0.0498046875;
+    public static final double ARM_kP_0 = 12.5;
     public static final double ARM_kI_0 = 0;
-    public static final double ARM_kD_0 = 1.95;
-    public static final GravityTypeValue ARM_kG = GravityTypeValue.Arm_Cosine;
+    public static final double ARM_kD_0 = 0.82;
+    public static final GravityTypeValue ARM_GRAVITY_TYPE_VALUE = GravityTypeValue.Arm_Cosine;
+    public static final StaticFeedforwardSignValue ARM_FEEDFOWARD_SIGN = StaticFeedforwardSignValue.UseClosedLoopSign;
 
     public static Slot0Configs createSlot0Configs(){ 
         Slot0Configs slot = new Slot0Configs();
-        slot.kV = ARM_kV_0;
+        slot.kG = ARM_kG_0;
         slot.kS = ARM_kS_0;
         slot.kP = ARM_kP_0;
         slot.kI = ARM_kI_0;
         slot.kD = ARM_kD_0;
-        slot.kG = ARM_kG.value;
+        slot.GravityType = ARM_GRAVITY_TYPE_VALUE;
+        slot.StaticFeedforwardSign = ARM_FEEDFOWARD_SIGN;
         return slot; 
     }
 
@@ -137,7 +139,7 @@ public class TunerConstants {
         slot.kP = ARM_kP_1;
         slot.kI = ARM_kI_1;
         slot.kD = ARM_kD_1;
-        slot.kG = ARM_kG.value;
+        slot.GravityType = ARM_GRAVITY_TYPE_VALUE;
         return slot; 
     }
 
@@ -155,7 +157,7 @@ public class TunerConstants {
         slot.kP = ARM_kP_2;
         slot.kI = ARM_kI_2;
         slot.kD = ARM_kD_2;
-        slot.kG = ARM_kG.value;
+        slot.GravityType = ARM_GRAVITY_TYPE_VALUE;
         return slot; 
     }
 
@@ -179,8 +181,8 @@ public class TunerConstants {
     public static MotionMagicConfigs createMotionMagicConfigs(){
         MotionMagicConfigs newConfigs = new MotionMagicConfigs();
         newConfigs.MotionMagicCruiseVelocity = 0.5; // Unlimited cruise velocity
-        newConfigs.MotionMagicExpo_kV = 1.13; // kV is around 0.12 V/rps
-        newConfigs.MotionMagicExpo_kA = 0.04993; // Use a slower kA of 0.1 V/(rps/s)
+        newConfigs.MotionMagicExpo_kV = 0.12; // kV is around 0.12 V/rps
+        newConfigs.MotionMagicExpo_kA = 0.1; // Use a slower kA of 0.1 V/(rps/s)
         return newConfigs;
     }
 

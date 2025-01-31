@@ -6,10 +6,12 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.DynamicMotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,6 +40,8 @@ public class Arm extends SubsystemBase {
   private MotorOutputConfigs m_motorConfig = new MotorOutputConfigs();
 
   public MotionMagicVoltage m_MMPosition; 
+
+  public PositionVoltage m_PVPosition;
   
   public SysIdRoutine m_RotSysIdRoutine;
 
@@ -91,7 +95,9 @@ public class Arm extends SubsystemBase {
   }
 
   public void setPositionRotations(double rotations){
-    m_armMotor.setControl(m_MMPosition.withSlot(0).withPosition(rotations));
+   // m_armMotor.setControl(m_MMPosition.withSlot(0).withPosition(rotations));
+   m_PVPosition = new PositionVoltage(rotations).withSlot(0);
+   m_armMotor.setControl(m_PVPosition);
   }
 
   public double getPosition(){
@@ -129,8 +135,14 @@ public class Arm extends SubsystemBase {
   }
 
   //temporary method
-  public void setArmPID(DoublePreference P, DoublePreference D, DoublePreference I){
-    slot0Configs = new Slot0Configs().withKP(P.getValue()).withKD(D.getValue()).withKI(I.getValue());
+  public void setArmPID(DoublePreference P, DoublePreference D, DoublePreference I, DoublePreference S){
+    slot0Configs = new Slot0Configs();
+
+    m_armMotor.getConfigurator().refresh(slot0Configs);
+
+    slot0Configs.withKP(P.getValue()).withKD(D.getValue()).withKI(I.getValue())
+      .withKS(S.getValue());
+
     m_armMotor.getConfigurator().apply(slot0Configs);
   }
 

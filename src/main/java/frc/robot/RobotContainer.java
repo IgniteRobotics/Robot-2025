@@ -29,6 +29,8 @@ public class RobotContainer {
 
     public DoublePreference ArmkI = new DoublePreference("Arm kI", TunerConstants.ArmConstants.ARM_kI_0);
 
+    public DoublePreference ArmkS = new DoublePreference("Arm kS", TunerConstants.ArmConstants.ARM_kS_0);
+
     private final static CommandXboxController driverController = new CommandXboxController(0);    
 
     public final Arm arm = new Arm();
@@ -54,8 +56,8 @@ public class RobotContainer {
     private void configureBindings() {
         driverController.x().onTrue(new InstantCommand(() -> arm.setPositionDegrees(67)).andThen(
         new InstantCommand(() -> m_armAvatar.setAngle(motorAngle.getValue()))).andThen(    
-        new InstantCommand(() -> SmartDashboard.putData("Mech2d", mech))));
-        driverController.y().onTrue(new InstantCommand(() -> arm.setArmPID(ArmkP, ArmkD, ArmkD)));
+        new InstantCommand(() -> SmartDashboard.putData("Mech2d", mech))).withTimeout(1));
+        driverController.y().onTrue(new InstantCommand(() -> arm.setArmPID(ArmkP, ArmkD, ArmkI, ArmkS)).withTimeout(1));
     }
 
     private void configureMech(){
