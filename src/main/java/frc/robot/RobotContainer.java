@@ -39,6 +39,8 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.DrivetrainConstants.createDrivetrain();
 
+    SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric();
+
     //public final Elevator elevator = new Elevator();
 
     /* Path follower */
@@ -51,9 +53,9 @@ public class RobotContainer {
 
     private RobotState m_RobotState = RobotState.getInstance();
     //drive command
-    Command arcadeDrive =  new RunCommand(() -> drivetrain.drive(-joystick.getLeftY(), -joystick.getLeftX(), -joystick.getRightX(), m_RobotState.getMaxSpeed())) {{
-        addRequirements(drivetrain);
-    }};
+    //Command arcadeDrive =  new RunCommand(() -> drivetrain.drive(-joystick.getLeftY(), -joystick.getLeftX(), -joystick.getRightX(), m_RobotState.getMaxSpeed())) {{
+    //   addRequirements(drivetrain);
+    //}};
    
     public RobotContainer() {
 
@@ -68,7 +70,11 @@ public class RobotContainer {
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
-            arcadeDrive
+            drivetrain.applyRequest(() ->
+                drive.withVelocityX(-joystick.getLeftY() * m_RobotState.getMaxSpeed()) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getLeftX() * m_RobotState.getMaxSpeed()) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
+            )
         );
 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
