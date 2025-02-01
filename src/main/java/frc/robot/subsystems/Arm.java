@@ -94,6 +94,10 @@ public class Arm extends SubsystemBase {
     this.setPositionRotations(angle/360.0);
   }
 
+  public void setPositionDegrees(DoublePreference D){
+    this.setPositionRotations(D.getValue()/360.0);
+  }
+
   public void setPositionRotations(double rotations){
    // m_armMotor.setControl(m_MMPosition.withSlot(0).withPosition(rotations));
    m_PVPosition = new PositionVoltage(rotations).withSlot(0);

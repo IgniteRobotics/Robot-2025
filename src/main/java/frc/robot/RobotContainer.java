@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.subsystems.Arm;
@@ -23,13 +25,13 @@ import frc.robot.generated.TunerConstants;
 
 public class RobotContainer {
 
-    public DoublePreference ArmkP = new DoublePreference("Arm kP", TunerConstants.ArmConstants.ARM_kP_0);
+    //public DoublePreference ArmkP = new DoublePreference("Arm kP", TunerConstants.ArmConstants.ARM_kP_0);
   
-    public DoublePreference ArmkD = new DoublePreference("Arm kD", TunerConstants.ArmConstants.ARM_kD_0);
+    //public DoublePreference ArmkD = new DoublePreference("Arm kD", TunerConstants.ArmConstants.ARM_kD_0);
 
-    public DoublePreference ArmkI = new DoublePreference("Arm kI", TunerConstants.ArmConstants.ARM_kI_0);
+    //public DoublePreference ArmkI = new DoublePreference("Arm kI", TunerConstants.ArmConstants.ARM_kI_0);
 
-    public DoublePreference ArmkS = new DoublePreference("Arm kS", TunerConstants.ArmConstants.ARM_kS_0);
+    //public DoublePreference ArmkS = new DoublePreference("Arm kS", TunerConstants.ArmConstants.ARM_kS_0);
 
     private final static CommandXboxController driverController = new CommandXboxController(0);    
 
@@ -51,13 +53,20 @@ public class RobotContainer {
         SmartDashboard.putData("Auto Mode", autoChooser);
         configureMech();
         configureBindings();
+        configureDefaultCommands();
     }
 
     private void configureBindings() {
-        driverController.x().onTrue(new InstantCommand(() -> arm.setPositionDegrees(67)).andThen(
+        driverController.x().whileTrue(new RunCommand(() -> arm.setPositionDegrees(motorAngle), arm));
+        /* .andThen(
         new InstantCommand(() -> m_armAvatar.setAngle(motorAngle.getValue()))).andThen(    
-        new InstantCommand(() -> SmartDashboard.putData("Mech2d", mech))).withTimeout(1));
-        driverController.y().onTrue(new InstantCommand(() -> arm.setArmPID(ArmkP, ArmkD, ArmkI, ArmkS)).withTimeout(1));
+        new InstantCommand(() -> SmartDashboard.putData("Mech2d", mech))));
+        /* */
+        //driverController.y().onTrue(new InstantCommand(() -> arm.setArmPID(ArmkP, ArmkD, ArmkI, ArmkS)).withTimeout(1));
+    }
+
+    private void configureDefaultCommands(){
+        arm.setDefaultCommand(new RunCommand(()->arm.setPositionDegrees(0), arm));
     }
 
     private void configureMech(){
