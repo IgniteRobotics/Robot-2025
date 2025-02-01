@@ -25,6 +25,7 @@ import frc.robot.Preferences.DoublePreference;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.EndEffector;
 
 public class RobotContainer {
 
@@ -40,6 +41,8 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.DrivetrainConstants.createDrivetrain();
 
     public final Elevator elevator = new Elevator();
+
+    public final EndEffector endEffector = new EndEffector();
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
