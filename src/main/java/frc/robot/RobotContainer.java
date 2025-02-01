@@ -39,7 +39,13 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.DrivetrainConstants.createDrivetrain();
 
-    SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric();
+    public final double default_Max_Speed = TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    public final double maxAngularRate = TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED;
+    public final double deadband = TunerConstants.DrivetrainConstants.DEADBAND_FACTOR;
+
+    SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+        .withDeadband(default_Max_Speed*deadband).withRotationalDeadband(maxAngularRate * deadband) // Add a 10% deadband
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);;
 
     //public final Elevator elevator = new Elevator();
 
@@ -73,7 +79,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-joystick.getLeftY() * m_RobotState.getMaxSpeed()) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick.getLeftX() * m_RobotState.getMaxSpeed()) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * maxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 

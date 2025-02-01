@@ -26,7 +26,7 @@ public class TunerConstants {
 
     public class DrivetrainConstants{
 
-        public static final double MAX_ANGULAR_SPEED = 2*Math.PI;
+        public static final double MAX_ANGULAR_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
         public static final double DEADBAND_FACTOR  = 0.1;
         // Both sets of gains need to be tuned to your individual robot.
