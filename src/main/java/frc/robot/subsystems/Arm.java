@@ -159,25 +159,35 @@ public class Arm extends SubsystemBase {
     m_armMotor.getConfigurator().apply(slot0Configs);
   }
 
-  @Logged(name = "Actual Arm kP", importance = Importance.CRITICAL)
+  @Logged(name = "Actual kP", importance = Importance.CRITICAL)
   public double getArmkP(){
     slot0Configs = new Slot0Configs();
     m_armMotor.getConfigurator().refresh(slot0Configs);
     return slot0Configs.kP;
   }
 
-  @Logged(name = "Actual Arm kD", importance = Importance.CRITICAL)
+  @Logged(name = "Actual kD", importance = Importance.CRITICAL)
   public double getArmkD(){
     slot0Configs = new Slot0Configs();
     m_armMotor.getConfigurator().refresh(slot0Configs);
     return slot0Configs.kD;
   }
 
-  @Logged(name = "Actual Arm kI", importance = Importance.CRITICAL)
+  @Logged(name = "Actual kI", importance = Importance.CRITICAL)
   public double getArmkI(){
     slot0Configs = new Slot0Configs();
     m_armMotor.getConfigurator().refresh(slot0Configs);
     return slot0Configs.kI;
+  }
+
+  @Logged(name = "Voltage", importance = Importance.CRITICAL)
+  public double getVoltage(){
+    return m_armMotor.getMotorVoltage().getValueAsDouble();
+  }
+
+  @Logged(name = "Current", importance = Importance.CRITICAL)
+  public double getCurrent(){
+    return m_armMotor.getStatorCurrent().getValueAsDouble();
   }
 
 }
