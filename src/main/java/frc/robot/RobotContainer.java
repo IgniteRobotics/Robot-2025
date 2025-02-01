@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -23,16 +24,16 @@ import frc.robot.subsystems.Arm;
 import frc.robot.Preferences.DoublePreference;
 import frc.robot.generated.TunerConstants;
 
+
+@Logged
 public class RobotContainer {
 
-    //public DoublePreference ArmkP = new DoublePreference("Arm kP", TunerConstants.ArmConstants.ARM_kP_0);
+    public DoublePreference ArmkP = new DoublePreference("Arm kP", TunerConstants.ArmConstants.ARM_kP_0);
   
-    //public DoublePreference ArmkD = new DoublePreference("Arm kD", TunerConstants.ArmConstants.ARM_kD_0);
+    public DoublePreference ArmkD = new DoublePreference("Arm kD", TunerConstants.ArmConstants.ARM_kD_0);
 
-    //public DoublePreference ArmkI = new DoublePreference("Arm kI", TunerConstants.ArmConstants.ARM_kI_0);
-
-    //public DoublePreference ArmkS = new DoublePreference("Arm kS", TunerConstants.ArmConstants.ARM_kS_0);
-
+    public DoublePreference ArmkI = new DoublePreference("Arm kI", TunerConstants.ArmConstants.ARM_kI_0);
+    
     private final static CommandXboxController driverController = new CommandXboxController(0);    
 
     public final Arm arm = new Arm();
@@ -62,7 +63,7 @@ public class RobotContainer {
         new InstantCommand(() -> m_armAvatar.setAngle(motorAngle.getValue()))).andThen(    
         new InstantCommand(() -> SmartDashboard.putData("Mech2d", mech))));
         /* */
-        //driverController.y().onTrue(new InstantCommand(() -> arm.setArmPID(ArmkP, ArmkD, ArmkI, ArmkS)).withTimeout(1));
+        driverController.y().onTrue(new InstantCommand(() -> arm.setArmPID(ArmkP, ArmkD, ArmkI)));
     }
 
     private void configureDefaultCommands(){

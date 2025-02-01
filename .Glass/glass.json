@@ -8,7 +8,9 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Auto Mode": "String Chooser",
-      "/SmartDashboard/Mech2d": "Mechanism2d"
+      "/SmartDashboard/Mech2d": "Mechanism2d",
+      "Robot/m_robotContainer/arm/m_armMotor": "Motor Controller",
+      "Robot/m_robotContainer/autoChooser": "String Chooser"
     }
   },
   "NetworkTables Info": {

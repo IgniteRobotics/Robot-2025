@@ -15,6 +15,8 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import edu.wpi.first.epilogue.CustomLoggerFor;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -45,6 +47,9 @@ public class Arm extends SubsystemBase {
   public PositionVoltage m_PVPosition;
   
   public SysIdRoutine m_RotSysIdRoutine;
+
+  @Logged(name = "Target Position", importance = Importance.CRITICAL)
+  private double m_targetPosition;
 
   //random thing
   private final VoltageOut m_voltReq = new VoltageOut(0.0);
@@ -91,20 +96,25 @@ public class Arm extends SubsystemBase {
     //m_armMotor.setControl(m_MMPosition.withSlot(0));
   } 
 
+  @NotLogged
   public void setPositionDegrees(double angle){
     this.setPositionRotations(angle/360.0);
   }
 
+  @NotLogged
   public void setPositionDegrees(DoublePreference D){
     this.setPositionRotations(D.getValue()/360.0);
   }
 
+  @NotLogged
   public void setPositionRotations(double rotations){
    // m_armMotor.setControl(m_MMPosition.withSlot(0).withPosition(rotations));
+   m_targetPosition = rotations;
    m_PVPosition = new PositionVoltage(rotations).withSlot(0);
    m_armMotor.setControl(m_PVPosition);
   }
 
+  @Logged(name = "Position", importance = Importance.CRITICAL)
   public double getPosition(){
     return m_armMotor.getPosition().getValueAsDouble();
   }
@@ -119,6 +129,7 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
+    getPosition();
   }
 
   public boolean compareForwardEndpoint(){
@@ -138,15 +149,35 @@ public class Arm extends SubsystemBase {
   }
 
   //temporary method
-  public void setArmPID(DoublePreference P, DoublePreference D, DoublePreference I, DoublePreference S){
+  public void setArmPID(DoublePreference P, DoublePreference D, DoublePreference I){
     slot0Configs = new Slot0Configs();
 
     m_armMotor.getConfigurator().refresh(slot0Configs);
 
-    slot0Configs.withKP(P.getValue()).withKD(D.getValue()).withKI(I.getValue())
-      .withKS(S.getValue());
+    slot0Configs.withKP(P.getValue()).withKD(D.getValue()).withKI(I.getValue());
 
     m_armMotor.getConfigurator().apply(slot0Configs);
+  }
+
+  @Logged(name = "Actual Arm kP", importance = Importance.CRITICAL)
+  public double getArmkP(){
+    slot0Configs = new Slot0Configs();
+    m_armMotor.getConfigurator().refresh(slot0Configs);
+    return slot0Configs.kP;
+  }
+
+  @Logged(name = "Actual Arm kD", importance = Importance.CRITICAL)
+  public double getArmkD(){
+    slot0Configs = new Slot0Configs();
+    m_armMotor.getConfigurator().refresh(slot0Configs);
+    return slot0Configs.kD;
+  }
+
+  @Logged(name = "Actual Arm kI", importance = Importance.CRITICAL)
+  public double getArmkI(){
+    slot0Configs = new Slot0Configs();
+    m_armMotor.getConfigurator().refresh(slot0Configs);
+    return slot0Configs.kI;
   }
 
 }

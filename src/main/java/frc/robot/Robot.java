@@ -27,7 +27,12 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     m_robotContainer = new RobotContainer();
-    SignalLogger.start();
+    Epilogue.configure(config -> {
+      if(isSimulation()){
+        config.errorHandler = ErrorHandler.crashOnError();
+      }
+    });
+    DataLogManager.start();
     Epilogue.bind(this);
   }
 
