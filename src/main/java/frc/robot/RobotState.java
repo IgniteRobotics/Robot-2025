@@ -2,6 +2,11 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.photonvision.targeting.PhotonPipelineResult;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.generated.TunerConstants;
 import frc.zones.Grid;
@@ -18,6 +23,8 @@ public class RobotState {
     private Grid fieldGrid = new Grid();
 
     private Zone currentZone;
+
+    Map<String, PhotonPipelineResult> cameraResults = new HashMap<>(){};
 
     private RobotState() {
     }
@@ -59,5 +66,14 @@ public class RobotState {
             return TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond);
         }
         else return getZone().maxSpeed.doubleValue();
+    }
+
+    public void setLatestPhotonVisionResult(String camera, PhotonPipelineResult newResult){
+        cameraResults.put(camera, newResult);
+    }
+
+    public PhotonPipelineResult getLatestPhotonVisionResult(String camera){
+        if(cameraResults.containsKey(camera))return cameraResults.get(camera);
+        else return null;
     }
 }

@@ -1,11 +1,18 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Supplier;
+
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
@@ -23,18 +30,21 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -42,6 +52,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotState;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.DrivetrainConstants.TunerSwerveDrivetrain;
+import frc.robot.subsystems.drive.PhotonCameraWrapper.Side;
 import edu.wpi.first.units.LinearVelocityUnit;
 
 /**
@@ -70,6 +81,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+
+    //camera stuff
+    private final Pigeon2 m_gyro = new Pigeon2(TunerConstants.DrivetrainConstants.GYRO);
+    private final PhotonCameraWrapper m_photonCameraWrapper;
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -144,9 +159,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      */
     public CommandSwerveDrivetrain(
         SwerveDrivetrainConstants drivetrainConstants,
+        PhotonCameraWrapper cameraWrapper,
         SwerveModuleConstants<?, ?, ?>... modules
     ) {
         super(drivetrainConstants, modules);
+        m_photonCameraWrapper = cameraWrapper;
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -166,6 +183,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      *                                   CAN FD, and 100 Hz on CAN 2.0.
      * @param modules                    Constants for each specific module
      */
+    /* 
     public CommandSwerveDrivetrain(
         SwerveDrivetrainConstants drivetrainConstants,
         double odometryUpdateFrequency,
@@ -177,7 +195,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
         configureAutoBuilder();
     }
-
+    */
+    
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
@@ -197,6 +216,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      *                                  and radians
      * @param modules                    Constants for each specific module
      */
+    /* 
     public CommandSwerveDrivetrain(
         SwerveDrivetrainConstants drivetrainConstants,
         double odometryUpdateFrequency,
@@ -210,6 +230,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
         configureAutoBuilder();
     }
+    */
+    
 
     private void configureAutoBuilder() {
         try {
@@ -303,6 +325,34 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+
+        ArrayList<Optional<EstimatedRobotPose>> estimatedPoseFrontLeft = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.FRONT_LEFT);
+        ArrayList<Optional<EstimatedRobotPose>> estimatedPoseFrontRight = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.FRONT_RIGHT);
+
+        for(var estimatedPose : estimatedPoseFrontLeft){
+            if(estimatedPose.isPresent()){
+                EstimatedRobotPose pose = estimatedPose.get();
+                boolean poseOK = true;
+                for(PhotonTrackedTarget target: pose.targetsUsed) {
+                if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+                if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
+                }
+                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+            }
+        }
+
+        for(var estimatedPose : estimatedPoseFrontRight){
+            if(estimatedPose.isPresent()){
+                EstimatedRobotPose pose = estimatedPose.get();
+                boolean poseOK = true;
+                for(PhotonTrackedTarget target: pose.targetsUsed) {
+                if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+                if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
+                }
+                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+            }
+        }
+    
     }
 
     private void startSimThread() {
@@ -322,5 +372,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public Pose2d getPose(){
         return this.getState().Pose;
+    }
+
+    public void zeroHeading(){
+        m_gyro.reset();
+    }
+
+    public double getYaw(){
+        return m_gyro.getYaw().getValueAsDouble();
     }
 }
