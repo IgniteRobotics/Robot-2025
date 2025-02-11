@@ -95,6 +95,7 @@ public class PhotonCameraWrapper{
         allCameraYawOffsetsDegrees[1] = 15.0;
         
         try {
+            //TODO: Change as soon as possible
             layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         } catch (UncheckedIOException e) {
             e.printStackTrace();
