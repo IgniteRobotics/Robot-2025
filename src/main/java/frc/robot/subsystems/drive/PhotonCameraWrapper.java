@@ -113,22 +113,25 @@ public class PhotonCameraWrapper{
             photonPoseEstimatorFrontRight.setReferencePose(prevEstimatedRobotPose);
             var results = photonCameraFrontRight.getAllUnreadResults();
 
-            var latestResult = results.get(results.size()-1);
-            m_robotState.setLatestPhotonVisionResult(photonCameraFrontRight.getName(), latestResult);
+            if(!results.isEmpty()){
+                var latestResult = results.get(results.size()-1);
+                m_robotState.setLatestPhotonVisionResult(photonCameraFrontRight.getName(), latestResult);
+            }
 
             ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
             for(var result : results){
-                    estimatedPoses.add(photonPoseEstimatorFrontRight.update(result));
-
+                 estimatedPoses.add(photonPoseEstimatorFrontRight.update(result));
             }
             return estimatedPoses;
 
         } else {
             photonPoseEstimatorFrontLeft.setReferencePose(prevEstimatedRobotPose);
             var results = photonCameraFrontLeft.getAllUnreadResults();
-
-            var latestResult = results.get(results.size()-1);
-            m_robotState.setLatestPhotonVisionResult(photonCameraFrontLeft.getName(), latestResult);
+            
+            if(!results.isEmpty()){
+                var latestResult = results.get(results.size()-1);
+                m_robotState.setLatestPhotonVisionResult(photonCameraFrontLeft.getName(), latestResult);
+            }
 
             ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
             for(var result : results){
@@ -210,6 +213,7 @@ public class PhotonCameraWrapper{
                     return Optional.of(target) ;
                 }
             }
+
         if (Robot.isReal()){
             return Optional.empty();
         } else {

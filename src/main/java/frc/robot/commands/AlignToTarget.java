@@ -16,13 +16,15 @@ import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.epilogue.Logged;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+@Logged
 public class AlignToTarget extends Command {
   private final CommandSwerveDrivetrain m_drive;
   private final PhotonCameraWrapper m_camera;
   private final int selectedTargetID;
   private final int xError;
+  
   private DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", 0);
   private DoublePreference alignRotKD = new DoublePreference("alignCommand/rotation/kD", 0);
   private DoublePreference alignDriveXKP = new DoublePreference("alignCommand/drive/x/kP", 0);
