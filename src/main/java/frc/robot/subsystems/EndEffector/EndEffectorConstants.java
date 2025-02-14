@@ -1,16 +1,7 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+package frc.robot.subsystems.EndEffector;
 
-package frc.robot.constants;
-
-import com.ctre.phoenix6.hardware.TalonFX;
-
-/** Add your docs here. */
-public class Constants {
-
-    public class EndEffectorConstants {
-        public static final int kCoralMotorId = 1;
+public class EndEffectorConstants {
+    public static final int kCoralMotorId = 1;
         public static final int kAlgaeMotorId = 2;
         public static final int kWristMotorId = 3;
 
@@ -32,8 +23,4 @@ public class Constants {
         public static final double WRIST_kI = 0;
         public static final double WRIST_kD = 0;
         public static final double WRIST_kG = 0;
-    
-    }
-
-
 }

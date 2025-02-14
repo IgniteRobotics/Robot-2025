@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.Elevator;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -72,18 +72,18 @@ public class Elevator implements Subsystem {
 
   /** Creates a new Climber. */
   public Elevator() {
-    m_elevatorMotor = TunerConstants.ElevatorConstants.ELEVATOR_MOTOR; 
+    m_elevatorMotor = ElevatorConstants.ELEVATOR_MOTOR; 
 
-    m_Slot0Configs = TunerConstants.ElevatorConstants.createSlot0Configs(); 
+    m_Slot0Configs = ElevatorConstants.createSlot0Configs(); 
     m_elevatorMotor.getConfigurator().apply(m_Slot0Configs);
 
-    m_softLimitConfig = TunerConstants.ElevatorConstants.createSoftLimitConigs(); 
+    m_softLimitConfig = ElevatorConstants.createSoftLimitConigs(); 
     m_elevatorMotor.getConfigurator().apply(m_softLimitConfig);
 
-    m_motionMagicConfigs = TunerConstants.ElevatorConstants.createMotionMagicConfigs();
+    m_motionMagicConfigs = ElevatorConstants.createMotionMagicConfigs();
     m_elevatorMotor.getConfigurator().apply(m_motionMagicConfigs);
 
-    m_motorConfig = TunerConstants.ElevatorConstants.createMotorOutputConfigs();
+    m_motorConfig = ElevatorConstants.createMotorOutputConfigs();
     m_elevatorMotor.getConfigurator().apply(m_motorConfig);
 
     mechConfigure();

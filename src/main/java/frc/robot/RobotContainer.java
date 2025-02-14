@@ -30,9 +30,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Preferences.DoublePreference;
 import frc.robot.commands.AlignToTarget;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
-import frc.robot.subsystems.EndEffector;
+import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.EndEffector.EndEffector;
 
 public class RobotContainer {
 
