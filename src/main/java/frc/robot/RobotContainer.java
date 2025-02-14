@@ -32,6 +32,7 @@ import frc.robot.commands.AlignToTarget;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.EndEffector;
 
 public class RobotContainer {
 
@@ -57,6 +58,8 @@ public class RobotContainer {
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);;
 
     //public final Elevator elevator = new Elevator();
+
+    public final EndEffector endEffector = new EndEffector();
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
