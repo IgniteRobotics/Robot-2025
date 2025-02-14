@@ -6,13 +6,19 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,9 +28,10 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Preferences.DoublePreference;
+import frc.robot.commands.AlignToTarget;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.EndEffector;
 
 public class RobotContainer {
@@ -40,7 +47,17 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.DrivetrainConstants.createDrivetrain();
 
-    public final Elevator elevator = new Elevator();
+    public final double default_Max_Speed = TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    public final double maxAngularRate = TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED;
+    public final double deadband = TunerConstants.DrivetrainConstants.DEADBAND_FACTOR;
+
+    private final Command alignTest = new AlignToTarget(drivetrain,drivetrain.m_photonCameraWrapper, 12, 0);
+
+    SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+        .withDeadband(default_Max_Speed*deadband).withRotationalDeadband(maxAngularRate * deadband) // Add a 10% deadband
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);;
+
+    //public final Elevator elevator = new Elevator();
 
     public final EndEffector endEffector = new EndEffector();
 
@@ -50,11 +67,13 @@ public class RobotContainer {
     public DoublePreference armLength = new DoublePreference("armLength", 1);
     public DoublePreference wristAngle = new DoublePreference("wristAngle", 90);
 
-    public Supplier<Double> maxSpeed;
-
+    private DoublePreference adjustableMaxSpeed = new DoublePreference("drive/maxSpeedAdjustable", TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond));
+    
     private RobotState m_RobotState = RobotState.getInstance();
     //drive command
-    Command arcadeDrive =  new RunCommand(() -> drivetrain.drive(-joystick.getLeftY(), -joystick.getLeftX(), -joystick.getRightX(), m_RobotState.getMaxSpeed()));
+    //Command arcadeDrive =  new RunCommand(() -> drivetrain.drive(-joystick.getLeftY(), -joystick.getLeftX(), -joystick.getRightX(), m_RobotState.getMaxSpeed())) {{
+    //   addRequirements(drivetrain);
+    //}};
 
     public RobotContainer() {
 
@@ -69,8 +88,14 @@ public class RobotContainer {
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
-            arcadeDrive
+            drivetrain.applyRequest(() ->
+                drive.withVelocityX(-joystick.getLeftY() * m_RobotState.getMaxSpeed()) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getLeftX() * m_RobotState.getMaxSpeed()) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * maxAngularRate) // Drive counterclockwise with negative X (left)
+            )
         );
+
+        joystick.x().onTrue(AutoBuilder.followPath(createTestPath()));
 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
@@ -94,7 +119,7 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        joystick.rightBumper().onTrue(new InstantCommand( () -> elevator.alterMech(armLength.getValue(), wristAngle.getValue())));
+        //joystick.rightBumper().onTrue(new InstantCommand( () -> elevator.alterMech(armLength.getValue(), wristAngle.getValue())));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -102,5 +127,29 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         /* First put the drivetrain into auto run mode, then run the auto */
         return autoChooser.getSelected();
+    }
+
+    public PathPlannerPath createTestPath(){
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+        new Pose2d(1.0, 1.0, Rotation2d.fromDegrees(0)),
+        new Pose2d(3.0, 1.0, Rotation2d.fromDegrees(0)),
+        new Pose2d(5.0, 3.0, Rotation2d.fromDegrees(90))
+            );
+
+        PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
+        // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
+
+        // Create the path using the waypoints created above
+        PathPlannerPath path = new PathPlannerPath(
+              waypoints,
+               constraints,
+               null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+                new GoalEndState(0, Rotation2d.fromDegrees(-90)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+
+        // Prevent the path from being flipped if the coordinates are already correct
+        path.preventFlipping = true;
+
+        return path;
     }
 }

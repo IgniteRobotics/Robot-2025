@@ -2,8 +2,14 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.photonvision.targeting.PhotonPipelineResult;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.generated.TunerConstants;
+import frc.zones.Grid;
 import frc.zones.Zone;
 
 public class RobotState {
@@ -12,26 +18,13 @@ public class RobotState {
 
     private static Pose2d robotPose2d;
 
-    public final Zone OPPONENT_SIDE = new Zone() {{
-        setMaxSpeed(5);
-    }};
+    private final double blockWidth = 0.25;
 
-    public final Zone SAFE = new Zone() {{
-        setMaxSpeed(5);
-    }};
+    private Grid fieldGrid = new Grid();
 
-    public final Zone HP = new Zone(){{
-        setMaxSpeed(5);
-        setTargetID(0);
-    }};
+    private Zone currentZone;
 
-    private Zone[][] GRID = {
-        {OPPONENT_SIDE, SAFE, HP},
-        {SAFE, HP, HP},
-        {HP, SAFE, HP}
-    };
-
-    private double blockWidth = 0.3;
+    Map<String, PhotonPipelineResult> cameraResults = new HashMap<>(){};
 
     private RobotState() {
     }
@@ -44,8 +37,24 @@ public class RobotState {
         return single_instance;
     }
 
+    private void updateZone(){
+        if(robotPose2d == null 
+        || (int)(robotPose2d.getX()/blockWidth) >= fieldGrid.xLength || (int)(robotPose2d.getY()/blockWidth) >= fieldGrid.yLength
+        || robotPose2d.getX() < 0 || robotPose2d.getY() < 0){
+            currentZone = null;
+        }
+        else{
+            currentZone = fieldGrid.GRID[(int)(robotPose2d.getX()/blockWidth)][ (int)(robotPose2d.getY()/blockWidth)];
+        }
+    }
+
+    public Zone getZone(){
+        return currentZone;
+    }
+
     public synchronized void setPose2d(Pose2d newPose){
         robotPose2d = newPose;
+        updateZone();
     }
 
     public Pose2d getPose2d(){
@@ -53,18 +62,18 @@ public class RobotState {
     }
 
     public double getMaxSpeed(){
-    
-        if(robotPose2d == null 
-        || (int)(robotPose2d.getX()/blockWidth) > GRID.length || (int)(robotPose2d.getY()/blockWidth) > GRID[0].length
-        || robotPose2d.getX() < 0 || robotPose2d.getY() < 0){
+        if(getZone() == null){
             return TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond);
         }
-        return GRID[(int)(robotPose2d.getX()/blockWidth)][ (int)(robotPose2d.getY()/blockWidth)].maxSpeed.doubleValue();
+        else return getZone().maxSpeed.doubleValue();
     }
 
-    
+    public void setLatestPhotonVisionResult(String camera, PhotonPipelineResult newResult){
+        cameraResults.put(camera, newResult);
+    }
 
-    
-
-
+    public PhotonPipelineResult getLatestPhotonVisionResult(String camera){
+        if(cameraResults.containsKey(camera))return cameraResults.get(camera);
+        else return null;
+    }
 }
