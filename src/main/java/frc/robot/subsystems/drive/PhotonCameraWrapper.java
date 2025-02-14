@@ -94,7 +94,7 @@ public class PhotonCameraWrapper{
         
         try {
             //TODO: Change as soon as possible
-            layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+            layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
         } catch (UncheckedIOException e) {
             e.printStackTrace();
         }
@@ -113,8 +113,10 @@ public class PhotonCameraWrapper{
             photonPoseEstimatorFrontRight.setReferencePose(prevEstimatedRobotPose);
             var results = photonCameraFrontRight.getAllUnreadResults();
 
-            var latestResult = results.get(results.size()-1);
-            m_robotState.setLatestPhotonVisionResult(photonCameraFrontRight.getName(), latestResult);
+            if(!results.isEmpty()){
+                var latestResult = results.get(results.size()-1);
+                m_robotState.setLatestPhotonVisionResult(photonCameraFrontRight.getName(), latestResult);
+            }
 
             ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
             for(var result : results){
@@ -127,8 +129,10 @@ public class PhotonCameraWrapper{
             photonPoseEstimatorFrontLeft.setReferencePose(prevEstimatedRobotPose);
             var results = photonCameraFrontLeft.getAllUnreadResults();
 
-            var latestResult = results.get(results.size()-1);
-            m_robotState.setLatestPhotonVisionResult(photonCameraFrontLeft.getName(), latestResult);
+            if(!results.isEmpty()){
+                var latestResult = results.get(results.size()-1);
+                m_robotState.setLatestPhotonVisionResult(photonCameraFrontLeft.getName(), latestResult);
+            }
 
             ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
             for(var result : results){
