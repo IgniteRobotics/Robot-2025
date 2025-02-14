@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Preferences.DoublePreference;
+import frc.robot.commands.AlignToTarget;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -49,6 +50,8 @@ public class RobotContainer {
     public final double maxAngularRate = TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED;
     public final double deadband = TunerConstants.DrivetrainConstants.DEADBAND_FACTOR;
 
+    private final Command alignTest = new AlignToTarget(drivetrain,drivetrain.m_photonCameraWrapper, 12, 0);
+
     SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         .withDeadband(default_Max_Speed*deadband).withRotationalDeadband(maxAngularRate * deadband) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);;
@@ -61,8 +64,8 @@ public class RobotContainer {
     public DoublePreference armLength = new DoublePreference("armLength", 1);
     public DoublePreference wristAngle = new DoublePreference("wristAngle", 90);
 
-    public Supplier<Double> maxSpeed;
-
+    private DoublePreference adjustableMaxSpeed = new DoublePreference("drive/maxSpeedAdjustable", TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond));
+    
     private RobotState m_RobotState = RobotState.getInstance();
     //drive command
     //Command arcadeDrive =  new RunCommand(() -> drivetrain.drive(-joystick.getLeftY(), -joystick.getLeftX(), -joystick.getRightX(), m_RobotState.getMaxSpeed())) {{

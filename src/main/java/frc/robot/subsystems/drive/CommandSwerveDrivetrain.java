@@ -50,6 +50,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotState;
+import frc.robot.Preferences.DoublePreference;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.DrivetrainConstants.TunerSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.Side;
@@ -84,7 +85,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     //camera stuff
     private final Pigeon2 m_gyro = new Pigeon2(TunerConstants.DrivetrainConstants.GYRO);
-    private final PhotonCameraWrapper m_photonCameraWrapper;
+    
+    public final PhotonCameraWrapper m_photonCameraWrapper;
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -295,7 +297,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     /*Actual driving method */
-    public void drive(double x, double y, double rot, double maxSpeed){
+    public void arcadeDrive(double x, double y, double rot, double maxSpeed){
         SwerveRequest.FieldCentric m_driveRequest = new SwerveRequest.FieldCentric()
             .withDeadband(maxSpeed * TunerConstants.DrivetrainConstants.DEADBAND_FACTOR)
             .withRotationalDeadband(TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED * TunerConstants.DrivetrainConstants.DEADBAND_FACTOR)
@@ -304,6 +306,28 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         
         this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
     }
+
+    public void adjustDrive(double x, double y, double rot, Supplier<Double> maxSpeed){
+        SwerveRequest.FieldCentric m_driveRequest = new SwerveRequest.FieldCentric()
+            .withDeadband(maxSpeed.get() * TunerConstants.DrivetrainConstants.DEADBAND_FACTOR)
+            .withRotationalDeadband(TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED * TunerConstants.DrivetrainConstants.DEADBAND_FACTOR)
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+            .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+        
+        this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
+    }
+
+    public void driveRobotCentric(double x, double y, double rot){
+        SwerveRequest.RobotCentric m_driveRequest = new SwerveRequest.RobotCentric()
+            .withDeadband(TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond) * TunerConstants.DrivetrainConstants.DEADBAND_FACTOR)
+            .withRotationalDeadband(TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED * TunerConstants.DrivetrainConstants.DEADBAND_FACTOR)
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+            .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+        
+        this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
+    }
+
+
 
     @Override
     public void periodic() {

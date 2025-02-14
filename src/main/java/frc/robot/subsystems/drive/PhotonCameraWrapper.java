@@ -41,8 +41,6 @@ public class PhotonCameraWrapper{
         public TargetInfo(double distance, double yaw){
             this.distance = distance;
             this.yaw = yaw;
-            SmartDashboard.putNumber("aim/calculatedDistance",this.distance);
-            SmartDashboard.putNumber("aim/calculatedYaw",this.yaw);
         }
 
         public double getYaw() {
@@ -154,12 +152,6 @@ public class PhotonCameraWrapper{
                 Optional<PhotonTrackedTarget> target = lookForTarget(result, id);
                 if (target.isPresent()){
                     m_targetTimer.restart();
-                    //return Optional.of(new TargetInfo(getDistanceFromTransform3d(target.get().getBestCameraToTarget()), target.get().getYaw()));
-                    //return Optional.of(buildTargetInfo(target.get().getBestCameraToTarget(), m_targetEstimator.getRobotToCameraTransform()));
-                    // return Optional.of(
-                    //     new TargetInfo(1, 
-                    //                 target.get().getYaw()+15)
-                    // );
                 return Optional.of(calculateTargetInfo(
                         target.get().getYaw(), 
                         getDistanceFromTransform3d(target.get().getBestCameraToTarget()),
