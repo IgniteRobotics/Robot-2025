@@ -1,4 +1,4 @@
-package frc.robot.Preferences;
+package frc.robot.PreferenceTypes;
 
 import java.util.Collection;
 import java.util.function.Supplier;

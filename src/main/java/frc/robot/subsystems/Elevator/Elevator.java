@@ -12,7 +12,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Preferences.DoublePreference;
+import frc.robot.PreferenceTypes.DoublePreference;
 
 @Logged
 public class Elevator implements Subsystem {

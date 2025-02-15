@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Preferences.DoublePreference;
+import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.drive.AlignToTarget;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -36,8 +36,6 @@ import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.EndEffector.EndEffector;
 @Logged
 public class RobotContainer {
-
-    private final PreferenceContainer m_preferences = new PreferenceContainer();
 
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -51,8 +49,6 @@ public class RobotContainer {
     public final double default_Max_Speed = TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public final double maxAngularRate = TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED;
     public final double deadband = TunerConstants.DrivetrainConstants.DEADBAND_FACTOR;
-
-    private DoublePreference alignDistanceAdjustment = new DoublePreference("alignCommand/distanceAdjustment");
     
     SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         .withDeadband(default_Max_Speed*deadband).withRotationalDeadband(maxAngularRate * deadband) // Add a 10% deadband
@@ -64,14 +60,11 @@ public class RobotContainer {
 
     public final EndEffector endEffector = new EndEffector();
 
-    private final Command alignTest = new AlignToTarget(drivetrain,drivetrain.m_photonCameraWrapper, 12, alignDistanceAdjustment);
+    private final Command alignTest = new AlignToTarget(drivetrain,drivetrain.m_photonCameraWrapper, 12, Preferences.alignDistanceAdjustment);
 
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
-
-    public DoublePreference armLength = new DoublePreference("armLength", 1);
-    public DoublePreference wristAngle = new DoublePreference("wristAngle", 90);
 
     private RobotState m_RobotState = RobotState.getInstance();
     //drive command
@@ -107,8 +100,8 @@ public class RobotContainer {
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
         */
-        joystick.a().whileTrue(new RunCommand(() -> elevator.setPositionRevolutions(m_preferences.elevatorPosition)));
-        joystick.b().onTrue(new InstantCommand(() -> elevator.setElevatorPID(m_preferences.elevatorkP, m_preferences.elevatorkD, m_preferences.elevatorkI, m_preferences.elevatorkG)));
+        joystick.a().whileTrue(new RunCommand(() -> elevator.setPositionRevolutions(Preferences.elevatorPosition)));
+        joystick.b().onTrue(new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG)));
 
 
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
