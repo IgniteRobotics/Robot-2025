@@ -10,6 +10,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.generated.TunerConstants;
 import frc.zones.Grid;
 import frc.zones.Zone;
@@ -23,7 +24,7 @@ public class RobotState {
 
     private final double blockWidth = 0.25;
 
-    private Grid fieldGrid = new Grid();
+    private Zone[][] GRID = Grid.RED_GRID;
 
     private Zone currentZone;
 
@@ -40,14 +41,21 @@ public class RobotState {
         return single_instance;
     }
 
+    public void setGrid(Alliance color){
+        if(color == Alliance.Red){
+            GRID = Grid.RED_GRID;
+        }
+        else GRID = Grid.BLUE_GRID;
+    }
+
     private void updateZone(){
         if(robotPose2d == null 
-        || (int)(robotPose2d.getX()/blockWidth) >= fieldGrid.xLength || (int)(robotPose2d.getY()/blockWidth) >= fieldGrid.yLength
+        || (int)(robotPose2d.getX()/blockWidth) >= Grid.xLength || (int)(robotPose2d.getY()/blockWidth) >= Grid.yLength
         || robotPose2d.getX() < 0 || robotPose2d.getY() < 0){
             currentZone = null;
         }
         else{
-            currentZone = fieldGrid.GRID[(int)(robotPose2d.getX()/blockWidth)][ (int)(robotPose2d.getY()/blockWidth)];
+            currentZone = GRID[(int)(robotPose2d.getX()/blockWidth)][ (int)(robotPose2d.getY()/blockWidth)];
         }
     }
 

@@ -1,5 +1,6 @@
 package frc.zones;
 
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class Zone{
     public Double maxSpeed;
