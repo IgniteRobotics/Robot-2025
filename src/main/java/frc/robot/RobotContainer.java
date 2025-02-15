@@ -18,6 +18,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -33,9 +34,11 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.EndEffector.EndEffector;
+@Logged
 public class RobotContainer {
 
     private final PreferenceContainer m_preferences = new PreferenceContainer();
+
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
@@ -45,24 +48,24 @@ public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.DrivetrainConstants.createDrivetrain();
-
     public final double default_Max_Speed = TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public final double maxAngularRate = TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED;
     public final double deadband = TunerConstants.DrivetrainConstants.DEADBAND_FACTOR;
 
     private DoublePreference alignDistanceAdjustment = new DoublePreference("alignCommand/distanceAdjustment");
-    private final Command alignTest = new AlignToTarget(drivetrain,drivetrain.m_photonCameraWrapper, 12, alignDistanceAdjustment);
-
+    
     SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         .withDeadband(default_Max_Speed*deadband).withRotationalDeadband(maxAngularRate * deadband) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);;
 
-    //public final Elevator elevator = new Elevator();
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.DrivetrainConstants.createDrivetrain();
 
     public final Elevator elevator = new Elevator();
 
     public final EndEffector endEffector = new EndEffector();
+
+    private final Command alignTest = new AlignToTarget(drivetrain,drivetrain.m_photonCameraWrapper, 12, alignDistanceAdjustment);
+
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -107,7 +110,7 @@ public class RobotContainer {
         ));
         */
         joystick.a().whileTrue(new RunCommand(() -> elevator.setPositionRevolutions(m_preferences.elevatorPosition)));
-        joystick.b().onTrue(new InstantCommand(() -> elevator.setElevatorPID(m_preferences.elevatorkP, m_preferences.elevatorkD, m_preferences.elevatorkI)));
+        joystick.b().onTrue(new InstantCommand(() -> elevator.setElevatorPID(m_preferences.elevatorkP, m_preferences.elevatorkD, m_preferences.elevatorkI, m_preferences.elevatorkG)));
 
 
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
