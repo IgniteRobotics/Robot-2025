@@ -18,6 +18,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -33,6 +34,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.EndEffector.EndEffector;
+@Logged
 public class RobotContainer {
 
     private final PreferenceContainer m_preferences = new PreferenceContainer();
@@ -107,7 +109,7 @@ public class RobotContainer {
         ));
         */
         joystick.a().whileTrue(new RunCommand(() -> elevator.setPositionRevolutions(m_preferences.elevatorPosition)));
-        joystick.b().onTrue(new InstantCommand(() -> elevator.setElevatorPID(m_preferences.elevatorkP, m_preferences.elevatorkD, m_preferences.elevatorkI)));
+        joystick.b().onTrue(new InstantCommand(() -> elevator.setElevatorPID(m_preferences.elevatorkP, m_preferences.elevatorkD, m_preferences.elevatorkI, m_preferences.elevatorkG)));
 
 
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->

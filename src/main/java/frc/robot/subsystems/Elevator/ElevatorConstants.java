@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 
 public class ElevatorConstants {
         //Motor
@@ -19,14 +20,18 @@ public class ElevatorConstants {
         public static final double ELEVATOR_kP = 0;
         public static final double ELEVATOR_kI = 0;
         public static final double ELEVATOR_kD = 0;
+        public static final double ELEVATOR_kG = 0;
+        public static final GravityTypeValue ELEVATOR_GRAVITY = GravityTypeValue.Elevator_Static;
 
         public static Slot0Configs createSlot0Configs(){ 
             Slot0Configs slot = new Slot0Configs();
             slot.kV = ELEVATOR_kV;
-           slot.kS = ELEVATOR_kS;
+            slot.kS = ELEVATOR_kS;
             slot.kP = ELEVATOR_kP;
             slot.kI = ELEVATOR_kI;
             slot.kD = ELEVATOR_kD;
+            slot.kG = ELEVATOR_kG;
+            slot.GravityType = ELEVATOR_GRAVITY;
            return slot; 
         }
 
