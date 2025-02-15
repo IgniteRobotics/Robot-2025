@@ -82,7 +82,8 @@ public class PhotonCameraWrapper{
     public PhotonCameraWrapper() {
         
         try {
-            layout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
+            layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+
         } catch (UncheckedIOException e) {
             e.printStackTrace();
         }
@@ -114,6 +115,7 @@ public class PhotonCameraWrapper{
                  estimatedPoses.add(photonPoseEstimatorOuttakeRight.update(result));
             }
             return estimatedPoses;
+
 
         } else if(side == Side.OUTTAKE_LEFT){
             photonPoseEstimatorOuttakeLeft.setReferencePose(prevEstimatedRobotPose);
