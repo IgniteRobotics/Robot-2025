@@ -1,15 +1,64 @@
 package frc.robot.subsystems.drive;
 
+import java.util.HashMap;
+
+import org.photonvision.PhotonCamera;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 
 public class CameraConstants {
-    public static final String photonCameraNameFrontLeft = "FRONT_LEFT";
-    public static final Transform3d photonCameraTransformFrontLeft = new Transform3d(new Translation3d(.343, 0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, -15.0/180 * Math.PI));
+    public static final String photonCameraNameOuttakeLeft = "OUTTAKE_LEFT";
+    public static final Transform3d photonCameraTransformOuttakeLeft= new Transform3d(new Translation3d(.343, 0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, -15.0/180 * Math.PI));
+    public static final PhotonCamera photonCameraOuttakeLeft = new PhotonCamera(photonCameraNameOuttakeLeft);
     
-    public static final String photonCameraNameFrontRight = "FRONT_RIGHT";
-    public static final Transform3d photonCameraTransformFrontRight = new Transform3d(new Translation3d(.343, -0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 15.0/180 * Math.PI));
+    public static final String photonCameraNameOuttakeRight = "OUTTAKE_RIGHT";
+    public static final Transform3d photonCameraTransformOuttakeRight = new Transform3d(new Translation3d(.343, -0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 15.0/180 * Math.PI));
+    public static final PhotonCamera photonCameraOuttakeRight = new PhotonCamera(photonCameraNameOuttakeRight);
+
+    public static final String photonCameraNameIntake = "INTAKE";
+    public static final Transform3d photonCameraTransformIntake = new Transform3d(new Translation3d(.343, -0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 15.0/180 * Math.PI));
+    public static final PhotonCamera photonCameraIntake = new PhotonCamera(photonCameraNameIntake);
+
+    public static final PhotonCamera allCameras[] = {photonCameraOuttakeLeft, photonCameraOuttakeRight, photonCameraIntake};
+    public static final double allCameraYawOffsetsDegrees[] = {0,0,0};
     
+    public static final PhotonCamera intakeCameras[] = {photonCameraIntake};
+    public static final PhotonCamera outtakeCameras[] = {photonCameraOuttakeLeft, photonCameraOuttakeRight};
+    public static final HashMap<Integer, PhotonCamera[]> targetCameras = new HashMap<Integer, PhotonCamera[]>(){{
+        put(1, intakeCameras);
+        put(2, intakeCameras);
+
+        put(3, outtakeCameras);
+        put(4, outtakeCameras);
+        put(5, outtakeCameras);
+        put(6, outtakeCameras);
+        put(7, outtakeCameras);
+        put(8, outtakeCameras);
+        put(9, outtakeCameras);
+        put(10, outtakeCameras);
+        put(11, outtakeCameras);
+
+        put(12, intakeCameras);
+        put(13, intakeCameras);
+
+        put(14, outtakeCameras);
+        put(15, outtakeCameras);
+        put(16, outtakeCameras);
+        put(17, outtakeCameras);
+        put(18, outtakeCameras);
+        put(19, outtakeCameras);
+        put(20, outtakeCameras);
+        put(21, outtakeCameras);
+        put(22, outtakeCameras);
+    }};
+
+
     public static final Integer[] IGNORED_POSE_TARGETS = {50,51};
+    public static final HashMap<String, Double> offsetToBumper = new HashMap<String, Double>(){{
+        put("OUTTAKE_LEFT", 0.0);
+        put("OUTTAKE_RIGHT", 0.0);
+        put("INTAKE", 0.0);
+    }};
 }
