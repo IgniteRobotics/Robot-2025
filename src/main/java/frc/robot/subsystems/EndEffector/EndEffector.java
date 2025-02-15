@@ -9,10 +9,12 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotState;
 
 @Logged
 public class EndEffector extends SubsystemBase {
@@ -21,13 +23,16 @@ public class EndEffector extends SubsystemBase {
   private final TalonFX m_algaeMotor;
   private final TalonFX m_wristMotor;
 
+  private final CANrange m_beambreak;
 
+  private final RobotState m_robotState = RobotState.getInstance();
 
   /** Creates a new EndEffector. */
   public EndEffector() {
     m_coralMotor = new TalonFX(EndEffectorConstants.kCoralMotorId);
     m_algaeMotor = new TalonFX(EndEffectorConstants.kAlgaeMotorId);
     m_wristMotor = new TalonFX(EndEffectorConstants.kWristMotorId);
+    m_beambreak = new CANrange(EndEffectorConstants.kBeamBreakId, "canivore");
   }
 
   public void configureCoralMotor(){
@@ -87,8 +92,28 @@ public class EndEffector extends SubsystemBase {
       newConfigs.ReverseSoftLimitThreshold = WRIST_REVERSE_SOFT_LIMIT;
   }
 
+  public void outtakeCoral(){
+    m_coralMotor.setVoltage(EndEffectorConstants.OUTTAKE_CORAL_VOLTAGE);
+  }
+
+  public void intakeCoral(){
+    m_coralMotor.setVoltage(EndEffectorConstants.INTAKE_CORAL_VOLTAGE);
+  }
+
+  public void stopCoralMotor(){
+    m_coralMotor.stopMotor();
+  }
+
+  @Logged
+  public boolean hasCoral(){
+    return m_beambreak.getIsDetected().getValue();
+  }
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    if(hasCoral()){
+        m_robotState.setHasCoral(true);
+    }
+    else m_robotState.setHasCoral(false);
   }
 }
