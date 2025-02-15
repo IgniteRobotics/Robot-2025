@@ -101,7 +101,11 @@ public class Elevator implements Subsystem {
   }
 
   public void setPositionRevolutions(double position) {
-    m_elevatorMotor.setControl(m_MMPosition.withPosition(position));
+    m_elevatorMotor.setControl(m_MMPosition.withPosition(position).withSlot(0));
+  }
+
+  public void setPositionRevolutions(DoublePreference position){
+    m_elevatorMotor.setControl(m_MMPosition.withPosition(position.get()).withSlot(0));
   }
 
   public void alterMech(double length, double angle){
@@ -120,6 +124,16 @@ public class Elevator implements Subsystem {
   @Override
   public void simulationPeriodic() {
 
+  }
+
+  public void setElevatorPID(DoublePreference P, DoublePreference D, DoublePreference I){
+    m_Slot0Configs = new Slot0Configs();
+
+    m_elevatorMotor.getConfigurator().refresh(m_Slot0Configs);
+
+    m_Slot0Configs.withKP(P.getValue()).withKD(D.getValue()).withKI(I.getValue());
+
+    m_elevatorMotor.getConfigurator().apply(m_Slot0Configs);
   }
 
 }

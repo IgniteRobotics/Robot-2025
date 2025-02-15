@@ -35,7 +35,7 @@ import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.EndEffector.EndEffector;
 public class RobotContainer {
 
-    private final PreferenceContainer m_PreferenceContainer = new PreferenceContainer();
+    private final PreferenceContainer m_preferences = new PreferenceContainer();
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
@@ -58,6 +58,8 @@ public class RobotContainer {
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);;
 
     //public final Elevator elevator = new Elevator();
+
+    public final Elevator elevator = new Elevator();
 
     public final EndEffector endEffector = new EndEffector();
 
@@ -97,10 +99,15 @@ public class RobotContainer {
 
         joystick.x().onTrue(AutoBuilder.followPath(createTestPath()));
 
+        /* 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
+        */
+        joystick.a().whileTrue(new RunCommand(() -> elevator.setPositionRevolutions(m_preferences.elevatorPosition)));
+        joystick.b().onTrue(new InstantCommand(() -> elevator.setElevatorPID(m_preferences.elevatorkP, m_preferences.elevatorkD, m_preferences.elevatorkI)));
+
 
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
