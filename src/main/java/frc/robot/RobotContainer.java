@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Preferences.DoublePreference;
-import frc.robot.commands.AlignToTarget;
+import frc.robot.commands.drive.AlignToTarget;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator.Elevator;
@@ -51,7 +51,8 @@ public class RobotContainer {
     public final double maxAngularRate = TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED;
     public final double deadband = TunerConstants.DrivetrainConstants.DEADBAND_FACTOR;
 
-    private final Command alignTest = new AlignToTarget(drivetrain,drivetrain.m_photonCameraWrapper, 12, 0);
+    private DoublePreference alignDistanceAdjustment = new DoublePreference("alignCommand/distanceAdjustment");
+    private final Command alignTest = new AlignToTarget(drivetrain,drivetrain.m_photonCameraWrapper, 12, alignDistanceAdjustment);
 
     SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         .withDeadband(default_Max_Speed*deadband).withRotationalDeadband(maxAngularRate * deadband) // Add a 10% deadband
