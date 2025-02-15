@@ -7,11 +7,14 @@ import java.util.Map;
 
 import org.photonvision.targeting.PhotonPipelineResult;
 
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.generated.TunerConstants;
 import frc.zones.Grid;
 import frc.zones.Zone;
 
+@Logged
 public class RobotState {
 
     private static RobotState single_instance = null;
@@ -61,11 +64,20 @@ public class RobotState {
         return robotPose2d;
     }
 
+    @Logged(name = "Max Speed", importance = Importance.CRITICAL)
     public double getMaxSpeed(){
         if(getZone() == null){
             return TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond);
         }
         else return getZone().maxSpeed.doubleValue();
+    }
+
+    @Logged(name = "Max Rotation", importance = Importance.CRITICAL)
+    public double getMaxRotation(){
+        if(getZone() == null){
+            return TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED;
+        }
+        else return getZone().maxRotation.doubleValue();
     }
 
     public void setLatestPhotonVisionResult(String camera, PhotonPipelineResult newResult){

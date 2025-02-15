@@ -3,11 +3,16 @@ package frc.zones;
 
 public class Zone{
     public Double maxSpeed;
+    public Double maxRotation;
     public Integer targetID;
     public Double heading;
 
     public void setMaxSpeed(double speed){
         maxSpeed = speed;
+    }
+
+    public void setMaxRotation(double rot){
+        maxRotation = rot;
     }
 
     public void setTargetID(int id){

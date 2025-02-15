@@ -18,7 +18,6 @@ import frc.robot.Preferences.DoublePreference;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  @Logged(name = "robot container")
   private final RobotContainer m_robotContainer;
 
   private final boolean kUseLimelight = false;

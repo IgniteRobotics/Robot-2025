@@ -280,27 +280,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return m_sysIdRoutineToApply.dynamic(direction);
     }
 
-    /*Actual driving method */
-    public void arcadeDrive(double x, double y, double rot, double maxSpeed){
-        SwerveRequest.FieldCentric m_driveRequest = new SwerveRequest.FieldCentric()
-            .withDeadband(maxSpeed * TunerConstants.DrivetrainConstants.DEADBAND_FACTOR)
-            .withRotationalDeadband(TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED * TunerConstants.DrivetrainConstants.DEADBAND_FACTOR)
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-            .withSteerRequestType(SteerRequestType.MotionMagicExpo);
-        
-        this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
-    }
-
-    public void adjustDrive(double x, double y, double rot, Supplier<Double> maxSpeed){
-        SwerveRequest.FieldCentric m_driveRequest = new SwerveRequest.FieldCentric()
-            .withDeadband(maxSpeed.get() * TunerConstants.DrivetrainConstants.DEADBAND_FACTOR)
-            .withRotationalDeadband(TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED * TunerConstants.DrivetrainConstants.DEADBAND_FACTOR)
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-            .withSteerRequestType(SteerRequestType.MotionMagicExpo);
-        
-        this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
-    }
-
     public void driveRobotCentric(double x, double y, double rot){
         SwerveRequest.RobotCentric m_driveRequest = new SwerveRequest.RobotCentric()
             .withDeadband(TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond) * TunerConstants.DrivetrainConstants.DEADBAND_FACTOR)
@@ -310,8 +289,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         
         this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
     }
-
-
 
     @Override
     public void periodic() {
