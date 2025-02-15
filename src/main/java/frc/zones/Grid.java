@@ -2,10 +2,12 @@ package frc.zones;
 
 public class Grid {
     
-    public Zone[][] GRID = {};
+    public static Zone[][] RED_GRID = {};
 
-    public int xLength = 0;
+    public static Zone[][] BLUE_GRID = {};
 
-    public int yLength = 0;
+    public static int xLength = 0;
+
+    public static int yLength = 0;
     
 }

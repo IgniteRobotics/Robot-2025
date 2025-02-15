@@ -73,8 +73,6 @@ public class RobotContainer {
     public DoublePreference armLength = new DoublePreference("armLength", 1);
     public DoublePreference wristAngle = new DoublePreference("wristAngle", 90);
 
-    private DoublePreference adjustableMaxSpeed = new DoublePreference("drive/maxSpeedAdjustable", TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond));
-    
     private RobotState m_RobotState = RobotState.getInstance();
     //drive command
     //Command arcadeDrive =  new RunCommand(() -> drivetrain.drive(-joystick.getLeftY(), -joystick.getLeftX(), -joystick.getRightX(), m_RobotState.getMaxSpeed())) {{
@@ -97,7 +95,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-joystick.getLeftY() * m_RobotState.getMaxSpeed()) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick.getLeftX() * m_RobotState.getMaxSpeed()) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * maxAngularRate) // Drive counterclockwise with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * m_RobotState.getMaxRotation()) // Drive counterclockwise with negative X (left)
             )
         );
 
