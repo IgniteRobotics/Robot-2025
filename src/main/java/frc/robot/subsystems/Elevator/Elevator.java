@@ -61,7 +61,10 @@ public class Elevator implements Subsystem {
 
   private TalonFXConfiguration m_fxCfg = new TalonFXConfiguration();
 
+  private double m_currentSetpoint = 0;
+
   public MotionMagicVoltage m_MMPosition =   new MotionMagicVoltage(0);
+  
 
   //Mech stuff
   Mechanism2d mech;
@@ -101,7 +104,15 @@ public class Elevator implements Subsystem {
   }
 
   public void setPositionRevolutions(double position) {
+    m_currentSetpoint = position;
     m_elevatorMotor.setControl(m_MMPosition.withPosition(position));
+  }
+  public void getPositionRevolutions() {
+    m_elevatorMotor.getPosition().getValueAsDouble();
+  }
+  
+  public boolean isAtSetpoint() {
+    return false;
   }
 
   public void alterMech(double length, double angle){
