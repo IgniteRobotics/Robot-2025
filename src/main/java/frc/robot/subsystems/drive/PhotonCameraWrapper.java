@@ -67,16 +67,11 @@ public class PhotonCameraWrapper{
         }
     }
 
+    public PhotonPoseEstimator photonPoseEstimatorOuttakeLeft;
+    public PhotonPoseEstimator photonPoseEstimatorOuttakeRight;
+    public PhotonPoseEstimator photonPoseEstimatorIntake;
 
-    public PhotonCamera photonCameraFrontLeft;
-    public PhotonPoseEstimator photonPoseEstimatorFrontLeft;
-    public PhotonCamera photonCameraFrontRight;
-    public PhotonPoseEstimator photonPoseEstimatorFrontRight;
-
-    private PhotonCamera[] allCameras = new PhotonCamera[2];
-    private PhotonPoseEstimator[] allEstimators = new PhotonPoseEstimator[2];
-    private double[] allCameraYawOffsetsDegrees = new double[2];
-
+    public PhotonPoseEstimator allEstimators[] = new PhotonPoseEstimator[3];
     
 
     public AprilTagFieldLayout layout;
@@ -86,18 +81,10 @@ public class PhotonCameraWrapper{
     private double m_lockTimeSec = 0.2;
 
     public static enum Side {
-        FRONT_LEFT, FRONT_RIGHT, REAR_LEFT, REAR_RIGHT
+        OUTTAKE_LEFT, OUTTAKE_RIGHT, INTAKE
     }
 
     public PhotonCameraWrapper() {
-        photonCameraFrontLeft = new PhotonCamera(CameraConstants.photonCameraNameFrontLeft);
-        photonCameraFrontRight = new PhotonCamera(CameraConstants.photonCameraNameFrontRight);
-
-        allCameras[0] = photonCameraFrontLeft;
-        allCameras[1] = photonCameraFrontRight;
-
-        allCameraYawOffsetsDegrees[0] = -15.0;
-        allCameraYawOffsetsDegrees[1] = 15.0;
         
         try {
             //TODO: Change as soon as possible
@@ -107,50 +94,68 @@ public class PhotonCameraWrapper{
         }
 
         //TODO: investigate PNP on the co-proc.
-        photonPoseEstimatorFrontLeft = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CameraConstants.photonCameraTransformFrontLeft);
-        photonPoseEstimatorFrontRight = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CameraConstants.photonCameraTransformFrontRight);
+        photonPoseEstimatorOuttakeLeft = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CameraConstants.photonCameraTransformOuttakeLeft);
+        photonPoseEstimatorOuttakeRight = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CameraConstants.photonCameraTransformOuttakeRight);
+        photonPoseEstimatorIntake = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+        CameraConstants.photonCameraTransformIntake);
        
-        allEstimators[0] = photonPoseEstimatorFrontLeft;
-        allEstimators[1] = photonPoseEstimatorFrontRight;
+        allEstimators[0] = photonPoseEstimatorOuttakeLeft;
+        allEstimators[1] = photonPoseEstimatorOuttakeRight;
+        allEstimators[2] = photonPoseEstimatorIntake;
 
     }
 
     public ArrayList<Optional<EstimatedRobotPose>> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose, Side side) {
-        if(side == Side.FRONT_RIGHT) {
-            photonPoseEstimatorFrontRight.setReferencePose(prevEstimatedRobotPose);
-            var results = photonCameraFrontRight.getAllUnreadResults();
+        if(side == Side.OUTTAKE_RIGHT) {
+            photonPoseEstimatorOuttakeRight.setReferencePose(prevEstimatedRobotPose);
+            var results = CameraConstants.photonCameraOuttakeRight.getAllUnreadResults();
 
             if(!results.isEmpty()){
                 var latestResult = results.get(results.size()-1);
-                m_robotState.setLatestPhotonVisionResult(photonCameraFrontRight.getName(), latestResult);
+                m_robotState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeRight.getName(), latestResult);
             }
 
             ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
             for(var result : results){
-                 estimatedPoses.add(photonPoseEstimatorFrontRight.update(result));
+                 estimatedPoses.add(photonPoseEstimatorOuttakeRight.update(result));
             }
             return estimatedPoses;
 
-        } else {
-            photonPoseEstimatorFrontLeft.setReferencePose(prevEstimatedRobotPose);
-            var results = photonCameraFrontLeft.getAllUnreadResults();
+        } else if(side == Side.OUTTAKE_LEFT){
+            photonPoseEstimatorOuttakeLeft.setReferencePose(prevEstimatedRobotPose);
+            var results = CameraConstants.photonCameraOuttakeLeft.getAllUnreadResults();
             
             if(!results.isEmpty()){
                 var latestResult = results.get(results.size()-1);
-                m_robotState.setLatestPhotonVisionResult(photonCameraFrontLeft.getName(), latestResult);
+                m_robotState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeLeft.getName(), latestResult);
             }
 
             ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
             for(var result : results){
-                    estimatedPoses.add(photonPoseEstimatorFrontLeft.update(result));
+                    estimatedPoses.add(photonPoseEstimatorOuttakeLeft.update(result));
 
             }
             return estimatedPoses;
-        } 
+        }
+        else{
+            photonPoseEstimatorIntake.setReferencePose(prevEstimatedRobotPose);
+            var results = CameraConstants.photonCameraIntake.getAllUnreadResults();
+            
+            if(!results.isEmpty()){
+                var latestResult = results.get(results.size()-1);
+                m_robotState.setLatestPhotonVisionResult(CameraConstants.photonCameraIntake.getName(), latestResult);
+            }
+
+            ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
+            for(var result : results){
+                    estimatedPoses.add(photonPoseEstimatorIntake.update(result));
+            }
+            return estimatedPoses;
+        }
     }
 
     public ArrayList<Optional<EstimatedRobotPose>> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
-        return getEstimatedGlobalPose(prevEstimatedRobotPose, Side.FRONT_LEFT);
+        return getEstimatedGlobalPose(prevEstimatedRobotPose, Side.INTAKE);
     }
 
     public Optional<TargetInfo> seekTarget(int id){
@@ -182,15 +187,16 @@ public class PhotonCameraWrapper{
                 m_targetTimer.stop();
             }
         } else { //no pre locked camera.  loop through them all.
-            for (int i = 0; i < allCameras.length; i++){
-                var newResult = m_robotState.getLatestPhotonVisionResult(allCameras[i].getName());
+            PhotonCamera designatedCameras[] = CameraConstants.targetCameras.get(id);
+            for (int i = 0; i < designatedCameras.length; i++){
+                var newResult = m_robotState.getLatestPhotonVisionResult(designatedCameras[i].getName());
                 if(newResult != null){
                     Optional<PhotonTrackedTarget> target = lookForTarget(newResult, id);
                     if (target.isPresent()){
                         m_seesTarget = true;
-                        m_targetCam = allCameras[i];
+                        m_targetCam = designatedCameras[i];
                         m_targetEstimator = allEstimators[i];
-                        m_currentCameraOffset = allCameraYawOffsetsDegrees[i];
+                        m_currentCameraOffset = CameraConstants.allCameraYawOffsetsDegrees[i];
                         m_targetTimer.restart();
                         //return Optional.of(new TargetInfo(getDistanceFromTransform3d(target.get().getBestCameraToTarget()), target.get().getYaw()));
                         //return Optional.of(buildTargetInfo(target.get().getBestCameraToTarget(), m_targetEstimator.getRobotToCameraTransform()));
@@ -289,9 +295,8 @@ public class PhotonCameraWrapper{
     }
 
     public void setPipeline(int index){
-        photonCameraFrontLeft.setPipelineIndex(index);
-        photonCameraFrontRight.setPipelineIndex(index);
-
+        CameraConstants.photonCameraOuttakeLeft.setPipelineIndex(index);
+        CameraConstants.photonCameraOuttakeRight.setPipelineIndex(index);
     }
 
 }
