@@ -30,7 +30,10 @@ public class RobotState {
 
     Map<String, PhotonPipelineResult> cameraResults = new HashMap<>(){};
 
+    private boolean hasCoral = false;
+
     private RobotState() {
+
     }
 
     public static synchronized RobotState getInstance()
@@ -95,5 +98,13 @@ public class RobotState {
     public PhotonPipelineResult getLatestPhotonVisionResult(String camera){
         if(cameraResults.containsKey(camera))return cameraResults.get(camera);
         else return null;
+    }
+
+    public void setHasCoral(boolean bool){
+        hasCoral = bool;
+    }
+
+    public boolean hasCoral(){
+        return hasCoral;
     }
 }
