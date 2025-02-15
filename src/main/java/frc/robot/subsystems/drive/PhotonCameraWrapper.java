@@ -38,9 +38,12 @@ public class PhotonCameraWrapper{
 
         private double distance;
 
-        public TargetInfo(double distance, double yaw){
+        private String cameraName;
+
+        public TargetInfo(double distance, double yaw, String name){
             this.distance = distance;
             this.yaw = yaw;
+            cameraName = name;
         }
 
         public double getYaw() {
@@ -57,6 +60,10 @@ public class PhotonCameraWrapper{
 
         public void setDistance(double distance) {
             this.distance = distance;
+        }
+
+        public String getCameraName(){
+            return cameraName;
         }
     }
 
@@ -159,7 +166,8 @@ public class PhotonCameraWrapper{
                         target.get().getYaw(), 
                         getDistanceFromTransform3d(target.get().getBestCameraToTarget()),
                         m_currentCameraOffset,
-                        m_targetEstimator.getRobotToCameraTransform().getY()
+                        m_targetEstimator.getRobotToCameraTransform().getY(),
+                        m_targetCam.getName()
                         ));
                 }
             }
@@ -190,7 +198,8 @@ public class PhotonCameraWrapper{
                             target.get().getYaw(), 
                             getDistanceFromTransform3d(target.get().getBestCameraToTarget()),
                             m_currentCameraOffset,
-                            m_targetEstimator.getRobotToCameraTransform().getY()
+                            m_targetEstimator.getRobotToCameraTransform().getY(),
+                            m_targetCam.getName()
                         ));
                     }
                 }
@@ -236,32 +245,6 @@ public class PhotonCameraWrapper{
         );
     }
 
-    /**
-     * DO NOT USE!  IT NO WORKEE
-     * 
-     * @param cam2Target
-     * @param robot2Cam
-     * @return a target info for shooting
-     * @deprecated use {@link #calculateTargetInfo(double, double, double, double)} instead
-     */
-    @Deprecated
-    private TargetInfo buildTargetInfo(Transform3d cam2Target, Transform3d robot2Cam){
-        // var r2c = robot2Cam.plus(new Transform3d(
-        //         new Translation3d(),
-        //         robot2Cam.getRotation().rotateBy(new Rotation3d(0.0,0.0,Math.PI))
-        //     ));
-        //invert the whole thing.
-        var r2c = robot2Cam.inverse();
-        //uninvert the Z.
-        r2c = new Transform3d(r2c.getX(), r2c.getY(), robot2Cam.getZ(), r2c.getRotation());
-        Transform3d robot2Target = cam2Target.plus(r2c);
-        TargetInfo t =  new TargetInfo(getDistanceFromTransform3d(robot2Target), 
-            robot2Target.getRotation().getAngle());
-        m_yawRadians = t.getYaw();
-
-        return t;
-    }
-
 
     public void unlockTargeting(){
         m_targetCam = null;
@@ -271,7 +254,7 @@ public class PhotonCameraWrapper{
         m_currentCameraOffset = 0;
     }
 
-    public TargetInfo calculateTargetInfo(double yawToTargetDegrees, double distanceToTargetMeters, double cameraYawOffset, double cameraYOffsetMeters){
+    public TargetInfo calculateTargetInfo(double yawToTargetDegrees, double distanceToTargetMeters, double cameraYawOffset, double cameraYOffsetMeters, String cameraName){
         //first offset the yaw by the camera angle and 90.
         yawToTargetDegrees = yawToTargetDegrees + cameraYawOffset + 90;
 
@@ -299,7 +282,7 @@ public class PhotonCameraWrapper{
         distance = Math.round(distance*100.0)/100.0;
         yaw = Math.round(yaw * 100.0)/100.0;
 
-        TargetInfo t = new TargetInfo(distance, yaw);
+        TargetInfo t = new TargetInfo(distance, yaw, cameraName);
 
         return t;
         
