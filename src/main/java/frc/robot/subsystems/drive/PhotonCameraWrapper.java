@@ -29,7 +29,6 @@ public class PhotonCameraWrapper{
     private boolean m_seesTarget;
     
     private double m_yawRadians;
-    private double m_currentCameraOffset;
 
     RobotState m_robotState = RobotState.getInstance();
 
@@ -75,10 +74,6 @@ public class PhotonCameraWrapper{
     
 
     public AprilTagFieldLayout layout;
-    private PhotonCamera  m_targetCam = null;
-    private PhotonPoseEstimator m_targetEstimator = null;
-    private Timer m_targetTimer = new Timer();
-    private double m_lockTimeSec = 0.2;
 
     public static enum Side {
         OUTTAKE_LEFT, OUTTAKE_RIGHT, INTAKE
@@ -87,8 +82,7 @@ public class PhotonCameraWrapper{
     public PhotonCameraWrapper() {
         
         try {
-            //TODO: Change as soon as possible
-            layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+            layout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
         } catch (UncheckedIOException e) {
             e.printStackTrace();
         }
@@ -159,65 +153,37 @@ public class PhotonCameraWrapper{
     }
 
     public Optional<TargetInfo> seekTarget(int id){
-        
-        //we're using a camera that was already locked on
-        if (null != m_targetCam){  
-            var result = m_robotState.getLatestPhotonVisionResult(m_targetCam.getName());
-            if(result != null){
-                Optional<PhotonTrackedTarget> target = lookForTarget(result, id);
-                if (target.isPresent()){
-                    m_targetTimer.restart();
-                return Optional.of(calculateTargetInfo(
-                        target.get().getYaw(), 
-                        getDistanceFromTransform3d(target.get().getBestCameraToTarget()),
-                        m_currentCameraOffset,
-                        m_targetEstimator.getRobotToCameraTransform().getY(),
-                        m_targetCam.getName()
-                        ));
-                }
-            }
 
-            //we didn't find it with the locked camera.
-            //if the timer has expired, go back to all cams.
-            if(m_targetTimer.hasElapsed(m_lockTimeSec)){
-                m_seesTarget = false;
-                m_yawRadians = 0;
-                m_targetCam = null;
-                m_targetEstimator = null;
-                m_targetTimer.stop();
-            }
-        } else { //no pre locked camera.  loop through them all.
-            PhotonCamera designatedCameras[] = CameraConstants.targetCameras.get(id);
-            for (int i = 0; i < designatedCameras.length; i++){
-                var newResult = m_robotState.getLatestPhotonVisionResult(designatedCameras[i].getName());
-                if(newResult != null){
-                    Optional<PhotonTrackedTarget> target = lookForTarget(newResult, id);
-                    if (target.isPresent()){
-                        m_seesTarget = true;
-                        m_targetCam = designatedCameras[i];
-                        m_targetEstimator = allEstimators[i];
-                        m_currentCameraOffset = CameraConstants.allCameraYawOffsetsDegrees[i];
-                        m_targetTimer.restart();
-                        //return Optional.of(new TargetInfo(getDistanceFromTransform3d(target.get().getBestCameraToTarget()), target.get().getYaw()));
-                        //return Optional.of(buildTargetInfo(target.get().getBestCameraToTarget(), m_targetEstimator.getRobotToCameraTransform()));
-                        return Optional.of(calculateTargetInfo(
-                            target.get().getYaw(), 
-                            getDistanceFromTransform3d(target.get().getBestCameraToTarget()),
-                            m_currentCameraOffset,
-                            m_targetEstimator.getRobotToCameraTransform().getY(),
-                            m_targetCam.getName()
-                        ));
-                    }
+        //loop through all cameras to find the one with least ambiguity
+        PhotonCamera designatedCameras[] = CameraConstants.targetCameras.get(id);
+        double minimumAmbiguity = 1;
+        int bestCamera = -1;
+        Optional<PhotonTrackedTarget> target = Optional.empty();
+        for (int i = 0; i < designatedCameras.length; i++){
+            var newResult = m_robotState.getLatestPhotonVisionResult(designatedCameras[i].getName());
+            if(newResult != null){
+                Optional<PhotonTrackedTarget> tempTarget = lookForTarget(newResult, id);
+                if(tempTarget.isPresent() && tempTarget.get().getPoseAmbiguity() < minimumAmbiguity){
+                    bestCamera = i;
+                    minimumAmbiguity = tempTarget.get().getPoseAmbiguity();
+                    target = tempTarget;
                 }
             }
         }
+
+        //the best camera, if any, is used
+        if(bestCamera != -1){
+            m_seesTarget = true;
+            return Optional.of(calculateTargetInfo(
+                target.get().getYaw(), 
+                getDistanceFromTransform3d(target.get().getBestCameraToTarget()),
+                CameraConstants.allCameraYawOffsetsDegrees[bestCamera],
+                allEstimators[bestCamera].getRobotToCameraTransform().getY(),
+                designatedCameras[bestCamera].getName()
+            ));
+        }
         
         //no targets found anywhere.
-        m_targetCam = null;
-        m_targetEstimator = null;
-        m_targetTimer.stop();
-        m_seesTarget = false;
-        m_currentCameraOffset = 0;
         return Optional.empty();
 
     }
@@ -249,15 +215,6 @@ public class PhotonCameraWrapper{
                 Math.pow(t.getX(), 2) + 
                 Math.pow(t.getY(), 2)
         );
-    }
-
-
-    public void unlockTargeting(){
-        m_targetCam = null;
-        m_targetEstimator = null;
-        m_yawRadians = 0.0;
-        m_targetTimer.stop();
-        m_currentCameraOffset = 0;
     }
 
     public TargetInfo calculateTargetInfo(double yawToTargetDegrees, double distanceToTargetMeters, double cameraYawOffset, double cameraYOffsetMeters, String cameraName){
