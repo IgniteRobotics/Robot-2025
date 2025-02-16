@@ -10,7 +10,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Preferences.DoublePreference;
+import frc.robot.Preferences;
+import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
@@ -26,12 +27,7 @@ public class AlignToTarget extends Command {
   private final int selectedTargetID;
   private final DoublePreference xError;
   
-  private DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", 0);
-  private DoublePreference alignRotKD = new DoublePreference("alignCommand/rotation/kD", 0);
-  private DoublePreference alignDriveXKP = new DoublePreference("alignCommand/drive/x/kP", 0);
-  private DoublePreference alignDriveXKD = new DoublePreference("alignCommand/drive/x/kD", 0);
-  private DoublePreference alignDriveYKP = new DoublePreference("alignCommand/drive/y/kP", 0);
-  private DoublePreference alignDriveYKD = new DoublePreference("alignCommand/drive/y/KD", 0);
+  
 
   PIDController rotationController;
   PIDController driveXController;
@@ -51,9 +47,9 @@ public class AlignToTarget extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    rotationController = new PIDController(alignRotKP.get(), 0, alignRotKD.get());
-    driveXController = new PIDController(alignDriveXKP.get(), 0, alignDriveXKD.get());
-    driveYController = new PIDController(alignDriveYKP.get(), 0, alignDriveYKD.get());
+    rotationController = new PIDController(Preferences.alignRotKP.get(), 0, Preferences.alignRotKD.get());
+    driveXController = new PIDController(Preferences.alignDriveXKP.get(), 0, Preferences.alignDriveXKD.get());
+    driveYController = new PIDController(Preferences.alignDriveYKP.get(), 0, Preferences.alignDriveYKD.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
