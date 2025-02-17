@@ -42,19 +42,19 @@ public class RobotContainer {
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    private final Telemetry logger = new Telemetry(TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond));
+    private final Telemetry logger = new Telemetry(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond));
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
-    public final double default_Max_Speed = TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond);
-    public final double maxAngularRate = TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED;
-    public final double deadband = TunerConstants.DrivetrainConstants.DEADBAND_FACTOR;
+    public final double default_Max_Speed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    public final double maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED;
+    public final double deadband = TunerConstants.DEADBAND_FACTOR;
     
     SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         .withDeadband(default_Max_Speed*deadband).withRotationalDeadband(maxAngularRate * deadband) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);;
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.DrivetrainConstants.createDrivetrain();
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     public final Elevator elevator = new Elevator();
 
