@@ -92,16 +92,15 @@ public class RobotContainer {
             )
         );
 
-        joystick.x().onTrue(AutoBuilder.followPath(createTestPath()));
-
-        /* 
+        //joystick.x().onTrue(AutoBuilder.followPath(createTestPath()));
+         
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
-        */
-        joystick.a().whileTrue(new RunCommand(() -> elevator.setPositionRevolutions(Preferences.elevatorPosition)));
-        joystick.b().onTrue(new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG)));
+
+        joystick.x().whileTrue(new RunCommand(() -> elevator.setPositionRevolutions(Preferences.elevatorPosition)));
+        joystick.y().onTrue(new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG)));
 
 
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
