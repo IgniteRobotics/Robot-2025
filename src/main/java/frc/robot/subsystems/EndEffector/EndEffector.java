@@ -14,6 +14,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Preferences;
 import frc.robot.RobotState;
 
 @Logged
@@ -93,11 +94,11 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void outtakeCoral(){
-    m_coralMotor.setVoltage(EndEffectorConstants.OUTTAKE_CORAL_VOLTAGE);
-  }
+    m_coralMotor.set(Preferences.endEffectorCoralOuttakePower.getValue());
+    }
 
   public void intakeCoral(){
-    m_coralMotor.setVoltage(EndEffectorConstants.INTAKE_CORAL_VOLTAGE);
+    m_coralMotor.set(Preferences.endEffectorCoralIntakePower.getValue());
   }
 
   public void stopCoralMotor(){

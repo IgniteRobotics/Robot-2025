@@ -28,4 +28,7 @@ public class EndEffectorConstants {
 
         public static final double INTAKE_CORAL_VOLTAGE = 1;
         public static final double OUTTAKE_CORAL_VOLTAGE = -1;
+
+        public static final double INTAKE_CORAL_POWER = 0.25;
+        public static final double OUTTAKE_CORAL_POWER = 0.25;
 }
