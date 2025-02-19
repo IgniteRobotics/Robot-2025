@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.controls.Follower;
 
 public class ElevatorConstants {
@@ -28,6 +29,7 @@ public class ElevatorConstants {
         public static final double ELEVATOR_kD = 0;
         public static final double ELEVATOR_kG = 0;
         public static final GravityTypeValue ELEVATOR_GRAVITY = GravityTypeValue.Elevator_Static;
+        public static final StaticFeedforwardSignValue ELEVATOR_FEEDFORWARD = StaticFeedforwardSignValue.UseClosedLoopSign;
 
         public static Slot0Configs createSlot0Configs(){ 
             Slot0Configs slot = new Slot0Configs();
@@ -38,7 +40,8 @@ public class ElevatorConstants {
             slot.kD = ELEVATOR_kD;
             slot.kG = ELEVATOR_kG;
             slot.GravityType = ELEVATOR_GRAVITY;
-           return slot; 
+            slot.StaticFeedforwardSign = ELEVATOR_FEEDFORWARD;
+            return slot; 
         }
 
         //SoftLimitConfig
