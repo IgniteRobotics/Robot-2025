@@ -7,13 +7,16 @@ import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.controls.Follower;
 
 public class ElevatorConstants {
         //Motor
         public static final int kElevatorMotorLeaderId = 6;
         public static final int kElevatorMotorFollowerId = 7;
         public static final TalonFX ELEVATOR_LEADER_MOTOR = new TalonFX(kElevatorMotorLeaderId);
-        public static final TalonFX ELEVATOR_FOLLOWER_MOTOR = new TalonFX(kElevatorMotorFollowerId);
+        public static final TalonFX ELEVATOR_FOLLOWER_MOTOR = new TalonFX(kElevatorMotorFollowerId){{
+            setControl(new Follower(kElevatorMotorLeaderId, false));
+        }};
 
 
         //Slot0Configs

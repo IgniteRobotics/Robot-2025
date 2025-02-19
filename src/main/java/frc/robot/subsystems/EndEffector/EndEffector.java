@@ -32,7 +32,7 @@ public class EndEffector extends SubsystemBase {
     m_coralMotor = new TalonFX(EndEffectorConstants.kCoralMotorId);
     m_algaeMotor = new TalonFX(EndEffectorConstants.kAlgaeMotorId);
     m_wristMotor = new TalonFX(EndEffectorConstants.kWristMotorId);
-    m_beambreak = new CANrange(EndEffectorConstants.kBeamBreakId, "canivore");
+    m_beambreak = new CANrange(EndEffectorConstants.kBeamBreakId, "Default Name");
   }
 
   public void configureCoralMotor(){
