@@ -39,13 +39,13 @@ public class ElevatorConstants {
         }
 
         //SoftLimitConfig
-        public static final double ELEVATOR_FORWARD_SOFT_LIMIT = 100;
-        public static final double ELEVATOR_REVERSE_SOFT_LIMIT = 0;
+        public static final double ELEVATOR_FORWARD_SOFT_LIMIT = 22.5;
+        public static final double ELEVATOR_REVERSE_SOFT_LIMIT = 0.25;
 
         public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
             SoftwareLimitSwitchConfigs newConfigs = new SoftwareLimitSwitchConfigs();
-            newConfigs.ForwardSoftLimitEnable = false;
-            newConfigs.ReverseSoftLimitEnable = false;
+            newConfigs.ForwardSoftLimitEnable = true;
+            newConfigs.ReverseSoftLimitEnable = true;
             newConfigs.ForwardSoftLimitThreshold = ELEVATOR_FORWARD_SOFT_LIMIT;
              newConfigs.ReverseSoftLimitThreshold = ELEVATOR_REVERSE_SOFT_LIMIT;
                 return newConfigs;
