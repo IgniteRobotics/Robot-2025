@@ -16,7 +16,7 @@ public class ElevatorConstants {
         public static final int kElevatorMotorFollowerId = 7;
         public static final TalonFX ELEVATOR_LEADER_MOTOR = new TalonFX(kElevatorMotorLeaderId);
         public static final TalonFX ELEVATOR_FOLLOWER_MOTOR = new TalonFX(kElevatorMotorFollowerId){{
-        //    setControl(new Follower(kElevatorMotorLeaderId, true));
+            setControl(new Follower(kElevatorMotorLeaderId, true));
         }};
 
 
@@ -58,9 +58,18 @@ public class ElevatorConstants {
         }
 
         //MotionMagicConfigs
+        public static final double ELEVATOR_MM_JERK = 1;
+        public static final double ELEVATOR_MM_ACCEL = 1;
+        public static final double ELEVATOR_MM_CRUISE_VELOCITY = 1;
+        public static final double ELEVATOR_MM_kV = 0.1;
+        public static final double ELEVATOR_MM_kA = 0.1;
         public static MotionMagicConfigs createMotionMagicConfigs(){
             MotionMagicConfigs newConfigs = new MotionMagicConfigs();
-            //TODO: ADD MORE IF NECESSARY
+            newConfigs.MotionMagicJerk = ELEVATOR_MM_JERK;
+            newConfigs.MotionMagicAcceleration = ELEVATOR_MM_ACCEL;
+            newConfigs.MotionMagicCruiseVelocity = ELEVATOR_MM_CRUISE_VELOCITY;
+            newConfigs.MotionMagicExpo_kV = ELEVATOR_MM_kV;
+            newConfigs.MotionMagicExpo_kA = ELEVATOR_MM_kA;
             return newConfigs;
         }
 

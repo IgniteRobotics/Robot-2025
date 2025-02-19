@@ -26,6 +26,9 @@ public class Preferences {
     public static DoublePreference elevatorkS = new DoublePreference("Elevator/kS", ElevatorConstants.ELEVATOR_kS);
     public static DoublePreference elevatorPosition = new DoublePreference("Elevator/Position", 0);
 
-
-
+    public static DoublePreference elevatorMMJerk = new DoublePreference("Elevator/Motion Magic/Jerk", ElevatorConstants.ELEVATOR_MM_JERK);
+    public static DoublePreference elevatorMMAccel = new DoublePreference("Elevator/Motion Magic/Acceleration", ElevatorConstants.ELEVATOR_MM_ACCEL);
+    public static DoublePreference elevatorMMCruiseVelocity = new DoublePreference("Elevator/Motion Magic/Cruise Velocity", ElevatorConstants.ELEVATOR_MM_CRUISE_VELOCITY);
+    public static DoublePreference elevatorMMkV = new DoublePreference("Elevator/Motion Magic/kV", ElevatorConstants.ELEVATOR_MM_kV);
+    public static DoublePreference elevatorMMkA = new DoublePreference("Elevator/Motion Magic/Jerk", ElevatorConstants.ELEVATOR_MM_kA);
 }

@@ -104,7 +104,7 @@ public class RobotContainer {
 
         SmartDashboard.putData("Elevator to preset", new RunCommand(() -> elevator.setPositionRevolutions(Preferences.elevatorPosition)));
         SmartDashboard.putData("Set Elevator PID", new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG, Preferences.elevatorkS)));
-
+        SmartDashboard.putData("Set Elevator Motion Magic Configs", new InstantCommand(() -> elevator.setElevatorMotionMagic(Preferences.elevatorMMCruiseVelocity, Preferences.elevatorMMAccel, Preferences.elevatorMMJerk, Preferences.elevatorMMkV, Preferences.elevatorMMkA)));
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );
