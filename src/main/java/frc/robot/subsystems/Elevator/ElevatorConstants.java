@@ -15,7 +15,7 @@ public class ElevatorConstants {
         public static final int kElevatorMotorFollowerId = 7;
         public static final TalonFX ELEVATOR_LEADER_MOTOR = new TalonFX(kElevatorMotorLeaderId);
         public static final TalonFX ELEVATOR_FOLLOWER_MOTOR = new TalonFX(kElevatorMotorFollowerId){{
-            setControl(new Follower(kElevatorMotorLeaderId, false));
+            setControl(new Follower(kElevatorMotorLeaderId, true));
         }};
 
 

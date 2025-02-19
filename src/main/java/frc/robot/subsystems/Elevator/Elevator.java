@@ -100,12 +100,12 @@ public class Elevator implements Subsystem {
 
   }
 
-  public void setElevatorPID(DoublePreference P, DoublePreference D, DoublePreference I, DoublePreference G){
+  public void setElevatorPID(DoublePreference P, DoublePreference D, DoublePreference I, DoublePreference G, DoublePreference S){
     m_Slot0Configs = new Slot0Configs();
 
     m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
 
-    m_Slot0Configs.withKP(P.getValue()).withKD(D.getValue()).withKI(I.getValue()).withKG(G.getValue());
+    m_Slot0Configs.withKP(P.getValue()).withKD(D.getValue()).withKI(I.getValue()).withKG(G.getValue()).withKS(S.getValue());
 
     m_elevatorMotorLeader.getConfigurator().apply(m_Slot0Configs);
     m_elevatorMotorFollower.getConfigurator().apply(m_Slot0Configs);
@@ -137,6 +137,13 @@ public class Elevator implements Subsystem {
     m_Slot0Configs = new Slot0Configs();
     m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
     return m_Slot0Configs.kG;
+  }
+
+  @Logged(name = "Actual kS", importance = Importance.CRITICAL)
+  public double getElevatorkS(){
+    m_Slot0Configs = new Slot0Configs();
+    m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+    return m_Slot0Configs.kS;
   }
 
   @Logged(name = "Voltage", importance = Importance.CRITICAL)
