@@ -108,7 +108,7 @@ public class Elevator implements Subsystem {
     m_Slot0Configs.withKP(P.getValue()).withKD(D.getValue()).withKI(I.getValue()).withKG(G.getValue()).withKS(S.getValue());
 
     m_elevatorMotorLeader.getConfigurator().apply(m_Slot0Configs);
-    m_elevatorMotorFollower.getConfigurator().apply(m_Slot0Configs);
+    //m_elevatorMotorFollower.getConfigurator().apply(m_Slot0Configs);
   }
 
   @Logged(name = "Actual kP", importance = Importance.CRITICAL)
