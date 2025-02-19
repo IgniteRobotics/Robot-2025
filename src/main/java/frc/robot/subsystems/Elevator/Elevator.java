@@ -60,6 +60,8 @@ public class Elevator implements Subsystem {
     m_followerMotorConfig = ElevatorConstants.createFollowerMotorOutputConfigs();
     m_elevatorMotorFollower.getConfigurator().apply(m_followerMotorConfig);
 
+    reset();
+
   }
 
   @NotLogged
