@@ -82,6 +82,11 @@ public class Elevator implements Subsystem {
     return((getPosition() - ElevatorConstants.POSITION_ERROR < position) && (getPosition()+ElevatorConstants.POSITION_ERROR > position));
   }
 
+  public void reset(){
+    m_elevatorMotorLeader.setPosition(0);
+    m_elevatorMotorFollower.setPosition(0);
+  }
+
 
   @Override
   public void periodic() {
