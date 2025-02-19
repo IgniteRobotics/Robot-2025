@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.epilogue.Logged;
@@ -67,7 +68,8 @@ public class Elevator implements Subsystem {
   @NotLogged
   public void setPositionRevolutions(double position) {
     m_targetPosition = position;
-    m_elevatorMotorLeader.setControl(m_MMPosition.withPosition(position).withSlot(0));
+    //m_elevatorMotorLeader.setControl(m_MMPosition.withPosition(position).withSlot(0));
+    m_elevatorMotorLeader.setControl(new PositionVoltage(position));
   }
   
   @NotLogged
