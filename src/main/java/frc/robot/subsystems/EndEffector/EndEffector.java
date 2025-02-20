@@ -107,7 +107,11 @@ public class EndEffector extends SubsystemBase {
   public void configureCANrange(){
     ProximityParamsConfigs proximityParamsConfigs = new ProximityParamsConfigs();
     m_beambreak.getConfigurator().refresh(proximityParamsConfigs);
-    m_beambreak.getConfigurator().apply(proximityParamsConfigs.withProximityThreshold(Units.Inches.of(.5)));
+    m_beambreak.getConfigurator().apply(
+      proximityParamsConfigs
+        .withProximityThreshold(Units.Inches.of(.5))
+        .withProximityHysteresis(Units.Inches.of(.5))
+        );
   }
 
   public void outtakeCoral(){
