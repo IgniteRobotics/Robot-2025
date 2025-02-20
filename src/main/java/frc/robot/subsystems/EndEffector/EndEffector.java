@@ -6,6 +6,7 @@ package frc.robot.subsystems.EndEffector;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.ProximityParamsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -14,6 +15,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Preferences;
 import frc.robot.RobotState;
@@ -34,7 +38,10 @@ public class EndEffector extends SubsystemBase {
     m_coralMotor = new TalonFX(EndEffectorConstants.kCoralMotorId);
     m_algaeMotor = new TalonFX(EndEffectorConstants.kAlgaeMotorId);
     m_wristMotor = new TalonFX(EndEffectorConstants.kWristMotorId);
-    m_beambreak = new CANrange(EndEffectorConstants.kBeamBreakId, "Default Name");
+    m_beambreak = new CANrange(EndEffectorConstants.kBeamBreakId);
+    
+    configureCoralMotor();
+    configureCANrange();
   }
 
   public void configureCoralMotor(){
@@ -97,6 +104,13 @@ public class EndEffector extends SubsystemBase {
       newConfigs.ReverseSoftLimitThreshold = WRIST_REVERSE_SOFT_LIMIT;
   }
 
+  public void configureCANrange(){
+    ProximityParamsConfigs proximityParamsConfigs = new ProximityParamsConfigs();
+    m_beambreak.getConfigurator().refresh(proximityParamsConfigs);
+    proximityParamsConfigs.withProximityThreshold(Units.Inches.of(.5));
+    m_beambreak.getConfigurator().apply(proximityParamsConfigs);
+  }
+
   public void outtakeCoral(){
     m_coralMotor.set(Preferences.endEffectorCoralOuttakePower.getValue());
     }
@@ -110,13 +124,13 @@ public class EndEffector extends SubsystemBase {
   }
 
   @Logged
-  public boolean hasCoral(){
+  public boolean seesCoral(){
     return m_beambreak.getIsDetected().getValue();
   }
 
   @Override
   public void periodic() {
-    if(hasCoral()){
+    if(seesCoral()){
         m_robotState.setHasCoral(true);
     }
     else m_robotState.setHasCoral(false);
