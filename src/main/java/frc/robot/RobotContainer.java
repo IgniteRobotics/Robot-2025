@@ -113,10 +113,33 @@ public class RobotContainer {
         SmartDashboard.putData("Set Elevator Motion Magic Configs", new InstantCommand(() -> elevator.setElevatorMotionMagic(Preferences.elevatorMMCruiseVelocity, Preferences.elevatorMMAccel, Preferences.elevatorMMJerk, Preferences.elevatorMMkV, Preferences.elevatorMMkA)));
         
         SmartDashboard.putData("Elevator Ground", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
-        SmartDashboard.putData("Elevator Trough", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.TROUGH.position)));
-        SmartDashboard.putData("Elevator Level 2", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_2.position)));
-        SmartDashboard.putData("Elevator Level 3", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_3.position)));
-        SmartDashboard.putData("Elevator Level 4", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_4.position)));
+        SmartDashboard.putData("Elevator Trough", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.TROUGH.position))
+            .until(() -> elevator.atSetpoint())
+            .andThen( new RunCommand(() -> endEffector.outtakeCoral())
+            .withTimeout(1)
+            .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
+            );
+        SmartDashboard.putData("Elevator Level 2", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_2.position))
+            .until(() -> elevator.atSetpoint())
+            .andThen( new RunCommand(() -> endEffector.outtakeCoral())
+            .withTimeout(1)
+            .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
+            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
+            );
+        SmartDashboard.putData("Elevator Level 3", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_3.position))
+            .until(() -> elevator.atSetpoint())
+            .andThen( new RunCommand(() -> endEffector.outtakeCoral())
+            .withTimeout(1)
+            .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
+            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
+            );
+        SmartDashboard.putData("Elevator Level 4", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_4.position))
+            .until(() -> elevator.atSetpoint())
+            .andThen( new RunCommand(() -> endEffector.outtakeCoral())
+            .withTimeout(1)
+            .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
+            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
+            );
 
         SmartDashboard.putData("Outtake", new RunCommand(() -> endEffector.outtakeCoral()).withTimeout(1).andThen(new InstantCommand(() -> endEffector.stopCoralMotor())));
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->

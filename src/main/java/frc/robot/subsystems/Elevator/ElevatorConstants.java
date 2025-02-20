@@ -103,6 +103,6 @@ public class ElevatorConstants {
             }
         }
 
-        public static double POSITION_ERROR = 0.01;
+        public static double POSITION_ERROR = 0.1;
 }
 

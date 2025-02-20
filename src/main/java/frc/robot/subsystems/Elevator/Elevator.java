@@ -81,9 +81,10 @@ public class Elevator implements Subsystem {
   public double getPosition(){
     return m_elevatorMotorLeader.getPosition().getValueAsDouble();
   }
-
-  public boolean atSetpoint(double position){
-    return((getPosition() - ElevatorConstants.POSITION_ERROR < position) && (getPosition()+ElevatorConstants.POSITION_ERROR > position));
+  
+  @Logged
+  public boolean atSetpoint(){
+    return((getPosition() - ElevatorConstants.POSITION_ERROR < m_targetPosition) && (getPosition()+ElevatorConstants.POSITION_ERROR > m_targetPosition));
   }
 
   public void reset(){
