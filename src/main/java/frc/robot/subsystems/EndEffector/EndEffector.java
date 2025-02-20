@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -41,6 +42,9 @@ public class EndEffector extends SubsystemBase {
       MotionMagicConfigs m_motionMagicConfigs = new MotionMagicConfigs();
       MotorOutputConfigs m_motorConfig = new MotorOutputConfigs();
       TalonFXConfiguration m_fxCfg = new TalonFXConfiguration();
+
+      m_coralMotor.getConfigurator().refresh(m_motorConfig);
+      m_motorConfig.withInverted(InvertedValue.Clockwise_Positive);
 
       Slot0Configs slot = new Slot0Configs();
       slot.kV = EndEffectorConstants.CORAL_kV;
