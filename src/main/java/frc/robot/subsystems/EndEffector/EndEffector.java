@@ -33,6 +33,8 @@ public class EndEffector extends SubsystemBase {
 
   private final RobotState m_robotState = RobotState.getInstance();
 
+  private boolean m_lastSeesCoral = false;
+
   /** Creates a new EndEffector. */
   public EndEffector() {
     m_coralMotor = new TalonFX(EndEffectorConstants.kCoralMotorId);
@@ -133,9 +135,11 @@ public class EndEffector extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(seesCoral()){
-        m_robotState.setHasCoral(true);
+    if (!seesCoral() && m_lastSeesCoral){
+      m_robotState.setHasCoral(true);
+      m_lastSeesCoral = false;
+    } else{
+      m_lastSeesCoral = true;
     }
-    else m_robotState.setHasCoral(false);
   }
 }
