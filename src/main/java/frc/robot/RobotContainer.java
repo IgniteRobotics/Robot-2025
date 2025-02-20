@@ -107,13 +107,13 @@ public class RobotContainer {
         SmartDashboard.putData("Set Elevator PID", new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG, Preferences.elevatorkS)));
         SmartDashboard.putData("Set Elevator Motion Magic Configs", new InstantCommand(() -> elevator.setElevatorMotionMagic(Preferences.elevatorMMCruiseVelocity, Preferences.elevatorMMAccel, Preferences.elevatorMMJerk, Preferences.elevatorMMkV, Preferences.elevatorMMkA)));
         
-        SmartDashboard.putData("Elevator Ground", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
-        SmartDashboard.putData("Elevator Trough", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.TROUGH.position)));
-        SmartDashboard.putData("Elevator Level 2", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_2.position)));
-        SmartDashboard.putData("Elevator Level 3", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_3.position)));
-        SmartDashboard.putData("Elevator Level 4", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_4.position)));
+        SmartDashboard.putData("Elevator Ground", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
+        SmartDashboard.putData("Elevator Trough", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.TROUGH.position)));
+        SmartDashboard.putData("Elevator Level 2", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_2.position)));
+        SmartDashboard.putData("Elevator Level 3", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_3.position)));
+        SmartDashboard.putData("Elevator Level 4", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_4.position)));
 
-        SmartDashboard.putData("Outtake", new RunCommand(() -> endEffector.outtakeCoral()).withTimeout(1));
+        SmartDashboard.putData("Outtake", new RunCommand(() -> endEffector.outtakeCoral()).withTimeout(1).andThen(new InstantCommand(() -> endEffector.stopCoralMotor())));
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );
