@@ -30,9 +30,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.drive.AlignToTarget;
+import frc.robot.commands.endeffector.AutoIngestCoral;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.EndEffector.EndEffector;
 @Logged
 public class RobotContainer {
@@ -42,25 +44,27 @@ public class RobotContainer {
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    private final Telemetry logger = new Telemetry(TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond));
+    private final Telemetry logger = new Telemetry(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond));
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
-    public final double default_Max_Speed = TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond);
-    public final double maxAngularRate = TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED;
-    public final double deadband = TunerConstants.DrivetrainConstants.DEADBAND_FACTOR;
+    public final double default_Max_Speed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    public final double maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED;
+    public final double deadband = TunerConstants.DEADBAND_FACTOR;
     
     SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         .withDeadband(default_Max_Speed*deadband).withRotationalDeadband(maxAngularRate * deadband) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);;
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.DrivetrainConstants.createDrivetrain();
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     public final Elevator elevator = new Elevator();
 
     public final EndEffector endEffector = new EndEffector();
 
     private final Command alignTest = new AlignToTarget(drivetrain,drivetrain.m_photonCameraWrapper, 12, Preferences.alignDistanceAdjustment);
+
+    private final Command autoIngestCoral = new AutoIngestCoral(endEffector);
 
 
     /* Path follower */
@@ -92,18 +96,52 @@ public class RobotContainer {
             )
         );
 
-        joystick.x().onTrue(AutoBuilder.followPath(createTestPath()));
+        endEffector.setDefaultCommand(autoIngestCoral);
 
-        /* 
+        //joystick.x().onTrue(AutoBuilder.followPath(createTestPath()));
+         
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
-        */
-        joystick.a().whileTrue(new RunCommand(() -> elevator.setPositionRevolutions(Preferences.elevatorPosition)));
-        joystick.b().onTrue(new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG)));
 
+        //joystick.x().whileTrue(new RunCommand(() -> elevator.setPositionRevolutions(Preferences.elevatorPosition)));
+        //joystick.y().onTrue(new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG)));
 
+        SmartDashboard.putData("Elevator to preset", new RunCommand(() -> elevator.setPositionRevolutions(Preferences.elevatorPosition)));
+        SmartDashboard.putData("Set Elevator PID", new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG, Preferences.elevatorkS)));
+        SmartDashboard.putData("Set Elevator Motion Magic Configs", new InstantCommand(() -> elevator.setElevatorMotionMagic(Preferences.elevatorMMCruiseVelocity, Preferences.elevatorMMAccel, Preferences.elevatorMMJerk, Preferences.elevatorMMkV, Preferences.elevatorMMkA)));
+        
+        SmartDashboard.putData("Elevator Ground", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
+        SmartDashboard.putData("Elevator Trough", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.TROUGH.position))
+            .until(() -> elevator.atSetpoint())
+            .andThen( new RunCommand(() -> endEffector.outtakeCoral())
+            .withTimeout(1)
+            .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
+            );
+        SmartDashboard.putData("Elevator Level 2", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_2.position))
+            .until(() -> elevator.atSetpoint())
+            .andThen( new RunCommand(() -> endEffector.outtakeCoral())
+            .withTimeout(1)
+            .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
+            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
+            );
+        SmartDashboard.putData("Elevator Level 3", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_3.position))
+            .until(() -> elevator.atSetpoint())
+            .andThen( new RunCommand(() -> endEffector.outtakeCoral())
+            .withTimeout(1)
+            .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
+            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
+            );
+        SmartDashboard.putData("Elevator Level 4", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_4.position))
+            .until(() -> elevator.atSetpoint())
+            .andThen( new RunCommand(() -> endEffector.outtakeCoral())
+            .withTimeout(1)
+            .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
+            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
+            );
+
+        SmartDashboard.putData("Outtake", new RunCommand(() -> endEffector.outtakeCoral()).withTimeout(1).andThen(new InstantCommand(() -> endEffector.stopCoralMotor())));
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );

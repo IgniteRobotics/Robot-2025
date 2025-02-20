@@ -78,7 +78,7 @@ public class RobotState {
     @Logged(name = "Max Speed", importance = Importance.CRITICAL)
     public double getMaxSpeed(){
         if(getZone() == null){
-            return TunerConstants.DrivetrainConstants.kSpeedAt12Volts.in(MetersPerSecond);
+            return TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
         }
         else return getZone().maxSpeed.doubleValue();
     }
@@ -86,7 +86,7 @@ public class RobotState {
     @Logged(name = "Max Rotation", importance = Importance.CRITICAL)
     public double getMaxRotation(){
         if(getZone() == null){
-            return TunerConstants.DrivetrainConstants.MAX_ANGULAR_SPEED;
+            return TunerConstants.MAX_ANGULAR_SPEED;
         }
         else return getZone().maxRotation.doubleValue();
     }

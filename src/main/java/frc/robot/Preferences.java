@@ -6,10 +6,12 @@ package frc.robot;
 
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
+import frc.robot.subsystems.EndEffector.EndEffectorConstants;
 
 /** Add your docs here. */
 public class Preferences {
 
+    // ********** Drive **********
     public static DoublePreference alignDistanceAdjustment = new DoublePreference("alignCommand/distanceAdjustment");
 
     public static DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", 0);
@@ -19,12 +21,23 @@ public class Preferences {
     public static DoublePreference alignDriveYKP = new DoublePreference("alignCommand/drive/y/kP", 0);
     public static DoublePreference alignDriveYKD = new DoublePreference("alignCommand/drive/y/KD", 0);
 
+    // ********** Elevator **********
+    public static DoublePreference elevatorkV = new DoublePreference("Elevator/kV", ElevatorConstants.ELEVATOR_kV);
     public static DoublePreference elevatorkP = new DoublePreference("Elevator/kP", ElevatorConstants.ELEVATOR_kP);
     public static DoublePreference elevatorkI = new DoublePreference("Elevator/kI", ElevatorConstants.ELEVATOR_kI);
     public static DoublePreference elevatorkD = new DoublePreference("Elevator/kD", ElevatorConstants.ELEVATOR_kD);
     public static DoublePreference elevatorkG = new DoublePreference("Elevator/kG", ElevatorConstants.ELEVATOR_kG);
+    public static DoublePreference elevatorkS = new DoublePreference("Elevator/kS", ElevatorConstants.ELEVATOR_kS);
     public static DoublePreference elevatorPosition = new DoublePreference("Elevator/Position", 0);
 
-
-
+    public static DoublePreference elevatorMMJerk = new DoublePreference("Elevator/Motion Magic/Jerk", ElevatorConstants.ELEVATOR_MM_JERK);
+    public static DoublePreference elevatorMMAccel = new DoublePreference("Elevator/Motion Magic/Acceleration", ElevatorConstants.ELEVATOR_MM_ACCEL);
+    public static DoublePreference elevatorMMCruiseVelocity = new DoublePreference("Elevator/Motion Magic/Cruise Velocity", ElevatorConstants.ELEVATOR_MM_CRUISE_VELOCITY);
+    public static DoublePreference elevatorMMkV = new DoublePreference("Elevator/Motion Magic/kV", ElevatorConstants.ELEVATOR_MM_kV);
+    public static DoublePreference elevatorMMkA = new DoublePreference("Elevator/Motion Magic/Jerk", ElevatorConstants.ELEVATOR_MM_kA);
+    
+    // ********** End Effector **********
+    public static DoublePreference endEffectorCoralIntakePower = new DoublePreference("EndEffector/Coral/IntakePower", EndEffectorConstants.INTAKE_CORAL_POWER);
+    public static DoublePreference endEffectorCoralOuttakePower = new DoublePreference("EndEffector/Coral/OuttakePower", EndEffectorConstants.OUTTAKE_CORAL_POWER);
+    
 }

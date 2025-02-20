@@ -7,24 +7,31 @@ import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+import com.ctre.phoenix6.controls.Follower;
 
 public class ElevatorConstants {
         //Motor
         public static final int kElevatorMotorLeaderId = 6;
         public static final int kElevatorMotorFollowerId = 7;
         public static final TalonFX ELEVATOR_LEADER_MOTOR = new TalonFX(kElevatorMotorLeaderId);
-        public static final TalonFX ELEVATOR_FOLLOWER_MOTOR = new TalonFX(kElevatorMotorFollowerId);
+        public static final TalonFX ELEVATOR_FOLLOWER_MOTOR = new TalonFX(kElevatorMotorFollowerId){{
+            setControl(new Follower(kElevatorMotorLeaderId, true));
+        }};
 
 
         //Slot0Configs
 
+        //with coral
         public static final double ELEVATOR_kV = 0;
-        public static final double ELEVATOR_kS = 0;
-        public static final double ELEVATOR_kP = 0;
+        public static final double ELEVATOR_kS = 0.5;
+        public static final double ELEVATOR_kP = 7;
         public static final double ELEVATOR_kI = 0;
-        public static final double ELEVATOR_kD = 0;
-        public static final double ELEVATOR_kG = 0;
+        public static final double ELEVATOR_kD = 0.25;
+        public static final double ELEVATOR_kG = 0.5;
         public static final GravityTypeValue ELEVATOR_GRAVITY = GravityTypeValue.Elevator_Static;
+        public static final StaticFeedforwardSignValue ELEVATOR_FEEDFORWARD = StaticFeedforwardSignValue.UseClosedLoopSign;
 
         public static Slot0Configs createSlot0Configs(){ 
             Slot0Configs slot = new Slot0Configs();
@@ -35,26 +42,36 @@ public class ElevatorConstants {
             slot.kD = ELEVATOR_kD;
             slot.kG = ELEVATOR_kG;
             slot.GravityType = ELEVATOR_GRAVITY;
-           return slot; 
+            slot.StaticFeedforwardSign = ELEVATOR_FEEDFORWARD;
+            return slot; 
         }
 
         //SoftLimitConfig
-        public static final double ELEVATOR_FORWARD_SOFT_LIMIT = 100;
-        public static final double ELEVATOR_REVERSE_SOFT_LIMIT = 0;
+        public static final double ELEVATOR_FORWARD_SOFT_LIMIT = 26;
+        public static final double ELEVATOR_REVERSE_SOFT_LIMIT = 0.25;
 
         public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
             SoftwareLimitSwitchConfigs newConfigs = new SoftwareLimitSwitchConfigs();
-            newConfigs.ForwardSoftLimitEnable = false;
-            newConfigs.ReverseSoftLimitEnable = false;
+            newConfigs.ForwardSoftLimitEnable = true;
+            newConfigs.ReverseSoftLimitEnable = true;
             newConfigs.ForwardSoftLimitThreshold = ELEVATOR_FORWARD_SOFT_LIMIT;
              newConfigs.ReverseSoftLimitThreshold = ELEVATOR_REVERSE_SOFT_LIMIT;
                 return newConfigs;
         }
 
         //MotionMagicConfigs
+        public static final double ELEVATOR_MM_JERK = 2000;
+        public static final double ELEVATOR_MM_ACCEL = 200;
+        public static final double ELEVATOR_MM_CRUISE_VELOCITY = 100;
+        public static final double ELEVATOR_MM_kV = 0.1;
+        public static final double ELEVATOR_MM_kA = 0.1;
         public static MotionMagicConfigs createMotionMagicConfigs(){
             MotionMagicConfigs newConfigs = new MotionMagicConfigs();
-            //TODO: ADD MORE IF NECESSARY
+            newConfigs.MotionMagicJerk = ELEVATOR_MM_JERK;
+            newConfigs.MotionMagicAcceleration = ELEVATOR_MM_ACCEL;
+            newConfigs.MotionMagicCruiseVelocity = ELEVATOR_MM_CRUISE_VELOCITY;
+            newConfigs.MotionMagicExpo_kV = ELEVATOR_MM_kV;
+            newConfigs.MotionMagicExpo_kA = ELEVATOR_MM_kA;
             return newConfigs;
         }
 
@@ -62,28 +79,30 @@ public class ElevatorConstants {
         public static MotorOutputConfigs createLeaderMotorOutputConfigs(){
             MotorOutputConfigs newConfigs = new MotorOutputConfigs();
             newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+            newConfigs.NeutralMode = NeutralModeValue.Brake;
             return newConfigs;
         }
 
         public static MotorOutputConfigs createFollowerMotorOutputConfigs(){
             MotorOutputConfigs newConfigs = new MotorOutputConfigs();
             newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+            newConfigs.NeutralMode = NeutralModeValue.Brake;
             return newConfigs;
         }
 
         public enum FLOOR{
-            GROUND(0),
-            TROUGH(1),
-            LEVEL_2(2),
-            LEVEL_3(3),
-            LEVEL_4(4);
+            GROUND(0.25),
+            TROUGH(4.61),
+            LEVEL_2(7.40),
+            LEVEL_3(15.13),
+            LEVEL_4(25.68);
 
-            public final int height;
-            FLOOR(int value){
-                height = value;
+            public final double position;
+            FLOOR(double value){
+                position = value;
             }
         }
 
-        public static double POSITION_ERROR = 0.01;
+        public static double POSITION_ERROR = 0.1;
 }
 
