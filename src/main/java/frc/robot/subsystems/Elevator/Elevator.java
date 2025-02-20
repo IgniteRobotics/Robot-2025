@@ -69,7 +69,7 @@ public class Elevator implements Subsystem {
   public void setPositionRevolutions(double position) {
     m_targetPosition = position;
     //m_elevatorMotorLeader.setControl(m_MMPosition.withPosition(position).withSlot(0));
-    m_elevatorMotorLeader.setControl(new PositionVoltage(position));
+    m_elevatorMotorLeader.setControl(m_MMPosition.withPosition(position).withSlot(0));
   }
   
   @NotLogged
