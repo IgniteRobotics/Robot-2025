@@ -33,6 +33,7 @@ import frc.robot.commands.drive.AlignToTarget;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.EndEffector.EndEffector;
 @Logged
 public class RobotContainer {
@@ -105,6 +106,14 @@ public class RobotContainer {
         SmartDashboard.putData("Elevator to preset", new RunCommand(() -> elevator.setPositionRevolutions(Preferences.elevatorPosition)));
         SmartDashboard.putData("Set Elevator PID", new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG, Preferences.elevatorkS)));
         SmartDashboard.putData("Set Elevator Motion Magic Configs", new InstantCommand(() -> elevator.setElevatorMotionMagic(Preferences.elevatorMMCruiseVelocity, Preferences.elevatorMMAccel, Preferences.elevatorMMJerk, Preferences.elevatorMMkV, Preferences.elevatorMMkA)));
+        
+        SmartDashboard.putData("Elevator Ground", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
+        SmartDashboard.putData("Elevator Trough", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.TROUGH.position)));
+        SmartDashboard.putData("Elevator Level 2", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_2.position)));
+        SmartDashboard.putData("Elevator Level 3", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_3.position)));
+        SmartDashboard.putData("Elevator Level 4", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_4.position)));
+
+        SmartDashboard.putData("Outtake", new RunCommand(() -> endEffector.outtakeCoral()).withTimeout(1));
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );
