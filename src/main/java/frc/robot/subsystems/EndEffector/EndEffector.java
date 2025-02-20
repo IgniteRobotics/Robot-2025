@@ -109,8 +109,8 @@ public class EndEffector extends SubsystemBase {
     m_beambreak.getConfigurator().refresh(proximityParamsConfigs);
     m_beambreak.getConfigurator().apply(
       proximityParamsConfigs
-        .withProximityThreshold(Units.Inches.of(.5))
-        .withProximityHysteresis(Units.Inches.of(.5))
+        .withProximityThreshold(Units.Inches.of(1))
+        .withProximityHysteresis(Units.Inches.of(1.25))
         );
   }
 
