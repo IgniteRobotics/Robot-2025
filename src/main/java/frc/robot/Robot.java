@@ -116,16 +116,24 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testExit() {}
-  
-  @Override
-  public void simulationPeriodic() {
-
-  }
 
   //Alerts
-  Alert alert = new Alert("test alert", AlertType.kInfo);
- 
-    periodic(){
-      alert.set(hasAlliance);
-    }
+  Alert test = new Alert("test alert", AlertType.kInfo);
+  private boolean flash = false;
+  double startTime; 
+
+  @Override
+  public void simulationPeriodic() {
+    test.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
+      if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+        startTime = System.currentTimeMillis();
+        if(System.currentTimeMillis() - startTime < 0.5){
+        flash = true;
+        } else if(System.currentTimeMillis() - startTime < 1){
+        flash = false;
+        } else if(System.currentTimeMillis() - startTime == 1){
+          startTime = System.currentTimeMillis();
+        }
+      }
+  }
 }
