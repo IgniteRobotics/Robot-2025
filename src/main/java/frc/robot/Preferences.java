@@ -6,8 +6,8 @@ package frc.robot;
 
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.subsystems.climber.ClimberConstants;
-import frc.robot.subsystems.elevator.ElevatorConstants;
-import frc.robot.subsystems.endeffector.EndEffectorConstants;
+import frc.robot.subsystems.Elevator.ElevatorConstants;
+import frc.robot.subsystems.EndEffector.EndEffectorConstants;
 
 /** Add your docs here. */
 public class Preferences {

@@ -33,9 +33,9 @@ import frc.robot.commands.drive.AlignToTarget;
 import frc.robot.commands.endeffector.AutoIngestCoral;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.elevator.ElevatorConstants;
-import frc.robot.subsystems.endeffector.EndEffector;
+import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.ElevatorConstants;
+import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberConstants;
 @Logged

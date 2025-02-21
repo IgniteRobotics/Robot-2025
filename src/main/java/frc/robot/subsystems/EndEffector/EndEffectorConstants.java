@@ -1,4 +1,4 @@
-package frc.robot.subsystems.endeffector;
+package frc.robot.subsystems.EndEffector;
 
 public class EndEffectorConstants {
     public static final int kCoralMotorId = 2;
