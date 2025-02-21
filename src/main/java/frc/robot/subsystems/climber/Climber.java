@@ -83,6 +83,16 @@ public class Climber implements Subsystem {
     return m_climberMotorLeader.getPosition().getValueAsDouble();
   }
 
+  @NotLogged
+  public void setSpeed(double speed){
+    m_climberMotorLeader.set(speed);
+  }
+
+  @NotLogged
+  public void setSpeed(DoublePreference speed){
+    m_climberMotorLeader.set(speed.getValue());
+  }
+
 
   @Override
   public void periodic() {

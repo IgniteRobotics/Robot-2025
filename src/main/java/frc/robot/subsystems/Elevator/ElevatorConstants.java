@@ -103,6 +103,19 @@ public class ElevatorConstants {
             }
         }
 
+        public enum ALGAE{
+            PROCESS(1),
+            BARGE(2);
+
+            public final double height;
+            ALGAE(double value){
+                height = value;
+            }
+        }
+
+
+
+
         public static double POSITION_ERROR = 0.1;
 }
 

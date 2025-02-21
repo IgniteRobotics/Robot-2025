@@ -55,4 +55,7 @@ public class Preferences {
     public static DoublePreference climberMMCruiseVelocity = new DoublePreference("Climber/Motion Magic/Cruise Velocity", ClimberConstants.CLIMBER_MM_CRUISE_VELOCITY);
     public static DoublePreference climberMMkV = new DoublePreference("Climber/Motion Magic/kV", ClimberConstants.CLIMBER_MM_kV);
     public static DoublePreference climberMMkA = new DoublePreference("Climber/Motion Magic/Jerk", ClimberConstants.CLIMBER_MM_kA);
+
+    public static DoublePreference climberUpSpeed = new DoublePreference("Climber/Up Power", 0.1);
+    public static DoublePreference climberDownSpeed = new DoublePreference("Clibmer/Down Power", 0.1);
 }

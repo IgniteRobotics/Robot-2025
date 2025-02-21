@@ -138,6 +138,7 @@ public class RobotContainer {
             .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
             .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
             );
+
         SmartDashboard.putData("Elevator Level 4", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_4.position))
             .until(() -> elevator.atSetpoint())
             .andThen( new RunCommand(() -> endEffector.outtakeCoral())
@@ -164,6 +165,9 @@ public class RobotContainer {
         joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+
+        joystick.a().whileTrue(new RunCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)));
+        joystick.b().whileTrue(new RunCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)));
 
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
