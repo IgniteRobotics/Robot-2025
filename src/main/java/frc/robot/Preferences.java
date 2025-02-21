@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.EndEffector.EndEffectorConstants;
+import frc.robot.subsystems.climber.ClimberConstants;
 
 /** Add your docs here. */
 public class Preferences {
@@ -40,4 +41,18 @@ public class Preferences {
     public static DoublePreference endEffectorCoralIntakePower = new DoublePreference("EndEffector/Coral/IntakePower", EndEffectorConstants.INTAKE_CORAL_POWER);
     public static DoublePreference endEffectorCoralOuttakePower = new DoublePreference("EndEffector/Coral/OuttakePower", EndEffectorConstants.OUTTAKE_CORAL_POWER);
     
+    // ********** Climber **********
+    public static DoublePreference climberkV = new DoublePreference("Climber/kV", ClimberConstants.CLIMBER_kV);
+    public static DoublePreference climberkP = new DoublePreference("Climber/kP", ClimberConstants.CLIMBER_kP);
+    public static DoublePreference climberkI = new DoublePreference("Climber/kI", ClimberConstants.CLIMBER_kI);
+    public static DoublePreference climberkD = new DoublePreference("Climber/kD", ClimberConstants.CLIMBER_kD);
+    public static DoublePreference climberkG = new DoublePreference("Climber/kG", ClimberConstants.CLIMBER_kG);
+    public static DoublePreference climberkS = new DoublePreference("Climber/kS", ClimberConstants.CLIMBER_kS);
+    public static DoublePreference climberPosition = new DoublePreference("Climber/Position", 0);
+
+    public static DoublePreference climberMMJerk = new DoublePreference("Climber/Motion Magic/Jerk", ClimberConstants.CLIMBER_MM_JERK);
+    public static DoublePreference climberMMAccel = new DoublePreference("Climber/Motion Magic/Acceleration", ClimberConstants.CLIMBER_MM_ACCEL);
+    public static DoublePreference climberMMCruiseVelocity = new DoublePreference("Climber/Motion Magic/Cruise Velocity", ClimberConstants.CLIMBER_MM_CRUISE_VELOCITY);
+    public static DoublePreference climberMMkV = new DoublePreference("Climber/Motion Magic/kV", ClimberConstants.CLIMBER_MM_kV);
+    public static DoublePreference climberMMkA = new DoublePreference("Climber/Motion Magic/Jerk", ClimberConstants.CLIMBER_MM_kA);
 }
