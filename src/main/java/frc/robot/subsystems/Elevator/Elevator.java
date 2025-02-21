@@ -38,7 +38,7 @@ public class Elevator implements Subsystem {
   @Logged(name = "Target Position", importance = Importance.CRITICAL)
   private double m_targetPosition;
 
-  /** Creates a new Climber. */
+  /** Creates a new Elevator. */
   public Elevator() {
     m_elevatorMotorLeader = ElevatorConstants.ELEVATOR_LEADER_MOTOR; 
     m_elevatorMotorFollower = ElevatorConstants.ELEVATOR_FOLLOWER_MOTOR;
