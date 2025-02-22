@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class AutoIngestCoral extends Command {
   private EndEffector m_endEffector;
-  boolean seesCoralEnter;
+  boolean coralEntering;
 
   
   public AutoIngestCoral(EndEffector endEffector) {
@@ -21,18 +21,19 @@ public class AutoIngestCoral extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    seesCoralEnter = false;
+    coralEntering = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_endEffector.seesCoralEnter()) seesCoralEnter = true;
+    if(m_endEffector.seesCoralEnter()) coralEntering = true;
+    if(m_endEffector.coralPreped()) coralEntering = false;
 
-    if(seesCoralEnter){
+    if(coralEntering){
       m_endEffector.intakeCoral();
     }
-
+    else m_endEffector.stopCoralMotor();
   }
 
   // Called once the command ends or is interrupted.
@@ -44,6 +45,6 @@ public class AutoIngestCoral extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_endEffector.coralPreped();
+    return false;
   }
 }
