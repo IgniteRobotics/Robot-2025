@@ -40,12 +40,11 @@ public class EndEffector extends SubsystemBase {
   private Slot0Configs m_wristSlot0Configs;
   private SoftwareLimitSwitchConfigs m_wristSoftLimitConfigs;
 
-  private final CANrange m_beambreak;
+  private final CANrange m_beambreak_enter;
+  private final CANrange m_beambreak_prep;
+
 
   private final RobotState m_robotState = RobotState.getInstance();
-
-  private boolean m_lastSeesCoral = false;
-  private boolean m_lastSeesAlgae = false;
 
   /** Creates a new EndEffector. */
   public EndEffector() {
@@ -66,19 +65,28 @@ public class EndEffector extends SubsystemBase {
     m_wristSoftLimitConfigs = EndEffectorConstants.createWristSoftLimitConfigs();
 
 
-    m_beambreak = new CANrange(EndEffectorConstants.kBeamBreakId);
+    m_beambreak_enter = new CANrange(EndEffectorConstants.kEnterBeamBreakId);
+    m_beambreak_prep = new CANrange(EndEffectorConstants.kPrepBeamBreakId);
     
     configureCANrange();
   }
 
   public void configureCANrange(){
     ProximityParamsConfigs proximityParamsConfigs = new ProximityParamsConfigs();
-    m_beambreak.getConfigurator().refresh(proximityParamsConfigs);
-    m_beambreak.getConfigurator().apply(
+    m_beambreak_enter.getConfigurator().refresh(proximityParamsConfigs);
+    m_beambreak_enter.getConfigurator().apply(
       proximityParamsConfigs
         .withProximityThreshold(Units.Inches.of(1))
         .withProximityHysteresis(Units.Inches.of(1.25))
         );
+    
+    m_beambreak_prep.getConfigurator().refresh(proximityParamsConfigs);
+    m_beambreak_prep.getConfigurator().apply(
+      proximityParamsConfigs
+        .withProximityThreshold(Units.Inches.of(1))
+        .withProximityHysteresis(Units.Inches.of(1.25))
+      );
+   
   }
 
   public void outtakeCoral(){
@@ -114,8 +122,13 @@ public class EndEffector extends SubsystemBase {
   }
 
   @Logged
-  public boolean seesCoral(){
-    return m_beambreak.getIsDetected().getValue();
+  public boolean seesCoralEnter(){
+    return m_beambreak_enter.getIsDetected().getValue();
+  }
+
+  @Logged
+  public boolean coralPreped(){
+    return m_beambreak_prep.getIsDetected().getValue();
   }
 
   @Logged
@@ -125,18 +138,8 @@ public class EndEffector extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (!seesCoral() && m_lastSeesCoral){
-      m_robotState.setHasCoral(true);
-      m_lastSeesCoral = false;
-    } else{
-      m_lastSeesCoral = true;
-    }
-
-    if(!seesAlgae() && m_lastSeesAlgae){
-      m_robotState.setHasAlgae(true);
-      m_lastSeesAlgae = false;
-    } else{
-      m_lastSeesAlgae = true;
-    }
+    m_robotState.setHasCoral(coralPreped());
+    m_robotState.setHasAlgae(seesAlgae());
   }
+
 }
