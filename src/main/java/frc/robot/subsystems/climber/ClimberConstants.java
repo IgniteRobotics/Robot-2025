@@ -11,7 +11,7 @@ import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
-
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.controls.Follower;
 
 public class ClimberConstants {
@@ -80,12 +80,14 @@ public class ClimberConstants {
         public static MotorOutputConfigs createLeaderMotorOutputConfigs(){
             MotorOutputConfigs newConfigs = new MotorOutputConfigs();
             newConfigs.Inverted = InvertedValue.Clockwise_Positive;
+            newConfigs.NeutralMode = NeutralModeValue.Brake;
             return newConfigs;
         }
 
         public static MotorOutputConfigs createFollowerMotorOutputConfigs(){
             MotorOutputConfigs newConfigs = new MotorOutputConfigs();
             newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+            newConfigs.NeutralMode = NeutralModeValue.Brake;
             return newConfigs;
         }
 
