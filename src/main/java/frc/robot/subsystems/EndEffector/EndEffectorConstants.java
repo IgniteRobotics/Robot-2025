@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class EndEffectorConstants {
     public static final int kCoralMotorId = 2;
@@ -55,6 +56,7 @@ public class EndEffectorConstants {
         public static MotorOutputConfigs createCoralMotorOutputConfigs(){
             MotorOutputConfigs configs = new MotorOutputConfigs();
             configs.withInverted(InvertedValue.Clockwise_Positive);
+            configs.NeutralMode = NeutralModeValue.Brake;
             return configs;
         }
 
