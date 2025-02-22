@@ -211,9 +211,10 @@ public class RobotContainer {
 
         //joystick.rightBumper().onTrue(new InstantCommand( () -> elevator.alterMech(armLength.getValue(), wristAngle.getValue())));
 
+        configureManipulatorController();                                   
+
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        configureManipulatorController();
     }
 
     public Command getAutonomousCommand() {

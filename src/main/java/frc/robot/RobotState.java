@@ -139,6 +139,10 @@ public class RobotState {
     public void setCoralTarget(CoralTarget target){
         coralTarget = target;
     }
+    
+    public CoralTarget getCoralTarget(){
+        return coralTarget;
+    }
 
     @Logged(name = "CT_TROUGH", importance = Importance.CRITICAL)
     public boolean coralTargetTrough(){
@@ -212,6 +216,10 @@ public class RobotState {
 
     public void setAlgaeTarget(AlgaeTarget target){
         algaeTarget = target;
+    }
+
+    public AlgaeTarget getAlgaeTarget(){
+        return algaeTarget;
     }
 
     public void setHasCoral(boolean bool){
