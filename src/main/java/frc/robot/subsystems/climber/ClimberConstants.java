@@ -12,13 +12,17 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 
+import com.ctre.phoenix6.controls.Follower;
+
 public class ClimberConstants {
 
         //Motor
-        public static final int kEclimberMotorLeaderId = 14;
-        public static final int kEclimberMotorFollowerId = 15;
-        public static final TalonFX CLIMBER_LEADER_MOTOR = new TalonFX(kEclimberMotorLeaderId);
-        public static final TalonFX CLIMBER_FOLLOWER_MOTOR = new TalonFX(kEclimberMotorFollowerId);
+        public static final int kclimberMotorLeaderId = 14;
+        public static final int kclimberMotorFollowerId = 15;
+        public static final TalonFX CLIMBER_LEADER_MOTOR = new TalonFX(kclimberMotorLeaderId);
+        public static final TalonFX CLIMBER_FOLLOWER_MOTOR = new TalonFX(kclimberMotorFollowerId){{
+            setControl(new Follower(kclimberMotorLeaderId, true));
+        }};
 
 
         //Slot0Configs
@@ -45,12 +49,12 @@ public class ClimberConstants {
 
         //SoftLimitConfig
         public static final double CLIMBER_FORWARD_SOFT_LIMIT = 100;
-        public static final double CLIMBER_REVERSE_SOFT_LIMIT = 0;
+        public static final double CLIMBER_REVERSE_SOFT_LIMIT = 0.1;
 
         public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
             SoftwareLimitSwitchConfigs newConfigs = new SoftwareLimitSwitchConfigs();
             newConfigs.ForwardSoftLimitEnable = false;
-            newConfigs.ReverseSoftLimitEnable = false;
+            newConfigs.ReverseSoftLimitEnable = true;
             newConfigs.ForwardSoftLimitThreshold = CLIMBER_FORWARD_SOFT_LIMIT;
              newConfigs.ReverseSoftLimitThreshold = CLIMBER_REVERSE_SOFT_LIMIT;
                 return newConfigs;

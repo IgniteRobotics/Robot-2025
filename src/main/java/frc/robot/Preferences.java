@@ -6,8 +6,8 @@ package frc.robot;
 
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.subsystems.climber.ClimberConstants;
-import frc.robot.subsystems.elevator.ElevatorConstants;
-import frc.robot.subsystems.endeffector.EndEffectorConstants;
+import frc.robot.subsystems.Elevator.ElevatorConstants;
+import frc.robot.subsystems.EndEffector.EndEffectorConstants;
 
 /** Add your docs here. */
 public class Preferences {
@@ -40,6 +40,9 @@ public class Preferences {
     // ********** End Effector **********
     public static DoublePreference endEffectorCoralIntakePower = new DoublePreference("EndEffector/Coral/IntakePower", EndEffectorConstants.INTAKE_CORAL_POWER);
     public static DoublePreference endEffectorCoralOuttakePower = new DoublePreference("EndEffector/Coral/OuttakePower", EndEffectorConstants.OUTTAKE_CORAL_POWER);
+
+    public static DoublePreference endEffectorStowPositionNoAlgae = new DoublePreference("EndEffector/Wrist/Stow Position/No Algae", EndEffectorConstants.STOW_POSITION_NO_ALGAE);
+    public static DoublePreference endEffectorStowPositionWithAlgae = new DoublePreference("EndEffector/Wrist/Stow Position/WithAlgae", EndEffectorConstants.STOW_POSITION_WITH_ALGAE);
     
     // ********** Climber **********
     public static DoublePreference climberkV = new DoublePreference("Climber/kV", ClimberConstants.CLIMBER_kV);
@@ -55,4 +58,7 @@ public class Preferences {
     public static DoublePreference climberMMCruiseVelocity = new DoublePreference("Climber/Motion Magic/Cruise Velocity", ClimberConstants.CLIMBER_MM_CRUISE_VELOCITY);
     public static DoublePreference climberMMkV = new DoublePreference("Climber/Motion Magic/kV", ClimberConstants.CLIMBER_MM_kV);
     public static DoublePreference climberMMkA = new DoublePreference("Climber/Motion Magic/Jerk", ClimberConstants.CLIMBER_MM_kA);
+
+    public static DoublePreference climberUpSpeed = new DoublePreference("Climber/Up Power", 0.1);
+    public static DoublePreference climberDownSpeed = new DoublePreference("Clibmer/Down Power", 0.1);
 }

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.elevator;
+package frc.robot.subsystems.Elevator;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -48,7 +48,7 @@ public class ElevatorConstants {
 
         //SoftLimitConfig
         public static final double ELEVATOR_FORWARD_SOFT_LIMIT = 26;
-        public static final double ELEVATOR_REVERSE_SOFT_LIMIT = 0.25;
+        public static final double ELEVATOR_REVERSE_SOFT_LIMIT = 0.04;
 
         public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
             SoftwareLimitSwitchConfigs newConfigs = new SoftwareLimitSwitchConfigs();
@@ -103,6 +103,19 @@ public class ElevatorConstants {
             }
         }
 
-        public static double POSITION_ERROR = 0.1;
+        public enum ALGAE{
+            PROCESS(1),
+            BARGE(2);
+
+            public final double height;
+            ALGAE(double value){
+                height = value;
+            }
+        }
+
+        public final static double POSITION_ERROR = 0.1;
+
+        public final static double HIGH_ALGAE_HEIGHT = 2;
+        public final static double LOW_ALAGE_HEIGHT = 1;
 }
 

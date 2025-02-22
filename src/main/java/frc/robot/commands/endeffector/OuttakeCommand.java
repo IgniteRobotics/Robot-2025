@@ -4,18 +4,17 @@
 
 package frc.robot.commands.endeffector;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotState;
 import frc.robot.subsystems.EndEffector.EndEffector;
-import edu.wpi.first.wpilibj2.command.Command;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AutoIngestCoral extends Command {
-  private EndEffector m_endEffector;
-  private RobotState m_robotState = RobotState.getInstance();
-  /** Creates a new AutoIngestCoral. */
-  public AutoIngestCoral(EndEffector endEffector) {
-    m_endEffector = endEffector;
-    // Use addRequirements() here to declare subsystem dependencies.
+public class OuttakeCommand extends Command {
+  EndEffector m_endEffector;
+  RobotState m_robotState = RobotState.getInstance();
+  
+  public OuttakeCommand(EndEffector effector) {
+    m_endEffector = effector;
     addRequirements(m_endEffector);
   }
 
@@ -26,20 +25,18 @@ public class AutoIngestCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_endEffector.seesCoral()) {
-     m_endEffector.intakeCoral();
-    } else {
-      m_endEffector.stopCoralMotor();
-    }
+    m_endEffector.outtakeCoral();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_endEffector.stopCoralMotor();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_robotState.hasCoral();
   }
 }

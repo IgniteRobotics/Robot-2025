@@ -12,8 +12,10 @@ import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.zones.Grid;
 import frc.zones.Zone;
+import frc.zones.ZoneTypes;
 
 @Logged
 public class RobotState {
@@ -31,6 +33,8 @@ public class RobotState {
     Map<String, PhotonPipelineResult> cameraResults = new HashMap<>(){};
 
     private boolean hasCoral = false;
+
+    private boolean hasAlgae = false;
 
     private RobotState() {
 
@@ -64,6 +68,13 @@ public class RobotState {
 
     public Zone getZone(){
         return currentZone;
+    }
+
+    public double getAlgaeHeight(){
+        if(getZone() == ZoneTypes.REEF.REEF_AB || getZone() == ZoneTypes.REEF.REEF_EF || getZone() == ZoneTypes.REEF.REEF_IJ){
+            return ElevatorConstants.HIGH_ALGAE_HEIGHT;
+        }
+        else return ElevatorConstants.LOW_ALAGE_HEIGHT;
     }
 
     public synchronized void setPose2d(Pose2d newPose){
@@ -100,6 +111,109 @@ public class RobotState {
         else return null;
     }
 
+    //Desired Coral Targets
+    enum CoralTarget {
+        TROUGH,
+        L2_LEFT,
+        L2_RIGHT,
+        L3_LEFT,
+        L3_RIGHT,
+        L4_LEFT,
+        L4_RIGHT,
+        }
+    private CoralTarget coralTarget = null;
+
+    public void setCoralTarget(CoralTarget target){
+        coralTarget = target;
+    }
+
+    @Logged(name = "CT_TROUGH", importance = Importance.CRITICAL)
+    public boolean coralTargetTrough(){
+        return coralTarget == CoralTarget.TROUGH;
+    }
+
+    @Logged(name = "CT_L2_LEFT", importance = Importance.CRITICAL)
+    public boolean coralTargetL2_LEFT(){
+        return coralTarget == CoralTarget.L2_LEFT;
+    }
+
+    @Logged(name = "CT_L2_RIGHT", importance = Importance.CRITICAL)
+    public boolean coralTargetL2_RIGHT(){
+        return coralTarget == CoralTarget.L2_RIGHT;
+    }
+
+    @Logged(name = "CT_L3_LEFT", importance = Importance.CRITICAL)
+    public boolean coralTargetL3_LEFT(){
+        return coralTarget == CoralTarget.L3_LEFT;
+    }
+
+    @Logged(name = "CT_L3_RIGHT", importance = Importance.CRITICAL)
+    public boolean coralTargetL3_RIGHT(){
+        return coralTarget == CoralTarget.L3_RIGHT;
+    }
+    @Logged(name = "CT_L4_LEFT", importance = Importance.CRITICAL)
+    public boolean coralTargetL4_LEFT(){
+        return coralTarget == CoralTarget.L4_LEFT;
+    }
+
+    @Logged(name = "CT_L4_RIGHT", importance = Importance.CRITICAL)
+    public boolean coralTargetL4_RIGHT(){
+        return coralTarget == CoralTarget.L4_RIGHT;
+    }
+    public double getCoralHeight(){
+        if(coralTarget == CoralTarget.L4_RIGHT || coralTarget == CoralTarget.L4_LEFT){
+            return ElevatorConstants.FLOOR.LEVEL_4.position;
+        }
+        else if(coralTarget == CoralTarget.L3_RIGHT || coralTarget == CoralTarget.L3_LEFT){
+            return ElevatorConstants.FLOOR.LEVEL_3.position;
+        }
+        else if(coralTarget == CoralTarget.L2_RIGHT || coralTarget == CoralTarget.L2_LEFT){
+            return ElevatorConstants.FLOOR.LEVEL_2.position;
+        }
+        else if(coralTarget == CoralTarget.TROUGH){
+            return ElevatorConstants.FLOOR.TROUGH.position;
+        }
+        else{
+            return 0;
+        }
+
+
+    }
+
+    //Desired Algae Targets
+    enum AlgaeTarget {
+        PROCESSOR,
+        REEF_L2,
+        REEF_L3,
+        BARGE
+        }
+
+    private AlgaeTarget algaeTarget = null;
+
+    @Logged(name = "CT_PROCESSOR", importance = Importance.CRITICAL)
+    public boolean algaeTargetPROCESSOR(){
+        return algaeTarget == AlgaeTarget.PROCESSOR;
+    }
+
+    @Logged(name = "CT_REEF_L2", importance = Importance.CRITICAL)
+    public boolean algaeTargetREEF_L2(){
+        return algaeTarget == AlgaeTarget.REEF_L2;
+    }
+
+    @Logged(name = "CT_REEF_L3", importance = Importance.CRITICAL)
+    public boolean algaeTargetREEF_3(){
+        return algaeTarget == AlgaeTarget.REEF_L3;
+    }
+
+    @Logged(name = "CT_BARGE", importance = Importance.CRITICAL)
+    public boolean algaeTargetBARGE(){
+        return algaeTarget == AlgaeTarget.BARGE;
+    }
+
+    public void setAlgaeTarget(AlgaeTarget target){
+        algaeTarget = target;
+    }
+
     public void setHasCoral(boolean bool){
         hasCoral = bool;
     }
@@ -107,4 +221,13 @@ public class RobotState {
     public boolean hasCoral(){
         return hasCoral;
     }
+
+    public void setHasAlgae(boolean bool){
+        hasAlgae = bool;
+    }
+
+    public boolean hasAlgae(){
+        return hasAlgae;
+    }
 }
+
