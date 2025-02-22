@@ -36,6 +36,29 @@ public class RobotState {
 
     private boolean hasAlgae = false;
 
+      //Desired Coral Targets
+    public static enum CoralTarget {
+        NONE,
+        TROUGH,
+        L2_LEFT,
+        L2_RIGHT,
+        L3_LEFT,
+        L3_RIGHT,
+        L4_LEFT,
+        L4_RIGHT,
+        }
+    private CoralTarget coralTarget = CoralTarget.NONE;
+
+    //Desired Algae Targets
+    public static enum AlgaeTarget {
+        NONE,
+        PROCESSOR,
+        REEF,
+        BARGE
+        }
+
+    private AlgaeTarget algaeTarget = AlgaeTarget.NONE;
+
     private RobotState() {
 
     }
@@ -111,20 +134,14 @@ public class RobotState {
         else return null;
     }
 
-    //Desired Coral Targets
-    enum CoralTarget {
-        TROUGH,
-        L2_LEFT,
-        L2_RIGHT,
-        L3_LEFT,
-        L3_RIGHT,
-        L4_LEFT,
-        L4_RIGHT,
-        }
-    private CoralTarget coralTarget = null;
+  
 
     public void setCoralTarget(CoralTarget target){
         coralTarget = target;
+    }
+    
+    public CoralTarget getCoralTarget(){
+        return coralTarget;
     }
 
     @Logged(name = "CT_TROUGH", importance = Importance.CRITICAL)
@@ -160,6 +177,7 @@ public class RobotState {
     public boolean coralTargetL4_RIGHT(){
         return coralTarget == CoralTarget.L4_RIGHT;
     }
+
     public double getCoralHeight(){
         if(coralTarget == CoralTarget.L4_RIGHT || coralTarget == CoralTarget.L4_LEFT){
             return ElevatorConstants.FLOOR.LEVEL_4.position;
@@ -177,41 +195,31 @@ public class RobotState {
             return 0;
         }
 
-
     }
 
-    //Desired Algae Targets
-    enum AlgaeTarget {
-        PROCESSOR,
-        REEF_L2,
-        REEF_L3,
-        BARGE
-        }
 
-    private AlgaeTarget algaeTarget = null;
-
-    @Logged(name = "CT_PROCESSOR", importance = Importance.CRITICAL)
+    @Logged(name = "AT_PROCESSOR", importance = Importance.CRITICAL)
     public boolean algaeTargetPROCESSOR(){
         return algaeTarget == AlgaeTarget.PROCESSOR;
     }
 
-    @Logged(name = "CT_REEF_L2", importance = Importance.CRITICAL)
+    @Logged(name = "AT_REEF", importance = Importance.CRITICAL)
     public boolean algaeTargetREEF_L2(){
-        return algaeTarget == AlgaeTarget.REEF_L2;
+        return algaeTarget == AlgaeTarget.REEF;
     }
 
-    @Logged(name = "CT_REEF_L3", importance = Importance.CRITICAL)
-    public boolean algaeTargetREEF_3(){
-        return algaeTarget == AlgaeTarget.REEF_L3;
-    }
 
-    @Logged(name = "CT_BARGE", importance = Importance.CRITICAL)
+    @Logged(name = "AT_BARGE", importance = Importance.CRITICAL)
     public boolean algaeTargetBARGE(){
         return algaeTarget == AlgaeTarget.BARGE;
     }
 
     public void setAlgaeTarget(AlgaeTarget target){
         algaeTarget = target;
+    }
+
+    public AlgaeTarget getAlgaeTarget(){
+        return algaeTarget;
     }
 
     public void setHasCoral(boolean bool){

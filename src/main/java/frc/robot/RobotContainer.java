@@ -21,12 +21,14 @@ import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.ScoreCoral;
@@ -50,6 +52,22 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond));
 
     private final CommandXboxController joystick = new CommandXboxController(0);
+
+    // Set up manipulator joystick
+    private final Joystick manipulatorJoystick = new Joystick(1);
+    private final JoystickButton coralTroughButton = new JoystickButton(manipulatorJoystick, 0);
+    private final JoystickButton coralL2LeftButton = new JoystickButton(manipulatorJoystick, 1);
+    private final JoystickButton coralL2RightButton = new JoystickButton(manipulatorJoystick, 2);
+    private final JoystickButton coralL3LeftButton = new JoystickButton(manipulatorJoystick, 3);
+    private final JoystickButton coralL3RightButton = new JoystickButton(manipulatorJoystick, 4);
+    private final JoystickButton coralL4LeftButton = new JoystickButton(manipulatorJoystick, 5);
+    private final JoystickButton coralL4RightButton = new JoystickButton(manipulatorJoystick, 6);
+    private final JoystickButton algaeProcessorButton = new JoystickButton(manipulatorJoystick, 7);
+    private final JoystickButton algaeReefButton = new JoystickButton(manipulatorJoystick, 8);
+    private final JoystickButton algaeBargeButton = new JoystickButton(manipulatorJoystick, 9);
+    private final JoystickButton algaeCancelButton = new JoystickButton(manipulatorJoystick, 10);
+    private final JoystickButton coralCancelButton = new JoystickButton(manipulatorJoystick, 11);
+
 
     public final double default_Max_Speed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public final double maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED;
@@ -88,6 +106,22 @@ public class RobotContainer {
         SmartDashboard.putData("Auto Mode", autoChooser);
 
         configureBindings();
+    }
+
+    private void configureManipulatorController(){
+        coralTroughButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.TROUGH)));
+        coralL2LeftButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L2_LEFT)));
+        coralL2RightButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L2_RIGHT)));
+        coralL3LeftButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L3_LEFT)));
+        coralL3RightButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L3_RIGHT)));
+        coralL4LeftButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L4_LEFT)));
+        coralL4RightButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L4_RIGHT)));
+        algaeProcessorButton.whileTrue(new InstantCommand(() -> m_RobotState.setAlgaeTarget(RobotState.AlgaeTarget.PROCESSOR)));
+        algaeReefButton.whileTrue(new InstantCommand(() -> m_RobotState.setAlgaeTarget(RobotState.AlgaeTarget.REEF)));
+        algaeBargeButton.whileTrue(new InstantCommand(() -> m_RobotState.setAlgaeTarget(RobotState.AlgaeTarget.BARGE)));
+        coralCancelButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.NONE)));
+        algaeCancelButton.whileTrue(new InstantCommand(() -> m_RobotState.setAlgaeTarget(RobotState.AlgaeTarget.NONE)));
+       
     }
 
     private void configureBindings() {
@@ -161,7 +195,10 @@ public class RobotContainer {
 
         //joystick.rightBumper().onTrue(new InstantCommand( () -> elevator.alterMech(armLength.getValue(), wristAngle.getValue())));
 
+        configureManipulatorController();                                   
+
         drivetrain.registerTelemetry(logger::telemeterize);
+
     }
 
     public Command getAutonomousCommand() {
