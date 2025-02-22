@@ -121,19 +121,23 @@ public class Robot extends TimedRobot {
   public void testExit() {}
 
   //Alerts
+  //Makes Alert
   Alert test = new Alert("test alert", AlertType.kInfo);
+  //Makes indicator variables
   private boolean flash = false;
   private double ts = 0;
   public boolean warning = false;
   @Override
   public void simulationPeriodic() {
-    
+    //Sets Alert
     test.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
+      //Tests if Alert reason is true, if so activates indicator
       if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
         warning = true;
       } else {
         warning = false;
       }
+      //Indicator Code
       if (warning == true){
         ts = ((int)RobotController.getFPGATime() / 500000) % 2;
          if(ts % 2 == 1){
