@@ -105,6 +105,8 @@ public class ElevatorConstants {
 
         public enum ALGAE{
             PROCESS(1),
+            LOW_REEF(1.2),
+            HIGH_REEF(1.4),
             BARGE(2);
 
             public final double height;
@@ -114,8 +116,5 @@ public class ElevatorConstants {
         }
 
         public final static double POSITION_ERROR = 0.1;
-
-        public final static double HIGH_ALGAE_HEIGHT = 2;
-        public final static double LOW_ALAGE_HEIGHT = 1;
 }
 
