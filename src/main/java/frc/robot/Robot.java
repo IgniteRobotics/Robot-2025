@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.sql.Time;
+
 import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.epilogue.Epilogue;
@@ -13,6 +15,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -120,20 +123,20 @@ public class Robot extends TimedRobot {
   //Alerts
   Alert test = new Alert("test alert", AlertType.kInfo);
   private boolean flash = false;
-  double startTime; 
-
+  //private double startTime = System.currentTimeMillis(); 
+  //System.currentTimeMillis() % 2 == 1){
   @Override
   public void simulationPeriodic() {
+    
     test.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
       if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-        startTime = System.currentTimeMillis();
-        if(System.currentTimeMillis() - startTime < 0.5){
+        if(RobotController.getFPGATime() % 2 == 1){
         flash = true;
-        } else if(System.currentTimeMillis() - startTime < 1){
+        } else {//if (System.currentTimeMillis() - startTime < 1840182010973.00){
         flash = false;
-        } else if(System.currentTimeMillis() - startTime == 1){
-          startTime = System.currentTimeMillis();
-        }
+        } //else if (System.currentTimeMillis() - startTime > 2040182010973.00){
+          //startTime = System.currentTimeMillis();
+        //}
       }
   }
 }
