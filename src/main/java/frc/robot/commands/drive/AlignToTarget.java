@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Preferences;
+import frc.robot.RobotState;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -27,13 +28,14 @@ public class AlignToTarget extends Command {
   private final int selectedTargetID;
   private final DoublePreference xError;
   
-  
 
   PIDController rotationController;
   PIDController driveXController;
   PIDController driveYController;
 
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+
+  RobotState m_robotState = RobotState.getInstance();
 
   /** Creates a new AlignToTarget. */
   public AlignToTarget(CommandSwerveDrivetrain drive, PhotonCameraWrapper camera, int targetID, DoublePreference error){
@@ -67,7 +69,7 @@ public class AlignToTarget extends Command {
       double offset = CameraConstants.offsetToBumper.get(targeting.get().getCameraName());
       driveX = driveXController.calculate(targeting.get().getDistance() - offset - xError.get(), 0);
       
-      driveY = driveYController.calculate(targeting.get().getYaw(), 0);
+      driveY = driveYController.calculate(targeting.get().getYaw(), m_robotState.getYAlignmentError());
     }
 
     else{

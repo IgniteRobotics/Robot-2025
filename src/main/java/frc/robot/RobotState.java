@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
+import frc.robot.subsystems.drive.CameraConstants;
 import frc.zones.Grid;
 import frc.zones.Zone;
 import frc.zones.ZoneTypes;
@@ -194,7 +195,16 @@ public class RobotState {
         else{
             return 0;
         }
+    }
 
+    public double getYAlignmentError(){
+        if(coralTarget == CoralTarget.L4_LEFT || coralTarget == CoralTarget.L3_LEFT || coralTarget == CoralTarget.L2_LEFT){
+            return CameraConstants.yLeftError;
+        }
+        else if(coralTarget == CoralTarget.L4_RIGHT || coralTarget == CoralTarget.L3_RIGHT || coralTarget == CoralTarget.L2_RIGHT){
+            return CameraConstants.yRightError;
+        }
+        else return 0;
     }
 
 
