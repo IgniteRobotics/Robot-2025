@@ -1,6 +1,9 @@
 package frc.robot.subsystems.EndEffector;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 public class EndEffectorConstants {
     public static final int kCoralMotorId = 2;
@@ -48,6 +51,13 @@ public class EndEffectorConstants {
             return slot;
         }
 
+        public static MotorOutputConfigs createCoralMotorOutputConfigs(){
+            MotorOutputConfigs configs = new MotorOutputConfigs();
+            configs.withInverted(InvertedValue.Clockwise_Positive);
+            return configs;
+        }
+
+
         public static Slot0Configs createAlgaeMotorSlot0Configs(){
             Slot0Configs slot = new Slot0Configs();
             slot.kV = EndEffectorConstants.ALGAE_kV;
@@ -58,7 +68,7 @@ public class EndEffectorConstants {
             return slot;
         }
 
-        public static Slot0Configs createWirstMotorSlot0Confgs(){
+        public static Slot0Configs createWirstMotorSlot0Configs(){
             Slot0Configs slot = new Slot0Configs();
             slot.kV = EndEffectorConstants.WRIST_kV;
             slot.kS = EndEffectorConstants.WRIST_kS;
@@ -68,6 +78,18 @@ public class EndEffectorConstants {
             slot.kG = EndEffectorConstants.WRIST_kG;
             return slot;
         }
+
+        public static final double WRIST_FORWARD_SOFT_LIMIT = 100;
+        public static final double WRIST_REVERSE_SOFT_LIMIT = 0;
+        public static SoftwareLimitSwitchConfigs createWristSoftLimitConfigs(){
+            SoftwareLimitSwitchConfigs configs = new SoftwareLimitSwitchConfigs();
+            configs.ForwardSoftLimitEnable = false;
+            configs.ReverseSoftLimitEnable = false;
+            configs.ForwardSoftLimitThreshold = WRIST_FORWARD_SOFT_LIMIT;
+            configs.ReverseSoftLimitThreshold = WRIST_REVERSE_SOFT_LIMIT;
+            return configs;
+        }
+
 
 
         public enum ALGAE{

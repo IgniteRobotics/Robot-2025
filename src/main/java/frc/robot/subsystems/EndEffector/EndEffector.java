@@ -32,11 +32,13 @@ public class EndEffector extends SubsystemBase {
   private final TalonFX m_algaeMotor;
   private final TalonFX m_wristMotor;
 
-  private Slot0Configs m_coralMotorConfigs;
+  private Slot0Configs m_coralSlot0Configs;
+  private MotorOutputConfigs m_coralMotorOutputConfigs;
 
-  private Slot0Configs m_algeaMotorConfigs;
+  private Slot0Configs m_algaeSlot0Configs;
 
-  private Slot0Configs m_wristMotorConfigs;
+  private Slot0Configs m_wristSlot0Configs;
+  private SoftwareLimitSwitchConfigs m_wristSoftLimitConfigs;
 
   private final CANrange m_beambreak;
 
@@ -48,56 +50,25 @@ public class EndEffector extends SubsystemBase {
   /** Creates a new EndEffector. */
   public EndEffector() {
     m_coralMotor = new TalonFX(EndEffectorConstants.kCoralMotorId);
+
+    m_coralSlot0Configs = EndEffectorConstants.createCoralMotorSlot0Configs();
+    m_coralMotor.getConfigurator().apply(m_coralSlot0Configs);
+    m_coralMotorOutputConfigs = EndEffectorConstants.createCoralMotorOutputConfigs();
+    m_coralMotor.getConfigurator().apply(m_coralMotorOutputConfigs);
+
     m_algaeMotor = new TalonFX(EndEffectorConstants.kAlgaeMotorId);
+    m_algaeSlot0Configs = EndEffectorConstants.createAlgaeMotorSlot0Configs();
+
+
     m_wristMotor = new TalonFX(EndEffectorConstants.kWristMotorId);
+    m_wristSlot0Configs = EndEffectorConstants.createWirstMotorSlot0Configs();
+    m_wristMotor.getConfigurator().apply(m_wristSlot0Configs);
+    m_wristSoftLimitConfigs = EndEffectorConstants.createWristSoftLimitConfigs();
+
+
     m_beambreak = new CANrange(EndEffectorConstants.kBeamBreakId);
     
-    configureCoralMotor();
     configureCANrange();
-  }
-
-  public void configureCoralMotor(){
-      SoftwareLimitSwitchConfigs m_softLimitConfig = new SoftwareLimitSwitchConfigs();
-      MotionMagicConfigs m_motionMagicConfigs = new MotionMagicConfigs();
-      MotorOutputConfigs m_motorConfig = new MotorOutputConfigs();
-      TalonFXConfiguration m_fxCfg = new TalonFXConfiguration();
-
-      m_coralMotor.getConfigurator().refresh(m_motorConfig);
-      m_motorConfig.withInverted(InvertedValue.Clockwise_Positive);
-
-      m_coralMotorConfigs = EndEffectorConstants.createAlgaeMotorSlot0Configs();
-      m_coralMotor.getConfigurator().apply(m_coralMotorConfigs);
-    }
-
-  public void configureAlgaeMotor(){
-      SoftwareLimitSwitchConfigs m_softLimitConfig = new SoftwareLimitSwitchConfigs();
-      MotionMagicConfigs m_motionMagicConfigs = new MotionMagicConfigs();
-      MotorOutputConfigs m_motorConfig = new MotorOutputConfigs();
-      TalonFXConfiguration m_fxCfg = new TalonFXConfiguration();
-
-      m_algeaMotorConfigs = EndEffectorConstants.createAlgaeMotorSlot0Configs();
-
-      m_algaeMotor.getConfigurator().apply(m_algeaMotorConfigs);
-  }
-
-  public void configureWristMotor(){
-      SoftwareLimitSwitchConfigs m_softLimitConfig = new SoftwareLimitSwitchConfigs();
-      MotionMagicConfigs m_motionMagicConfigs = new MotionMagicConfigs();
-      MotorOutputConfigs m_motorConfig = new MotorOutputConfigs();
-      TalonFXConfiguration m_fxCfg = new TalonFXConfiguration();
-
-
-      m_wristMotorConfigs = EndEffectorConstants.createWirstMotorSlot0Confgs();
-      m_wristMotor.getConfigurator().apply(m_wristMotorConfigs);
-
-      double WRIST_FORWARD_SOFT_LIMIT = 100;
-      double WRIST_REVERSE_SOFT_LIMIT = 0;
-
-      SoftwareLimitSwitchConfigs newConfigs = new SoftwareLimitSwitchConfigs();
-      newConfigs.ForwardSoftLimitEnable = false;
-      newConfigs.ReverseSoftLimitEnable = false;
-      newConfigs.ForwardSoftLimitThreshold = WRIST_FORWARD_SOFT_LIMIT;
-      newConfigs.ReverseSoftLimitThreshold = WRIST_REVERSE_SOFT_LIMIT;
   }
 
   public void configureCANrange(){
