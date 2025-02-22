@@ -123,20 +123,28 @@ public class Robot extends TimedRobot {
   //Alerts
   Alert test = new Alert("test alert", AlertType.kInfo);
   private boolean flash = false;
-  //private double startTime = System.currentTimeMillis(); 
-  //System.currentTimeMillis() % 2 == 1){
+  private double ts = 0;
+  public boolean warning = false;
   @Override
   public void simulationPeriodic() {
     
     test.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
       if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-        if(RobotController.getFPGATime() % 2 == 1){
-        flash = true;
-        } else {//if (System.currentTimeMillis() - startTime < 1840182010973.00){
-        flash = false;
-        } //else if (System.currentTimeMillis() - startTime > 2040182010973.00){
-          //startTime = System.currentTimeMillis();
-        //}
+        warning = true;
+      } else {
+        warning = false;
       }
+      if (warning == true){
+        ts = ((int)RobotController.getFPGATime() / 500000) % 2;
+         if(ts % 2 == 1){
+          flash = true;
+          } else if(ts % 2 == 0){
+          flash = false;
+          }
+      }
+  }
+
+  public boolean getFlash(){
+    return flash;
   }
 }
