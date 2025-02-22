@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.drive.AlignToTarget;
 import frc.robot.commands.endeffector.AutoIngestCoral;
 import frc.robot.generated.TunerConstants;
@@ -118,34 +119,17 @@ public class RobotContainer {
         SmartDashboard.putData("Set Elevator Motion Magic Configs", new InstantCommand(() -> elevator.setElevatorMotionMagic(Preferences.elevatorMMCruiseVelocity, Preferences.elevatorMMAccel, Preferences.elevatorMMJerk, Preferences.elevatorMMkV, Preferences.elevatorMMkA)));
         
         SmartDashboard.putData("Elevator Ground", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
-        SmartDashboard.putData("Elevator Trough", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.TROUGH.position))
+        /*SmartDashboard.putData("Elevator Trough", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.TROUGH.position))
             .until(() -> elevator.atSetpoint())
             .andThen( new RunCommand(() -> endEffector.outtakeCoral())
             .withTimeout(1)
             .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
             );
-        SmartDashboard.putData("Elevator Level 2", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_2.position))
-            .until(() -> elevator.atSetpoint())
-            .andThen( new RunCommand(() -> endEffector.outtakeCoral())
-            .withTimeout(1)
-            .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
-            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
-            );
-        SmartDashboard.putData("Elevator Level 3", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_3.position))
-            .until(() -> elevator.atSetpoint())
-            .andThen( new RunCommand(() -> endEffector.outtakeCoral())
-            .withTimeout(1)
-            .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
-            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
-            );
-
-        SmartDashboard.putData("Elevator Level 4", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_4.position))
-            .until(() -> elevator.atSetpoint())
-            .andThen( new RunCommand(() -> endEffector.outtakeCoral())
-            .withTimeout(1)
-            .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
-            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
-            );
+         */
+        SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 4", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
 
         SmartDashboard.putData("Outtake", new RunCommand(() -> endEffector.outtakeCoral()).withTimeout(1).andThen(new InstantCommand(() -> endEffector.stopCoralMotor())));
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->

@@ -72,9 +72,9 @@ public class RobotState {
 
     public double getAlgaeHeight(){
         if(getZone() == ZoneTypes.REEF.REEF_AB || getZone() == ZoneTypes.REEF.REEF_EF || getZone() == ZoneTypes.REEF.REEF_IJ){
-            return ElevatorConstants.HIGH_ALGAE_HEIGHT;
+            return ElevatorConstants.ALGAE.HIGH_REEF.height;
         }
-        else return ElevatorConstants.LOW_ALAGE_HEIGHT;
+        else return ElevatorConstants.ALGAE.LOW_REEF.height;
     }
 
     public synchronized void setPose2d(Pose2d newPose){
