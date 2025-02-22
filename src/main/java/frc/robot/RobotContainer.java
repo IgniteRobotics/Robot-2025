@@ -166,8 +166,10 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystick.a().whileTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)));
-        joystick.b().whileTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)));
+        joystick.a().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
+                    .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
+        joystick.b().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))
+                    .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
         joystick.x().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
 
         // reset the field-centric heading on left bumper press
