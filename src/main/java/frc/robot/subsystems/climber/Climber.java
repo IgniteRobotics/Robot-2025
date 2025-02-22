@@ -70,7 +70,6 @@ public class Climber implements Subsystem {
   public void setPositionRevolutions(double position) {
     m_targetPosition = position;
     m_climberMotorLeader.setControl(m_MMPosition.withPosition(position).withSlot(0));
-    m_climberMotorFollower.setControl(m_MMPosition.withPosition(position).withSlot(0));
   }
   
   @NotLogged
