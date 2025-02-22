@@ -40,6 +40,9 @@ public class Preferences {
     // ********** End Effector **********
     public static DoublePreference endEffectorCoralIntakePower = new DoublePreference("EndEffector/Coral/IntakePower", EndEffectorConstants.INTAKE_CORAL_POWER);
     public static DoublePreference endEffectorCoralOuttakePower = new DoublePreference("EndEffector/Coral/OuttakePower", EndEffectorConstants.OUTTAKE_CORAL_POWER);
+
+    public static DoublePreference endEffectorStowPositionNoAlgae = new DoublePreference("EndEffector/Wrist/Stow Position/No Algae", EndEffectorConstants.STOW_POSITION_NO_ALGAE);
+    public static DoublePreference endEffectorStowPositionWithAlgae = new DoublePreference("EndEffector/Wrist/Stow Position/WithAlgae", EndEffectorConstants.STOW_POSITION_WITH_ALGAE);
     
     // ********** Climber **********
     public static DoublePreference climberkV = new DoublePreference("Climber/kV", ClimberConstants.CLIMBER_kV);

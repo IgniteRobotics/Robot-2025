@@ -48,7 +48,7 @@ public class ElevatorConstants {
 
         //SoftLimitConfig
         public static final double ELEVATOR_FORWARD_SOFT_LIMIT = 26;
-        public static final double ELEVATOR_REVERSE_SOFT_LIMIT = 0.25;
+        public static final double ELEVATOR_REVERSE_SOFT_LIMIT = 0.04;
 
         public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
             SoftwareLimitSwitchConfigs newConfigs = new SoftwareLimitSwitchConfigs();
@@ -113,9 +113,9 @@ public class ElevatorConstants {
             }
         }
 
+        public final static double POSITION_ERROR = 0.1;
 
-
-
-        public static double POSITION_ERROR = 0.1;
+        public final static double HIGH_ALGAE_HEIGHT = 2;
+        public final static double LOW_ALAGE_HEIGHT = 1;
 }
 

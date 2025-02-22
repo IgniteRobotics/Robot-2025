@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.ProximityParamsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -21,6 +22,8 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Preferences;
 import frc.robot.RobotState;
+import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.subsystems.Elevator.ElevatorConstants;
 
 @Logged
 public class EndEffector extends SubsystemBase {
@@ -29,11 +32,18 @@ public class EndEffector extends SubsystemBase {
   private final TalonFX m_algaeMotor;
   private final TalonFX m_wristMotor;
 
+  private Slot0Configs m_coralMotorConfigs;
+
+  private Slot0Configs m_algeaMotorConfigs;
+
+  private Slot0Configs m_wristMotorConfigs;
+
   private final CANrange m_beambreak;
 
   private final RobotState m_robotState = RobotState.getInstance();
 
   private boolean m_lastSeesCoral = false;
+  private boolean m_lastSeesAlgae = false;
 
   /** Creates a new EndEffector. */
   public EndEffector() {
@@ -55,13 +65,8 @@ public class EndEffector extends SubsystemBase {
       m_coralMotor.getConfigurator().refresh(m_motorConfig);
       m_motorConfig.withInverted(InvertedValue.Clockwise_Positive);
 
-      Slot0Configs slot = new Slot0Configs();
-      slot.kV = EndEffectorConstants.CORAL_kV;
-      slot.kS = EndEffectorConstants.CORAL_kS;
-      slot.kP = EndEffectorConstants.CORAL_kP;
-      slot.kI = EndEffectorConstants.CORAL_kI;
-      slot.kD = EndEffectorConstants.CORAL_kD;
-      m_coralMotor.getConfigurator().apply(slot);
+      m_coralMotorConfigs = EndEffectorConstants.createAlgaeMotorSlot0Configs();
+      m_coralMotor.getConfigurator().apply(m_coralMotorConfigs);
     }
 
   public void configureAlgaeMotor(){
@@ -70,14 +75,9 @@ public class EndEffector extends SubsystemBase {
       MotorOutputConfigs m_motorConfig = new MotorOutputConfigs();
       TalonFXConfiguration m_fxCfg = new TalonFXConfiguration();
 
-      Slot0Configs slot = new Slot0Configs();
-      slot.kV = EndEffectorConstants.ALGAE_kV;
-      slot.kS = EndEffectorConstants.ALGAE_kS;
-      slot.kP = EndEffectorConstants.ALGAE_kP;
-      slot.kI = EndEffectorConstants.ALGAE_kI;
-      slot.kD = EndEffectorConstants.ALGAE_kD;
+      m_algeaMotorConfigs = EndEffectorConstants.createAlgaeMotorSlot0Configs();
 
-      m_algaeMotor.getConfigurator().apply(slot);
+      m_algaeMotor.getConfigurator().apply(m_algeaMotorConfigs);
   }
 
   public void configureWristMotor(){
@@ -86,15 +86,9 @@ public class EndEffector extends SubsystemBase {
       MotorOutputConfigs m_motorConfig = new MotorOutputConfigs();
       TalonFXConfiguration m_fxCfg = new TalonFXConfiguration();
 
-      Slot0Configs slot = new Slot0Configs();
-      slot.kV = EndEffectorConstants.WRIST_kV;
-      slot.kS = EndEffectorConstants.WRIST_kS;
-      slot.kP = EndEffectorConstants.WRIST_kP;
-      slot.kI = EndEffectorConstants.WRIST_kI;
-      slot.kD = EndEffectorConstants.WRIST_kD;
-      slot.kG = EndEffectorConstants.WRIST_kG;
 
-      m_wristMotor.getConfigurator().apply(slot);
+      m_wristMotorConfigs = EndEffectorConstants.createWirstMotorSlot0Confgs();
+      m_wristMotor.getConfigurator().apply(m_wristMotorConfigs);
 
       double WRIST_FORWARD_SOFT_LIMIT = 100;
       double WRIST_REVERSE_SOFT_LIMIT = 0;
@@ -128,9 +122,34 @@ public class EndEffector extends SubsystemBase {
     m_coralMotor.stopMotor();
   }
 
+  public void setWristPosition(double position){
+    if(!m_robotState.hasAlgae())
+      m_wristMotor.setControl(new PositionVoltage(position).withSlot(0));
+    else
+      m_wristMotor.setControl(new PositionVoltage(position).withSlot(1));
+  }
+
+  public void setWristPosition(DoublePreference position){
+    setWristPosition(position.getValue());
+  }
+
+  public void stow(){
+    if(m_robotState.hasAlgae()){
+      setWristPosition(Preferences.endEffectorStowPositionWithAlgae);
+    }
+    else{
+      setWristPosition(Preferences.endEffectorStowPositionWithAlgae);
+    }
+  }
+
   @Logged
   public boolean seesCoral(){
     return m_beambreak.getIsDetected().getValue();
+  }
+
+  @Logged
+  public boolean seesAlgae(){
+    return false;
   }
 
   @Override
@@ -140,6 +159,13 @@ public class EndEffector extends SubsystemBase {
       m_lastSeesCoral = false;
     } else{
       m_lastSeesCoral = true;
+    }
+
+    if(!seesAlgae() && m_lastSeesAlgae){
+      m_robotState.setHasAlgae(true);
+      m_lastSeesAlgae = false;
+    } else{
+      m_lastSeesAlgae = true;
     }
   }
 }
