@@ -12,6 +12,8 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -168,6 +170,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * This constructs the underlying hardware devices, so users should not construct
      * the devices themselves. If they need the devices, they can access them through
      * getters in the classes.
+     * @param backright 
+     * @param backleft 
+     * @param frontright 
+     * @param frontleft 
+     * @param backright 
+     * @param backleft 
+     * @param frontright 
+     * @param frontleft 
      *
      * @param drivetrainConstants     Drivetrain-wide constants for the swerve drive
      * @param odometryUpdateFrequency The frequency to run the odometry loop. If
@@ -187,6 +197,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     //     configureAutoBuilder();
 
     // }
+
+
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
