@@ -326,46 +326,46 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-        ArrayList<Optional<EstimatedRobotPose>> estimatedPoseOuttakeLeft = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.OUTTAKE_LEFT);
-        ArrayList<Optional<EstimatedRobotPose>> estimatedPoseOuttakeRight = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.OUTTAKE_RIGHT);
-        ArrayList<Optional<EstimatedRobotPose>> estimatedPoseIntake = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.INTAKE);
+        // ArrayList<Optional<EstimatedRobotPose>> estimatedPoseOuttakeLeft = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.OUTTAKE_LEFT);
+        // ArrayList<Optional<EstimatedRobotPose>> estimatedPoseOuttakeRight = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.OUTTAKE_RIGHT);
+        // ArrayList<Optional<EstimatedRobotPose>> estimatedPoseIntake = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.INTAKE);
 
 
-        for(var estimatedPose : estimatedPoseOuttakeLeft){
-            if(estimatedPose.isPresent()){
-                EstimatedRobotPose pose = estimatedPose.get();
-                boolean poseOK = true;
-                for(PhotonTrackedTarget target: pose.targetsUsed) {
-                if(target.getPoseAmbiguity() > 0.2) poseOK = false;
-                if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
-                }
-                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
-            }
-        }
+        // for(var estimatedPose : estimatedPoseOuttakeLeft){
+        //     if(estimatedPose.isPresent()){
+        //         EstimatedRobotPose pose = estimatedPose.get();
+        //         boolean poseOK = true;
+        //         for(PhotonTrackedTarget target: pose.targetsUsed) {
+        //         if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+        //         if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
+        //         }
+        //         if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+        //     }
+        // }
 
-        for(var estimatedPose : estimatedPoseOuttakeRight){
-            if(estimatedPose.isPresent()){
-                EstimatedRobotPose pose = estimatedPose.get();
-                boolean poseOK = true;
-                for(PhotonTrackedTarget target: pose.targetsUsed) {
-                if(target.getPoseAmbiguity() > 0.2) poseOK = false;
-                if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
-                }
-                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
-            }
-        }
+        // for(var estimatedPose : estimatedPoseOuttakeRight){
+        //     if(estimatedPose.isPresent()){
+        //         EstimatedRobotPose pose = estimatedPose.get();
+        //         boolean poseOK = true;
+        //         for(PhotonTrackedTarget target: pose.targetsUsed) {
+        //         if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+        //         if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
+        //         }
+        //         if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+        //     }
+        // }
 
-        for(var estimatedPose : estimatedPoseIntake){
-            if(estimatedPose.isPresent()){
-                EstimatedRobotPose pose = estimatedPose.get();
-                boolean poseOK = true;
-                for(PhotonTrackedTarget target: pose.targetsUsed) {
-                if(target.getPoseAmbiguity() > 0.2) poseOK = false;
-                if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
-                }
-                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
-            }
-        }
+        // for(var estimatedPose : estimatedPoseIntake){
+        //     if(estimatedPose.isPresent()){
+        //         EstimatedRobotPose pose = estimatedPose.get();
+        //         boolean poseOK = true;
+        //         for(PhotonTrackedTarget target: pose.targetsUsed) {
+        //         if(target.getPoseAmbiguity() > 0.2) poseOK = false;
+        //         if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
+        //         }
+        //         if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+        //     }
+        // }
     
 
     }
