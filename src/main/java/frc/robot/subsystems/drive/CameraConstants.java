@@ -61,4 +61,7 @@ public class CameraConstants {
         put("OUTTAKE_RIGHT", 0.0);
         put("INTAKE", 0.0);
     }};
+
+    public static final double yLeftError = 0.5;
+    public static final double yRightError = -0.5;
 }
