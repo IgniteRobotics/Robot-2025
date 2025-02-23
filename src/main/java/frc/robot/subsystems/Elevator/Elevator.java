@@ -170,40 +170,40 @@ public class Elevator implements Subsystem {
     return m_elevatorMotorLeader.getStatorCurrent().getValueAsDouble();
   }
 
-  @Logged(name = "Actual Motion Magic Acceleration", importance = Importance.CRITICAL)
-  public double getElevatorMMAccel(){
-    m_motionMagicConfigs = new MotionMagicConfigs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
-    return m_motionMagicConfigs.MotionMagicAcceleration;
-  }
+  // @Logged(name = "Actual Motion Magic Acceleration", importance = Importance.CRITICAL)
+  // public double getElevatorMMAccel(){
+  //   m_motionMagicConfigs = new MotionMagicConfigs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
+  //   return m_motionMagicConfigs.MotionMagicAcceleration;
+  // }
 
-  @Logged(name = "Actual Motion Magic Jerk", importance = Importance.CRITICAL)
-  public double getElevatorMMJerk(){
-    m_motionMagicConfigs = new MotionMagicConfigs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
-    return m_motionMagicConfigs.MotionMagicJerk;
-  }
+  // @Logged(name = "Actual Motion Magic Jerk", importance = Importance.CRITICAL)
+  // public double getElevatorMMJerk(){
+  //   m_motionMagicConfigs = new MotionMagicConfigs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
+  //   return m_motionMagicConfigs.MotionMagicJerk;
+  // }
 
-  @Logged(name = "Actual Motion Magic Cruise Velocity", importance = Importance.CRITICAL)
-  public double getElevatorMMCruiseVelocity(){
-    m_motionMagicConfigs = new MotionMagicConfigs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
-    return m_motionMagicConfigs.MotionMagicCruiseVelocity;
-  }
+  // @Logged(name = "Actual Motion Magic Cruise Velocity", importance = Importance.CRITICAL)
+  // public double getElevatorMMCruiseVelocity(){
+  //   m_motionMagicConfigs = new MotionMagicConfigs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
+  //   return m_motionMagicConfigs.MotionMagicCruiseVelocity;
+  // }
 
-  @Logged(name = "Actual Motion Magic kA", importance = Importance.CRITICAL)
-  public double getElevatorMM_kA(){
-    m_motionMagicConfigs = new MotionMagicConfigs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
-    return m_motionMagicConfigs.MotionMagicExpo_kA;
-  }
+  // @Logged(name = "Actual Motion Magic kA", importance = Importance.CRITICAL)
+  // public double getElevatorMM_kA(){
+  //   m_motionMagicConfigs = new MotionMagicConfigs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
+  //   return m_motionMagicConfigs.MotionMagicExpo_kA;
+  // }
 
-  @Logged(name = "Actual Motion Magic kV", importance = Importance.CRITICAL)
-  public double getElevatorMM_kV(){
-    m_motionMagicConfigs = new MotionMagicConfigs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
-    return m_motionMagicConfigs.MotionMagicExpo_kV;
-  }
+  // @Logged(name = "Actual Motion Magic kV", importance = Importance.CRITICAL)
+  // public double getElevatorMM_kV(){
+  //   m_motionMagicConfigs = new MotionMagicConfigs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
+  //   return m_motionMagicConfigs.MotionMagicExpo_kV;
+  // }
 
 
 }
