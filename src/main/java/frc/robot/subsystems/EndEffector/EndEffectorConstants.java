@@ -4,13 +4,15 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class EndEffectorConstants {
     public static final int kCoralMotorId = 2;
         public static final int kAlgaeMotorId = 3;
         public static final int kWristMotorId = 4;
 
-        public static final int kBeamBreakId = 8;
+        public static final int kEnterBeamBreakId = 8;
+        public static final int kPrepBeamBreakId = 9;
 
         public static final double CORAL_kV = 0;
         public static final double CORAL_kS = 0;
@@ -54,6 +56,7 @@ public class EndEffectorConstants {
         public static MotorOutputConfigs createCoralMotorOutputConfigs(){
             MotorOutputConfigs configs = new MotorOutputConfigs();
             configs.withInverted(InvertedValue.Clockwise_Positive);
+            configs.NeutralMode = NeutralModeValue.Brake;
             return configs;
         }
 
