@@ -125,33 +125,33 @@ public class Climber implements Subsystem {
     m_climberMotorFollower.getConfigurator().apply(m_motionMagicConfigs);
   }
 
-  @Logged(name = "Actual kP", importance = Importance.CRITICAL)
-  public double getClimberkP(){
-    m_Slot0Configs = new Slot0Configs();
-    m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kP;
-  }
+  // @Logged(name = "Actual kP", importance = Importance.CRITICAL)
+  // public double getClimberkP(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kP;
+  // }
 
-  @Logged(name = "Actual kD", importance = Importance.CRITICAL)
-  public double getClimberkD(){
-    m_Slot0Configs = new Slot0Configs();
-    m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kD;
-  }
+  // @Logged(name = "Actual kD", importance = Importance.CRITICAL)
+  // public double getClimberkD(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kD;
+  // }
 
-  @Logged(name = "Actual kI", importance = Importance.CRITICAL)
-  public double getClimberkI(){
-    m_Slot0Configs = new Slot0Configs();
-    m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kI;
-  }
+  // @Logged(name = "Actual kI", importance = Importance.CRITICAL)
+  // public double getClimberkI(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kI;
+  // }
 
-  @Logged(name = "Actual kG", importance = Importance.CRITICAL)
-  public double getClimberkG(){
-    m_Slot0Configs = new Slot0Configs();
-    m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kG;
-  }
+  // @Logged(name = "Actual kG", importance = Importance.CRITICAL)
+  // public double getClimberkG(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kG;
+  // }
 
   @Logged(name = "Voltage", importance = Importance.CRITICAL)
   public double getVoltage(){
