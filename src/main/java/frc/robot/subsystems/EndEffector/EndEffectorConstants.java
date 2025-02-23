@@ -37,7 +37,7 @@ public class EndEffectorConstants {
         public static final double OUTTAKE_CORAL_VOLTAGE = -1;
 
         public static final double INTAKE_CORAL_POWER = 0.25;
-        public static final double OUTTAKE_CORAL_POWER = 0.25;
+        public static final double OUTTAKE_CORAL_POWER = 0.5;
 
         public static final double STOW_POSITION_WITH_ALGAE = 0;
         public static final double STOW_POSITION_NO_ALGAE = 0;

@@ -21,6 +21,6 @@ public class ScoreCoral extends SequentialCommandGroup {
     m_effector = effector;
     scoreHeight = score;
     endHeight = end;
-    addCommands(new ToSetpoint(elevator, scoreHeight), new OuttakeCommand(effector).withTimeout(1), new ToSetpoint(elevator, endHeight));
+    addCommands(new ToSetpoint(m_elevator, scoreHeight), new OuttakeCommand(m_effector).withTimeout(1), new ToSetpoint(m_elevator, endHeight));
   }
 }

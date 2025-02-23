@@ -125,40 +125,40 @@ public class Elevator implements Subsystem {
     m_elevatorMotorFollower.getConfigurator().apply(m_motionMagicConfigs);
   }
 
-  @Logged(name = "Actual kP", importance = Importance.CRITICAL)
-  public double getElevatorkP(){
-    m_Slot0Configs = new Slot0Configs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kP;
-  }
+  // @Logged(name = "Actual kP", importance = Importance.CRITICAL)
+  // public double getElevatorkP(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kP;
+  // }
 
-  @Logged(name = "Actual kD", importance = Importance.CRITICAL)
-  public double getElevatorkD(){
-    m_Slot0Configs = new Slot0Configs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kD;
-  }
+  // @Logged(name = "Actual kD", importance = Importance.CRITICAL)
+  // public double getElevatorkD(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kD;
+  // }
 
-  @Logged(name = "Actual kI", importance = Importance.CRITICAL)
-  public double getElevatorkI(){
-    m_Slot0Configs = new Slot0Configs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kI;
-  }
+  // @Logged(name = "Actual kI", importance = Importance.CRITICAL)
+  // public double getElevatorkI(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kI;
+  // }
 
-  @Logged(name = "Actual kG", importance = Importance.CRITICAL)
-  public double getElevatorkG(){
-    m_Slot0Configs = new Slot0Configs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kG;
-  }
+  // @Logged(name = "Actual kG", importance = Importance.CRITICAL)
+  // public double getElevatorkG(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kG;
+  // }
 
-  @Logged(name = "Actual kS", importance = Importance.CRITICAL)
-  public double getElevatorkS(){
-    m_Slot0Configs = new Slot0Configs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kS;
-  }
+  // @Logged(name = "Actual kS", importance = Importance.CRITICAL)
+  // public double getElevatorkS(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kS;
+  // }
 
   @Logged(name = "Voltage", importance = Importance.CRITICAL)
   public double getVoltage(){
