@@ -8,6 +8,7 @@ import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -38,6 +39,24 @@ public class Robot extends TimedRobot {
     DriverStation.startDataLog(DataLogManager.getLog());
 
     Epilogue.bind(this);
+
+    StringLogEntry metaData = new StringLogEntry(DataLogManager.getLog(), "MetaData");
+    metaData.append("Project Name: " + BuildConstants.MAVEN_NAME);
+    metaData.append("Build Date: " + BuildConstants.BUILD_DATE);
+    metaData.append("Commit Hash: " + BuildConstants.GIT_SHA);
+    metaData.append("Git Date: " + BuildConstants.GIT_DATE);
+    metaData.append("Git Branch: " + BuildConstants.GIT_BRANCH);
+    switch (BuildConstants.DIRTY) {
+      case 0:
+        metaData.append("GitDirty: " + "All changes commited");
+        break;
+      case 1:
+        metaData.append("GitDirty: " + "Uncomitted changes");
+        break;
+      default:
+        metaData.append("GitDirty: " + "Unknown");
+        break;
+    }
   }
 
   private void getAllianceInfo(){
