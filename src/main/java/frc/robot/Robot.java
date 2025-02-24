@@ -22,6 +22,8 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
+  private CommandScheduler m_Scheduler;
+
   private final boolean kUseLimelight = false;
 
   private final RobotState m_robotState = RobotState.getInstance();
@@ -30,7 +32,11 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     m_robotContainer = new RobotContainer();
+    m_Scheduler = CommandScheduler.getInstance();
     DataLogManager.start();
+    // Record both DS control and joystick data
+    DriverStation.startDataLog(DataLogManager.getLog());
+
     Epilogue.bind(this);
   }
 
