@@ -38,6 +38,31 @@ public class Elevator implements Subsystem {
   @Logged(name = "Target Position", importance = Importance.CRITICAL)
   private double m_targetPosition;
 
+  @Logged(name = "kP", importance = Importance.CRITICAL)
+  private double elevatorkP;
+
+  @Logged(name = "kD", importance = Importance.CRITICAL)
+  private double elevatorkD;
+
+  @Logged(name = "kI", importance = Importance.CRITICAL)
+  private double elevatorkI;
+
+  @Logged(name = "kG", importance = Importance.CRITICAL)
+  private double elevatorkG;
+
+  @Logged(name = "kS", importance = Importance.CRITICAL)
+  private double elevatorkS;
+
+  @Logged(name = "Motion Magic Cruise Velocity", importance = Importance.CRITICAL)
+  private double m_MMCruiseVelocity;
+
+  @Logged(name = "Motion Magic Acceleration", importance = Importance.CRITICAL)
+  private double m_MMAccel;
+
+  @Logged(name = "Motion Magic Jerk", importance = Importance.CRITICAL)
+  private double m_MMJerk;
+
+
   /** Creates a new Elevator. */
   public Elevator() {
     m_elevatorMotorLeader = ElevatorConstants.ELEVATOR_LEADER_MOTOR; 
@@ -47,6 +72,12 @@ public class Elevator implements Subsystem {
     m_elevatorMotorLeader.getConfigurator().apply(m_Slot0Configs);
     m_elevatorMotorFollower.getConfigurator().apply(m_Slot0Configs);
 
+    elevatorkP = m_Slot0Configs.kP;
+    elevatorkD = m_Slot0Configs.kD;
+    elevatorkI = m_Slot0Configs.kI;
+    elevatorkG = m_Slot0Configs.kG;
+    elevatorkS = m_Slot0Configs.kS;
+
     m_softLimitConfig = ElevatorConstants.createSoftLimitConigs(); 
     m_elevatorMotorLeader.getConfigurator().apply(m_softLimitConfig);
     m_elevatorMotorFollower.getConfigurator().apply(m_softLimitConfig);
@@ -54,6 +85,10 @@ public class Elevator implements Subsystem {
     m_motionMagicConfigs = ElevatorConstants.createMotionMagicConfigs();
     m_elevatorMotorLeader.getConfigurator().apply(m_motionMagicConfigs);
     m_elevatorMotorFollower.getConfigurator().apply(m_motionMagicConfigs);
+
+    m_MMCruiseVelocity = m_motionMagicConfigs.MotionMagicCruiseVelocity;
+    m_MMAccel = m_motionMagicConfigs.MotionMagicAcceleration;
+    m_MMJerk = m_motionMagicConfigs.MotionMagicJerk;
 
     m_leaderMotorConfig = ElevatorConstants.createLeaderMotorOutputConfigs();
     m_elevatorMotorLeader.getConfigurator().apply(m_leaderMotorConfig);
@@ -112,48 +147,57 @@ public class Elevator implements Subsystem {
 
     m_elevatorMotorLeader.getConfigurator().apply(m_Slot0Configs);
     m_elevatorMotorFollower.getConfigurator().apply(m_Slot0Configs);
+
+    elevatorkP = m_Slot0Configs.kP;
+    elevatorkD = m_Slot0Configs.kD;
+    elevatorkI = m_Slot0Configs.kI;
+    elevatorkG = m_Slot0Configs.kG;
+    elevatorkS = m_Slot0Configs.kS;
   }
 
-  public void setElevatorMotionMagic(DoublePreference CV, DoublePreference A, DoublePreference J, DoublePreference kV, DoublePreference kA){
+  public void setElevatorMotionMagic(DoublePreference CV, DoublePreference A, DoublePreference J){
     m_motionMagicConfigs = new MotionMagicConfigs();
     m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
 
-    m_motionMagicConfigs.withMotionMagicCruiseVelocity(CV.getValue()).withMotionMagicAcceleration(A.getValue()).withMotionMagicJerk(J.getValue())
-      .withMotionMagicExpo_kV(kV.getValue()).withMotionMagicExpo_kA(kA.getValue());
+    m_motionMagicConfigs.withMotionMagicCruiseVelocity(CV.getValue()).withMotionMagicAcceleration(A.getValue()).withMotionMagicJerk(J.getValue());
 
     m_elevatorMotorLeader.getConfigurator().apply(m_motionMagicConfigs);
     m_elevatorMotorFollower.getConfigurator().apply(m_motionMagicConfigs);
+
+    m_MMCruiseVelocity = m_motionMagicConfigs.MotionMagicCruiseVelocity;
+    m_MMAccel = m_motionMagicConfigs.MotionMagicAcceleration;
+    m_MMJerk = m_motionMagicConfigs.MotionMagicJerk;
   }
 
-  @Logged(name = "Actual kP", importance = Importance.CRITICAL)
+  @NotLogged
   public double getElevatorkP(){
     m_Slot0Configs = new Slot0Configs();
     m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
     return m_Slot0Configs.kP;
   }
 
-  @Logged(name = "Actual kD", importance = Importance.CRITICAL)
+  @NotLogged
   public double getElevatorkD(){
     m_Slot0Configs = new Slot0Configs();
     m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
     return m_Slot0Configs.kD;
   }
 
-  @Logged(name = "Actual kI", importance = Importance.CRITICAL)
+  @NotLogged
   public double getElevatorkI(){
     m_Slot0Configs = new Slot0Configs();
     m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
     return m_Slot0Configs.kI;
   }
 
-  @Logged(name = "Actual kG", importance = Importance.CRITICAL)
+  @NotLogged
   public double getElevatorkG(){
     m_Slot0Configs = new Slot0Configs();
     m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
     return m_Slot0Configs.kG;
   }
 
-  @Logged(name = "Actual kS", importance = Importance.CRITICAL)
+  @NotLogged
   public double getElevatorkS(){
     m_Slot0Configs = new Slot0Configs();
     m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
@@ -170,39 +214,25 @@ public class Elevator implements Subsystem {
     return m_elevatorMotorLeader.getStatorCurrent().getValueAsDouble();
   }
 
-  @Logged(name = "Actual Motion Magic Acceleration", importance = Importance.CRITICAL)
+  @NotLogged
   public double getElevatorMMAccel(){
     m_motionMagicConfigs = new MotionMagicConfigs();
     m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
     return m_motionMagicConfigs.MotionMagicAcceleration;
   }
 
-  @Logged(name = "Actual Motion Magic Jerk", importance = Importance.CRITICAL)
+  @NotLogged
   public double getElevatorMMJerk(){
     m_motionMagicConfigs = new MotionMagicConfigs();
     m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
     return m_motionMagicConfigs.MotionMagicJerk;
   }
 
-  @Logged(name = "Actual Motion Magic Cruise Velocity", importance = Importance.CRITICAL)
+  @NotLogged
   public double getElevatorMMCruiseVelocity(){
     m_motionMagicConfigs = new MotionMagicConfigs();
     m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
     return m_motionMagicConfigs.MotionMagicCruiseVelocity;
-  }
-
-  @Logged(name = "Actual Motion Magic kA", importance = Importance.CRITICAL)
-  public double getElevatorMM_kA(){
-    m_motionMagicConfigs = new MotionMagicConfigs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
-    return m_motionMagicConfigs.MotionMagicExpo_kA;
-  }
-
-  @Logged(name = "Actual Motion Magic kV", importance = Importance.CRITICAL)
-  public double getElevatorMM_kV(){
-    m_motionMagicConfigs = new MotionMagicConfigs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
-    return m_motionMagicConfigs.MotionMagicExpo_kV;
   }
 
 

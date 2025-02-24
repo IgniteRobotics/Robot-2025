@@ -41,6 +41,28 @@ public class Climber implements Subsystem {
   @Logged(name = "Target Position", importance = Importance.CRITICAL)
   private double m_targetPosition;
 
+  @Logged(name = "kP", importance = Importance.CRITICAL)
+  private double climberkP;
+
+  @Logged(name = "kD", importance = Importance.CRITICAL)
+  private double climberkD;
+
+  @Logged(name = "kI", importance = Importance.CRITICAL)
+  private double climberkI;
+
+  @Logged(name = "kG", importance = Importance.CRITICAL)
+  private double climberkG;
+
+  @Logged(name = "Motion Magic Cruise Velocity", importance = Importance.CRITICAL)
+  private double m_MMCruiseVelocity;
+
+  @Logged(name = "Motion Magic Acceleration", importance = Importance.CRITICAL)
+  private double m_MMAccel;
+
+  @Logged(name = "Motion Magic Jerk", importance = Importance.CRITICAL)
+  private double m_MMJerk;
+
+
   /** Creates a new Climber. */
   public Climber() {
     m_climberMotorLeader = ClimberConstants.CLIMBER_LEADER_MOTOR; 
@@ -50,6 +72,11 @@ public class Climber implements Subsystem {
     m_climberMotorLeader.getConfigurator().apply(m_Slot0Configs);
     m_climberMotorFollower.getConfigurator().apply(m_Slot0Configs);
 
+    climberkP = m_Slot0Configs.kP;
+    climberkD = m_Slot0Configs.kD;
+    climberkI = m_Slot0Configs.kI;
+    climberkG = m_Slot0Configs.kG;
+
     m_softLimitConfig = ClimberConstants.createSoftLimitConigs(); 
     m_climberMotorLeader.getConfigurator().apply(m_softLimitConfig);
     m_climberMotorFollower.getConfigurator().apply(m_softLimitConfig);
@@ -57,6 +84,10 @@ public class Climber implements Subsystem {
     m_motionMagicConfigs = ClimberConstants.createMotionMagicConfigs();
     m_climberMotorLeader.getConfigurator().apply(m_motionMagicConfigs);
     m_climberMotorFollower.getConfigurator().apply(m_motionMagicConfigs);
+
+    m_MMCruiseVelocity = m_motionMagicConfigs.MotionMagicCruiseVelocity;
+    m_MMAccel = m_motionMagicConfigs.MotionMagicAcceleration;
+    m_MMJerk = m_motionMagicConfigs.MotionMagicJerk;
 
     m_leaderMotorConfig = ClimberConstants.createLeaderMotorOutputConfigs();
     m_climberMotorLeader.getConfigurator().apply(m_leaderMotorConfig);
@@ -112,41 +143,49 @@ public class Climber implements Subsystem {
 
     m_climberMotorLeader.getConfigurator().apply(m_Slot0Configs);
     m_climberMotorFollower.getConfigurator().apply(m_Slot0Configs);
+
+    climberkP = m_Slot0Configs.kP;
+    climberkD = m_Slot0Configs.kD;
+    climberkI = m_Slot0Configs.kI;
+    climberkG = m_Slot0Configs.kG;
   }
 
- public void setClimberMotionMagic(DoublePreference CV, DoublePreference A, DoublePreference J, DoublePreference kV, DoublePreference kA){
+ public void setClimberMotionMagic(DoublePreference CV, DoublePreference A, DoublePreference J){
     m_motionMagicConfigs = new MotionMagicConfigs();
     m_climberMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
 
-    m_motionMagicConfigs.withMotionMagicCruiseVelocity(CV.getValue()).withMotionMagicAcceleration(A.getValue()).withMotionMagicJerk(J.getValue())
-      .withMotionMagicExpo_kV(kV.getValue()).withMotionMagicExpo_kA(kA.getValue());
+    m_motionMagicConfigs.withMotionMagicCruiseVelocity(CV.getValue()).withMotionMagicAcceleration(A.getValue()).withMotionMagicJerk(J.getValue());
 
     m_climberMotorLeader.getConfigurator().apply(m_motionMagicConfigs);
     m_climberMotorFollower.getConfigurator().apply(m_motionMagicConfigs);
+
+    m_MMCruiseVelocity = m_motionMagicConfigs.MotionMagicCruiseVelocity;
+    m_MMAccel = m_motionMagicConfigs.MotionMagicAcceleration;
+    m_MMJerk = m_motionMagicConfigs.MotionMagicJerk;
   }
 
-  @Logged(name = "Actual kP", importance = Importance.CRITICAL)
+  @NotLogged
   public double getClimberkP(){
     m_Slot0Configs = new Slot0Configs();
     m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
     return m_Slot0Configs.kP;
   }
 
-  @Logged(name = "Actual kD", importance = Importance.CRITICAL)
+  @NotLogged
   public double getClimberkD(){
     m_Slot0Configs = new Slot0Configs();
     m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
     return m_Slot0Configs.kD;
   }
 
-  @Logged(name = "Actual kI", importance = Importance.CRITICAL)
+  @NotLogged
   public double getClimberkI(){
     m_Slot0Configs = new Slot0Configs();
     m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
     return m_Slot0Configs.kI;
   }
 
-  @Logged(name = "Actual kG", importance = Importance.CRITICAL)
+  @NotLogged
   public double getClimberkG(){
     m_Slot0Configs = new Slot0Configs();
     m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);

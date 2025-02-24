@@ -64,15 +64,11 @@ public class ClimberConstants {
         public static final double CLIMBER_MM_JERK = 101;
         public static final double CLIMBER_MM_ACCEL = 10;
         public static final double CLIMBER_MM_CRUISE_VELOCITY = 5;
-        public static final double CLIMBER_MM_kV = 0.1;
-        public static final double CLIMBER_MM_kA = 0.1;
         public static MotionMagicConfigs createMotionMagicConfigs(){
             MotionMagicConfigs newConfigs = new MotionMagicConfigs();
             newConfigs.MotionMagicJerk = CLIMBER_MM_JERK;
             newConfigs.MotionMagicAcceleration = CLIMBER_MM_ACCEL;
             newConfigs.MotionMagicCruiseVelocity = CLIMBER_MM_CRUISE_VELOCITY;
-            newConfigs.MotionMagicExpo_kV = CLIMBER_MM_kV;
-            newConfigs.MotionMagicExpo_kA = CLIMBER_MM_kA;
             return newConfigs;
         }
 

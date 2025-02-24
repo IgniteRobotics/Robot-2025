@@ -34,8 +34,6 @@ public class Preferences {
     public static DoublePreference elevatorMMJerk = new DoublePreference("Elevator/Motion Magic/Jerk", ElevatorConstants.ELEVATOR_MM_JERK);
     public static DoublePreference elevatorMMAccel = new DoublePreference("Elevator/Motion Magic/Acceleration", ElevatorConstants.ELEVATOR_MM_ACCEL);
     public static DoublePreference elevatorMMCruiseVelocity = new DoublePreference("Elevator/Motion Magic/Cruise Velocity", ElevatorConstants.ELEVATOR_MM_CRUISE_VELOCITY);
-    public static DoublePreference elevatorMMkV = new DoublePreference("Elevator/Motion Magic/kV", ElevatorConstants.ELEVATOR_MM_kV);
-    public static DoublePreference elevatorMMkA = new DoublePreference("Elevator/Motion Magic/Jerk", ElevatorConstants.ELEVATOR_MM_kA);
     
     // ********** End Effector **********
     public static DoublePreference endEffectorCoralIntakePower = new DoublePreference("EndEffector/Coral/IntakePower", EndEffectorConstants.INTAKE_CORAL_POWER);
@@ -56,8 +54,6 @@ public class Preferences {
     public static DoublePreference climberMMJerk = new DoublePreference("Climber/Motion Magic/Jerk", ClimberConstants.CLIMBER_MM_JERK);
     public static DoublePreference climberMMAccel = new DoublePreference("Climber/Motion Magic/Acceleration", ClimberConstants.CLIMBER_MM_ACCEL);
     public static DoublePreference climberMMCruiseVelocity = new DoublePreference("Climber/Motion Magic/Cruise Velocity", ClimberConstants.CLIMBER_MM_CRUISE_VELOCITY);
-    public static DoublePreference climberMMkV = new DoublePreference("Climber/Motion Magic/kV", ClimberConstants.CLIMBER_MM_kV);
-    public static DoublePreference climberMMkA = new DoublePreference("Climber/Motion Magic/Jerk", ClimberConstants.CLIMBER_MM_kA);
 
     public static DoublePreference climberUpSpeed = new DoublePreference("Climber/Up Power", 0.1);
     public static DoublePreference climberDownSpeed = new DoublePreference("Clibmer/Down Power", 0.1);
