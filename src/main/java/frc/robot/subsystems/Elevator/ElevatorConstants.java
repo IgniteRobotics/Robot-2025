@@ -63,15 +63,11 @@ public class ElevatorConstants {
         public static final double ELEVATOR_MM_JERK = 2000;
         public static final double ELEVATOR_MM_ACCEL = 200;
         public static final double ELEVATOR_MM_CRUISE_VELOCITY = 100;
-        public static final double ELEVATOR_MM_kV = 0.1;
-        public static final double ELEVATOR_MM_kA = 0.1;
         public static MotionMagicConfigs createMotionMagicConfigs(){
             MotionMagicConfigs newConfigs = new MotionMagicConfigs();
             newConfigs.MotionMagicJerk = ELEVATOR_MM_JERK;
             newConfigs.MotionMagicAcceleration = ELEVATOR_MM_ACCEL;
             newConfigs.MotionMagicCruiseVelocity = ELEVATOR_MM_CRUISE_VELOCITY;
-            newConfigs.MotionMagicExpo_kV = ELEVATOR_MM_kV;
-            newConfigs.MotionMagicExpo_kA = ELEVATOR_MM_kA;
             return newConfigs;
         }
 
