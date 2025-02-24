@@ -185,3 +185,4 @@ ctre_sim/
 compile_commands.json
 simgui-ds.json
 simgui-ds.json
+src/main/java/frc/robot/BuildConstants.java
