@@ -17,7 +17,7 @@ public class ScoreCoral extends SequentialCommandGroup {
   double scoreHeight;
   double endHeight;
   public ScoreCoral(Elevator elevator, EndEffector effector, double score, double end) {
-    elevator = m_elevator;
+    m_elevator = elevator;
     m_effector = effector;
     scoreHeight = score;
     endHeight = end;

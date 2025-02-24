@@ -77,6 +77,11 @@ public class Elevator implements Subsystem {
     setPositionRevolutions(position.get());
   }
 
+  public void stop(){
+    m_elevatorMotorLeader.stopMotor();
+    m_elevatorMotorFollower.stopMotor();
+  }
+
   @Logged
   public double getPosition(){
     return m_elevatorMotorLeader.getPosition().getValueAsDouble();

@@ -160,7 +160,7 @@ public class RobotContainer {
             .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
             );
          */
-        // SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
         // SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
         // SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
         // SmartDashboard.putData("Elevator Level 4", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
@@ -184,12 +184,43 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystick.a().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
+        joystick.a().onTrue(new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_2.position))
+            .until(() -> elevator.atSetpoint())
+            .andThen( new RunCommand(() -> endEffector.outtakeCoral())
+            .withTimeout(1)
+            .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
+            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
+            .until(() -> elevator.atSetpoint())
+            .andThen(() -> elevator.stop())            
+        );
         //             .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
-        joystick.b().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
-        joystick.y().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
-        joystick.x().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
-        //             .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
+        joystick.b().onTrue(new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_3.position))
+        .until(() -> elevator.atSetpoint())
+        .andThen( new RunCommand(() -> endEffector.outtakeCoral())
+        .withTimeout(1)
+        .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
+        .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
+        .until(() -> elevator.atSetpoint())
+        .andThen(() -> elevator.stop())
+          );
+        joystick.y().onTrue(new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.LEVEL_4.position))
+            .until(() -> elevator.atSetpoint())
+            .andThen( new RunCommand(() -> endEffector.outtakeCoral())
+            .withTimeout(1)
+            .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
+            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
+            .until(() -> elevator.atSetpoint())
+            .andThen(() -> elevator.stop())
+        );
+        joystick.x().onTrue(new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.TROUGH.position))
+        .until(() -> elevator.atSetpoint())
+        .andThen( new RunCommand(() -> endEffector.outtakeCoral())
+        .withTimeout(1)
+        .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
+        .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
+        .until(() -> elevator.atSetpoint())
+        .andThen(() -> elevator.stop())
+        );//             .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
         // joystick.x().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
 
 

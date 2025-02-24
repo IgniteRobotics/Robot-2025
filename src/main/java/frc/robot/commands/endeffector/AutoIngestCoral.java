@@ -26,11 +26,11 @@ public class AutoIngestCoral extends Command {
   @Override
   public void execute() {
 
-    if(m_endEffector.seesCoralEnter() && !m_endEffector.coralPreped()){
+    if(m_endEffector.seesCoralEnter()){
       m_endEffector.intakeCoral();
+    } else {
+      m_endEffector.stopCoralMotor();
     }
-    
-    else m_endEffector.stopCoralMotor();
   }
 
   // Called once the command ends or is interrupted.
