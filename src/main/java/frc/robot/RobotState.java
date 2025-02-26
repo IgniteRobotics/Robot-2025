@@ -8,6 +8,7 @@ import java.util.Map;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -79,6 +80,7 @@ public class RobotState {
         else GRID = Grid.BLUE_GRID;
     }
 
+    
     private void updateZone(){
         if(robotPose2d == null 
         || (int)(robotPose2d.getX()/blockWidth) >= Grid.xLength || (int)(robotPose2d.getY()/blockWidth) >= Grid.yLength
@@ -90,8 +92,15 @@ public class RobotState {
         }
     }
 
+    @NotLogged
     public Zone getZone(){
         return currentZone;
+    }
+
+    @Logged(name = "Zone", importance = Importance.CRITICAL)
+    public String getZoneName(){
+        if(currentZone == null) return "currentZone is nonexistent";
+        else return currentZone.name;
     }
 
     public double getAlgaeHeight(){
