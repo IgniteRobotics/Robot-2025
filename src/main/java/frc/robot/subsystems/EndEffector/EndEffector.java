@@ -138,7 +138,7 @@ public class EndEffector extends SubsystemBase {
 
   @Override
   public void periodic() {
-    m_robotState.setHasCoral(coralPreped());
+    m_robotState.setHasCoral(!seesCoralEnter() && coralPreped());
     m_robotState.setHasAlgae(seesAlgae());
   }
 

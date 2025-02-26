@@ -24,7 +24,9 @@ public class ToSetpoint extends Command {
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_elevator.stopMotors();
+  }
 
  
   @Override

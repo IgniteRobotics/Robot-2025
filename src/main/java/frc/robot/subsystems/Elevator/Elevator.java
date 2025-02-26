@@ -127,6 +127,10 @@ public class Elevator implements Subsystem {
     m_elevatorMotorFollower.setPosition(0);
   }
 
+  public void stopMotors(){
+    m_elevatorMotorLeader.stopMotor();
+  }
+
 
   @Override
   public void periodic() {
