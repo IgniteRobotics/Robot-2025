@@ -10,6 +10,7 @@ import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.subsystems.alerts.TestAlert;
 
 @Logged
 public class Robot extends TimedRobot {
@@ -32,6 +34,8 @@ public class Robot extends TimedRobot {
   private final RobotState m_robotState = RobotState.getInstance();
 
   private boolean hasAlliance  = false;
+
+  public boolean warning = false;
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -120,35 +124,15 @@ public class Robot extends TimedRobot {
   @Override
   public void testExit() {}
 
-  //Alerts
-  //Makes Alert
-  Alert test = new Alert("test alert", AlertType.kInfo);
-  //Makes indicator variables
-  private boolean flash = false;
-  private double ts = 0;
-  public boolean warning = false;
+
+
   @Override
   public void simulationPeriodic() {
-    //Sets Alert
-    test.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
-      //Tests if Alert reason is true, if so activates indicator
-      if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-        warning = true;
-      } else {
-        warning = false;
-      }
-      //Indicator Code
-      if (warning == true){
-        ts = ((int)RobotController.getFPGATime() / 500000) % 2;
-         if(ts % 2 == 1){
-          flash = true;
-          } else if(ts % 2 == 0){
-          flash = false;
-          }
-      }
-  }
-
-  public boolean getFlash(){
-    return flash;
+        //Tests if Alert reason is true, if so activates indicator
+        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+          warning = true;
+        } else {
+          warning = false;
+        }
   }
 }

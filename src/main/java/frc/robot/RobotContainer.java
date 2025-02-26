@@ -36,6 +36,7 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.EndEffector.EndEffector;
+import frc.robot.subsystems.alerts.TestAlert;
 @Logged
 public class RobotContainer {
 
@@ -65,6 +66,8 @@ public class RobotContainer {
     private final Command alignTest = new AlignToTarget(drivetrain,drivetrain.m_photonCameraWrapper, 12, Preferences.alignDistanceAdjustment);
 
     private final Command autoIngestCoral = new AutoIngestCoral(endEffector);
+
+    public final TestAlert alert = new TestAlert();
 
 
     /* Path follower */
