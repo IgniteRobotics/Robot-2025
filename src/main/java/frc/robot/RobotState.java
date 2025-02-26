@@ -4,10 +4,12 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -39,26 +41,47 @@ public class RobotState {
 
       //Desired Coral Targets
     public static enum CoralTarget {
-        NONE,
-        TROUGH,
-        L2_LEFT,
-        L2_RIGHT,
-        L3_LEFT,
-        L3_RIGHT,
-        L4_LEFT,
-        L4_RIGHT,
+        NONE("NONE"),
+        TROUGH("TROUGH"),
+        L2_LEFT("L2_LEFT"),
+        L2_RIGHT("L2_RIGHT"),
+        L3_LEFT("L3_LEFT"),
+        L3_RIGHT("L3_RIGHT"),
+        L4_LEFT("L4_LEFT"),
+        L4_RIGHT("L4_RIGHT");
+
+        public final String name;
+        CoralTarget(String value){
+            name = value;
+            }
         }
+
     private CoralTarget coralTarget = CoralTarget.NONE;
+
+    @Logged(name = "Coral Target", importance = Importance.CRITICAL)
+    public String getCoralTargetName(){
+        return coralTarget.name;
+    }
 
     //Desired Algae Targets
     public static enum AlgaeTarget {
-        NONE,
-        PROCESSOR,
-        REEF,
-        BARGE
+        NONE("NONE"),
+        PROCESSOR("PROCESSOR"),
+        REEF("REEF"),
+        BARGE("BARGE");
+
+        public final String name;
+        AlgaeTarget(String value){
+            name = value;
         }
+    }
 
     private AlgaeTarget algaeTarget = AlgaeTarget.NONE;
+
+    @Logged(name = "Algae Target", importance = Importance.CRITICAL)
+    public String getAlgaeTargetName(){
+        return algaeTarget.name;
+    }
 
     private RobotState() {
 
@@ -79,6 +102,7 @@ public class RobotState {
         else GRID = Grid.BLUE_GRID;
     }
 
+    
     private void updateZone(){
         if(robotPose2d == null 
         || (int)(robotPose2d.getX()/blockWidth) >= Grid.xLength || (int)(robotPose2d.getY()/blockWidth) >= Grid.yLength
@@ -90,8 +114,15 @@ public class RobotState {
         }
     }
 
+    @NotLogged
     public Zone getZone(){
         return currentZone;
+    }
+
+    @Logged(name = "Zone", importance = Importance.CRITICAL)
+    public String getZoneName(){
+        if(currentZone == null) return "currentZone is nonexistent";
+        else return currentZone.name;
     }
 
     public double getAlgaeHeight(){

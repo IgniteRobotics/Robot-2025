@@ -3,6 +3,7 @@ package frc.zones;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class Zone{
+    public String name;
     public Double maxSpeed;
     public Double maxRotation;
     public Integer targetID;
@@ -22,6 +23,10 @@ public class Zone{
 
     public void setHeading(double head){
         heading = head;
+    }
+
+    public void setName(String aName){
+        name = aName;
     }
 
 }

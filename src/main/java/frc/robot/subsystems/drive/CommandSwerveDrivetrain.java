@@ -25,6 +25,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -33,6 +34,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -76,6 +78,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final Pigeon2 m_gyro = new Pigeon2(TunerConstants.kPigeonId);
 
     public final PhotonCameraWrapper m_photonCameraWrapper;
+
+    private PathPlannerPath loggedPath;
 
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
@@ -262,6 +266,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
 
+    private void followPath(PathPlannerPath path){
+        loggedPath = path;
+        AutoBuilder.followPath(path);
+    }
+
+/**
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *
@@ -308,6 +318,23 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     @Override
     public void periodic() {
+
+        SmartDashboard.putString("Zone", m_robotState.getZoneName());
+        SmartDashboard.putString("Coral Target", m_robotState.getCoralTargetName());
+        SmartDashboard.putString("Algae Target", m_robotState.getAlgaeTargetName());
+
+        SmartDashboard.putNumber("Robot Pose X", getPose().getX());
+        SmartDashboard.putNumber("Robot Pose Y", getPose().getY());
+        SmartDashboard.putNumber("Robot Rotation Degrees", getPose().getRotation().getDegrees());
+
+        if(loggedPath == null){
+            SmartDashboard.putString("Last Selected Robot Path Name", "None Selected");
+        }
+
+        else{
+            SmartDashboard.putString("Last Selected Robot Path Name", loggedPath.toString());
+        }
+
         m_robotState.setPose2d(getPose());
         /*
          * Periodically try to apply the operator perspective.
@@ -369,6 +396,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     
 
     }
+
+    
 
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
