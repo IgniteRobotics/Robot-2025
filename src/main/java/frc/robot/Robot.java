@@ -4,18 +4,24 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+
 import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.util.DeviceFinder;
 
 @Logged
 public class Robot extends TimedRobot {
@@ -30,6 +36,12 @@ public class Robot extends TimedRobot {
   private final RobotState m_robotState = RobotState.getInstance();
 
   private boolean hasAlliance  = false;
+
+  @NotLogged
+  private DeviceFinder devFinder = new DeviceFinder();
+
+  @NotLogged
+  Alert canDeviceAlert = new Alert("TEST MODE","", AlertType.kInfo);
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -132,10 +144,19 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
+    ArrayList<String> devices = devFinder.find();
+    String text = "Devices Found:";
+    for (String device : devices) {
+      text = text + "\n" + device;
+    }
+    canDeviceAlert.setText(text);
+    canDeviceAlert.set(true);
   }
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    CommandScheduler.getInstance().run();
+  }
 
   @Override
   public void testExit() {}
