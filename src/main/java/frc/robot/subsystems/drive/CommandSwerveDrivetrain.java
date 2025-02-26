@@ -311,6 +311,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public void periodic() {
 
         SmartDashboard.putString("Zone", m_robotState.getZoneName());
+        SmartDashboard.putString("Coral Target", m_robotState.getCoralTargetName());
+        SmartDashboard.putString("Algae Target", m_robotState.getAlgaeTargetName());
+
         m_robotState.setPose2d(getPose());
         /*
          * Periodically try to apply the operator perspective.

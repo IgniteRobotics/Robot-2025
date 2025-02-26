@@ -41,26 +41,47 @@ public class RobotState {
 
       //Desired Coral Targets
     public static enum CoralTarget {
-        NONE,
-        TROUGH,
-        L2_LEFT,
-        L2_RIGHT,
-        L3_LEFT,
-        L3_RIGHT,
-        L4_LEFT,
-        L4_RIGHT,
+        NONE("NONE"),
+        TROUGH("TROUGH"),
+        L2_LEFT("L2_LEFT"),
+        L2_RIGHT("L2_RIGHT"),
+        L3_LEFT("L3_LEFT"),
+        L3_RIGHT("L3_RIGHT"),
+        L4_LEFT("L4_LEFT"),
+        L4_RIGHT("L4_RIGHT");
+
+        public final String name;
+        CoralTarget(String value){
+            name = value;
+            }
         }
+
     private CoralTarget coralTarget = CoralTarget.NONE;
+
+    @Logged(name = "Coral Target", importance = Importance.CRITICAL)
+    public String getCoralTargetName(){
+        return coralTarget.name;
+    }
 
     //Desired Algae Targets
     public static enum AlgaeTarget {
-        NONE,
-        PROCESSOR,
-        REEF,
-        BARGE
+        NONE("NONE"),
+        PROCESSOR("PROCESSOR"),
+        REEF("REEF"),
+        BARGE("BARGE");
+
+        public final String name;
+        AlgaeTarget(String value){
+            name = value;
         }
+    }
 
     private AlgaeTarget algaeTarget = AlgaeTarget.NONE;
+
+    @Logged(name = "Algae Target", importance = Importance.CRITICAL)
+    public String getAlgaeTargetName(){
+        return algaeTarget.name;
+    }
 
     private RobotState() {
 
