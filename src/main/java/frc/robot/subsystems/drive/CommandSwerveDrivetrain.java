@@ -79,6 +79,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public final PhotonCameraWrapper m_photonCameraWrapper;
 
+    private PathPlannerPath loggedPath;
+
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -264,6 +266,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
 
+    private void followPath(PathPlannerPath path){
+        loggedPath = path;
+        AutoBuilder.followPath(path);
+    }
+
 /**
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
@@ -319,6 +326,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("Robot Pose X", getPose().getX());
         SmartDashboard.putNumber("Robot Pose Y", getPose().getY());
         SmartDashboard.putNumber("Robot Rotation Degrees", getPose().getRotation().getDegrees());
+
+        if(loggedPath == null){
+            SmartDashboard.putString("Last Selected Robot Path Name", "None Selected");
+        }
+
+        else{
+            SmartDashboard.putString("Last Selected Robot Path Name", loggedPath.toString());
+        }
 
         m_robotState.setPose2d(getPose());
         /*
@@ -381,6 +396,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     
 
     }
+
+    
 
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
