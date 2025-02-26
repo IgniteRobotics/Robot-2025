@@ -25,6 +25,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -263,6 +264,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
 
+/**
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *
@@ -313,6 +315,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putString("Zone", m_robotState.getZoneName());
         SmartDashboard.putString("Coral Target", m_robotState.getCoralTargetName());
         SmartDashboard.putString("Algae Target", m_robotState.getAlgaeTargetName());
+
+        SmartDashboard.putNumber("Robot Pose X", getPose().getX());
+        SmartDashboard.putNumber("Robot Pose Y", getPose().getY());
+        SmartDashboard.putNumber("Robot Rotation Degrees", getPose().getRotation().getDegrees());
 
         m_robotState.setPose2d(getPose());
         /*
