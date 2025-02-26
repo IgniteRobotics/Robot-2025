@@ -49,7 +49,7 @@ public class ClimberConstants {
 
         //SoftLimitConfig
         public static final double CLIMBER_FORWARD_SOFT_LIMIT = 100;
-        public static final double CLIMBER_REVERSE_SOFT_LIMIT = 0.1;
+        public static final double CLIMBER_REVERSE_SOFT_LIMIT = 0.04;
 
         public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
             SoftwareLimitSwitchConfigs newConfigs = new SoftwareLimitSwitchConfigs();
