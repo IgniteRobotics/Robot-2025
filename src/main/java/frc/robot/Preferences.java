@@ -57,4 +57,7 @@ public class Preferences {
 
     public static DoublePreference climberUpSpeed = new DoublePreference("Climber/Up Power", 0.1);
     public static DoublePreference climberDownSpeed = new DoublePreference("Clibmer/Down Power", 0.1);
+
+
+    public static DoublePreference outtakeDelay = new DoublePreference("EndEffector/Outtake Delay", 0.5);
 }
