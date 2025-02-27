@@ -24,6 +24,9 @@ public class ClimberConstants {
             setControl(new Follower(kclimberMotorLeaderId, true));
         }};
 
+        public static final int RIGHT_SERVO_PORT = 0;
+        public static final int LEFT_SERVO_PORT = 1;
+
 
         //Slot0Configs
 

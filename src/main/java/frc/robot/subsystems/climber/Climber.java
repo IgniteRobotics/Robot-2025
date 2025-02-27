@@ -14,6 +14,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.PreferenceTypes.DoublePreference;
@@ -22,6 +23,9 @@ import frc.robot.PreferenceTypes.DoublePreference;
 public class Climber implements Subsystem {
     private final TalonFX m_climberMotorLeader;
     private final TalonFX m_climberMotorFollower;
+
+    private final Servo m_rightServo;
+    private final Servo m_leftServo;
 
   private Slot0Configs m_Slot0Configs = new Slot0Configs();
   
@@ -95,6 +99,10 @@ public class Climber implements Subsystem {
     m_followerMotorConfig = ClimberConstants.createFollowerMotorOutputConfigs();
     m_climberMotorFollower.getConfigurator().apply(m_followerMotorConfig);
 
+    m_rightServo = new Servo(ClimberConstants.RIGHT_SERVO_PORT);
+    m_leftServo = new Servo(ClimberConstants.LEFT_SERVO_PORT);
+
+
   }
 
   @NotLogged
@@ -121,6 +129,17 @@ public class Climber implements Subsystem {
   @NotLogged
   public void setSpeed(DoublePreference speed){
     m_climberMotorLeader.set(speed.getValue());
+  }
+
+  public void setServoPosition(double position){
+    m_rightServo.set(position);
+    m_leftServo.set(1.0 - position);
+  }
+
+  //TODO: fix?
+  public void resetServoPosition(){
+    m_rightServo.set(0);
+    m_leftServo.set(1);
   }
 
 
@@ -200,6 +219,16 @@ public class Climber implements Subsystem {
   @Logged(name = "Current", importance = Importance.CRITICAL)
   public double getCurrent(){
     return m_climberMotorLeader.getStatorCurrent().getValueAsDouble();
+  }
+
+  @Logged(name = "Right Servo Position", importance = Importance.CRITICAL )
+  public double getRightServoPosition(){
+    return m_rightServo.getPosition();
+  }
+
+  @Logged(name = "Left Servo Position", importance = Importance.CRITICAL)
+  public double getLeftServoPosition(){
+    return m_leftServo.getPosition();
   }
 
 
