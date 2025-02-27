@@ -1,10 +1,14 @@
 package frc.robot.subsystems.EndEffector;
 
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class EndEffectorConstants {
     public static final int kCoralMotorId = 2;
@@ -71,6 +75,8 @@ public class EndEffectorConstants {
             return slot;
         }
 
+        public static final StaticFeedforwardSignValue wristFeedforward = StaticFeedforwardSignValue.UseClosedLoopSign;
+        public static final GravityTypeValue wristGravityType = GravityTypeValue.Arm_Cosine;
         public static Slot0Configs createWirstMotorSlot0Configs(){
             Slot0Configs slot = new Slot0Configs();
             slot.kV = EndEffectorConstants.WRIST_kV;
@@ -79,6 +85,8 @@ public class EndEffectorConstants {
             slot.kI = EndEffectorConstants.WRIST_kI;
             slot.kD = EndEffectorConstants.WRIST_kD;
             slot.kG = EndEffectorConstants.WRIST_kG;
+            slot.StaticFeedforwardSign = wristFeedforward;
+            slot.GravityType = wristGravityType;
             return slot;
         }
 
@@ -90,6 +98,12 @@ public class EndEffectorConstants {
             configs.ReverseSoftLimitEnable = false;
             configs.ForwardSoftLimitThreshold = WRIST_FORWARD_SOFT_LIMIT;
             configs.ReverseSoftLimitThreshold = WRIST_REVERSE_SOFT_LIMIT;
+            return configs;
+        }
+        
+        public static TalonFXConfiguration createWristTalonFXConfigs(){
+            TalonFXConfiguration configs = new TalonFXConfiguration();
+            configs.Feedback.SensorToMechanismRatio = 48;
             return configs;
         }
 

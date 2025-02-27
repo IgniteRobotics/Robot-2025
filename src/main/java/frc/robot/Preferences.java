@@ -43,6 +43,8 @@ public class Preferences {
     public static DoublePreference endEffectorStowPositionWithAlgae = new DoublePreference("EndEffector/Wrist/Stow Position/WithAlgae", EndEffectorConstants.STOW_POSITION_WITH_ALGAE);
     
     public static DoublePreference wirstPosition = new DoublePreference("EndEffector/Wrist/Position",0);
+
+    public static DoublePreference outtakeDelay = new DoublePreference("EndEffector/Outtake Delay", 0.5);
     // ********** Climber **********
     public static DoublePreference climberkV = new DoublePreference("Climber/kV", ClimberConstants.CLIMBER_kV);
     public static DoublePreference climberkP = new DoublePreference("Climber/kP", ClimberConstants.CLIMBER_kP);
@@ -57,8 +59,9 @@ public class Preferences {
     public static DoublePreference climberMMCruiseVelocity = new DoublePreference("Climber/Motion Magic/Cruise Velocity", ClimberConstants.CLIMBER_MM_CRUISE_VELOCITY);
 
     public static DoublePreference climberUpSpeed = new DoublePreference("Climber/Up Power", 0.1);
-    public static DoublePreference climberDownSpeed = new DoublePreference("Clibmer/Down Power", 0.1);
+    public static DoublePreference climberDownSpeed = new DoublePreference("Climber/Down Power", 0.1);
 
+    public static DoublePreference servoPosition = new DoublePreference("Climber/Servo Position", 0);
 
-    public static DoublePreference outtakeDelay = new DoublePreference("EndEffector/Outtake Delay", 0.5);
+    
 }

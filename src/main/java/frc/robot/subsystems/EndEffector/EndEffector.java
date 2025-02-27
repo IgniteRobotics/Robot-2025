@@ -39,6 +39,7 @@ public class EndEffector extends SubsystemBase {
 
   private Slot0Configs m_wristSlot0Configs;
   private SoftwareLimitSwitchConfigs m_wristSoftLimitConfigs;
+  private TalonFXConfiguration m_wirstTalonFXConfiguration;
 
   private final CANrange m_beambreak_enter;
   private final CANrange m_beambreak_prep;
@@ -63,6 +64,8 @@ public class EndEffector extends SubsystemBase {
     m_wristSlot0Configs = EndEffectorConstants.createWirstMotorSlot0Configs();
     m_wristMotor.getConfigurator().apply(m_wristSlot0Configs);
     m_wristSoftLimitConfigs = EndEffectorConstants.createWristSoftLimitConfigs();
+    m_wirstTalonFXConfiguration = EndEffectorConstants.createWristTalonFXConfigs();
+    m_wristMotor.getConfigurator().apply(m_wirstTalonFXConfiguration);
 
 
     m_beambreak_enter = new CANrange(EndEffectorConstants.kEnterBeamBreakId);
