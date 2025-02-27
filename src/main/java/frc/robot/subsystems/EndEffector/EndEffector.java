@@ -102,8 +102,8 @@ public class EndEffector extends SubsystemBase {
     m_beambreak_algae.getConfigurator().refresh(proximityParamsConfigs);
     m_beambreak_algae.getConfigurator().apply(
       proximityParamsConfigs
-        .withProximityThreshold(.254)
-        .withProximityHysteresis(.01)
+        .withProximityThreshold(Units.Inches.of(1))
+        .withProximityHysteresis(Units.Inches.of(.25))
       );
    
   }
