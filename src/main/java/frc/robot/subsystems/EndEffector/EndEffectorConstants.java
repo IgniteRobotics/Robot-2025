@@ -77,7 +77,7 @@ public class EndEffectorConstants {
 
         public static final StaticFeedforwardSignValue wristFeedforward = StaticFeedforwardSignValue.UseClosedLoopSign;
         public static final GravityTypeValue wristGravityType = GravityTypeValue.Arm_Cosine;
-        public static Slot0Configs createWirstMotorSlot0Configs(){
+        public static Slot0Configs createWristMotorSlot0Configs(){
             Slot0Configs slot = new Slot0Configs();
             slot.kV = EndEffectorConstants.WRIST_kV;
             slot.kS = EndEffectorConstants.WRIST_kS;
@@ -104,6 +104,12 @@ public class EndEffectorConstants {
         public static TalonFXConfiguration createWristTalonFXConfigs(){
             TalonFXConfiguration configs = new TalonFXConfiguration();
             configs.Feedback.SensorToMechanismRatio = 48;
+            return configs;
+        }
+
+        public static MotorOutputConfigs createWristMotorOutputConfigs(){
+            MotorOutputConfigs configs = new MotorOutputConfigs();
+            configs.Inverted = InvertedValue.Clockwise_Positive;
             return configs;
         }
 
