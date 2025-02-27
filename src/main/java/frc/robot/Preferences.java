@@ -38,6 +38,9 @@ public class Preferences {
     // ********** End Effector **********
     public static DoublePreference endEffectorCoralIntakePower = new DoublePreference("EndEffector/Coral/IntakePower", EndEffectorConstants.INTAKE_CORAL_POWER);
     public static DoublePreference endEffectorCoralOuttakePower = new DoublePreference("EndEffector/Coral/OuttakePower", EndEffectorConstants.OUTTAKE_CORAL_POWER);
+    public static DoublePreference endEffectorAlgaeIntakePower = new DoublePreference("EndEffector/Algae/IntakePower", EndEffectorConstants.INTAKE_ALGAE_POWER);
+    public static DoublePreference endEffectorAlgaeOuttakePower = new DoublePreference("EndEffector/Algae/OuttakePower", EndEffectorConstants.OUTTAKE_ALGAE_POWER);
+    public static DoublePreference endEffectorAlgaeHoldPower = new DoublePreference("EndEffector/Algae/HopperPower", EndEffectorConstants.ALGAE_HOLD_POWER);
 
     public static DoublePreference endEffectorStowPositionNoAlgae = new DoublePreference("EndEffector/Wrist/Stow Position/No Algae", EndEffectorConstants.STOW_POSITION_NO_ALGAE);
     public static DoublePreference endEffectorStowPositionWithAlgae = new DoublePreference("EndEffector/Wrist/Stow Position/WithAlgae", EndEffectorConstants.STOW_POSITION_WITH_ALGAE);

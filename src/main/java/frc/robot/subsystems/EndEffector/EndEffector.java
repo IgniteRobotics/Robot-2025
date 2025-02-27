@@ -45,6 +45,7 @@ public class EndEffector extends SubsystemBase {
 
   private final CANrange m_beambreak_enter;
   private final CANrange m_beambreak_prep;
+  private final CANrange m_beambreak_algae;
 
 
   private final RobotState m_robotState = RobotState.getInstance();
@@ -77,6 +78,7 @@ public class EndEffector extends SubsystemBase {
 
     m_beambreak_enter = new CANrange(EndEffectorConstants.kEnterBeamBreakId);
     m_beambreak_prep = new CANrange(EndEffectorConstants.kPrepBeamBreakId);
+    m_beambreak_algae = new CANrange(EndEffectorConstants.kAlgaeBeamBreakId);
     
     configureCANrange();
   }
@@ -96,6 +98,13 @@ public class EndEffector extends SubsystemBase {
         .withProximityThreshold(Units.Inches.of(1))
         .withProximityHysteresis(Units.Inches.of(1.25))
       );
+
+    m_beambreak_algae.getConfigurator().refresh(proximityParamsConfigs);
+    m_beambreak_algae.getConfigurator().apply(
+      proximityParamsConfigs
+        .withProximityThreshold(.254)
+        .withProximityHysteresis(.01)
+      );
    
   }
 
@@ -109,6 +118,18 @@ public class EndEffector extends SubsystemBase {
 
   public void stopCoralMotor(){
     m_coralMotor.stopMotor();
+  }
+
+  public void intakeAlgae(){
+    m_algaeMotor.set(Preferences.endEffectorAlgaeIntakePower.getValue());
+  }
+
+  public void outtakeAlgae(){
+    m_algaeMotor.set(Preferences.endEffectorAlgaeOuttakePower.getValue());
+  }
+
+  public void holdAlgae(){
+    m_algaeMotor.set(Preferences.endEffectorAlgaeHoldPower.getValue());
   }
 
   public void setWristPosition(double position){
@@ -146,7 +167,7 @@ public class EndEffector extends SubsystemBase {
 
   @Logged
   public boolean seesAlgae(){
-    return false;
+    return m_beambreak_algae.getIsDetected().getValue();
   }
 
   @Override

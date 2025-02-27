@@ -18,6 +18,8 @@ public class EndEffectorConstants {
 
         public static final int kEnterBeamBreakId = 8;
         public static final int kPrepBeamBreakId = 9;
+        public static final int kAlgaeBeamBreakId = 16;
+        public static final int kIntakeFunnelBeanmBreakId = 17;
 
         public static final double CORAL_kV = 0;
         public static final double CORAL_kS = 0;
@@ -50,6 +52,10 @@ public class EndEffectorConstants {
 
         public static final double INTAKE_CORAL_POWER = 0.25;
         public static final double OUTTAKE_CORAL_POWER = 0.25;
+
+        public static final double INTAKE_ALGAE_POWER = 0.25;
+        public static final double OUTTAKE_ALGAE_POWER = 0.25;
+        public static final double ALGAE_HOLD_POWER = 0.03;
 
         public static final double STOW_POSITION_WITH_ALGAE = 0;
         public static final double STOW_POSITION_NO_ALGAE = 0;

@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class EndEffectorDefaultCommand extends Command {
   private EndEffector m_endEffector;
-  private boolean entering;
+  private boolean m_coralEntering;
 
   
   public EndEffectorDefaultCommand(EndEffector endEffector) {
@@ -21,7 +21,7 @@ public class EndEffectorDefaultCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    entering = false;
+    m_coralEntering = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -29,18 +29,23 @@ public class EndEffectorDefaultCommand extends Command {
   public void execute() {
 
     if(m_endEffector.seesCoralEnter()){
-      entering = true;
+      m_coralEntering = true;
     }
     
     else if(!m_endEffector.seesCoralEnter() && m_endEffector.coralPreped()){
-      entering = false;
+      m_coralEntering = false;
     }
 
 
-    if(entering){
+    if(m_coralEntering){
       m_endEffector.intakeCoral();
     }
     else m_endEffector.stopCoralMotor();
+
+
+    if (m_endEffector.seesAlgae()){
+      m_endEffector.holdAlgae();
+    }
 
   }
 
