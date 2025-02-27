@@ -72,6 +72,14 @@ public class EndEffectorConstants {
             return configs;
         }
 
+        public static MotorOutputConfigs createAlgaeMotorOutputConfigs(){
+            MotorOutputConfigs configs = new MotorOutputConfigs();
+            configs.withInverted(InvertedValue.Clockwise_Positive);
+            configs.NeutralMode = NeutralModeValue.Brake;
+            return configs;
+        }
+        
+
 
         public static Slot0Configs createAlgaeMotorSlot0Configs(){
             Slot0Configs slot = new Slot0Configs();

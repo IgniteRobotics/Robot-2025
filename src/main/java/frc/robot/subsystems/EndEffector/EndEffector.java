@@ -37,6 +37,7 @@ public class EndEffector extends SubsystemBase {
 
   private Slot0Configs m_algaeSlot0Configs;
 
+
   private Slot0Configs m_wristSlot0Configs;
   private SoftwareLimitSwitchConfigs m_wristSoftLimitConfigs;
   private TalonFXConfiguration m_wristTalonFXConfiguration;
@@ -47,18 +48,20 @@ public class EndEffector extends SubsystemBase {
 
 
   private final RobotState m_robotState = RobotState.getInstance();
-
-  /** Creates a new EndEffector. */
-  public EndEffector() {
-    m_coralMotor = new TalonFX(EndEffectorConstants.kCoralMotorId);
-
-    m_coralSlot0Configs = EndEffectorConstants.createCoralMotorSlot0Configs();
-    m_coralMotor.getConfigurator().apply(m_coralSlot0Configs);
-    m_coralMotorOutputConfigs = EndEffectorConstants.createCoralMotorOutputConfigs();
-    m_coralMotor.getConfigurator().apply(m_coralMotorOutputConfigs);
-
-    m_algaeMotor = new TalonFX(EndEffectorConstants.kAlgaeMotorId);
-    m_algaeSlot0Configs = EndEffectorConstants.createAlgaeMotorSlot0Configs();
+  
+    /** Creates a new EndEffector. */
+    public EndEffector() {
+      m_coralMotor = new TalonFX(EndEffectorConstants.kCoralMotorId);
+  
+      m_coralSlot0Configs = EndEffectorConstants.createCoralMotorSlot0Configs();
+      m_coralMotor.getConfigurator().apply(m_coralSlot0Configs);
+      m_coralMotorOutputConfigs = EndEffectorConstants.createCoralMotorOutputConfigs();
+      m_coralMotor.getConfigurator().apply(m_coralMotorOutputConfigs);
+  
+      m_algaeMotor = new TalonFX(EndEffectorConstants.kAlgaeMotorId);
+      m_algaeMotor.getConfigurator().apply(EndEffectorConstants.createAlgaeMotorOutputConfigs());
+      m_algaeSlot0Configs = EndEffectorConstants.createAlgaeMotorSlot0Configs();
+      m_algaeMotor.getConfigurator().apply(m_algaeSlot0Configs);
 
 
     m_wristMotor = new TalonFX(EndEffectorConstants.kWristMotorId);
