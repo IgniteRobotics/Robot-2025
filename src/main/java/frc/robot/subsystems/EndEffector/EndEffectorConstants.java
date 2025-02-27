@@ -3,6 +3,7 @@ package frc.robot.subsystems.EndEffector;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -30,12 +31,19 @@ public class EndEffectorConstants {
         public static final double ALGAE_kI = 0;
         public static final double ALGAE_kD = 0;
 
-        public static final double WRIST_kV = 0;
-        public static final double WRIST_kS = 0;
-        public static final double WRIST_kP = 0;
-        public static final double WRIST_kI = 0;
-        public static final double WRIST_kD = 0;
-        public static final double WRIST_kG = 0;
+        public static final double WRIST_kV_0 = 0;
+        public static final double WRIST_kS_0 = 0.3;
+        public static final double WRIST_kP_0 = 0;
+        public static final double WRIST_kI_0 = 0;
+        public static final double WRIST_kD_0 = 0;
+        public static final double WRIST_kG_0 = 0.14;
+
+        public static final double WRIST_kV_1 = 0;
+        public static final double WRIST_kS_1 = 0;
+        public static final double WRIST_kP_1 = 0;
+        public static final double WRIST_kI_1 = 0;
+        public static final double WRIST_kD_1 = 0;
+        public static final double WRIST_kG_1 = 0.2;
 
         public static final double INTAKE_CORAL_VOLTAGE = 1;
         public static final double OUTTAKE_CORAL_VOLTAGE = -1;
@@ -79,12 +87,25 @@ public class EndEffectorConstants {
         public static final GravityTypeValue wristGravityType = GravityTypeValue.Arm_Cosine;
         public static Slot0Configs createWristMotorSlot0Configs(){
             Slot0Configs slot = new Slot0Configs();
-            slot.kV = EndEffectorConstants.WRIST_kV;
-            slot.kS = EndEffectorConstants.WRIST_kS;
-            slot.kP = EndEffectorConstants.WRIST_kP;
-            slot.kI = EndEffectorConstants.WRIST_kI;
-            slot.kD = EndEffectorConstants.WRIST_kD;
-            slot.kG = EndEffectorConstants.WRIST_kG;
+            slot.kV = EndEffectorConstants.WRIST_kV_0;
+            slot.kS = EndEffectorConstants.WRIST_kS_0;
+            slot.kP = EndEffectorConstants.WRIST_kP_0;
+            slot.kI = EndEffectorConstants.WRIST_kI_0;
+            slot.kD = EndEffectorConstants.WRIST_kD_0;
+            slot.kG = EndEffectorConstants.WRIST_kG_0;
+            slot.StaticFeedforwardSign = wristFeedforward;
+            slot.GravityType = wristGravityType;
+            return slot;
+        }
+
+        public static Slot1Configs createWristMotorSlot1Configs(){
+            Slot1Configs slot = new Slot1Configs();
+            slot.kV = EndEffectorConstants.WRIST_kV_1;
+            slot.kS = EndEffectorConstants.WRIST_kS_1;
+            slot.kP = EndEffectorConstants.WRIST_kP_1;
+            slot.kI = EndEffectorConstants.WRIST_kI_1;
+            slot.kD = EndEffectorConstants.WRIST_kD_1;
+            slot.kG = EndEffectorConstants.WRIST_kG_1;
             slot.StaticFeedforwardSign = wristFeedforward;
             slot.GravityType = wristGravityType;
             return slot;
