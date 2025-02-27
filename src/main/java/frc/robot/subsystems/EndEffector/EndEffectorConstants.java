@@ -35,7 +35,7 @@ public class EndEffectorConstants {
 
         public static final double WRIST_kV_0 = 0;
         public static final double WRIST_kS_0 = 0.3;
-        public static final double WRIST_kP_0 = 0;
+        public static final double WRIST_kP_0 = 40;
         public static final double WRIST_kI_0 = 0;
         public static final double WRIST_kD_0 = 0;
         public static final double WRIST_kG_0 = 0.14;
