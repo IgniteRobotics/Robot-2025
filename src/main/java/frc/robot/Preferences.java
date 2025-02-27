@@ -42,6 +42,7 @@ public class Preferences {
     public static DoublePreference endEffectorStowPositionNoAlgae = new DoublePreference("EndEffector/Wrist/Stow Position/No Algae", EndEffectorConstants.STOW_POSITION_NO_ALGAE);
     public static DoublePreference endEffectorStowPositionWithAlgae = new DoublePreference("EndEffector/Wrist/Stow Position/WithAlgae", EndEffectorConstants.STOW_POSITION_WITH_ALGAE);
     
+    public static DoublePreference wirstPosition = new DoublePreference("EndEffector/Wrist/Position",0);
     // ********** Climber **********
     public static DoublePreference climberkV = new DoublePreference("Climber/kV", ClimberConstants.CLIMBER_kV);
     public static DoublePreference climberkP = new DoublePreference("Climber/kP", ClimberConstants.CLIMBER_kP);

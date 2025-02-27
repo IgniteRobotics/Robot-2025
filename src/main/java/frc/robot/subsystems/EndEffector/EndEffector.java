@@ -102,10 +102,13 @@ public class EndEffector extends SubsystemBase {
   }
 
   public void setWristPosition(double position){
+    m_wristMotor.setControl(new PositionVoltage(position).withSlot(0));
+    /* 
     if(!m_robotState.hasAlgae())
       m_wristMotor.setControl(new PositionVoltage(position).withSlot(0));
     else
       m_wristMotor.setControl(new PositionVoltage(position).withSlot(1));
+      */
   }
 
   public void setWristPosition(DoublePreference position){
