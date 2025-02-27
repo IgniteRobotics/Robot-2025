@@ -196,7 +196,7 @@ public class RobotContainer {
         joystick.x().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
         */
 
-        joystick.a().whileTrue(new RunCommand(() -> endEffector.setWristPosition(Preferences.wirstPosition)));
+        joystick.a().whileTrue(new RunCommand(() -> endEffector.intakeAlgae()).until(() -> endEffector.seesAlgae()));
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
