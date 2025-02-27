@@ -33,7 +33,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.drive.AlignToTarget;
-import frc.robot.commands.endeffector.AutoIngestCoral;
+import frc.robot.commands.endeffector.EndEffectorDefaultCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator.Elevator;
@@ -87,7 +87,7 @@ public class RobotContainer {
 
     private final Command alignTest = new AlignToTarget(drivetrain,drivetrain.m_photonCameraWrapper, 12, Preferences.alignDistanceAdjustment);
 
-    private final Command autoIngestCoral = new AutoIngestCoral(endEffector);
+    private final Command endEffectorDefaultCommand = new EndEffectorDefaultCommand(endEffector);
 
 
 
@@ -138,7 +138,7 @@ public class RobotContainer {
         );
         */
 
-        endEffector.setDefaultCommand(autoIngestCoral);
+        endEffector.setDefaultCommand(endEffectorDefaultCommand);
 
         //joystick.x().onTrue(AutoBuilder.followPath(createTestPath()));
          

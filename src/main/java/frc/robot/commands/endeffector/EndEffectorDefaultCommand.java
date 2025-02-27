@@ -8,12 +8,12 @@ import frc.robot.RobotState;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class AutoIngestCoral extends Command {
+public class EndEffectorDefaultCommand extends Command {
   private EndEffector m_endEffector;
   private boolean entering;
 
   
-  public AutoIngestCoral(EndEffector endEffector) {
+  public EndEffectorDefaultCommand(EndEffector endEffector) {
     m_endEffector = endEffector;
     addRequirements(m_endEffector);
   }
