@@ -62,13 +62,14 @@ public class EndEffector extends SubsystemBase {
 
 
     m_wristMotor = new TalonFX(EndEffectorConstants.kWristMotorId);
+    m_wristTalonFXConfiguration = EndEffectorConstants.createWristTalonFXConfigs();
+    m_wristMotor.getConfigurator().apply(m_wristTalonFXConfiguration);
     m_wristSlot0Configs = EndEffectorConstants.createWristMotorSlot0Configs();
     m_wristMotor.getConfigurator().apply(m_wristSlot0Configs);
     m_wristSoftLimitConfigs = EndEffectorConstants.createWristSoftLimitConfigs();
-    m_wristTalonFXConfiguration = EndEffectorConstants.createWristTalonFXConfigs();
-    m_wristMotor.getConfigurator().apply(m_wristTalonFXConfiguration);
     m_wristMotorOutputConfigs = EndEffectorConstants.createWristMotorOutputConfigs();
     m_wristMotor.getConfigurator().apply(m_wristMotorOutputConfigs);
+    m_wristMotor.setPosition(0.282715);
 
 
     m_beambreak_enter = new CANrange(EndEffectorConstants.kEnterBeamBreakId);
