@@ -8,11 +8,12 @@ import frc.robot.RobotState;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class AutoIngestCoral extends Command {
+public class EndEffectorDefaultCommand extends Command {
   private EndEffector m_endEffector;
+  private boolean m_coralEntering;
 
   
-  public AutoIngestCoral(EndEffector endEffector) {
+  public EndEffectorDefaultCommand(EndEffector endEffector) {
     m_endEffector = endEffector;
     addRequirements(m_endEffector);
   }
@@ -20,17 +21,32 @@ public class AutoIngestCoral extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_coralEntering = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    if(m_endEffector.seesCoralEnter() && !m_endEffector.coralPreped()){
-      m_endEffector.intakeCoral();
+    if(m_endEffector.seesCoralEnter()){
+      m_coralEntering = true;
     }
     
+    else if(!m_endEffector.seesCoralEnter() && m_endEffector.coralPreped()){
+      m_coralEntering = false;
+    }
+
+
+    if(m_coralEntering){
+      m_endEffector.intakeCoral();
+    }
     else m_endEffector.stopCoralMotor();
+
+
+    if (m_endEffector.seesAlgae()){
+      m_endEffector.holdAlgae();
+    }
+
   }
 
   // Called once the command ends or is interrupted.

@@ -4,28 +4,43 @@
 
 package frc.robot.commands.endeffector;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotState;
+import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.subsystems.EndEffector.EndEffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class OuttakeCommand extends Command {
   EndEffector m_endEffector;
-  RobotState m_robotState = RobotState.getInstance();
+  Timer delayTimer;
+  DoublePreference delay;
   
-  public OuttakeCommand(EndEffector effector) {
+  
+  public OuttakeCommand(EndEffector effector, DoublePreference time) {
     m_endEffector = effector;
     addRequirements(m_endEffector);
+    
+    delay = time;
+    
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    delayTimer = new Timer();
+    delayTimer.stop();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     m_endEffector.outtakeCoral();
+    
+    if(!m_endEffector.coralPreped() && !delayTimer.isRunning()){
+      delayTimer.reset();
+      delayTimer.start();
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -37,6 +52,6 @@ public class OuttakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !m_endEffector.coralPreped();
+    return (delayTimer.hasElapsed(delay.getValue()));
   }
 }

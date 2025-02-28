@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Preferences;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.commands.endeffector.OuttakeCommand;
@@ -21,6 +22,6 @@ public class ScoreCoral extends SequentialCommandGroup {
     m_effector = effector;
     scoreHeight = score;
     endHeight = end;
-    addCommands(new ToSetpoint(m_elevator, scoreHeight), new OuttakeCommand(effector).withTimeout(1), new ToSetpoint(m_elevator, endHeight));
+    addCommands(new ToSetpoint(m_elevator, scoreHeight), new OuttakeCommand(effector, Preferences.outtakeDelay).withTimeout(1), new ToSetpoint(m_elevator, endHeight));
   }
 }
