@@ -31,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
-import frc.robot.commands.ScoreCoral;
+import frc.robot.commands.composite.ScoreCoral;
 import frc.robot.commands.drive.AlignToTarget;
 import frc.robot.commands.endeffector.EndEffectorDefaultCommand;
 import frc.robot.generated.TunerConstants;
