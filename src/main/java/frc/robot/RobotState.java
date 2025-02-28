@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
+import frc.robot.subsystems.EndEffector.EndEffectorConstants;
 import frc.robot.subsystems.drive.CameraConstants;
 import frc.zones.Grid;
 import frc.zones.Zone;
@@ -126,10 +127,45 @@ public class RobotState {
     }
 
     public double getAlgaeHeight(){
-        if(getZone() == ZoneTypes.REEF.REEF_AB || getZone() == ZoneTypes.REEF.REEF_EF || getZone() == ZoneTypes.REEF.REEF_IJ){
-            return ElevatorConstants.ALGAE.HIGH_REEF.height;
+        if(getAlgaeTarget() == AlgaeTarget.BARGE){
+            return ElevatorConstants.ALGAE.BARGE.height;
         }
-        else return ElevatorConstants.ALGAE.LOW_REEF.height;
+        else if (getAlgaeTarget() == AlgaeTarget.PROCESSOR){
+            return ElevatorConstants.ALGAE.PROCESSOR.height;
+        }
+        else if (getAlgaeTarget() == AlgaeTarget.REEF){
+            if(getZone() == ZoneTypes.REEF.REEF_AB || getZone() == ZoneTypes.REEF.REEF_EF || getZone() == ZoneTypes.REEF.REEF_IJ){
+                return ElevatorConstants.ALGAE.HIGH_REEF.height;
+            }
+            else{ 
+                return ElevatorConstants.ALGAE.LOW_REEF.height;
+            }
+        } else {
+            return 0;
+        }
+    }
+
+    public double getAlgaeWristPosition(){
+        if(getAlgaeTarget() == AlgaeTarget.BARGE){
+            return EndEffectorConstants.ALGAE.BARGE.angle;
+        }
+        else if (getAlgaeTarget() == AlgaeTarget.PROCESSOR){
+            return EndEffectorConstants.ALGAE.PROCESS.angle;
+        }
+        else if (getAlgaeTarget() == AlgaeTarget.REEF){
+            if(getZone() == ZoneTypes.REEF.REEF_AB || getZone() == ZoneTypes.REEF.REEF_EF || getZone() == ZoneTypes.REEF.REEF_IJ){
+                return EndEffectorConstants.ALGAE.REEF.angle;
+            }
+            else{ 
+                return EndEffectorConstants.ALGAE.REEF.angle;
+            }
+        } else {
+            if (hasAlgae) {
+                return EndEffectorConstants.ALGAE.STOW_FULL.angle;
+            } else {
+                return EndEffectorConstants.ALGAE.STOW_EMPTY.angle;
+            }
+        }
     }
 
     public synchronized void setPose2d(Pose2d newPose){

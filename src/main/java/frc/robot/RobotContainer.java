@@ -31,7 +31,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
-import frc.robot.commands.ScoreCoral;
+import frc.robot.commands.composite.Score;
+import frc.robot.commands.composite.ScoreCoral;
 import frc.robot.commands.drive.AlignToTarget;
 import frc.robot.commands.endeffector.EndEffectorDefaultCommand;
 import frc.robot.generated.TunerConstants;
@@ -194,6 +195,7 @@ public class RobotContainer {
         joystick.b().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))
                     .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
         joystick.x().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
+        joystick.y().whileTrue(new RunCommand( () -> new Score(m_RobotState, elevator, endEffector, drivetrain), elevator, endEffector, drivetrain));
         
 
         // joystick.a().whileTrue(new RunCommand(() -> endEffector.intakeAlgae()).until(() -> endEffector.seesAlgae()));

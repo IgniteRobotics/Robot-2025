@@ -12,6 +12,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class EndEffectorConstants {
+    public static final double WRIST_POSITION_ERROR = 0.1;
+
     public static final int kCoralMotorId = 2;
         public static final int kAlgaeMotorId = 3;
         public static final int kWristMotorId = 4;
@@ -127,6 +129,7 @@ public class EndEffectorConstants {
 
         public static final double WRIST_FORWARD_SOFT_LIMIT = 100;
         public static final double WRIST_REVERSE_SOFT_LIMIT = 0;
+        public static final int WRIST_TOLERANCE = 0;
         public static SoftwareLimitSwitchConfigs createWristSoftLimitConfigs(){
             SoftwareLimitSwitchConfigs configs = new SoftwareLimitSwitchConfigs();
             configs.ForwardSoftLimitEnable = false;
@@ -152,12 +155,15 @@ public class EndEffectorConstants {
 
         public enum ALGAE{
             
-            PROCESS(1),
-            BARGE(2);
+            PROCESS(.15),
+            REEF(0),
+            BARGE(-0.15),
+            STOW_FULL(-0.2),
+            STOW_EMPTY(-0.25);
 
-            public final double height;
+            public final double angle;
             ALGAE(double value){
-                height = value;
+                angle = value;
             }
 
         }
