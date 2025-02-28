@@ -82,6 +82,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private PathPlannerPath loggedPath;
 
 
+
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -415,7 +416,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public Pose2d getPose(){
-        return this.getPose();
+        return this.getState().Pose;
     }
 
     public void zeroHeading(){
