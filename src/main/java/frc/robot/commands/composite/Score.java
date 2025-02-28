@@ -18,9 +18,9 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class CommandDispatcher extends SequentialCommandGroup {
+public class Score extends SequentialCommandGroup {
   /** Creates a new CommandDispatcher. */
-  public CommandDispatcher(RobotState robotState, 
+  public Score(RobotState robotState, 
                            Elevator elevator, 
                            EndEffector endEffector, 
                            CommandSwerveDrivetrain drive) {
