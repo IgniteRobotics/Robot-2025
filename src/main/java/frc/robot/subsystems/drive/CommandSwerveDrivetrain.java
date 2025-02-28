@@ -28,6 +28,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -367,7 +368,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 if(target.getPoseAmbiguity() > 0.2) poseOK = false;
                 if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
                 }
-                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, VecBuilder.fill(0.05, 0.05, 0.05));
             }
         }
 
@@ -379,7 +380,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 if(target.getPoseAmbiguity() > 0.2) poseOK = false;
                 if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
                 }
-                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, VecBuilder.fill(0.05, 0.05, 0.05));
             }
         }
 
@@ -391,7 +392,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 if(target.getPoseAmbiguity() > 0.2) poseOK = false;
                 if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
                 }
-                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, VecBuilder.fill(0.05, 0.05, 0.05));
             }
         }
     
