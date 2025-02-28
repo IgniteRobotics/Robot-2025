@@ -4,6 +4,9 @@
 
 package frc.robot.commands.composite;
 
+import javax.management.InstanceNotFoundException;
+
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -24,15 +27,15 @@ public class Score extends SequentialCommandGroup {
                            Elevator elevator, 
                            EndEffector endEffector, 
                            CommandSwerveDrivetrain drive) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
+    
+    //ready to score coral
     if (robotState.hasCoral() && robotState.getCoralHeight() != 0){
       addCommands(new ScoreCoral(elevator, endEffector, robotState.getCoralHeight(), ElevatorConstants.FLOOR.GROUND.position));
+    //ready to score algae
     } else if (robotState.hasAlgae() && robotState.getAlgaeHeight() != 0){
       addCommands(
         new ParallelCommandGroup(
           new ToSetpoint(elevator, robotState.getAlgaeHeight()),
-          //TODO:  Add wrist positions
           new RunCommand(() -> endEffector.setWristPosition(robotState.getAlgaeWristPosition()))
             .withName("SetWristPosition")
             .until(() -> endEffector.isWristAtPosition())
@@ -43,13 +46,34 @@ public class Score extends SequentialCommandGroup {
         new ParallelCommandGroup(
           new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position),
           new RunCommand(() -> endEffector.setWristPosition(robotState.getAlgaeWristPosition()))
-            .withName("SetWristPosition")
+            .withName("StowWrist")
             .until(() -> endEffector.isWristAtPosition())
         )
       );
+    //ready to intake algae from reef
+    } else if (!robotState.hasCoral() && !robotState.hasAlgae() &&robotState.getAlgaeHeight() !=0){
+      addCommands(
+        new ParallelCommandGroup(
+          new ToSetpoint(elevator, robotState.getAlgaeHeight()),
+          new RunCommand(() -> endEffector.setWristPosition(robotState.getAlgaeWristPosition()))
+            .withName("SetWristPosition")
+            .until(() -> endEffector.isWristAtPosition())
+        ),
+        new RunCommand(()-> endEffector.intakeAlgae())
+          .withName("IntakeAlgae")
+          .until(() -> robotState.hasAlgae()),
+        new ParallelCommandGroup(
+          new ToSetpoint(elevator, robotState.getAlgaeHeight()),
+          new RunCommand(() -> endEffector.setWristPosition(robotState.getAlgaeWristPosition()))
+            .withName("StowWrist")
+            .until(() -> endEffector.isWristAtPosition())
+        )
+      ); 
 
     } else {
-
+      //do nothing
+      addCommands(new InstantCommand(() -> {}));
     }
   }
+
 }
