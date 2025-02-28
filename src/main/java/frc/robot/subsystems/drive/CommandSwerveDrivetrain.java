@@ -415,7 +415,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public Pose2d getPose(){
-        return this.getState().Pose;
+        return this.getPose();
     }
 
     public void zeroHeading(){
