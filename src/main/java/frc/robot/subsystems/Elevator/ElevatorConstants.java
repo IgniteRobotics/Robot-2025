@@ -100,7 +100,7 @@ public class ElevatorConstants {
         }
 
         public enum ALGAE{
-            PROCESS(1),
+            PROCESSOR(1),
             LOW_REEF(1.2),
             HIGH_REEF(1.4),
             BARGE(2);

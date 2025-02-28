@@ -47,103 +47,116 @@ public class EndEffector extends SubsystemBase {
   private final CANrange m_beambreak_prep;
   private final CANrange m_beambreak_algae;
 
+  private double m_wristTargetPosition;
+
+  public final static double WRIST_POSITION_ERROR = 0.1;
+
+
+  
 
   private final RobotState m_robotState = RobotState.getInstance();
-  
-    /** Creates a new EndEffector. */
-    public EndEffector() {
-      m_coralMotor = new TalonFX(EndEffectorConstants.kCoralMotorId);
-  
-      m_coralSlot0Configs = EndEffectorConstants.createCoralMotorSlot0Configs();
-      m_coralMotor.getConfigurator().apply(m_coralSlot0Configs);
-      m_coralMotorOutputConfigs = EndEffectorConstants.createCoralMotorOutputConfigs();
-      m_coralMotor.getConfigurator().apply(m_coralMotorOutputConfigs);
-  
-      m_algaeMotor = new TalonFX(EndEffectorConstants.kAlgaeMotorId);
-      m_algaeMotor.getConfigurator().apply(EndEffectorConstants.createAlgaeMotorOutputConfigs());
-      m_algaeSlot0Configs = EndEffectorConstants.createAlgaeMotorSlot0Configs();
-      m_algaeMotor.getConfigurator().apply(m_algaeSlot0Configs);
-
-
-    m_wristMotor = new TalonFX(EndEffectorConstants.kWristMotorId);
-    m_wristTalonFXConfiguration = EndEffectorConstants.createWristTalonFXConfigs();
-    m_wristMotor.getConfigurator().apply(m_wristTalonFXConfiguration);
-    m_wristSlot0Configs = EndEffectorConstants.createWristMotorSlot0Configs();
-    m_wristMotor.getConfigurator().apply(m_wristSlot0Configs);
-    m_wristSoftLimitConfigs = EndEffectorConstants.createWristSoftLimitConfigs();
-    m_wristMotorOutputConfigs = EndEffectorConstants.createWristMotorOutputConfigs();
-    m_wristMotor.getConfigurator().apply(m_wristMotorOutputConfigs);
-    m_wristMotor.setPosition(0.282715);
-
-
-    m_beambreak_enter = new CANrange(EndEffectorConstants.kEnterBeamBreakId);
-    m_beambreak_prep = new CANrange(EndEffectorConstants.kPrepBeamBreakId);
-    m_beambreak_algae = new CANrange(EndEffectorConstants.kAlgaeBeamBreakId);
     
-    configureCANrange();
-  }
-
-  public void configureCANrange(){
-    ProximityParamsConfigs proximityParamsConfigs = new ProximityParamsConfigs();
-    m_beambreak_enter.getConfigurator().refresh(proximityParamsConfigs);
-    m_beambreak_enter.getConfigurator().apply(
-      proximityParamsConfigs
-        .withProximityThreshold(Units.Inches.of(1))
-        .withProximityHysteresis(Units.Inches.of(1.25))
-        );
     
-    m_beambreak_prep.getConfigurator().refresh(proximityParamsConfigs);
-    m_beambreak_prep.getConfigurator().apply(
-      proximityParamsConfigs
-        .withProximityThreshold(Units.Inches.of(1))
-        .withProximityHysteresis(Units.Inches.of(1.25))
-      );
-
-    m_beambreak_algae.getConfigurator().refresh(proximityParamsConfigs);
-    m_beambreak_algae.getConfigurator().apply(
-      proximityParamsConfigs
-        .withProximityThreshold(Units.Inches.of(1))
-        .withProximityHysteresis(Units.Inches.of(.25))
-      );
-   
-  }
-
-  public void outtakeCoral(){
-    m_coralMotor.set(Preferences.endEffectorCoralOuttakePower.getValue());
+      /** Creates a new EndEffector. */
+      public EndEffector() {
+        m_coralMotor = new TalonFX(EndEffectorConstants.kCoralMotorId);
+    
+        m_coralSlot0Configs = EndEffectorConstants.createCoralMotorSlot0Configs();
+        m_coralMotor.getConfigurator().apply(m_coralSlot0Configs);
+        m_coralMotorOutputConfigs = EndEffectorConstants.createCoralMotorOutputConfigs();
+        m_coralMotor.getConfigurator().apply(m_coralMotorOutputConfigs);
+    
+        m_algaeMotor = new TalonFX(EndEffectorConstants.kAlgaeMotorId);
+        m_algaeMotor.getConfigurator().apply(EndEffectorConstants.createAlgaeMotorOutputConfigs());
+        m_algaeSlot0Configs = EndEffectorConstants.createAlgaeMotorSlot0Configs();
+        m_algaeMotor.getConfigurator().apply(m_algaeSlot0Configs);
+  
+  
+      m_wristMotor = new TalonFX(EndEffectorConstants.kWristMotorId);
+      m_wristTalonFXConfiguration = EndEffectorConstants.createWristTalonFXConfigs();
+      m_wristMotor.getConfigurator().apply(m_wristTalonFXConfiguration);
+      m_wristSlot0Configs = EndEffectorConstants.createWristMotorSlot0Configs();
+      m_wristMotor.getConfigurator().apply(m_wristSlot0Configs);
+      m_wristSoftLimitConfigs = EndEffectorConstants.createWristSoftLimitConfigs();
+      m_wristMotorOutputConfigs = EndEffectorConstants.createWristMotorOutputConfigs();
+      m_wristMotor.getConfigurator().apply(m_wristMotorOutputConfigs);
+      m_wristMotor.setPosition(0.282715);
+  
+  
+      m_beambreak_enter = new CANrange(EndEffectorConstants.kEnterBeamBreakId);
+      m_beambreak_prep = new CANrange(EndEffectorConstants.kPrepBeamBreakId);
+      m_beambreak_algae = new CANrange(EndEffectorConstants.kAlgaeBeamBreakId);
+      
+      configureCANrange();
     }
-
-  public void intakeCoral(){
-    m_coralMotor.set(Preferences.endEffectorCoralIntakePower.getValue());
-  }
-
-  public void stopCoralMotor(){
-    m_coralMotor.stopMotor();
-  }
-
-  public void intakeAlgae(){
-    m_algaeMotor.set(Preferences.endEffectorAlgaeIntakePower.getValue());
-  }
-
-  public void outtakeAlgae(){
-    m_algaeMotor.set(Preferences.endEffectorAlgaeOuttakePower.getValue());
-  }
-
-  public void holdAlgae(){
-    m_algaeMotor.set(Preferences.endEffectorAlgaeHoldPower.getValue());
-  }
-
-  public void setWristPosition(double position){
-    m_wristMotor.setControl(new PositionVoltage(position).withSlot(0));
-    /* 
-    if(!m_robotState.hasAlgae())
+  
+    public void configureCANrange(){
+      ProximityParamsConfigs proximityParamsConfigs = new ProximityParamsConfigs();
+      m_beambreak_enter.getConfigurator().refresh(proximityParamsConfigs);
+      m_beambreak_enter.getConfigurator().apply(
+        proximityParamsConfigs
+          .withProximityThreshold(Units.Inches.of(1))
+          .withProximityHysteresis(Units.Inches.of(1.25))
+          );
+      
+      m_beambreak_prep.getConfigurator().refresh(proximityParamsConfigs);
+      m_beambreak_prep.getConfigurator().apply(
+        proximityParamsConfigs
+          .withProximityThreshold(Units.Inches.of(1))
+          .withProximityHysteresis(Units.Inches.of(1.25))
+        );
+  
+      m_beambreak_algae.getConfigurator().refresh(proximityParamsConfigs);
+      m_beambreak_algae.getConfigurator().apply(
+        proximityParamsConfigs
+          .withProximityThreshold(Units.Inches.of(1))
+          .withProximityHysteresis(Units.Inches.of(.25))
+        );
+     
+    }
+  
+    public void outtakeCoral(){
+      m_coralMotor.set(Preferences.endEffectorCoralOuttakePower.getValue());
+      }
+  
+    public void intakeCoral(){
+      m_coralMotor.set(Preferences.endEffectorCoralIntakePower.getValue());
+    }
+  
+    public void stopCoralMotor(){
+      m_coralMotor.stopMotor();
+    }
+  
+    public void intakeAlgae(){
+      m_algaeMotor.set(Preferences.endEffectorAlgaeIntakePower.getValue());
+    }
+  
+    public void outtakeAlgae(){
+      m_algaeMotor.set(Preferences.endEffectorAlgaeOuttakePower.getValue());
+    }
+  
+    public void holdAlgae(){
+      m_algaeMotor.set(Preferences.endEffectorAlgaeHoldPower.getValue());
+    }
+  
+    public void setWristPosition(double position){
+      m_wristTargetPosition = position;
       m_wristMotor.setControl(new PositionVoltage(position).withSlot(0));
-    else
-      m_wristMotor.setControl(new PositionVoltage(position).withSlot(1));
-      */
+      /* 
+      if(!m_robotState.hasAlgae())
+        m_wristMotor.setControl(new PositionVoltage(position).withSlot(0));
+      else
+        m_wristMotor.setControl(new PositionVoltage(position).withSlot(1));
+        */
+    }
+  
+    public void setWristPosition(DoublePreference position){
+      
+    setWristPosition(position.getValue());
   }
 
-  public void setWristPosition(DoublePreference position){
-    setWristPosition(position.getValue());
+  public boolean isWristAtPosition(){
+    return Math.abs(m_wristMotor.getPosition().getValue().magnitude() - m_wristTargetPosition)  <=  EndEffectorConstants.WRIST_POSITION_ERROR; 
   }
 
   public void stow(){
