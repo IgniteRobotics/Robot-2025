@@ -121,8 +121,6 @@ public class PhotonCameraWrapper{
         } else if(side == Side.OUTTAKE_LEFT){
             photonPoseEstimatorOuttakeLeft.setReferencePose(prevEstimatedRobotPose);
             var results = CameraConstants.photonCameraOuttakeLeft.getAllUnreadResults();
-
-            SmartDashboard.putNumber("LeftPhotonResultCount", results.size());
             
             if(!results.isEmpty()){
                 var latestResult = results.get(results.size()-1);

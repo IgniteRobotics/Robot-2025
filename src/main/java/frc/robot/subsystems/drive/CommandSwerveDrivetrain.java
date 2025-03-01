@@ -369,6 +369,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
                 }
                 if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, VecBuilder.fill(0.05, 0.05, 0.05));
+                SmartDashboard.putBoolean("poseOK", poseOK);
+                SmartDashboard.putNumber("poseTime", pose.timestampSeconds);
+                SmartDashboard.putNumber("fpgaTime", Utils.getCurrentTimeSeconds());
             }
         }
 
