@@ -105,6 +105,7 @@ public class PhotonCameraWrapper{
             photonPoseEstimatorOuttakeRight.setReferencePose(prevEstimatedRobotPose);
             var results = CameraConstants.photonCameraOuttakeRight.getAllUnreadResults();
 
+
             if(!results.isEmpty()){
                 var latestResult = results.get(results.size()-1);
                 m_robotState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeRight.getName(), latestResult);
@@ -120,6 +121,8 @@ public class PhotonCameraWrapper{
         } else if(side == Side.OUTTAKE_LEFT){
             photonPoseEstimatorOuttakeLeft.setReferencePose(prevEstimatedRobotPose);
             var results = CameraConstants.photonCameraOuttakeLeft.getAllUnreadResults();
+
+            SmartDashboard.putNumber("LeftPhotonResultCount", results.size());
             
             if(!results.isEmpty()){
                 var latestResult = results.get(results.size()-1);
