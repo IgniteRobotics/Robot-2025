@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.RobotState;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
@@ -142,10 +143,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             this
         )
     );
-
-
-    /* The SysId routine to test */
-    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -284,27 +281,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
-    /**
-     * Runs the SysId Quasistatic test in the given direction for the routine
-     * specified by {@link #m_sysIdRoutineToApply}.
-     *
-     * @param direction Direction of the SysId Quasistatic test
-     * @return Command to run
-     */
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutineToApply.quasistatic(direction);
+    public Command sysIdTranslation(){
+        return m_sysIdRoutineTranslation.quasistatic(Direction.kForward).andThen(m_sysIdRoutineTranslation.quasistatic(Direction.kReverse))
+            .andThen(m_sysIdRoutineTranslation.dynamic(Direction.kForward)).andThen(m_sysIdRoutineTranslation.dynamic(Direction.kReverse));
     }
 
-    /**
-     * Runs the SysId Dynamic test in the given direction for the routine
-     * specified by {@link #m_sysIdRoutineToApply}.
-     *
-     * @param direction Direction of the SysId Dynamic test
-     * @return Command to run
-     */
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutineToApply.dynamic(direction);
+    public Command sysIdRotation(){
+        return m_sysIdRoutineRotation.quasistatic(Direction.kForward).andThen(m_sysIdRoutineRotation.quasistatic(Direction.kReverse))
+            .andThen(m_sysIdRoutineRotation.dynamic(Direction.kForward)).andThen(m_sysIdRoutineRotation.dynamic(Direction.kReverse));
     }
+
+
 
 
 
@@ -328,6 +315,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("Robot Pose X", getPose().getX());
         SmartDashboard.putNumber("Robot Pose Y", getPose().getY());
         SmartDashboard.putNumber("Robot Rotation Degrees", getPose().getRotation().getDegrees());
+
 
         if(loggedPath == null){
             SmartDashboard.putString("Last Selected Robot Path Name", "None Selected");

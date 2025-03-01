@@ -132,7 +132,7 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(joystick.getLeftY() * m_RobotState.getMaxSpeed()) // Drive forward with negative Y (forward)
-                    .withVelocityY(joystick.getLeftX() * m_RobotState.getMaxSpeed()) // Drive left with negative X (left)
+                    .withVelocityY(-joystick.getLeftX() * m_RobotState.getMaxSpeed()) // Drive left with negative X (left)
                     .withRotationalRate(-joystick.getRightX() * m_RobotState.getMaxRotation()) // Drive counterclockwise with negative X (left)
             )
         );
@@ -180,6 +180,8 @@ public class RobotContainer {
         SmartDashboard.putData("Set Climber PID", new InstantCommand(() -> climber.setClimberPID(Preferences.climberkP, Preferences.climberkD, Preferences.climberkI, Preferences.climberkG)));
         SmartDashboard.putData("Set Climber Motion Magic Configs", new InstantCommand(() -> climber.setClimberMotionMagic(Preferences.climberMMCruiseVelocity, Preferences.climberMMAccel, Preferences.climberMMJerk)));
 
+        SmartDashboard.putData("Drive Sysid Rotation", drivetrain.sysIdRotation());
+        SmartDashboard.putData("Drive Sysid Translation", drivetrain.sysIdTranslation());
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         /* 

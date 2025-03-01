@@ -9,6 +9,7 @@ import java.util.Optional;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Preferences;
 import frc.robot.RobotState;
@@ -63,6 +64,7 @@ public class AlignToTarget extends Command {
     double driveY;
 
     if(targeting.isPresent()){
+      SmartDashboard.putBoolean("Using Target Info for Alignment", true);
       double targetHeading = Math.toDegrees(aprilTags.getTagPose(selectedTargetID).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
       rotation = rotationController.calculate(m_drive.getYaw() - targetHeading, 0);
 
@@ -73,6 +75,7 @@ public class AlignToTarget extends Command {
     }
 
     else{
+      SmartDashboard.putBoolean("Using Target Info for Alignment", false);
       rotation = 0;
       driveX = 0;
       driveY = 0;
