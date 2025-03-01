@@ -35,6 +35,7 @@ import frc.robot.commands.composite.Score;
 import frc.robot.commands.composite.ScoreCoral;
 import frc.robot.commands.drive.AlignToTarget;
 import frc.robot.commands.endeffector.EndEffectorDefaultCommand;
+import frc.robot.commands.endeffector.OuttakeCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator.Elevator;
@@ -85,8 +86,6 @@ public class RobotContainer {
     public final EndEffector endEffector = new EndEffector();
 
     public final Climber climber = new Climber();
-
-    private final Command alignTest = new AlignToTarget(drivetrain,drivetrain.m_photonCameraWrapper, 12, Preferences.alignDistanceAdjustment);
 
     private final Command endEffectorDefaultCommand = new EndEffectorDefaultCommand(endEffector);
 
@@ -172,6 +171,7 @@ public class RobotContainer {
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );
+        
         joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
@@ -207,6 +207,9 @@ public class RobotContainer {
         // joystick.b().whileTrue(new RunCommand(() -> endEffector.setWristPosition(Preferences.wirstPosition)));
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        
+        joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignError));
+        joystick.leftTrigger().onTrue(new OuttakeCommand(endEffector));
 
         //joystick.rightBumper().onTrue(new InstantCommand( () -> elevator.alterMech(armLength.getValue(), wristAngle.getValue())));
 

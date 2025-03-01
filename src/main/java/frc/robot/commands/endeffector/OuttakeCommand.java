@@ -14,14 +14,11 @@ import frc.robot.subsystems.EndEffector.EndEffector;
 public class OuttakeCommand extends Command {
   EndEffector m_endEffector;
   Timer delayTimer;
-  DoublePreference delay;
   
   
-  public OuttakeCommand(EndEffector effector, DoublePreference time) {
+  public OuttakeCommand(EndEffector effector) {
     m_endEffector = effector;
     addRequirements(m_endEffector);
-    
-    delay = time;
     
   }
 
@@ -52,6 +49,6 @@ public class OuttakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (delayTimer.hasElapsed(delay.getValue()));
+    return (delayTimer.hasElapsed(0.15));
   }
 }
