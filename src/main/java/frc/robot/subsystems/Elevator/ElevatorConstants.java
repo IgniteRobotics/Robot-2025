@@ -1,13 +1,17 @@
 package frc.robot.subsystems.Elevator;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.controls.Follower;
 
@@ -19,7 +23,7 @@ public class ElevatorConstants {
         public static final TalonFX ELEVATOR_FOLLOWER_MOTOR = new TalonFX(kElevatorMotorFollowerId){{
             setControl(new Follower(kElevatorMotorLeaderId, true));
         }};
-
+  
 
         //Slot0Configs
 
@@ -63,6 +67,7 @@ public class ElevatorConstants {
         public static final double ELEVATOR_MM_JERK = 2000;
         public static final double ELEVATOR_MM_ACCEL = 200;
         public static final double ELEVATOR_MM_CRUISE_VELOCITY = 12;
+
         public static MotionMagicConfigs createMotionMagicConfigs(){
             MotionMagicConfigs newConfigs = new MotionMagicConfigs();
             newConfigs.MotionMagicJerk = ELEVATOR_MM_JERK;
