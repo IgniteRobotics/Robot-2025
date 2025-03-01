@@ -202,9 +202,9 @@ public class PhotonCameraWrapper{
             return Optional.empty();
         } else {
             //TODO: Change values (after TargetId 2 addition values, see class)
-            return Optional.of(new PhotonTrackedTarget(0.2, 0.0, 1.0, 0.0, targetId, -1, -1,
-                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0.2)),
-                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0.2)),
+            return Optional.of(new PhotonTrackedTarget(0, 0.0, 0, 0.0, targetId, -1, -1,
+                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0)),
+                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0)),
              0.0, 
              new ArrayList<TargetCorner>(4), 
              new ArrayList<TargetCorner>(4)
@@ -222,6 +222,7 @@ public class PhotonCameraWrapper{
 
     public TargetInfo calculateTargetInfo(double yawToTargetDegrees, double distanceToTargetMeters, double cameraYawOffset, double cameraYOffsetMeters, String cameraName){
         //first offset the yaw by the camera angle and 90.
+        double original = yawToTargetDegrees;
         yawToTargetDegrees = yawToTargetDegrees + cameraYawOffset + 90;
 
         //apply law of cosines to get robot distance
@@ -232,15 +233,15 @@ public class PhotonCameraWrapper{
                 2 * cameraYOffsetMeters * distanceToTargetMeters *
                 Math.cos(Math.toRadians(yawToTargetDegrees))
             )
-            );
+        );
 
         //now apply law of sines to get robot yaw
         // and flip to degrees.
         double yaw = Math.toDegrees(Math.asin(
             distanceToTargetMeters * Math.sin(Math.toRadians(yawToTargetDegrees)) /
-            distance)
-        );
+            distance));
 
+        
         //finally, subract 90 deg from yaw to get yaw from straigh ahead.
         yaw -= 90;
 
@@ -248,8 +249,8 @@ public class PhotonCameraWrapper{
         distance = Math.round(distance*100.0)/100.0;
         yaw = Math.round(yaw * 100.0)/100.0;
 
-        TargetInfo t = new TargetInfo(distance, yaw, cameraName);
-
+        //TargetInfo t = new TargetInfo(distance, yaw, cameraName);
+        TargetInfo t = new TargetInfo(original, distanceToTargetMeters, cameraName);
         return t;
         
     }

@@ -282,8 +282,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public Command sysIdTranslation(){
-        return m_sysIdRoutineTranslation.quasistatic(Direction.kForward).withTimeout(6).andThen(m_sysIdRoutineTranslation.quasistatic(Direction.kReverse).withTimeout(6))
-            .andThen(m_sysIdRoutineTranslation.dynamic(Direction.kForward).withTimeout(4)).andThen(m_sysIdRoutineTranslation.dynamic(Direction.kReverse).withTimeout(4));
+        return m_sysIdRoutineTranslation.quasistatic(Direction.kForward).withTimeout(5).andThen(m_sysIdRoutineTranslation.quasistatic(Direction.kReverse).withTimeout(5))
+            .andThen(m_sysIdRoutineTranslation.dynamic(Direction.kForward).withTimeout(3)).andThen(m_sysIdRoutineTranslation.dynamic(Direction.kReverse).withTimeout(3));
     }
 
     public Command sysIdRotation(){
@@ -297,11 +297,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public void driveRobotCentric(double x, double y, double rot){
         SwerveRequest.RobotCentric m_driveRequest = new SwerveRequest.RobotCentric()
-            .withDeadband(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * TunerConstants.DEADBAND_FACTOR)
-            .withRotationalDeadband(TunerConstants.MAX_ANGULAR_SPEED * TunerConstants.DEADBAND_FACTOR)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
             .withSteerRequestType(SteerRequestType.MotionMagicExpo);
-        
         this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
     }
 

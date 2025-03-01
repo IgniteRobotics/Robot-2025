@@ -27,23 +27,21 @@ public class AlignToTarget extends Command {
   private final CommandSwerveDrivetrain m_drive;
   private final PhotonCameraWrapper m_camera;
   private final int selectedTargetID;
-  private final DoublePreference xError;
+  private final DoublePreference adjustment;
   
 
   PIDController rotationController;
-  PIDController driveXController;
-  PIDController driveYController;
-
+  PIDController driveController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   RobotState m_robotState = RobotState.getInstance();
 
   /** Creates a new AlignToTarget. */
-  public AlignToTarget(CommandSwerveDrivetrain drive, PhotonCameraWrapper camera, int targetID, DoublePreference error){
+  public AlignToTarget(CommandSwerveDrivetrain drive, PhotonCameraWrapper camera, int targetID, DoublePreference adj){
     m_drive = drive;
     m_camera = camera;
     selectedTargetID = targetID;
-    xError = error;
+    adjustment = adj;
     addRequirements(m_drive);
   }
 
@@ -51,8 +49,7 @@ public class AlignToTarget extends Command {
   @Override
   public void initialize() {
     rotationController = new PIDController(Preferences.alignRotKP.get(), 0, Preferences.alignRotKD.get());
-    driveXController = new PIDController(Preferences.alignDriveXKP.get(), 0, Preferences.alignDriveXKD.get());
-    driveYController = new PIDController(Preferences.alignDriveYKP.get(), 0, Preferences.alignDriveYKD.get());
+    driveController = new PIDController(Preferences.alignDriveKP.get(), 0, Preferences.alignDriveKD.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -64,22 +61,30 @@ public class AlignToTarget extends Command {
     double driveY;
 
     if(targeting.isPresent()){
-      SmartDashboard.putBoolean("Using Target Info for Alignment", true);
       double targetHeading = Math.toDegrees(aprilTags.getTagPose(selectedTargetID).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
       rotation = rotationController.calculate(m_drive.getYaw() - targetHeading, 0);
+      SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
 
       double offset = CameraConstants.offsetToBumper.get(targeting.get().getCameraName());
-      driveX = driveXController.calculate(targeting.get().getDistance() - offset - xError.get(), 0);
+      driveX = driveController.calculate(targeting.get().getDistance() - offset, 0);
+      SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
       
-      driveY = driveYController.calculate(targeting.get().getYaw(), m_robotState.getYAlignmentError());
+      driveY = driveController.calculate(targeting.get().getYaw(), adjustment.getValue());
+      if(targeting.get().getYaw() < 0){
+        driveY *= -1;
+      }
+      SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
     }
 
     else{
-      SmartDashboard.putBoolean("Using Target Info for Alignment", false);
       rotation = 0;
       driveX = 0;
       driveY = 0;
     }
+
+    SmartDashboard.putNumber("Alignment/Power/rotation", rotation);
+    SmartDashboard.putNumber("Alignment/Power/driveX", driveX);
+    SmartDashboard.putNumber("Alignment/Power/driveY", driveY);
     
     m_drive.driveRobotCentric(driveX, driveY, rotation);
   }

@@ -1,45 +1,5 @@
 [
   {
-    "name": "/Preferences/Arm kP",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Arm kD",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Arm kI",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Arm kS",
-    "type": "double",
-    "value": 0.12,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/armAngle",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
     "name": "/Preferences/alignCommand/distanceAdjustment",
     "type": "double",
     "value": 0.0,
@@ -96,25 +56,9 @@
     }
   },
   {
-    "name": "/Preferences/armLength",
+    "name": "/Preferences/Elevator/kV",
     "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/wristAngle",
-    "type": "double",
-    "value": 90.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/drive/maxSpeedAdjustable",
-    "type": "double",
-    "value": 4.33,
+    "value": 0.0,
     "properties": {
       "persistent": true
     }
@@ -122,7 +66,7 @@
   {
     "name": "/Preferences/Elevator/kP",
     "type": "double",
-    "value": 1.0,
+    "value": 7.0,
     "properties": {
       "persistent": true
     }
@@ -138,7 +82,23 @@
   {
     "name": "/Preferences/Elevator/kD",
     "type": "double",
-    "value": 0.05,
+    "value": 0.25,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/kG",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/kS",
+    "type": "double",
+    "value": 0.5,
     "properties": {
       "persistent": true
     }
@@ -152,33 +112,9 @@
     }
   },
   {
-    "name": "/Preferences/Elevator/kG",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator/kV",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator/kS",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
     "name": "/Preferences/Elevator/Motion Magic/Jerk",
     "type": "double",
-    "value": 1.0,
+    "value": 2000.0,
     "properties": {
       "persistent": true
     }
@@ -186,7 +122,7 @@
   {
     "name": "/Preferences/Elevator/Motion Magic/Acceleration",
     "type": "double",
-    "value": 1.0,
+    "value": 200.0,
     "properties": {
       "persistent": true
     }
@@ -194,15 +130,7 @@
   {
     "name": "/Preferences/Elevator/Motion Magic/Cruise Velocity",
     "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator/Motion Magic/kV",
-    "type": "double",
-    "value": 0.1,
+    "value": 100.0,
     "properties": {
       "persistent": true
     }
@@ -224,6 +152,22 @@
     }
   },
   {
+    "name": "/Preferences/EndEffector/Wrist/Stow Position/No Algae",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/EndEffector/Wrist/Stow Position/WithAlgae",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
     "name": "/Preferences/Climber/kV",
     "type": "double",
     "value": 0.0,
@@ -234,7 +178,7 @@
   {
     "name": "/Preferences/Climber/kP",
     "type": "double",
-    "value": 1.0,
+    "value": 0.0,
     "properties": {
       "persistent": true
     }
@@ -242,7 +186,7 @@
   {
     "name": "/Preferences/Climber/kI",
     "type": "double",
-    "value": 1e-05,
+    "value": 0.0,
     "properties": {
       "persistent": true
     }
@@ -250,7 +194,7 @@
   {
     "name": "/Preferences/Climber/kD",
     "type": "double",
-    "value": 0.1,
+    "value": 0.0,
     "properties": {
       "persistent": true
     }
@@ -282,7 +226,7 @@
   {
     "name": "/Preferences/Climber/Motion Magic/Jerk",
     "type": "double",
-    "value": 99.0,
+    "value": 101.0,
     "properties": {
       "persistent": true
     }
@@ -290,7 +234,7 @@
   {
     "name": "/Preferences/Climber/Motion Magic/Acceleration",
     "type": "double",
-    "value": 20.0,
+    "value": 10.0,
     "properties": {
       "persistent": true
     }
@@ -298,13 +242,21 @@
   {
     "name": "/Preferences/Climber/Motion Magic/Cruise Velocity",
     "type": "double",
-    "value": 6.0,
+    "value": 5.0,
     "properties": {
       "persistent": true
     }
   },
   {
-    "name": "/Preferences/Climber/Motion Magic/kV",
+    "name": "/Preferences/Climber/Up Power",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Clibmer/Down Power",
     "type": "double",
     "value": 0.1,
     "properties": {

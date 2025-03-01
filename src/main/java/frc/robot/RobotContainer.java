@@ -210,7 +210,7 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         
-        joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignError));
+        joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
         joystick.leftTrigger().onTrue(new OuttakeCommand(endEffector));
 
         //joystick.rightBumper().onTrue(new InstantCommand( () -> elevator.alterMech(armLength.getValue(), wristAngle.getValue())));

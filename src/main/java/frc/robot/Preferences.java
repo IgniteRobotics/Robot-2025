@@ -15,13 +15,11 @@ public class Preferences {
     // ********** Drive *********//
 
     
-    public static DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", 0);
+    public static DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", 0.5);
     public static DoublePreference alignRotKD = new DoublePreference("alignCommand/rotation/kD", 0);
-    public static DoublePreference alignDriveXKP = new DoublePreference("alignCommand/drive/x/kP", 0);
-    public static DoublePreference alignDriveXKD = new DoublePreference("alignCommand/drive/x/kD", 0);
-    public static DoublePreference alignDriveYKP = new DoublePreference("alignCommand/drive/y/kP", 0);
-    public static DoublePreference alignDriveYKD = new DoublePreference("alignCommand/drive/y/KD", 0);
-    public static DoublePreference alignError = new DoublePreference("alignCommand/error", 0);
+    public static DoublePreference alignDriveKP = new DoublePreference("alignCommand/drive/kP", 0.5);
+    public static DoublePreference alignDriveKD = new DoublePreference("alignCommand/drive/kD", 0.3);
+    public static DoublePreference alignAdj = new DoublePreference("alignCommand/adjustment", 0);
 
     // ********** Elevator **********
     public static DoublePreference elevatorkV = new DoublePreference("Elevator/kV", ElevatorConstants.ELEVATOR_kV);
