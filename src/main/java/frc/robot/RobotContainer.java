@@ -32,9 +32,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.composite.IntakeAlgae;
+import frc.robot.commands.composite.OuttakeAlgae;
 import frc.robot.commands.composite.Score;
 import frc.robot.commands.composite.ScoreCoral;
 import frc.robot.commands.drive.AlignToTarget;
+import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.commands.endeffector.EndEffectorDefaultCommand;
 import frc.robot.commands.endeffector.OuttakeCommand;
 import frc.robot.generated.TunerConstants;
@@ -201,10 +203,10 @@ public class RobotContainer {
         // joystick.y().whileTrue(new RunCommand( () -> new Score(m_RobotState, elevator, endEffector, drivetrain), elevator, endEffector, drivetrain));
         
 
-        joystick.a().whileTrue(new IntakeAlgae(elevator, endEffector, ElevatorConstants.ALGAE.HIGH_REEF.height));
-        joystick.a().onFalse(new InstantCommand(()->endEffector.stopAlgaeMotor()).andThen(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
-        joystick.b().whileTrue(new IntakeAlgae(elevator, endEffector, ElevatorConstants.ALGAE.LOW_REEF.height));
-        joystick.b().onFalse(new InstantCommand(()->endEffector.stopAlgaeMotor()).andThen(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
+        joystick.a().whileTrue(drivetrain.followPath(createHPPath()));
+        joystick.b().whileTrue(drivetrain.followPath(createREEF1Path()));
+        joystick.x().whileTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
+        joystick.y().whileTrue(new OuttakeAlgae(elevator, endEffector));
         // joystick.a().whileTrue(new RunCommand(() -> endEffector.intakeAlgae()).until(() -> endEffector.seesAlgae()));
         // joystick.b().whileTrue(new RunCommand(() -> endEffector.setWristPosition(Preferences.wirstPosition)));
         // reset the field-centric heading on left bumper press
@@ -228,9 +230,9 @@ public class RobotContainer {
 
     public PathPlannerPath createTestPath(){
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-        new Pose2d(1.0, 1.0, Rotation2d.fromDegrees(0)),
-        new Pose2d(3.0, 1.0, Rotation2d.fromDegrees(0)),
-        new Pose2d(5.0, 3.0, Rotation2d.fromDegrees(90))
+        new Pose2d(2.254, 6.476, Rotation2d.fromDegrees(0)),
+        new Pose2d(4.471, 6.524, Rotation2d.fromDegrees(0)),
+        new Pose2d(5.586, 5.577, Rotation2d.fromDegrees(-45))
             );
 
         PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
@@ -241,7 +243,7 @@ public class RobotContainer {
               waypoints,
                constraints,
                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                new GoalEndState(0, Rotation2d.fromDegrees(-90)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+                new GoalEndState(0, Rotation2d.fromDegrees(60)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
         );
 
         // Prevent the path from being flipped if the coordinates are already correct
@@ -249,4 +251,51 @@ public class RobotContainer {
 
         return path;
     }
+
+    public PathPlannerPath createHPPath(){
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+        new Pose2d(1.95, 5.21, Rotation2d.fromDegrees(135)),
+        new Pose2d(1.2, 6, Rotation2d.fromDegrees(135))
+            );
+
+        PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
+        // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
+
+        // Create the path using the waypoints created above
+        PathPlannerPath path = new PathPlannerPath(
+              waypoints,
+               constraints,
+               null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+                new GoalEndState(0, Rotation2d.fromDegrees(135)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+
+        // Prevent the path from being flipped if the coordinates are already correct
+        path.preventFlipping = true;
+
+        return path;
+    }
+
+    public PathPlannerPath createREEF1Path(){
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+        new Pose2d(1.95, 5.21, Rotation2d.fromDegrees(-50)),
+        new Pose2d(3, 3.72, Rotation2d.fromDegrees(0))
+            );
+
+        PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
+        // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
+
+        // Create the path using the waypoints created above
+        PathPlannerPath path = new PathPlannerPath(
+              waypoints,
+               constraints,
+               null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+                new GoalEndState(0, Rotation2d.fromDegrees(180)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+
+        // Prevent the path from being flipped if the coordinates are already correct
+        path.preventFlipping = true;
+
+        return path;
+    }
+
 }
