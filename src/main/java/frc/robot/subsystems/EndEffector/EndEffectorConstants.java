@@ -1,18 +1,14 @@
 package frc.robot.subsystems.EndEffector;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class EndEffectorConstants {
@@ -75,20 +71,6 @@ public class EndEffectorConstants {
             slot.kI = EndEffectorConstants.CORAL_kI;
             slot.kD = EndEffectorConstants.CORAL_kD;
             return slot;
-        }
-
-        public static final int kWristCANcoderId = 18;
-        public static final CANcoder m_wristCANcoder = new CANcoder(kWristCANcoderId);
-
-
-        //Cancoder
-        public static CANcoder getConfiguredCANcoder(){
-            CANcoderConfiguration config = new CANcoderConfiguration();
-            config.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-            config.MagnetSensor.MagnetOffset = -0.147;
-            m_wristCANcoder.getConfigurator().apply(config);
-            m_wristCANcoder.getAbsolutePosition().setUpdateFrequency(100);
-            return m_wristCANcoder;
         }
 
         public static MotorOutputConfigs createCoralMotorOutputConfigs(){
@@ -159,10 +141,7 @@ public class EndEffectorConstants {
         
         public static TalonFXConfiguration createWristTalonFXConfigs(){
             TalonFXConfiguration configs = new TalonFXConfiguration();
-            configs.Feedback.FeedbackRemoteSensorID = kWristCANcoderId;
-            configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-            configs.Feedback.RotorToSensorRatio = 15;
-            configs.Feedback.SensorToMechanismRatio = 3.2;
+            configs.Feedback.SensorToMechanismRatio = 48;
             return configs;
         }
 

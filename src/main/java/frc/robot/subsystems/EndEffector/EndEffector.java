@@ -11,7 +11,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -32,8 +31,6 @@ public class EndEffector extends SubsystemBase {
   private final TalonFX m_coralMotor;
   private final TalonFX m_algaeMotor;
   private final TalonFX m_wristMotor;
-
-  private final CANcoder m_wristCANcoder;
 
   private Slot0Configs m_coralSlot0Configs;
   private MotorOutputConfigs m_coralMotorOutputConfigs;
@@ -63,8 +60,6 @@ public class EndEffector extends SubsystemBase {
       /** Creates a new EndEffector. */
       public EndEffector() {
         m_coralMotor = new TalonFX(EndEffectorConstants.kCoralMotorId);
-
-        m_wristCANcoder = EndEffectorConstants.getConfiguredCANcoder();
     
         m_coralSlot0Configs = EndEffectorConstants.createCoralMotorSlot0Configs();
         m_coralMotor.getConfigurator().apply(m_coralSlot0Configs);
@@ -77,22 +72,22 @@ public class EndEffector extends SubsystemBase {
         m_algaeMotor.getConfigurator().apply(m_algaeSlot0Configs);
   
   
-        m_wristMotor = new TalonFX(EndEffectorConstants.kWristMotorId);
-        m_wristTalonFXConfiguration = EndEffectorConstants.createWristTalonFXConfigs();
-        m_wristMotor.getConfigurator().apply(m_wristTalonFXConfiguration);
-        m_wristSlot0Configs = EndEffectorConstants.createWristMotorSlot0Configs();
-        m_wristMotor.getConfigurator().apply(m_wristSlot0Configs);
-        m_wristSoftLimitConfigs = EndEffectorConstants.createWristSoftLimitConfigs();
-        m_wristMotorOutputConfigs = EndEffectorConstants.createWristMotorOutputConfigs();
-        m_wristMotor.getConfigurator().apply(m_wristMotorOutputConfigs);
-        m_wristMotor.setPosition(0.282715);
+      m_wristMotor = new TalonFX(EndEffectorConstants.kWristMotorId);
+      m_wristTalonFXConfiguration = EndEffectorConstants.createWristTalonFXConfigs();
+      m_wristMotor.getConfigurator().apply(m_wristTalonFXConfiguration);
+      m_wristSlot0Configs = EndEffectorConstants.createWristMotorSlot0Configs();
+      m_wristMotor.getConfigurator().apply(m_wristSlot0Configs);
+      m_wristSoftLimitConfigs = EndEffectorConstants.createWristSoftLimitConfigs();
+      m_wristMotorOutputConfigs = EndEffectorConstants.createWristMotorOutputConfigs();
+      m_wristMotor.getConfigurator().apply(m_wristMotorOutputConfigs);
+      m_wristMotor.setPosition(0.282715);
   
   
-        m_beambreak_enter = new CANrange(EndEffectorConstants.kEnterBeamBreakId);
-        m_beambreak_prep = new CANrange(EndEffectorConstants.kPrepBeamBreakId);
-        m_beambreak_algae = new CANrange(EndEffectorConstants.kAlgaeBeamBreakId);
+      m_beambreak_enter = new CANrange(EndEffectorConstants.kEnterBeamBreakId);
+      m_beambreak_prep = new CANrange(EndEffectorConstants.kPrepBeamBreakId);
+      m_beambreak_algae = new CANrange(EndEffectorConstants.kAlgaeBeamBreakId);
       
-        configureCANrange();
+      configureCANrange();
     }
   
     public void configureCANrange(){
