@@ -383,7 +383,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 if(target.getPoseAmbiguity() > 0.2) poseOK = false;
                 if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
                 }
-                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, VecBuilder.fill(0.05, 0.05, 0.05));
+                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds(), VecBuilder.fill(0.05, 0.05, 0.05));
             }
         }
 
@@ -395,7 +395,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 if(target.getPoseAmbiguity() > 0.2) poseOK = false;
                 if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
                 }
-                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, VecBuilder.fill(0.05, 0.05, 0.05));
+                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds(), VecBuilder.fill(0.05, 0.05, 0.05));
             }
         }
     

@@ -10,11 +10,11 @@ import edu.wpi.first.math.geometry.Translation3d;
 
 public class CameraConstants {
     public static final String photonCameraNameOuttakeLeft = "OUTTAKE_LEFT";
-    public static final Transform3d photonCameraTransformOuttakeLeft= new Transform3d(new Translation3d(.343, 0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, -15.0/180 * Math.PI));
+    public static final Transform3d photonCameraTransformOuttakeLeft= new Transform3d(new Translation3d(.343, -0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 15.0/180 * Math.PI));
     public static final PhotonCamera photonCameraOuttakeLeft = new PhotonCamera(photonCameraNameOuttakeLeft);
     
     public static final String photonCameraNameOuttakeRight = "OUTTAKE_RIGHT";
-    public static final Transform3d photonCameraTransformOuttakeRight = new Transform3d(new Translation3d(.343, -0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 15.0/180 * Math.PI));
+    public static final Transform3d photonCameraTransformOuttakeRight = new Transform3d(new Translation3d(.343, 0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, -15.0/180 * Math.PI));
     public static final PhotonCamera photonCameraOuttakeRight = new PhotonCamera(photonCameraNameOuttakeRight);
 
     public static final String photonCameraNameIntake = "INTAKE";
