@@ -48,6 +48,13 @@ public class RobotState {
     public Alliance getAlliance(){
         return m_alliance;
     }
+
+    public double getBargeHeading(){
+        if(m_alliance == Alliance.Red){
+            return 90;
+        }
+        else return 0;
+    }
       //Desired Coral Targets
     public static enum CoralTarget {
         NONE("NONE"),

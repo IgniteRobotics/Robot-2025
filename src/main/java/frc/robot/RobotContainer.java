@@ -189,12 +189,6 @@ public class RobotContainer {
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         */
 
-         
-        joystick.a().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
-                    .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
-        joystick.b().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))
-                    .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
-        joystick.x().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
         joystick.y().whileTrue(new RunCommand( () -> new Score(m_RobotState, elevator, endEffector, drivetrain), elevator, endEffector, drivetrain));
         
 

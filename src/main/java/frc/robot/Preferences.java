@@ -66,5 +66,7 @@ public class Preferences {
 
     public static DoublePreference servoPosition = new DoublePreference("Climber/Servo Position", 0);
 
+    public static  DoublePreference turnToTarget_rotKP = new DoublePreference("TurnToTarget/kP", 0);
+    public static  DoublePreference turnToTarget_rotKD = new DoublePreference("TurnToTarget/kD", 0);
     
 }
