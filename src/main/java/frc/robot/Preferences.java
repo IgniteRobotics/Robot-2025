@@ -12,9 +12,9 @@ import frc.robot.subsystems.EndEffector.EndEffectorConstants;
 /** Add your docs here. */
 public class Preferences {
 
-    // ********** Drive **********
-    //public static DoublePreference alignDistanceAdjustment = new DoublePreference("alignCommand/distanceAdjustment");
+    // ********** Drive *********//
 
+    
     public static DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", 0);
     public static DoublePreference alignRotKD = new DoublePreference("alignCommand/rotation/kD", 0);
     public static DoublePreference alignDriveXKP = new DoublePreference("alignCommand/drive/x/kP", 0);
@@ -22,6 +22,7 @@ public class Preferences {
     public static DoublePreference alignDriveYKP = new DoublePreference("alignCommand/drive/y/kP", 0);
     public static DoublePreference alignDriveYKD = new DoublePreference("alignCommand/drive/y/KD", 0);
     public static DoublePreference alignError = new DoublePreference("alignCommand/error", 0);
+
     // ********** Elevator **********
     public static DoublePreference elevatorkV = new DoublePreference("Elevator/kV", ElevatorConstants.ELEVATOR_kV);
     public static DoublePreference elevatorkP = new DoublePreference("Elevator/kP", ElevatorConstants.ELEVATOR_kP);

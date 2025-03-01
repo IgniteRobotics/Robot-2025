@@ -282,13 +282,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public Command sysIdTranslation(){
-        return m_sysIdRoutineTranslation.quasistatic(Direction.kForward).andThen(m_sysIdRoutineTranslation.quasistatic(Direction.kReverse))
-            .andThen(m_sysIdRoutineTranslation.dynamic(Direction.kForward)).andThen(m_sysIdRoutineTranslation.dynamic(Direction.kReverse));
+        return m_sysIdRoutineTranslation.quasistatic(Direction.kForward).withTimeout(6).andThen(m_sysIdRoutineTranslation.quasistatic(Direction.kReverse).withTimeout(6))
+            .andThen(m_sysIdRoutineTranslation.dynamic(Direction.kForward)).withTimeout(4).andThen(m_sysIdRoutineTranslation.dynamic(Direction.kReverse)).withTimeout(4);
     }
 
     public Command sysIdRotation(){
-        return m_sysIdRoutineRotation.quasistatic(Direction.kForward).andThen(m_sysIdRoutineRotation.quasistatic(Direction.kReverse))
-            .andThen(m_sysIdRoutineRotation.dynamic(Direction.kForward)).andThen(m_sysIdRoutineRotation.dynamic(Direction.kReverse));
+        return m_sysIdRoutineRotation.quasistatic(Direction.kForward).withTimeout(6).andThen(m_sysIdRoutineRotation.quasistatic(Direction.kReverse).withTimeout(6))
+            .andThen(m_sysIdRoutineRotation.dynamic(Direction.kForward)).withTimeout(4).andThen(m_sysIdRoutineRotation.dynamic(Direction.kReverse)).withTimeout(4);
     }
 
 
