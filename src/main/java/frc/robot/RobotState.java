@@ -30,8 +30,6 @@ public class RobotState {
 
     private final double blockWidth = 0.25;
 
-    private Zone[][] GRID = Grid.RED_GRID;
-
     private Zone currentZone;
 
     Map<String, PhotonPipelineResult> cameraResults = new HashMap<>(){};
@@ -40,6 +38,16 @@ public class RobotState {
 
     private boolean hasAlgae = false;
 
+    private Alliance m_alliance = Alliance.Red;
+
+
+    public void setAlliance(Alliance alliance){
+        m_alliance = alliance;
+    }
+
+    public Alliance getAlliance(){
+        return m_alliance;
+    }
       //Desired Coral Targets
     public static enum CoralTarget {
         NONE("NONE"),
@@ -96,11 +104,11 @@ public class RobotState {
         return single_instance;
     }
 
-    public void setGrid(Alliance color){
-        if(color == Alliance.Red){
-            GRID = Grid.RED_GRID;
+    public Zone[][] getGrid(){
+        if(m_alliance == Alliance.Red){
+            return Grid.RED_GRID;
         }
-        else GRID = Grid.BLUE_GRID;
+        else return Grid.BLUE_GRID;
     }
 
     
@@ -111,7 +119,7 @@ public class RobotState {
             currentZone = null;
         }
         else{
-            currentZone = GRID[(int)(robotPose2d.getX()/blockWidth)][ (int)(robotPose2d.getY()/blockWidth)];
+            currentZone = getGrid()[(int)(robotPose2d.getX()/blockWidth)][ (int)(robotPose2d.getY()/blockWidth)];
         }
     }
 

@@ -268,10 +268,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
 
-    private void followPath(PathPlannerPath path){
+    private Command followPath(PathPlannerPath path){
         loggedPath = path;
-        AutoBuilder.followPath(path);
+        return AutoBuilder.followPath(path);
     }
+
+    
 
 /**
     /**
