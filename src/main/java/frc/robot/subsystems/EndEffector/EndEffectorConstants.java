@@ -156,7 +156,7 @@ public class EndEffectorConstants {
         public enum ALGAE{
             
             PROCESS(.15),
-            REEF(0),
+            REEF(-0.046143),
             BARGE(-0.15),
             STOW_FULL(-0.2),
             STOW_EMPTY(-0.25);

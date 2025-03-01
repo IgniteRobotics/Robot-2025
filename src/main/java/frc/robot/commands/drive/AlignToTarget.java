@@ -62,17 +62,14 @@ public class AlignToTarget extends Command {
 
     if(targeting.isPresent()){
       double targetHeading = Math.toDegrees(aprilTags.getTagPose(selectedTargetID).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
-      rotation = rotationController.calculate(m_drive.getYaw() - targetHeading, 0);
+      rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
       SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
 
       double offset = CameraConstants.offsetToBumper.get(targeting.get().getCameraName());
-      driveX = driveController.calculate(targeting.get().getDistance() - offset, 0);
+      driveX = driveController.calculate(targeting.get().getDistance(), offset);
       SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
       
       driveY = driveController.calculate(targeting.get().getYaw(), adjustment.getValue());
-      if(targeting.get().getYaw() < 0){
-        driveY *= -1;
-      }
       SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
     }
 

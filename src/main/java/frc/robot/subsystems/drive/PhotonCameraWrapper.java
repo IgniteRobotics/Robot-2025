@@ -177,13 +177,8 @@ public class PhotonCameraWrapper{
         //the best camera, if any, is used
         if(bestCamera != -1){
             m_seesTarget = true;
-            return Optional.of(calculateTargetInfo(
-                target.get().getYaw(), 
-                getDistanceFromTransform3d(target.get().getBestCameraToTarget()),
-                CameraConstants.allCameraYawOffsetsDegrees[bestCamera],
-                allEstimators[bestCamera].getRobotToCameraTransform().getY(),
-                designatedCameras[bestCamera].getName()
-            ));
+            return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.get().getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(designatedCameras[bestCamera].getName())),
+                target.get().getYaw(), designatedCameras[bestCamera].getName()));
         }
         
         //no targets found anywhere.
@@ -218,41 +213,6 @@ public class PhotonCameraWrapper{
                 Math.pow(t.getX(), 2) + 
                 Math.pow(t.getY(), 2)
         );
-    }
-
-    public TargetInfo calculateTargetInfo(double yawToTargetDegrees, double distanceToTargetMeters, double cameraYawOffset, double cameraYOffsetMeters, String cameraName){
-        //first offset the yaw by the camera angle and 90.
-        double original = yawToTargetDegrees;
-        yawToTargetDegrees = yawToTargetDegrees + cameraYawOffset + 90;
-
-        //apply law of cosines to get robot distance
-        double distance = Math.sqrt(
-            Math.pow(cameraYOffsetMeters, 2) +
-            Math.pow(distanceToTargetMeters, 2) -
-            (
-                2 * cameraYOffsetMeters * distanceToTargetMeters *
-                Math.cos(Math.toRadians(yawToTargetDegrees))
-            )
-        );
-
-        //now apply law of sines to get robot yaw
-        // and flip to degrees.
-        double yaw = Math.toDegrees(Math.asin(
-            distanceToTargetMeters * Math.sin(Math.toRadians(yawToTargetDegrees)) /
-            distance));
-
-        
-        //finally, subract 90 deg from yaw to get yaw from straigh ahead.
-        yaw -= 90;
-
-        //round to 2 places.
-        distance = Math.round(distance*100.0)/100.0;
-        yaw = Math.round(yaw * 100.0)/100.0;
-
-        //TargetInfo t = new TargetInfo(distance, yaw, cameraName);
-        TargetInfo t = new TargetInfo(original, distanceToTargetMeters, cameraName);
-        return t;
-        
     }
 
     public void setPipeline(int index){

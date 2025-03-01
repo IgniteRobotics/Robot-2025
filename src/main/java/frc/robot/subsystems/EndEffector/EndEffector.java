@@ -126,6 +126,10 @@ public class EndEffector extends SubsystemBase {
     public void stopCoralMotor(){
       m_coralMotor.stopMotor();
     }
+
+    public void stopAlgaeMotor(){
+      m_algaeMotor.stopMotor();
+    }
   
     public void intakeAlgae(){
       m_algaeMotor.set(Preferences.endEffectorAlgaeIntakePower.getValue());

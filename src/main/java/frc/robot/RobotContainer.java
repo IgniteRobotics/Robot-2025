@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.commands.composite.IntakeAlgae;
 import frc.robot.commands.composite.Score;
 import frc.robot.commands.composite.ScoreCoral;
 import frc.robot.commands.drive.AlignToTarget;
@@ -200,17 +201,15 @@ public class RobotContainer {
         // joystick.y().whileTrue(new RunCommand( () -> new Score(m_RobotState, elevator, endEffector, drivetrain), elevator, endEffector, drivetrain));
         
 
-        joystick.a().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position).withName("score trough"));
-        joystick.b().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L2"));
-        joystick.x().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L3"));
-        joystick.y().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L4"));
-
+        joystick.a().whileTrue(new IntakeAlgae(elevator, endEffector, ElevatorConstants.ALGAE.HIGH_REEF.height));
+        joystick.a().onFalse(new InstantCommand(()->endEffector.stopAlgaeMotor()).andThen(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
+        joystick.b().whileTrue(new IntakeAlgae(elevator, endEffector, ElevatorConstants.ALGAE.LOW_REEF.height));
+        joystick.b().onFalse(new InstantCommand(()->endEffector.stopAlgaeMotor()).andThen(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
         // joystick.a().whileTrue(new RunCommand(() -> endEffector.intakeAlgae()).until(() -> endEffector.seesAlgae()));
         // joystick.b().whileTrue(new RunCommand(() -> endEffector.setWristPosition(Preferences.wirstPosition)));
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-        
-        joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
+
         joystick.leftTrigger().onTrue(new OuttakeCommand(endEffector));
 
         //joystick.rightBumper().onTrue(new InstantCommand( () -> elevator.alterMech(armLength.getValue(), wristAngle.getValue())));
