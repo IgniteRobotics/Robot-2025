@@ -59,8 +59,8 @@ public class EndEffectorConstants {
         public static final double OUTTAKE_ALGAE_POWER = 0.25;
         public static final double ALGAE_HOLD_POWER = 0.03;
 
-        public static final double STOW_POSITION_WITH_ALGAE = 0;
-        public static final double STOW_POSITION_NO_ALGAE = 0;
+        public static final double STOW_POSITION_WITH_ALGAE = 0.2;
+        public static final double STOW_POSITION_NO_ALGAE = 0.2;
 
 
         public static Slot0Configs createCoralMotorSlot0Configs(){

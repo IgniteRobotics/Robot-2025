@@ -6,6 +6,10 @@ package frc.robot.commands.endeffector;
 
 import frc.robot.RobotState;
 import frc.robot.subsystems.EndEffector.EndEffector;
+import frc.robot.subsystems.EndEffector.EndEffectorConstants;
+
+import frc.robot.Preferences;
+
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class EndEffectorDefaultCommand extends Command {
@@ -45,7 +49,12 @@ public class EndEffectorDefaultCommand extends Command {
 
     if (m_endEffector.seesAlgae()){
       m_endEffector.holdAlgae();
+      m_endEffector.setWristPosition(Preferences.endEffectorStowPositionWithAlgae.get());
+    } else {
+      m_endEffector.setWristPosition(Preferences.endEffectorStowPositionNoAlgae.get());
     }
+
+    m_endEffector.setWristPosition(null);
 
   }
 
