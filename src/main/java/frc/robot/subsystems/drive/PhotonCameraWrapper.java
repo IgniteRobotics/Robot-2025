@@ -104,48 +104,42 @@ public class PhotonCameraWrapper{
         if(side == Side.OUTTAKE_RIGHT) {
             photonPoseEstimatorOuttakeRight.setReferencePose(prevEstimatedRobotPose);
             var results = CameraConstants.photonCameraOuttakeRight.getAllUnreadResults();
+            var latestResult = results.get(results.size()-1);
 
             if(!results.isEmpty()){
-                var latestResult = results.get(results.size()-1);
                 m_robotState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeRight.getName(), latestResult);
             }
 
             ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
-            for(var result : results){
-                 estimatedPoses.add(photonPoseEstimatorOuttakeRight.update(result));
-            }
+            estimatedPoses.add(photonPoseEstimatorOuttakeRight.update(latestResult));
+
             return estimatedPoses;
 
 
         } else if(side == Side.OUTTAKE_LEFT){
             photonPoseEstimatorOuttakeLeft.setReferencePose(prevEstimatedRobotPose);
             var results = CameraConstants.photonCameraOuttakeLeft.getAllUnreadResults();
-            
+            var latestResult = results.get(results.size()-1);            
             if(!results.isEmpty()){
-                var latestResult = results.get(results.size()-1);
                 m_robotState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeLeft.getName(), latestResult);
             }
 
             ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
-            for(var result : results){
-                    estimatedPoses.add(photonPoseEstimatorOuttakeLeft.update(result));
-
-            }
+            estimatedPoses.add(photonPoseEstimatorOuttakeLeft.update(latestResult));
             return estimatedPoses;
         }
         else{
             photonPoseEstimatorIntake.setReferencePose(prevEstimatedRobotPose);
             var results = CameraConstants.photonCameraIntake.getAllUnreadResults();
-            
+            var latestResult = results.get(results.size()-1);            
             if(!results.isEmpty()){
-                var latestResult = results.get(results.size()-1);
                 m_robotState.setLatestPhotonVisionResult(CameraConstants.photonCameraIntake.getName(), latestResult);
             }
 
             ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
-            for(var result : results){
-                    estimatedPoses.add(photonPoseEstimatorIntake.update(result));
-            }
+
+            estimatedPoses.add(photonPoseEstimatorIntake.update(latestResult));
+
             return estimatedPoses;
         }
     }
