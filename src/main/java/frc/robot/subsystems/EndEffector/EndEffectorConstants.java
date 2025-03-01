@@ -161,6 +161,7 @@ public class EndEffectorConstants {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             configs.Feedback.FeedbackRemoteSensorID = kWristCANcoderId;
             configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+            configs.Feedback.RotorToSensorRatio = 15;
             configs.Feedback.SensorToMechanismRatio = 3.2;
             return configs;
         }
