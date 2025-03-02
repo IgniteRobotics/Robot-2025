@@ -60,18 +60,18 @@ public class RobotContainer {
 
     // Set up manipulator joystick
     // private final Joystick manipulatorJoystick = new Joystick(1);
-    // private final JoystickButton coralTroughButton = new JoystickButton(manipulatorJoystick, 0);
-    // private final JoystickButton coralL2LeftButton = new JoystickButton(manipulatorJoystick, 1);
-    // private final JoystickButton coralL2RightButton = new JoystickButton(manipulatorJoystick, 2);
-    // private final JoystickButton coralL3LeftButton = new JoystickButton(manipulatorJoystick, 3);
-    // private final JoystickButton coralL3RightButton = new JoystickButton(manipulatorJoystick, 4);
-    // private final JoystickButton coralL4LeftButton = new JoystickButton(manipulatorJoystick, 5);
-    // private final JoystickButton coralL4RightButton = new JoystickButton(manipulatorJoystick, 6);
-    // private final JoystickButton algaeProcessorButton = new JoystickButton(manipulatorJoystick, 7);
-    // private final JoystickButton algaeReefButton = new JoystickButton(manipulatorJoystick, 8);
-    // private final JoystickButton algaeBargeButton = new JoystickButton(manipulatorJoystick, 9);
-    // private final JoystickButton algaeCancelButton = new JoystickButton(manipulatorJoystick, 10);
-    // private final JoystickButton coralCancelButton = new JoystickButton(manipulatorJoystick, 11);
+    // private final JoystickButton coralTroughButton = new JoystickButton(manipulatorJoystick, 1);
+    // private final JoystickButton coralL2LeftButton = new JoystickButton(manipulatorJoystick, 2);
+    // private final JoystickButton coralL2RightButton = new JoystickButton(manipulatorJoystick, 3);
+    // private final JoystickButton coralL3LeftButton = new JoystickButton(manipulatorJoystick, 4);
+    // private final JoystickButton coralL3RightButton = new JoystickButton(manipulatorJoystick, 5);
+    // private final JoystickButton coralL4LeftButton = new JoystickButton(manipulatorJoystick, 6);
+    // private final JoystickButton coralL4RightButton = new JoystickButton(manipulatorJoystick, 7);
+    // private final JoystickButton algaeProcessorButton = new JoystickButton(manipulatorJoystick, 8);
+    // private final JoystickButton algaeReefButton = new JoystickButton(manipulatorJoystick, 9);
+    // private final JoystickButton algaeBargeButton = new JoystickButton(manipulatorJoystick, 10);
+    // private final JoystickButton algaeCancelButton = new JoystickButton(manipulatorJoystick, 11);
+    // private final JoystickButton coralCancelButton = new JoystickButton(manipulatorJoystick, 12);
 
 
     public final double default_Max_Speed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
@@ -195,9 +195,9 @@ public class RobotContainer {
         */
 
          
-        // joystick.a().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
+        // joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
         //             .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
-        // joystick.b().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))
+        // joystick.povDown().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))
         //             .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
         // joystick.x().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
         // joystick.y().whileTrue(new RunCommand( () -> new Score(m_RobotState, elevator, endEffector, drivetrain), elevator, endEffector, drivetrain));

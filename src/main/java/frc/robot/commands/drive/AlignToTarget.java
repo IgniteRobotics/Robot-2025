@@ -69,7 +69,7 @@ public class AlignToTarget extends Command {
       driveX = driveController.calculate(targeting.get().getDistance(), offset);
       SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
       
-      driveY = driveController.calculate(targeting.get().getYaw(), adjustment.getValue());
+      driveY = -driveController.calculate(targeting.get().getYaw(), adjustment.getValue());
       SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
     }
 
