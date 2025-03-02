@@ -158,13 +158,13 @@ public class RobotContainer {
         SmartDashboard.putData("Set Elevator Motion Magic Configs", new InstantCommand(() -> elevator.setElevatorMotionMagic(Preferences.elevatorMMCruiseVelocity, Preferences.elevatorMMAccel, Preferences.elevatorMMJerk)));
         
         SmartDashboard.putData("Elevator Ground", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
-        /*SmartDashboard.putData("Elevator Trough", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.TROUGH.position))
-            .until(() -> elevator.atSetpoint())
-            .andThen( new RunCommand(() -> endEffector.outtakeCoral())
-            .withTimeout(1)
-            .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
-            );
-         */
+        // SmartDashboard.putData("Elevator Trough", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.TROUGH.position))
+        //     .until(() -> elevator.atSetpoint())
+        //     .andThen( new RunCommand(() -> endEffector.outtakeCoral())
+        //     .withTimeout(1)
+        //     .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
+        //     );
+         
         SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
         SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
         SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
@@ -179,12 +179,12 @@ public class RobotContainer {
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
 
-        SmartDashboard.putData("Climber to preset", new InstantCommand(() -> climber.setPositionRevolutions(Preferences.climberPosition)));
-        SmartDashboard.putData("Set Climber PID", new InstantCommand(() -> climber.setClimberPID(Preferences.climberkP, Preferences.climberkD, Preferences.climberkI, Preferences.climberkG)));
-        SmartDashboard.putData("Set Climber Motion Magic Configs", new InstantCommand(() -> climber.setClimberMotionMagic(Preferences.climberMMCruiseVelocity, Preferences.climberMMAccel, Preferences.climberMMJerk)));
+        // SmartDashboard.putData("Climber to preset", new InstantCommand(() -> climber.setPositionRevolutions(Preferences.climberPosition)));
+        // SmartDashboard.putData("Set Climber PID", new InstantCommand(() -> climber.setClimberPID(Preferences.climberkP, Preferences.climberkD, Preferences.climberkI, Preferences.climberkG)));
+        // SmartDashboard.putData("Set Climber Motion Magic Configs", new InstantCommand(() -> climber.setClimberMotionMagic(Preferences.climberMMCruiseVelocity, Preferences.climberMMAccel, Preferences.climberMMJerk)));
 
-        SmartDashboard.putData("Drive Sysid Rotation", drivetrain.sysIdRotation());
-        SmartDashboard.putData("Drive Sysid Translation", drivetrain.sysIdTranslation());
+        // SmartDashboard.putData("Drive Sysid Rotation", drivetrain.sysIdRotation());
+        // SmartDashboard.putData("Drive Sysid Translation", drivetrain.sysIdTranslation());
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         /* 
@@ -203,10 +203,16 @@ public class RobotContainer {
         // joystick.y().whileTrue(new RunCommand( () -> new Score(m_RobotState, elevator, endEffector, drivetrain), elevator, endEffector, drivetrain));
         
 
-        joystick.a().whileTrue(drivetrain.followPath(createHPPath()));
-        joystick.b().whileTrue(drivetrain.followPath(createREEF1Path()));
-        joystick.x().whileTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
-        joystick.y().whileTrue(new OuttakeAlgae(elevator, endEffector));
+        SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 4", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
+
+
+        // joystick.a().whileTrue(drivetrain.followPath(createHPPath()));
+        // joystick.b().whileTrue(drivetrain.followPath(createREEF1Path()));
+        // joystick.x().whileTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
+        // joystick.y().whileTrue(new OuttakeAlgae(elevator, endEffector));
         // joystick.a().whileTrue(new RunCommand(() -> endEffector.intakeAlgae()).until(() -> endEffector.seesAlgae()));
         // joystick.b().whileTrue(new RunCommand(() -> endEffector.setWristPosition(Preferences.wirstPosition)));
         // reset the field-centric heading on left bumper press
@@ -215,6 +221,14 @@ public class RobotContainer {
         joystick.leftTrigger().onTrue(new OuttakeCommand(endEffector));
 
         //joystick.rightBumper().onTrue(new InstantCommand( () -> elevator.alterMech(armLength.getValue(), wristAngle.getValue())));
+
+        joystick.x().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position).withName("score trough"));
+        joystick.a().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L2"));
+        joystick.b().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L3"));
+        joystick.y().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L4"));
+
+        joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
+
 
         configureManipulatorController();                                   
         
