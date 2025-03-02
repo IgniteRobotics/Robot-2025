@@ -35,8 +35,6 @@ public class Robot extends TimedRobot {
 
   private boolean hasAlliance  = false;
 
-  public boolean warning = false;
-
   public Robot() {
     m_robotContainer = new RobotContainer();
     DataLogManager.start();
@@ -130,9 +128,10 @@ public class Robot extends TimedRobot {
   public void simulationPeriodic() {
         //Tests if Alert reason is true, if so activates indicator
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-          warning = true;
+          Alert test2 = new Alert("test alert", AlertType.kInfo);
+          //TestAlert.warning = true;
         } else {
-          warning = false;
+          //TestAlert.warning = false;
         }
   }
 }
