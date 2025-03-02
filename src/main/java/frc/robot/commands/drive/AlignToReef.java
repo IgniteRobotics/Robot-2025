@@ -9,8 +9,10 @@ import java.util.Optional;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Preferences;
 import frc.robot.RobotState;
 import frc.robot.PreferenceTypes.DoublePreference;
@@ -22,12 +24,15 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
 
+
 @Logged
-public class AlignToTarget extends Command {
+public class AlignToReef extends Command {
   private final CommandSwerveDrivetrain m_drive;
-  private final PhotonCameraWrapper m_camera;
-  private final int selectedTargetID;
+  private final int m_cameraId;
   private final DoublePreference adjustment;
+  private final int targetIDs[] = {17,18,19,20,21,22 };
+  private CommandXboxController m_joystick;
+  PhotonCameraWrapper m_pcw;
   
 
   PIDController rotationController;
@@ -38,12 +43,13 @@ public class AlignToTarget extends Command {
   RobotState m_robotState = RobotState.getInstance();
 
   /** Creates a new AlignToTarget. */
-  public AlignToTarget(CommandSwerveDrivetrain drive, PhotonCameraWrapper camera, int targetID, DoublePreference adj){
+  public AlignToReef(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, int cameraID, DoublePreference adj, CommandXboxController joystick){
     m_drive = drive;
-    m_camera = camera;
-    selectedTargetID = targetID;
+    m_cameraId = cameraID;
+    m_pcw = pcw;
     adjustment = adj;
     addRequirements(m_drive);
+    m_joystick = joystick;
   }
 
   // Called when the command is initially scheduled.
@@ -57,13 +63,13 @@ public class AlignToTarget extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Optional<TargetInfo> targeting = m_camera.seekTarget(selectedTargetID);
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, m_cameraId);
     double rotation;
     double driveX;
     double driveY;
 
     if(targeting.isPresent()){
-      double targetHeading = Math.toDegrees(aprilTags.getTagPose(selectedTargetID).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
+      double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
       rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
       SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
 
@@ -80,12 +86,13 @@ public class AlignToTarget extends Command {
       driveX = 0;
       driveY = 0;
     }
+  
 
     SmartDashboard.putNumber("Alignment/Power/rotation", rotation);
     SmartDashboard.putNumber("Alignment/Power/driveX", driveX);
     SmartDashboard.putNumber("Alignment/Power/driveY", driveY);
     
-    m_drive.driveRobotCentric(driveX, driveY, rotation);
+    m_drive.driveRobotCentric(m_joystick.getLeftY(), driveY, rotation);
   }
 
   // Called once the command ends or is interrupted.

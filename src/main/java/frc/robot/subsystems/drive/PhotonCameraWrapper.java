@@ -39,10 +39,13 @@ public class PhotonCameraWrapper{
 
         private String cameraName;
 
-        public TargetInfo(double distance, double yaw, String name){
+        private int m_tag_Id;
+
+        public TargetInfo(double distance, double yaw, int tag_Id, String name){
             this.distance = distance;
             this.yaw = yaw;
             cameraName = name;
+            m_tag_Id = tag_Id;
         }
 
         public double getYaw() {
@@ -59,6 +62,14 @@ public class PhotonCameraWrapper{
 
         public void setDistance(double distance) {
             this.distance = distance;
+        }
+
+        public int getTagId(){
+            return this.m_tag_Id;
+        }
+
+        public void setTagId(int tag_Id){
+            this.m_tag_Id = tag_Id;
         }
 
         public String getCameraName(){
@@ -178,13 +189,39 @@ public class PhotonCameraWrapper{
         if(bestCamera != -1){
             m_seesTarget = true;
             return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.get().getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(designatedCameras[bestCamera].getName())),
-                target.get().getYaw(), designatedCameras[bestCamera].getName()));
+                target.get().getYaw(), id, designatedCameras[bestCamera].getName()));
         }
         
         //no targets found anywhere.
         return Optional.empty();
 
     }
+
+    public Optional<TargetInfo> seekTargets(int[] ids, int cameraId){
+
+        PhotonCamera cam = CameraConstants.outtakeCameras[cameraId];
+        
+        double minimumAmbiguity = 1;
+
+        Optional<PhotonTrackedTarget> target = Optional.empty();
+        var newResult = m_robotState.getLatestPhotonVisionResult(cam.getName());
+        if(newResult != null){
+            for (int id : ids) {
+                Optional<PhotonTrackedTarget> tempTarget = lookForTarget(newResult, id);
+                if(tempTarget.isPresent() && tempTarget.get().getPoseAmbiguity() < minimumAmbiguity){
+                    minimumAmbiguity = tempTarget.get().getPoseAmbiguity();
+                    target = tempTarget;
+                    return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.get().getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
+                        target.get().getYaw(), id, cam.getName()));
+    
+                }
+            }
+        }
+        return Optional.empty();
+
+    }
+
+
 
     private Optional<PhotonTrackedTarget> lookForTarget(PhotonPipelineResult result, int targetId){
         for (var target : result.getTargets()){
