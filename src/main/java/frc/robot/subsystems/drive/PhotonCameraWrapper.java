@@ -222,7 +222,7 @@ public class PhotonCameraWrapper{
 
     public TargetInfo calculateTargetInfo(double yawToTargetDegrees, double distanceToTargetMeters, double cameraYawOffset, double cameraYOffsetMeters, String cameraName){
         //first offset the yaw by the camera angle and 90.
-        yawToTargetDegrees = yawToTargetDegrees + cameraYawOffset + 90;
+        double yaw = yawToTargetDegrees + cameraYawOffset + 90;
 
         //apply law of cosines to get robot distance
         double distance = Math.sqrt(
@@ -230,15 +230,15 @@ public class PhotonCameraWrapper{
             Math.pow(distanceToTargetMeters, 2) -
             (
                 2 * cameraYOffsetMeters * distanceToTargetMeters *
-                Math.cos(Math.toRadians(yawToTargetDegrees))
+                Math.cos(Math.toRadians(yaw))
             )
             );
 
         //now apply law of sines to get robot yaw
         // and flip to degrees.
-        double yaw = Math.toDegrees(Math.asin(
-            distanceToTargetMeters * Math.sin(Math.toRadians(yawToTargetDegrees)) /
-            distance)
+        yaw = Math.copySign(Math.toDegrees(Math.asin(
+            distanceToTargetMeters * Math.sin(Math.toRadians(yaw)) /
+            distance)), yawToTargetDegrees
         );
 
         //finally, subract 90 deg from yaw to get yaw from straigh ahead.

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.tests.VisionTests;
 
 @Logged
 public class Robot extends TimedRobot {
@@ -132,6 +133,8 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
+    VisionTests vt = new VisionTests();
+    vt.testTargetCalculation();
   }
 
   @Override
