@@ -46,6 +46,7 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.EndEffector.EndEffector;
+import frc.robot.subsystems.EndEffector.EndEffectorConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberConstants;
 @Logged
@@ -145,6 +146,8 @@ public class RobotContainer {
 
         endEffector.setDefaultCommand(endEffectorDefaultCommand);
 
+
+
         //joystick.x().onTrue(AutoBuilder.followPath(createTestPath()));
          
         // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -224,10 +227,29 @@ public class RobotContainer {
 
         //joystick.rightBumper().onTrue(new InstantCommand( () -> elevator.alterMech(armLength.getValue(), wristAngle.getValue())));
 
-        joystick.x().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position).withName("score trough"));
-        joystick.a().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L2"));
-        joystick.b().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L3"));
-        joystick.y().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L4"));
+        // joystick.x().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position).withName("score trough"));
+        // joystick.a().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L2"));
+        // joystick.b().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L3"));
+        // joystick.y().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L4"));
+
+
+        joystick.b().whileTrue(new IntakeAlgae(elevator, endEffector, drivetrain, joystick, ElevatorConstants.ALGAE.HIGH_REEF.height));
+        joystick.b().onFalse(new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position));
+        joystick.a().whileTrue(new IntakeAlgae(elevator, endEffector, drivetrain, joystick,ElevatorConstants.ALGAE.LOW_REEF.height));
+        joystick.a().onFalse(new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position));
+        joystick.y().whileTrue(new OuttakeAlgae(elevator, endEffector));
+        joystick.y().onFalse(new InstantCommand(()->endEffector.stopAlgaeMotor()).andThen(new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position)));
+        joystick.x().onTrue(new InstantCommand(() -> endEffector.stopAlgaeMotor()));
+       
+        // joystick.x().onTrue(
+        //     new ToSetpoint(elevator, ElevatorConstants.FLOOR.LEVEL_4.position)
+        //     .alongWith(new RunCommand(() -> endEffector.setWristPosition(EndEffectorConstants.ALGAE.BARGE.angle)))
+            
+        //     // until(() -> endEffector.isWristAtPosition())
+        //     // .andThen(new RunCommand(() -> endEffector.outtakeAlgae())).withTimeout(0.5)
+        //     // .andThen(new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position)
+        //     //     .alongWith(new InstantCommand(() -> endEffector.setWristPosition(EndEffectorConstants.ALGAE.STOW_EMPTY.angle))))
+        // );
 
         //joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
         joystick.rightBumper().whileTrue(new AlignToReef(drivetrain, drivetrain.m_photonCameraWrapper,1, Preferences.alignAdj, joystick));

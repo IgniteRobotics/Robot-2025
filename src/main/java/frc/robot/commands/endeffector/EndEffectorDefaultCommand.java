@@ -48,7 +48,6 @@ public class EndEffectorDefaultCommand extends Command {
 
 
     if (m_endEffector.seesAlgae()){
-      m_endEffector.holdAlgae();
       m_endEffector.setWristPosition(Preferences.endEffectorStowPositionWithAlgae);
     } else {
       m_endEffector.setWristPosition(Preferences.endEffectorStowPositionNoAlgae);

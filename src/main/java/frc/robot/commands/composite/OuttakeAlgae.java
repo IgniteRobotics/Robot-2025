@@ -22,8 +22,7 @@ public class OuttakeAlgae extends SequentialCommandGroup {
     m_elevator = elevator;
     m_effector = effector;
     addCommands(new ToSetpoint(m_elevator, ElevatorConstants.FLOOR.GROUND.position),
-    new RunCommand(() -> m_effector.setWristPosition(-0.12)).until(() -> m_effector.isWristAtPosition()),
-    new RunCommand(() -> m_effector.outtakeAlgae()).withTimeout(1),
-    new InstantCommand(() -> m_effector.stopAlgaeMotor()));
+    new RunCommand(() -> m_effector.setWristPosition(0)).until(() -> m_effector.isWristAtPosition()),
+    new RunCommand(() -> m_effector.outtakeAlgae()).withTimeout(.5));
   }
 }

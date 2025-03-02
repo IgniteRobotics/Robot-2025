@@ -1,5 +1,6 @@
 package frc.robot.subsystems.EndEffector;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -86,6 +87,13 @@ public class EndEffectorConstants {
             configs.NeutralMode = NeutralModeValue.Brake;
             return configs;
         }
+
+        public static CurrentLimitsConfigs createCurrentLimitsConfigs(){
+            CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
+            configs.StatorCurrentLimit = 15;
+            configs.StatorCurrentLimitEnable = true;
+            return configs;
+        }
         
 
 
@@ -157,7 +165,7 @@ public class EndEffectorConstants {
             
             PROCESS(.15),
             REEF(-0.046143),
-            BARGE(-0.15),
+            BARGE(-0.2),
             STOW_FULL(-0.2),
             STOW_EMPTY(-0.25);
 

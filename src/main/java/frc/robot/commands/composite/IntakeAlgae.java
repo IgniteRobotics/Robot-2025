@@ -8,10 +8,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.EndEffector.EndEffectorConstants;
+import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -20,11 +22,14 @@ public class IntakeAlgae extends ParallelCommandGroup{
   Elevator m_elevator;
   EndEffector m_effector;
   double position;
-  public IntakeAlgae(Elevator elevator, EndEffector effector, double height) {
+  public IntakeAlgae(Elevator elevator, EndEffector effector, CommandSwerveDrivetrain drivetrain, CommandXboxController joystick, double height) {
     m_elevator = elevator;
     m_effector = effector;
     position = height;
-    addCommands(new ToSetpoint(m_elevator, position), new RunCommand(() -> m_effector.setWristPosition(EndEffectorConstants.ALGAE.REEF.angle)),
-    new RunCommand(() -> m_effector.intakeAlgae()));
+    addCommands(new ToSetpoint(m_elevator, position), 
+      new RunCommand(() -> m_effector.setWristPosition(EndEffectorConstants.ALGAE.REEF.angle)),
+      new RunCommand(() -> m_effector.intakeAlgae()),
+      new RunCommand(() -> drivetrain.driveRobotCentric(joystick.getLeftY(), 0, 0))
+    );
   }
 }

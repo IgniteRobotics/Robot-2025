@@ -70,6 +70,7 @@ public class EndEffector extends SubsystemBase {
         m_algaeMotor.getConfigurator().apply(EndEffectorConstants.createAlgaeMotorOutputConfigs());
         m_algaeSlot0Configs = EndEffectorConstants.createAlgaeMotorSlot0Configs();
         m_algaeMotor.getConfigurator().apply(m_algaeSlot0Configs);
+        m_algaeMotor.getConfigurator().apply(EndEffectorConstants.createCurrentLimitsConfigs());
   
   
       m_wristMotor = new TalonFX(EndEffectorConstants.kWristMotorId);
