@@ -35,17 +35,19 @@ import frc.robot.commands.composite.IntakeAlgae;
 import frc.robot.commands.composite.OuttakeAlgae;
 import frc.robot.commands.composite.Score;
 import frc.robot.commands.composite.ScoreCoral;
+import frc.robot.commands.corraler.CorralerDefaultCommand;
+import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.drive.AlignToTarget;
 import frc.robot.commands.elevator.ToSetpoint;
-import frc.robot.commands.endeffector.EndEffectorDefaultCommand;
-import frc.robot.commands.endeffector.OuttakeCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.statemachines.RobotState;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
-import frc.robot.subsystems.EndEffector.EndEffector;
+import frc.robot.subsystems.algae.AlgaeCollector;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberConstants;
+import frc.robot.subsystems.coral.Corraler;
 @Logged
 public class RobotContainer {
 
@@ -86,11 +88,13 @@ public class RobotContainer {
 
     public final Elevator elevator = new Elevator();
 
-    public final EndEffector endEffector = new EndEffector();
+    public final Corraler corraler = new Corraler();
+
+    public final AlgaeCollector collector = new AlgaeCollector();
 
     public final Climber climber = new Climber();
 
-    private final Command endEffectorDefaultCommand = new EndEffectorDefaultCommand(endEffector);
+    private final Command corralerDefaultCommand = new CorralerDefaultCommand(corraler);
 
 
 
@@ -141,7 +145,7 @@ public class RobotContainer {
         );
         
 
-        endEffector.setDefaultCommand(endEffectorDefaultCommand);
+        corraler.setDefaultCommand(corralerDefaultCommand);
 
         //joystick.x().onTrue(AutoBuilder.followPath(createTestPath()));
          
@@ -165,12 +169,12 @@ public class RobotContainer {
         //     .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
         //     );
          
-        SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
-        SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
-        SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
-        SmartDashboard.putData("Elevator Level 4", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 4", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
 
-        SmartDashboard.putData("Outtake", new RunCommand(() -> endEffector.outtakeCoral()).withTimeout(1).andThen(new InstantCommand(() -> endEffector.stopCoralMotor())));
+        SmartDashboard.putData("Outtake", new RunCommand(() -> corraler.outtakeCoral()).withTimeout(1).andThen(new InstantCommand(() -> corraler.stopCoralMotor())));
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );
@@ -203,10 +207,10 @@ public class RobotContainer {
         // joystick.y().whileTrue(new RunCommand( () -> new Score(m_RobotState, elevator, endEffector, drivetrain), elevator, endEffector, drivetrain));
         
 
-        SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
-        SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
-        SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
-        SmartDashboard.putData("Elevator Level 4", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 4", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
 
 
         // joystick.a().whileTrue(drivetrain.followPath(createHPPath()));
@@ -218,14 +222,14 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        joystick.leftTrigger().onTrue(new OuttakeCommand(endEffector));
+        joystick.leftTrigger().onTrue(new OuttakeCommand(corraler));
 
         //joystick.rightBumper().onTrue(new InstantCommand( () -> elevator.alterMech(armLength.getValue(), wristAngle.getValue())));
 
-        joystick.x().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position).withName("score trough"));
-        joystick.a().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L2"));
-        joystick.b().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L3"));
-        joystick.y().onTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L4"));
+        joystick.x().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position).withName("score trough"));
+        joystick.a().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L2"));
+        joystick.b().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L3"));
+        joystick.y().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L4"));
 
         joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
 

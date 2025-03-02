@@ -10,21 +10,21 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.EndEffector.EndEffector;
-import frc.robot.subsystems.EndEffector.EndEffectorConstants;
+import frc.robot.subsystems.algae.AlgaeCollector;
+import frc.robot.subsystems.algae.AlgaeCollectorConstants;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeAlgae extends ParallelCommandGroup{
   Elevator m_elevator;
-  EndEffector m_effector;
+  AlgaeCollector m_collector;
   double position;
-  public IntakeAlgae(Elevator elevator, EndEffector effector, double height) {
+  public IntakeAlgae(Elevator elevator, AlgaeCollector collector, double height) {
     m_elevator = elevator;
-    m_effector = effector;
+    m_collector = collector;
     position = height;
-    addCommands(new ToSetpoint(m_elevator, position), new RunCommand(() -> m_effector.setWristPosition(EndEffectorConstants.ALGAE.REEF.angle)),
-    new RunCommand(() -> m_effector.intakeAlgae()));
+    addCommands(new ToSetpoint(m_elevator, position), new RunCommand(() -> m_collector.setWristPosition(AlgaeCollectorConstants.ALGAE.REEF.angle)),
+    new RunCommand(() -> m_collector.intakeAlgae()));
   }
 }

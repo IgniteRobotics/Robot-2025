@@ -11,11 +11,12 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Preferences;
-import frc.robot.RobotState;
 import frc.robot.commands.elevator.ToSetpoint;
+import frc.robot.statemachines.RobotState;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
-import frc.robot.subsystems.EndEffector.EndEffector;
+import frc.robot.subsystems.algae.AlgaeCollector;
+import frc.robot.subsystems.coral.Corraler;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -25,29 +26,30 @@ public class Score extends SequentialCommandGroup {
   /** Creates a new CommandDispatcher. */
   public Score(RobotState robotState, 
                            Elevator elevator, 
-                           EndEffector endEffector, 
+                           Corraler corraler, 
+                           AlgaeCollector collector,
                            CommandSwerveDrivetrain drive) {
     
     //ready to score coral
     if (robotState.hasCoral() && robotState.getCoralHeight() != 0){
-      addCommands(new ScoreCoral(elevator, endEffector, robotState.getCoralHeight(), ElevatorConstants.FLOOR.GROUND.position));
+      addCommands(new ScoreCoral(elevator, corraler, robotState.getCoralHeight(), ElevatorConstants.FLOOR.GROUND.position));
     //ready to score algae
     } else if (robotState.hasAlgae() && robotState.getAlgaeHeight() != 0){
       addCommands(
         new ParallelCommandGroup(
           new ToSetpoint(elevator, robotState.getAlgaeHeight()),
-          new RunCommand(() -> endEffector.setWristPosition(robotState.getAlgaeWristPosition()))
+          new RunCommand(() -> collector.setWristPosition(robotState.getAlgaeWristPosition()))
             .withName("SetWristPosition")
-            .until(() -> endEffector.isWristAtPosition())
+            .until(() -> collector.isWristAtPosition())
         ),
-        new RunCommand(()-> endEffector.outtakeAlgae())
+        new RunCommand(()-> collector.outtakeAlgae())
           .withName("EjectAlgae")
           .withTimeout(.50),
         new ParallelCommandGroup(
           new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position),
-          new RunCommand(() -> endEffector.setWristPosition(robotState.getAlgaeWristPosition()))
+          new RunCommand(() -> collector.setWristPosition(robotState.getAlgaeWristPosition()))
             .withName("StowWrist")
-            .until(() -> endEffector.isWristAtPosition())
+            .until(() -> collector.isWristAtPosition())
         )
       );
     //ready to intake algae from reef
@@ -55,18 +57,18 @@ public class Score extends SequentialCommandGroup {
       addCommands(
         new ParallelCommandGroup(
           new ToSetpoint(elevator, robotState.getAlgaeHeight()),
-          new RunCommand(() -> endEffector.setWristPosition(robotState.getAlgaeWristPosition()))
+          new RunCommand(() -> collector.setWristPosition(robotState.getAlgaeWristPosition()))
             .withName("SetWristPosition")
-            .until(() -> endEffector.isWristAtPosition())
+            .until(() -> collector.isWristAtPosition())
         ),
-        new RunCommand(()-> endEffector.intakeAlgae())
+        new RunCommand(()-> collector.intakeAlgae())
           .withName("IntakeAlgae")
           .until(() -> robotState.hasAlgae()),
         new ParallelCommandGroup(
           new ToSetpoint(elevator, robotState.getAlgaeHeight()),
-          new RunCommand(() -> endEffector.setWristPosition(robotState.getAlgaeWristPosition()))
+          new RunCommand(() -> collector.setWristPosition(robotState.getAlgaeWristPosition()))
             .withName("StowWrist")
-            .until(() -> endEffector.isWristAtPosition())
+            .until(() -> collector.isWristAtPosition())
         )
       ); 
 

@@ -10,20 +10,20 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
-import frc.robot.subsystems.EndEffector.EndEffector;
+import frc.robot.subsystems.algae.AlgaeCollector;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class OuttakeAlgae extends SequentialCommandGroup {
   Elevator m_elevator;
-  EndEffector m_effector;
-  public OuttakeAlgae(Elevator elevator, EndEffector effector) {
+  AlgaeCollector m_collector;
+  public OuttakeAlgae(Elevator elevator, AlgaeCollector collector) {
     m_elevator = elevator;
-    m_effector = effector;
+    m_collector = collector;
     addCommands(new ToSetpoint(m_elevator, ElevatorConstants.FLOOR.GROUND.position),
-    new RunCommand(() -> m_effector.setWristPosition(-0.12)).until(() -> m_effector.isWristAtPosition()),
-    new RunCommand(() -> m_effector.outtakeAlgae()).withTimeout(1),
-    new InstantCommand(() -> m_effector.stopAlgaeMotor()));
+    new RunCommand(() -> m_collector.setWristPosition(-0.12)).until(() -> m_collector.isWristAtPosition()),
+    new RunCommand(() -> m_collector.outtakeAlgae()).withTimeout(1),
+    new InstantCommand(() -> m_collector.stopAlgaeMotor()));
   }
 }

@@ -7,21 +7,21 @@ package frc.robot.commands.composite;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Preferences;
 import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.elevator.ToSetpoint;
-import frc.robot.commands.endeffector.OuttakeCommand;
 import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.EndEffector.EndEffector;
+import frc.robot.subsystems.coral.Corraler;
 
 public class ScoreCoral extends SequentialCommandGroup {
   Elevator m_elevator;
-  EndEffector m_effector;
+  Corraler m_corraler;
   double scoreHeight;
   double endHeight;
-  public ScoreCoral(Elevator elevator, EndEffector effector, double score, double end) {
+  public ScoreCoral(Elevator elevator, Corraler corraler, double score, double end) {
     m_elevator = elevator;
-    m_effector = effector;
+    m_corraler = corraler;
     scoreHeight = score;
     endHeight = end;
-    addCommands(new ToSetpoint(m_elevator, scoreHeight), new OuttakeCommand(effector).withTimeout(1), new ToSetpoint(m_elevator, endHeight));
+    addCommands(new ToSetpoint(m_elevator, scoreHeight), new OuttakeCommand(m_corraler).withTimeout(1), new ToSetpoint(m_elevator, endHeight));
   }
 }
