@@ -39,9 +39,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.RobotState;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.statemachines.RobotState;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.Side;
 
 import edu.wpi.first.math.numbers.N1;
@@ -142,10 +143,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             this
         )
     );
-
-
-    /* The SysId routine to test */
-    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -268,9 +265,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
 
-    private void followPath(PathPlannerPath path){
+    public Command followPath(PathPlannerPath path){
         loggedPath = path;
-        AutoBuilder.followPath(path);
+        return AutoBuilder.followPath(path);
     }
 
 /**
@@ -284,37 +281,24 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
-    /**
-     * Runs the SysId Quasistatic test in the given direction for the routine
-     * specified by {@link #m_sysIdRoutineToApply}.
-     *
-     * @param direction Direction of the SysId Quasistatic test
-     * @return Command to run
-     */
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutineToApply.quasistatic(direction);
+    public Command sysIdTranslation(){
+        return m_sysIdRoutineTranslation.quasistatic(Direction.kForward).withTimeout(5).andThen(m_sysIdRoutineTranslation.quasistatic(Direction.kReverse).withTimeout(5))
+            .andThen(m_sysIdRoutineTranslation.dynamic(Direction.kForward).withTimeout(3)).andThen(m_sysIdRoutineTranslation.dynamic(Direction.kReverse).withTimeout(3));
     }
 
-    /**
-     * Runs the SysId Dynamic test in the given direction for the routine
-     * specified by {@link #m_sysIdRoutineToApply}.
-     *
-     * @param direction Direction of the SysId Dynamic test
-     * @return Command to run
-     */
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutineToApply.dynamic(direction);
+    public Command sysIdRotation(){
+        return m_sysIdRoutineRotation.quasistatic(Direction.kForward).withTimeout(6).andThen(m_sysIdRoutineRotation.quasistatic(Direction.kReverse).withTimeout(6))
+            .andThen(m_sysIdRoutineRotation.dynamic(Direction.kForward).withTimeout(4)).andThen(m_sysIdRoutineRotation.dynamic(Direction.kReverse).withTimeout(4));
     }
+
+
 
 
 
     public void driveRobotCentric(double x, double y, double rot){
         SwerveRequest.RobotCentric m_driveRequest = new SwerveRequest.RobotCentric()
-            .withDeadband(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * TunerConstants.DEADBAND_FACTOR)
-            .withRotationalDeadband(TunerConstants.MAX_ANGULAR_SPEED * TunerConstants.DEADBAND_FACTOR)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
             .withSteerRequestType(SteerRequestType.MotionMagicExpo);
-        
         this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
     }
 
@@ -328,6 +312,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("Robot Pose X", getPose().getX());
         SmartDashboard.putNumber("Robot Pose Y", getPose().getY());
         SmartDashboard.putNumber("Robot Rotation Degrees", getPose().getRotation().getDegrees());
+
 
         if(loggedPath == null){
             SmartDashboard.putString("Last Selected Robot Path Name", "None Selected");
@@ -368,7 +353,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 if(target.getPoseAmbiguity() > 0.2) poseOK = false;
                 if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
                 }
-                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, VecBuilder.fill(0.05, 0.05, 0.05));
+                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds(), VecBuilder.fill(0.05, 0.05, 0.05));
+                SmartDashboard.putBoolean("poseOK", poseOK);
+                SmartDashboard.putNumber("poseTime", pose.timestampSeconds);
+                SmartDashboard.putNumber("fpgaTime", Utils.getCurrentTimeSeconds());
             }
         }
 
@@ -380,7 +368,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 if(target.getPoseAmbiguity() > 0.2) poseOK = false;
                 if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
                 }
-                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, VecBuilder.fill(0.05, 0.05, 0.05));
+                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds(), VecBuilder.fill(0.05, 0.05, 0.05));
             }
         }
 
@@ -392,7 +380,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 if(target.getPoseAmbiguity() > 0.2) poseOK = false;
                 if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
                 }
-                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, VecBuilder.fill(0.05, 0.05, 0.05));
+                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds(), VecBuilder.fill(0.05, 0.05, 0.05));
             }
         }
     
@@ -434,28 +422,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     // @Override
     // public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
     //     super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
-    // }
-
-    /**
-     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
-     * while still accounting for measurement noise.
-     * <p>
-     * Note that the vision measurement standard deviations passed into this method
-     * will continue to apply to future measurements until a subsequent call to
-     * {@link #setVisionMeasurementStdDevs(Matrix)} or this method.
-     *
-     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
-     * @param timestampSeconds The timestamp of the vision measurement in seconds.
-     * @param visionMeasurementStdDevs Standard deviations of the vision pose measurement
-     *     in the form [x, y, theta]ᵀ, with units in meters and radians.
-     */
-    // @Override
-    // public void addVisionMeasurement(
-    //     Pose2d visionRobotPoseMeters,
-    //     double timestampSeconds,
-    //     Matrix<N3, N1> visionMeasurementStdDevs
-    // ) {
-    //     super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     // }
 
     public double getYaw(){

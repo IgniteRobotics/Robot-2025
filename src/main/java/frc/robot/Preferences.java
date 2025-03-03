@@ -7,20 +7,22 @@ package frc.robot;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.subsystems.climber.ClimberConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
-import frc.robot.subsystems.EndEffector.EndEffectorConstants;
+import frc.robot.subsystems.algae.AlgaeCollector;
+import frc.robot.subsystems.algae.AlgaeCollectorConstants;
 
 /** Add your docs here. */
 public class Preferences {
 
-    // ********** Drive **********
-    public static DoublePreference alignDistanceAdjustment = new DoublePreference("alignCommand/distanceAdjustment");
+    // ********** Drive *********//
 
-    public static DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", 0);
+    
+    public static DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", 0.5);
     public static DoublePreference alignRotKD = new DoublePreference("alignCommand/rotation/kD", 0);
-    public static DoublePreference alignDriveXKP = new DoublePreference("alignCommand/drive/x/kP", 0);
-    public static DoublePreference alignDriveXKD = new DoublePreference("alignCommand/drive/x/kD", 0);
-    public static DoublePreference alignDriveYKP = new DoublePreference("alignCommand/drive/y/kP", 0);
-    public static DoublePreference alignDriveYKD = new DoublePreference("alignCommand/drive/y/KD", 0);
+    public static DoublePreference alignDriveYKP = new DoublePreference("alignCommand/driveY/kP", 0.5);
+    public static DoublePreference alignDriveYKD = new DoublePreference("alignCommand/driveY/kD", 0.3);
+    public static DoublePreference alignDriveXKP = new DoublePreference("alignCommand/driveX/kP", 0.5);
+    public static DoublePreference alignDriveXKD = new DoublePreference("alignCommand/driveX/kD", 0.3);
+    public static DoublePreference alignAdj = new DoublePreference("alignCommand/adjustment", 0);
 
     // ********** Elevator **********
     public static DoublePreference elevatorkV = new DoublePreference("Elevator/kV", ElevatorConstants.ELEVATOR_kV);
@@ -35,19 +37,22 @@ public class Preferences {
     public static DoublePreference elevatorMMAccel = new DoublePreference("Elevator/Motion Magic/Acceleration", ElevatorConstants.ELEVATOR_MM_ACCEL);
     public static DoublePreference elevatorMMCruiseVelocity = new DoublePreference("Elevator/Motion Magic/Cruise Velocity", ElevatorConstants.ELEVATOR_MM_CRUISE_VELOCITY);
     
-    // ********** End Effector **********
-    public static DoublePreference endEffectorCoralIntakePower = new DoublePreference("EndEffector/Coral/IntakePower", EndEffectorConstants.INTAKE_CORAL_POWER);
-    public static DoublePreference endEffectorCoralOuttakePower = new DoublePreference("EndEffector/Coral/OuttakePower", EndEffectorConstants.OUTTAKE_CORAL_POWER);
-    public static DoublePreference endEffectorAlgaeIntakePower = new DoublePreference("EndEffector/Algae/IntakePower", EndEffectorConstants.INTAKE_ALGAE_POWER);
-    public static DoublePreference endEffectorAlgaeOuttakePower = new DoublePreference("EndEffector/Algae/OuttakePower", EndEffectorConstants.OUTTAKE_ALGAE_POWER);
-    public static DoublePreference endEffectorAlgaeHoldPower = new DoublePreference("EndEffector/Algae/HopperPower", EndEffectorConstants.ALGAE_HOLD_POWER);
+    // ********** Corraler ********** 
+    public static DoublePreference coralIntakePower = new DoublePreference("Coraller/IntakePower", AlgaeCollectorConstants.INTAKE_CORAL_POWER);
+    public static DoublePreference coralOuttakePower = new DoublePreference("Coraller/OuttakePower", AlgaeCollectorConstants.OUTTAKE_CORAL_POWER);
 
-    public static DoublePreference endEffectorStowPositionNoAlgae = new DoublePreference("EndEffector/Wrist/Stow Position/No Algae", EndEffectorConstants.STOW_POSITION_NO_ALGAE);
-    public static DoublePreference endEffectorStowPositionWithAlgae = new DoublePreference("EndEffector/Wrist/Stow Position/WithAlgae", EndEffectorConstants.STOW_POSITION_WITH_ALGAE);
+    // ********** Algae Collector****
+    public static DoublePreference algaeIntakePower = new DoublePreference("AlgaeCollector/IntakePower", AlgaeCollectorConstants.INTAKE_ALGAE_POWER);
+    public static DoublePreference algaeOuttakePower = new DoublePreference("AlgaeCollector/OuttakePower", AlgaeCollectorConstants.OUTTAKE_ALGAE_POWER);
+    public static DoublePreference algaeHoldPower = new DoublePreference("AlgaeCollector/HopperPower", AlgaeCollectorConstants.ALGAE_HOLD_POWER);
+
+    public static DoublePreference collectorStowPositionNoAlgae = new DoublePreference("AlgaeCollector/Wrist/Stow Position/No Algae", AlgaeCollectorConstants.STOW_POSITION_NO_ALGAE);
+    public static DoublePreference collectorStowPositionWithAlgae = new DoublePreference("AlgaeCollector/Wrist/Stow Position/WithAlgae", AlgaeCollectorConstants.STOW_POSITION_WITH_ALGAE);
     
-    public static DoublePreference wirstPosition = new DoublePreference("EndEffector/Wrist/Position",0);
+    public static DoublePreference collectorWristPosition = new DoublePreference("AlgaeCollector/Wrist/Position",0);
 
-    public static DoublePreference outtakeDelay = new DoublePreference("EndEffector/Outtake Delay", 0.5);
+    public static DoublePreference collectorOuttakeDelay = new DoublePreference("AlgaeCollector/Outtake Delay", 0.5);
+
     // ********** Climber **********
     public static DoublePreference climberkV = new DoublePreference("Climber/kV", ClimberConstants.CLIMBER_kV);
     public static DoublePreference climberkP = new DoublePreference("Climber/kP", ClimberConstants.CLIMBER_kP);

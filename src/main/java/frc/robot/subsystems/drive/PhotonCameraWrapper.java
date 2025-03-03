@@ -19,7 +19,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.Robot;
-import frc.robot.RobotState;
+import frc.robot.statemachines.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -39,10 +39,13 @@ public class PhotonCameraWrapper{
 
         private String cameraName;
 
-        public TargetInfo(double distance, double yaw, String name){
+        private int m_tag_Id;
+
+        public TargetInfo(double distance, double yaw, int tag_Id, String name){
             this.distance = distance;
             this.yaw = yaw;
             cameraName = name;
+            m_tag_Id = tag_Id;
         }
 
         public double getYaw() {
@@ -59,6 +62,14 @@ public class PhotonCameraWrapper{
 
         public void setDistance(double distance) {
             this.distance = distance;
+        }
+
+        public int getTagId(){
+            return this.m_tag_Id;
+        }
+
+        public void setTagId(int tag_Id){
+            this.m_tag_Id = tag_Id;
         }
 
         public String getCameraName(){
@@ -104,6 +115,7 @@ public class PhotonCameraWrapper{
         if(side == Side.OUTTAKE_RIGHT) {
             photonPoseEstimatorOuttakeRight.setReferencePose(prevEstimatedRobotPose);
             var results = CameraConstants.photonCameraOuttakeRight.getAllUnreadResults();
+
 
             if(!results.isEmpty()){
                 var latestResult = results.get(results.size()-1);
@@ -176,19 +188,40 @@ public class PhotonCameraWrapper{
         //the best camera, if any, is used
         if(bestCamera != -1){
             m_seesTarget = true;
-            return Optional.of(calculateTargetInfo(
-                target.get().getYaw(), 
-                getDistanceFromTransform3d(target.get().getBestCameraToTarget()),
-                CameraConstants.allCameraYawOffsetsDegrees[bestCamera],
-                allEstimators[bestCamera].getRobotToCameraTransform().getY(),
-                designatedCameras[bestCamera].getName()
-            ));
+            return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.get().getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(designatedCameras[bestCamera].getName())),
+                target.get().getYaw(), id, designatedCameras[bestCamera].getName()));
         }
         
         //no targets found anywhere.
         return Optional.empty();
 
     }
+
+    public Optional<TargetInfo> seekTargets(int[] ids, int cameraId){
+
+        PhotonCamera cam = CameraConstants.outtakeCameras[cameraId];
+        
+        double minimumAmbiguity = 1;
+
+        Optional<PhotonTrackedTarget> target = Optional.empty();
+        var newResult = m_robotState.getLatestPhotonVisionResult(cam.getName());
+        if(newResult != null){
+            for (int id : ids) {
+                Optional<PhotonTrackedTarget> tempTarget = lookForTarget(newResult, id);
+                if(tempTarget.isPresent() && tempTarget.get().getPoseAmbiguity() < minimumAmbiguity){
+                    minimumAmbiguity = tempTarget.get().getPoseAmbiguity();
+                    target = tempTarget;
+                    return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.get().getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
+                        target.get().getYaw(), id, cam.getName()));
+    
+                }
+            }
+        }
+        return Optional.empty();
+
+    }
+
+
 
     private Optional<PhotonTrackedTarget> lookForTarget(PhotonPipelineResult result, int targetId){
         for (var target : result.getTargets()){
@@ -201,9 +234,9 @@ public class PhotonCameraWrapper{
             return Optional.empty();
         } else {
             //TODO: Change values (after TargetId 2 addition values, see class)
-            return Optional.of(new PhotonTrackedTarget(0.2, 0.0, 1.0, 0.0, targetId, -1, -1,
-                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0.2)),
-                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0.2)),
+            return Optional.of(new PhotonTrackedTarget(0, 0.0, 0, 0.0, targetId, -1, -1,
+                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0)),
+                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0)),
              0.0, 
              new ArrayList<TargetCorner>(4), 
              new ArrayList<TargetCorner>(4)
@@ -217,40 +250,6 @@ public class PhotonCameraWrapper{
                 Math.pow(t.getX(), 2) + 
                 Math.pow(t.getY(), 2)
         );
-    }
-
-    public TargetInfo calculateTargetInfo(double yawToTargetDegrees, double distanceToTargetMeters, double cameraYawOffset, double cameraYOffsetMeters, String cameraName){
-        //first offset the yaw by the camera angle and 90.
-        yawToTargetDegrees = yawToTargetDegrees + cameraYawOffset + 90;
-
-        //apply law of cosines to get robot distance
-        double distance = Math.sqrt(
-            Math.pow(cameraYOffsetMeters, 2) +
-            Math.pow(distanceToTargetMeters, 2) -
-            (
-                2 * cameraYOffsetMeters * distanceToTargetMeters *
-                Math.cos(Math.toRadians(yawToTargetDegrees))
-            )
-            );
-
-        //now apply law of sines to get robot yaw
-        // and flip to degrees.
-        double yaw = Math.toDegrees(Math.asin(
-            distanceToTargetMeters * Math.sin(Math.toRadians(yawToTargetDegrees)) /
-            distance)
-        );
-
-        //finally, subract 90 deg from yaw to get yaw from straigh ahead.
-        yaw -= 90;
-
-        //round to 2 places.
-        distance = Math.round(distance*100.0)/100.0;
-        yaw = Math.round(yaw * 100.0)/100.0;
-
-        TargetInfo t = new TargetInfo(distance, yaw, cameraName);
-
-        return t;
-        
     }
 
     public void setPipeline(int index){

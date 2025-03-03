@@ -31,17 +31,23 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.commands.composite.IntakeAlgae;
+import frc.robot.commands.composite.OuttakeAlgae;
 import frc.robot.commands.composite.Score;
 import frc.robot.commands.composite.ScoreCoral;
+import frc.robot.commands.corraler.CorralerDefaultCommand;
+import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.drive.AlignToTarget;
-import frc.robot.commands.endeffector.EndEffectorDefaultCommand;
+import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.generated.TunerConstants;
+import frc.robot.statemachines.RobotState;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
-import frc.robot.subsystems.EndEffector.EndEffector;
+import frc.robot.subsystems.algae.AlgaeCollector;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberConstants;
+import frc.robot.subsystems.coral.Corraler;
 @Logged
 public class RobotContainer {
 
@@ -55,19 +61,19 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     // Set up manipulator joystick
-    private final Joystick manipulatorJoystick = new Joystick(1);
-    private final JoystickButton coralTroughButton = new JoystickButton(manipulatorJoystick, 0);
-    private final JoystickButton coralL2LeftButton = new JoystickButton(manipulatorJoystick, 1);
-    private final JoystickButton coralL2RightButton = new JoystickButton(manipulatorJoystick, 2);
-    private final JoystickButton coralL3LeftButton = new JoystickButton(manipulatorJoystick, 3);
-    private final JoystickButton coralL3RightButton = new JoystickButton(manipulatorJoystick, 4);
-    private final JoystickButton coralL4LeftButton = new JoystickButton(manipulatorJoystick, 5);
-    private final JoystickButton coralL4RightButton = new JoystickButton(manipulatorJoystick, 6);
-    private final JoystickButton algaeProcessorButton = new JoystickButton(manipulatorJoystick, 7);
-    private final JoystickButton algaeReefButton = new JoystickButton(manipulatorJoystick, 8);
-    private final JoystickButton algaeBargeButton = new JoystickButton(manipulatorJoystick, 9);
-    private final JoystickButton algaeCancelButton = new JoystickButton(manipulatorJoystick, 10);
-    private final JoystickButton coralCancelButton = new JoystickButton(manipulatorJoystick, 11);
+    // private final Joystick manipulatorJoystick = new Joystick(1);
+    // private final JoystickButton coralTroughButton = new JoystickButton(manipulatorJoystick, 0);
+    // private final JoystickButton coralL2LeftButton = new JoystickButton(manipulatorJoystick, 1);
+    // private final JoystickButton coralL2RightButton = new JoystickButton(manipulatorJoystick, 2);
+    // private final JoystickButton coralL3LeftButton = new JoystickButton(manipulatorJoystick, 3);
+    // private final JoystickButton coralL3RightButton = new JoystickButton(manipulatorJoystick, 4);
+    // private final JoystickButton coralL4LeftButton = new JoystickButton(manipulatorJoystick, 5);
+    // private final JoystickButton coralL4RightButton = new JoystickButton(manipulatorJoystick, 6);
+    // private final JoystickButton algaeProcessorButton = new JoystickButton(manipulatorJoystick, 7);
+    // private final JoystickButton algaeReefButton = new JoystickButton(manipulatorJoystick, 8);
+    // private final JoystickButton algaeBargeButton = new JoystickButton(manipulatorJoystick, 9);
+    // private final JoystickButton algaeCancelButton = new JoystickButton(manipulatorJoystick, 10);
+    // private final JoystickButton coralCancelButton = new JoystickButton(manipulatorJoystick, 11);
 
 
     public final double default_Max_Speed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
@@ -82,13 +88,13 @@ public class RobotContainer {
 
     public final Elevator elevator = new Elevator();
 
-    public final EndEffector endEffector = new EndEffector();
+    public final Corraler corraler = new Corraler();
+
+    public final AlgaeCollector collector = new AlgaeCollector();
 
     public final Climber climber = new Climber();
 
-    private final Command alignTest = new AlignToTarget(drivetrain,drivetrain.m_photonCameraWrapper, 12, Preferences.alignDistanceAdjustment);
-
-    private final Command endEffectorDefaultCommand = new EndEffectorDefaultCommand(endEffector);
+    private final Command corralerDefaultCommand = new CorralerDefaultCommand(corraler);
 
 
 
@@ -110,25 +116,25 @@ public class RobotContainer {
     }
 
     private void configureManipulatorController(){
-        coralTroughButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.TROUGH)));
-        coralL2LeftButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L2_LEFT)));
-        coralL2RightButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L2_RIGHT)));
-        coralL3LeftButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L3_LEFT)));
-        coralL3RightButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L3_RIGHT)));
-        coralL4LeftButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L4_LEFT)));
-        coralL4RightButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L4_RIGHT)));
-        algaeProcessorButton.whileTrue(new InstantCommand(() -> m_RobotState.setAlgaeTarget(RobotState.AlgaeTarget.PROCESSOR)));
-        algaeReefButton.whileTrue(new InstantCommand(() -> m_RobotState.setAlgaeTarget(RobotState.AlgaeTarget.REEF)));
-        algaeBargeButton.whileTrue(new InstantCommand(() -> m_RobotState.setAlgaeTarget(RobotState.AlgaeTarget.BARGE)));
-        coralCancelButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.NONE)));
-        algaeCancelButton.whileTrue(new InstantCommand(() -> m_RobotState.setAlgaeTarget(RobotState.AlgaeTarget.NONE)));
+        // coralTroughButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.TROUGH)));
+        // coralL2LeftButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L2_LEFT)));
+        // coralL2RightButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L2_RIGHT)));
+        // coralL3LeftButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L3_LEFT)));
+        // coralL3RightButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L3_RIGHT)));
+        // coralL4LeftButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L4_LEFT)));
+        // coralL4RightButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.L4_RIGHT)));
+        // algaeProcessorButton.whileTrue(new InstantCommand(() -> m_RobotState.setAlgaeTarget(RobotState.AlgaeTarget.PROCESSOR)));
+        // algaeReefButton.whileTrue(new InstantCommand(() -> m_RobotState.setAlgaeTarget(RobotState.AlgaeTarget.REEF)));
+        // algaeBargeButton.whileTrue(new InstantCommand(() -> m_RobotState.setAlgaeTarget(RobotState.AlgaeTarget.BARGE)));
+        // coralCancelButton.whileTrue(new InstantCommand(() -> m_RobotState.setCoralTarget(RobotState.CoralTarget.NONE)));
+        // algaeCancelButton.whileTrue(new InstantCommand(() -> m_RobotState.setAlgaeTarget(RobotState.AlgaeTarget.NONE)));
        
     }
 
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        /* 
+         
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
@@ -137,9 +143,9 @@ public class RobotContainer {
                     .withRotationalRate(-joystick.getRightX() * m_RobotState.getMaxRotation()) // Drive counterclockwise with negative X (left)
             )
         );
-        */
+        
 
-        endEffector.setDefaultCommand(endEffectorDefaultCommand);
+        corraler.setDefaultCommand(corralerDefaultCommand);
 
         //joystick.x().onTrue(AutoBuilder.followPath(createTestPath()));
          
@@ -156,30 +162,33 @@ public class RobotContainer {
         SmartDashboard.putData("Set Elevator Motion Magic Configs", new InstantCommand(() -> elevator.setElevatorMotionMagic(Preferences.elevatorMMCruiseVelocity, Preferences.elevatorMMAccel, Preferences.elevatorMMJerk)));
         
         SmartDashboard.putData("Elevator Ground", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
-        /*SmartDashboard.putData("Elevator Trough", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.TROUGH.position))
-            .until(() -> elevator.atSetpoint())
-            .andThen( new RunCommand(() -> endEffector.outtakeCoral())
-            .withTimeout(1)
-            .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
-            );
-         */
-        SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
-        SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
-        SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
-        SmartDashboard.putData("Elevator Level 4", new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
+        // SmartDashboard.putData("Elevator Trough", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.TROUGH.position))
+        //     .until(() -> elevator.atSetpoint())
+        //     .andThen( new RunCommand(() -> endEffector.outtakeCoral())
+        //     .withTimeout(1)
+        //     .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
+        //     );
+         
+        SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 4", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
 
-        SmartDashboard.putData("Outtake", new RunCommand(() -> endEffector.outtakeCoral()).withTimeout(1).andThen(new InstantCommand(() -> endEffector.stopCoralMotor())));
+        SmartDashboard.putData("Outtake", new RunCommand(() -> corraler.outtakeCoral()).withTimeout(1).andThen(new InstantCommand(() -> corraler.stopCoralMotor())));
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );
+        
         joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
 
-        SmartDashboard.putData("Climber to preset", new InstantCommand(() -> climber.setPositionRevolutions(Preferences.climberPosition)));
-        SmartDashboard.putData("Set Climber PID", new InstantCommand(() -> climber.setClimberPID(Preferences.climberkP, Preferences.climberkD, Preferences.climberkI, Preferences.climberkG)));
-        SmartDashboard.putData("Set Climber Motion Magic Configs", new InstantCommand(() -> climber.setClimberMotionMagic(Preferences.climberMMCruiseVelocity, Preferences.climberMMAccel, Preferences.climberMMJerk)));
+        // SmartDashboard.putData("Climber to preset", new InstantCommand(() -> climber.setPositionRevolutions(Preferences.climberPosition)));
+        // SmartDashboard.putData("Set Climber PID", new InstantCommand(() -> climber.setClimberPID(Preferences.climberkP, Preferences.climberkD, Preferences.climberkI, Preferences.climberkG)));
+        // SmartDashboard.putData("Set Climber Motion Magic Configs", new InstantCommand(() -> climber.setClimberMotionMagic(Preferences.climberMMCruiseVelocity, Preferences.climberMMAccel, Preferences.climberMMJerk)));
 
+        // SmartDashboard.putData("Drive Sysid Rotation", drivetrain.sysIdRotation());
+        // SmartDashboard.putData("Drive Sysid Translation", drivetrain.sysIdTranslation());
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         /* 
@@ -190,20 +199,40 @@ public class RobotContainer {
         */
 
          
-        joystick.a().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
-                    .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
-        joystick.b().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))
-                    .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
-        joystick.x().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
-        joystick.y().whileTrue(new RunCommand( () -> new Score(m_RobotState, elevator, endEffector, drivetrain), elevator, endEffector, drivetrain));
+        // joystick.a().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
+        //             .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
+        // joystick.b().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))
+        //             .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
+        // joystick.x().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
+        // joystick.y().whileTrue(new RunCommand( () -> new Score(m_RobotState, elevator, endEffector, drivetrain), elevator, endEffector, drivetrain));
         
 
+        SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
+        SmartDashboard.putData("Elevator Level 4", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
+
+
+        // joystick.a().whileTrue(drivetrain.followPath(createHPPath()));
+        // joystick.b().whileTrue(drivetrain.followPath(createREEF1Path()));
+        // joystick.x().whileTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
+        // joystick.y().whileTrue(new OuttakeAlgae(elevator, endEffector));
         // joystick.a().whileTrue(new RunCommand(() -> endEffector.intakeAlgae()).until(() -> endEffector.seesAlgae()));
         // joystick.b().whileTrue(new RunCommand(() -> endEffector.setWristPosition(Preferences.wirstPosition)));
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
+        joystick.leftTrigger().onTrue(new OuttakeCommand(corraler));
+
         //joystick.rightBumper().onTrue(new InstantCommand( () -> elevator.alterMech(armLength.getValue(), wristAngle.getValue())));
+
+        joystick.x().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position).withName("score trough"));
+        joystick.a().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L2"));
+        joystick.b().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L3"));
+        joystick.y().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L4"));
+
+        joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
+
 
         configureManipulatorController();                                   
         
@@ -219,9 +248,9 @@ public class RobotContainer {
 
     public PathPlannerPath createTestPath(){
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-        new Pose2d(1.0, 1.0, Rotation2d.fromDegrees(0)),
-        new Pose2d(3.0, 1.0, Rotation2d.fromDegrees(0)),
-        new Pose2d(5.0, 3.0, Rotation2d.fromDegrees(90))
+        new Pose2d(2.254, 6.476, Rotation2d.fromDegrees(0)),
+        new Pose2d(4.471, 6.524, Rotation2d.fromDegrees(0)),
+        new Pose2d(5.586, 5.577, Rotation2d.fromDegrees(-45))
             );
 
         PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
@@ -232,7 +261,7 @@ public class RobotContainer {
               waypoints,
                constraints,
                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                new GoalEndState(0, Rotation2d.fromDegrees(-90)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+                new GoalEndState(0, Rotation2d.fromDegrees(60)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
         );
 
         // Prevent the path from being flipped if the coordinates are already correct
@@ -240,4 +269,51 @@ public class RobotContainer {
 
         return path;
     }
+
+    public PathPlannerPath createHPPath(){
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+        new Pose2d(1.95, 5.21, Rotation2d.fromDegrees(135)),
+        new Pose2d(1.2, 6, Rotation2d.fromDegrees(135))
+            );
+
+        PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
+        // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
+
+        // Create the path using the waypoints created above
+        PathPlannerPath path = new PathPlannerPath(
+              waypoints,
+               constraints,
+               null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+                new GoalEndState(0, Rotation2d.fromDegrees(135)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+
+        // Prevent the path from being flipped if the coordinates are already correct
+        path.preventFlipping = true;
+
+        return path;
+    }
+
+    public PathPlannerPath createREEF1Path(){
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+        new Pose2d(1.95, 5.21, Rotation2d.fromDegrees(-50)),
+        new Pose2d(3, 3.72, Rotation2d.fromDegrees(0))
+            );
+
+        PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
+        // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
+
+        // Create the path using the waypoints created above
+        PathPlannerPath path = new PathPlannerPath(
+              waypoints,
+               constraints,
+               null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+                new GoalEndState(0, Rotation2d.fromDegrees(180)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+
+        // Prevent the path from being flipped if the coordinates are already correct
+        path.preventFlipping = true;
+
+        return path;
+    }
+
 }

@@ -10,15 +10,15 @@ import edu.wpi.first.math.geometry.Translation3d;
 
 public class CameraConstants {
     public static final String photonCameraNameOuttakeLeft = "OUTTAKE_LEFT";
-    public static final Transform3d photonCameraTransformOuttakeLeft= new Transform3d(new Translation3d(.343, 0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, -15.0/180 * Math.PI));
+    public static final Transform3d photonCameraTransformOuttakeLeft= new Transform3d(new Translation3d(.343, -0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, Math.PI));
     public static final PhotonCamera photonCameraOuttakeLeft = new PhotonCamera(photonCameraNameOuttakeLeft);
     
     public static final String photonCameraNameOuttakeRight = "OUTTAKE_RIGHT";
-    public static final Transform3d photonCameraTransformOuttakeRight = new Transform3d(new Translation3d(.343, -0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 15.0/180 * Math.PI));
+    public static final Transform3d photonCameraTransformOuttakeRight = new Transform3d(new Translation3d(.343, 0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, Math.PI));
     public static final PhotonCamera photonCameraOuttakeRight = new PhotonCamera(photonCameraNameOuttakeRight);
 
     public static final String photonCameraNameIntake = "INTAKE";
-    public static final Transform3d photonCameraTransformIntake = new Transform3d(new Translation3d(.343, -0.271, .239), new Rotation3d(0.0, -10 / 180.0 * Math.PI, 15.0/180 * Math.PI));
+    public static final Transform3d photonCameraTransformIntake = new Transform3d(new Translation3d(.343, -0.271, .239), new Rotation3d(0.0, 15 / 180.0 * Math.PI,  0));
     public static final PhotonCamera photonCameraIntake = new PhotonCamera(photonCameraNameIntake);
 
     public static final PhotonCamera allCameras[] = {photonCameraOuttakeLeft, photonCameraOuttakeRight, photonCameraIntake};
@@ -57,9 +57,8 @@ public class CameraConstants {
 
     public static final Integer[] IGNORED_POSE_TARGETS = {50,51};
     public static final HashMap<String, Double> offsetToBumper = new HashMap<String, Double>(){{
-        put("OUTTAKE_LEFT", 0.0);
-        put("OUTTAKE_RIGHT", 0.0);
-        put("INTAKE", 0.0);
+        put("OUTTAKE_LEFT", 0.3429);
+        put("OUTTAKE_RIGHT", 0.3429);
     }};
 
     public static final double yLeftError = 0.5;
