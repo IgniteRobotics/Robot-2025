@@ -18,8 +18,10 @@ public class Preferences {
     
     public static DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", 0.5);
     public static DoublePreference alignRotKD = new DoublePreference("alignCommand/rotation/kD", 0);
-    public static DoublePreference alignDriveKP = new DoublePreference("alignCommand/drive/kP", 0.5);
-    public static DoublePreference alignDriveKD = new DoublePreference("alignCommand/drive/kD", 0.3);
+    public static DoublePreference alignDriveYKP = new DoublePreference("alignCommand/driveY/kP", 0.5);
+    public static DoublePreference alignDriveYKD = new DoublePreference("alignCommand/driveY/kD", 0.3);
+    public static DoublePreference alignDriveXKP = new DoublePreference("alignCommand/driveX/kP", 0.5);
+    public static DoublePreference alignDriveXKD = new DoublePreference("alignCommand/driveX/kD", 0.3);
     public static DoublePreference alignAdj = new DoublePreference("alignCommand/adjustment", 0);
 
     // ********** Elevator **********
