@@ -10,10 +10,11 @@ import edu.wpi.first.wpilibj.RobotController;
 
 @Logged
 public class TestAlert {
-  public boolean warning = false;
+  public static Alert test2 = new Alert("test alert", AlertType.kInfo);
+  public static boolean warning = false;
   private boolean flash = false;
   private double ts = ((int)RobotController.getFPGATime() / 500000) % 2;
-  public void Test(){
+  public boolean Test(){
     if (warning == true){
       if(ts % 2 == 1){
        flash = true;
@@ -21,5 +22,6 @@ public class TestAlert {
        flash = false;
        }
    }
+       return flash;
   };     
 }
