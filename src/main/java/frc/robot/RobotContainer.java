@@ -45,6 +45,7 @@ import frc.robot.commands.drive.AlignToTarget;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.RobotState;
+import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.Elevator.Elevator;
@@ -254,12 +255,11 @@ public class RobotContainer {
         joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
 
         //pattern for 2 stage commands
-        //TODO:  paramerterize photon camera wrapper so we only have 1 instance floating around.
         joystick.a().whileTrue(
             new AlignToAprilTag(drivetrain, m_PhotonCameraWrapper , m_RobotState.getProcessorTags(), 0, 
-                0, 0, () -> joystick.getLeftY(), null)
+                () -> CameraConstants.getAlgaeXOffsetMeters(.75), () -> CameraConstants.getAlgaeYawOffestDegreesLeft(.75), () -> joystick.getLeftY(), null)
                 .alongWith(new ScoreAlgae(elevator, collector, 
-                    ElevatorConstants.FLOOR.GROUND.position, AlgaeCollectorConstants.ALGAE.PROCESS.angle, joystick.rightTrigger())
+                    ElevatorConstants.FLOOR.GROUND.position, AlgaeCollectorConstants.ALGAE.PROCESS.angle, joystick.b())
                     .finallyDo(() -> collector.stopAlgaeMotor()))  
                 );
         

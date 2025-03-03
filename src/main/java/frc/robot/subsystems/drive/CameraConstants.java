@@ -73,4 +73,52 @@ public class CameraConstants {
     public static final int[] BLUE_PROCESSOR_TAGS = {16};
     public static final int[] RED_BARGE_TAGS = {5,15};
     public static final int[] BLUE_BARGE_TAGS = {4,14};
+
+    public static final double CORAL_REEF_STOP_DISTANCE_METERS = 0.359;
+    
+    public static final double ALGAE_REEF_STOP_DISTANCE_METERS = 1.0;
+    
+    public static final double ALGAE_PROCESSOR_STOP_DISTANCE_METERS = 0.5;
+
+
+    //this is the offset, in meters from the center of the tag,
+    //to the center of the camera
+    //when the robot is centered on the tag at the given BUMPER! distance
+    public static final double getAlgaeXOffsetMeters(double distance) {
+        distance += offsetToBumper.get(photonCameraNameOuttakeLeft);
+        return distance;
+    }
+    
+    //this is the offset, in meters from the center of the tag,
+    //to the center of the camera
+    //when the robot is centered on the tag at the given BUMPER! distance
+    public static final double getAlgaeYawOffestDegreesLeft(double distance) {
+        distance += offsetToBumper.get(photonCameraNameOuttakeLeft);
+        return Math.toDegrees(photonCameraTransformOuttakeLeft.getY()/distance);
+    }
+
+    public static final double getAlgaeYawOffestDegreesRight(double distance) {
+        distance += offsetToBumper.get(photonCameraNameOuttakeRight);
+        return Math.toDegrees(photonCameraTransformOuttakeRight.getY()/distance);
+    }
+
+    //this is the offset, in meters from the center of the tag,
+    //to the center of the camera
+    //when the robot is centered on the reef branch
+    //at the given BUMPER! distance
+    public static final double getCorallYawOffestDegreesLeft(double distance) {
+        distance += offsetToBumper.get(photonCameraNameOuttakeLeft);
+        double yOffset = -0.077;
+        return Math.toDegrees(yOffset/distance);
+    }
+    //this is the offset, in meters from the center of the tag,
+    //to the center of the camera=        
+    //when the robot is centered on the reef branch
+    public static final double getCorallYawOffestDegreesRight(double distance) {
+        distance += offsetToBumper.get(photonCameraNameOuttakeRight);
+        double yOffset = 0.077;
+        return Math.toDegrees(yOffset/distance);
+    }
+
 }
+

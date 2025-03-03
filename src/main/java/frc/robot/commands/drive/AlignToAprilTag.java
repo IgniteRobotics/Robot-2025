@@ -43,18 +43,21 @@ public class AlignToAprilTag extends Command {
   
   private int targetIDs[] = {};
 
-  private final double m_distanceMeters;
-  private final double m_yawDegrees;
+  private final DoubleSupplier m_distanceMetersSupplier;
+  private final DoubleSupplier m_yawDegreesSupplier;
   private final DoubleSupplier m_xInput;
   private final DoubleSupplier m_yInput;
+
+  private double m_distanceMeters;
+  private double m_yawDegrees;
   
   /** Creates a new AlignToTarget. */
-  public AlignToAprilTag(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, int[] targets, int cameraID, double distanceMeters, double yawDegrees, DoubleSupplier xInput, DoubleSupplier yInput){
+  public AlignToAprilTag(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, int[] targets, int cameraID, DoubleSupplier distanceMetersSupplier, DoubleSupplier yawDegreesSupplier, DoubleSupplier xInput, DoubleSupplier yInput){
     m_drive = drive;
     m_cameraId = cameraID;
     m_pcw = pcw;
-    m_distanceMeters = distanceMeters;
-    m_yawDegrees = yawDegrees;
+    m_distanceMetersSupplier = distanceMetersSupplier;
+    m_yawDegreesSupplier = yawDegreesSupplier;
     m_xInput = xInput;
     m_yInput = yInput;
     targetIDs = targets;
@@ -67,6 +70,8 @@ public class AlignToAprilTag extends Command {
     rotationController = new PIDController(Preferences.alignRotKP.get(), 0, Preferences.alignRotKD.get());
     driveYController = new PIDController(Preferences.alignDriveYKP.get(), 0, Preferences.alignDriveYKD.get());
     driveXController = new PIDController(Preferences.alignDriveXKP.get(), 0, Preferences.alignDriveXKD.get());
+    m_distanceMeters = m_distanceMetersSupplier.getAsDouble();
+    m_yawDegrees = m_yawDegreesSupplier.getAsDouble();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
