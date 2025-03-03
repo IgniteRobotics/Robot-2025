@@ -199,9 +199,9 @@ public class TunerConstants {
      * Creates a CommandSwerveDrivetrain instance.
      * This should only be called once in your robot program,.
      */
-    public static CommandSwerveDrivetrain createDrivetrain() {
+    public static CommandSwerveDrivetrain createDrivetrain(PhotonCameraWrapper photonCameraWrapper) {
         return new CommandSwerveDrivetrain(
-            DrivetrainConstants, new PhotonCameraWrapper(),FrontLeft, FrontRight, BackLeft, BackRight
+            DrivetrainConstants, photonCameraWrapper,FrontLeft, FrontRight, BackLeft, BackRight
         );
     }
 

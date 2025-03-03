@@ -63,6 +63,7 @@ public class Robot extends TimedRobot {
   private void getAllianceInfo(){
     if (DriverStation.getAlliance().isPresent()) {
       hasAlliance = true;
+      m_robotState.setAlliance(DriverStation.getAlliance().get());
       if (DriverStation.getAlliance().get() == Alliance.Red){
         m_robotState.setGrid(Alliance.Red);
       } else {

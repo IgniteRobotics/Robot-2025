@@ -27,6 +27,8 @@ public class RobotState {
 
     private static RobotState single_instance = null;
 
+    private Alliance alliance = Alliance.Blue; //defaults save lives.
+
     private static Pose2d robotPose2d;
 
     private final double blockWidth = 0.25;
@@ -314,6 +316,43 @@ public class RobotState {
 
     public boolean hasAlgae(){
         return hasAlgae;
+    }
+
+    public void setAlliance(Alliance newAlliance){
+        alliance = newAlliance;
+    }
+
+    public Alliance getAlliance(){
+        return alliance;
+    }
+
+    public int[] getReefTags(){
+        if(alliance == Alliance.Red){
+            return CameraConstants.RED_REEF_TAGS;
+        }
+        else return CameraConstants.BLUE_REEF_TAGS;
+    }
+
+    public int[] getBargeTags(){
+        if(alliance == Alliance.Red){
+            return CameraConstants.RED_BARGE_TAGS;
+        }
+        else return CameraConstants.BLUE_BARGE_TAGS;
+    }
+
+    public int[] getProcessorTags(){
+        if(alliance == Alliance.Red){
+            return CameraConstants.RED_PROCESSOR_TAGS;
+        }
+        else return CameraConstants.BLUE_PROCESSOR_TAGS;
+    }   
+
+    public int[] getHumanPlayerTags(){
+        if(alliance == Alliance.Red){
+            return CameraConstants.RED_HUMAN_PLAYER_TAGS;
+        } else {
+            return CameraConstants.BLUE_HUMAN_PLAYER_TAGS;
+        }
     }
 }
 
