@@ -90,7 +90,9 @@ public class RobotContainer {
         .withDeadband(default_Max_Speed*deadband).withRotationalDeadband(maxAngularRate * deadband) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);;
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    PhotonCameraWrapper m_PhotonCameraWrapper = new PhotonCameraWrapper();
+
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain(m_PhotonCameraWrapper);
 
     public final Elevator elevator = new Elevator();
 
@@ -254,7 +256,7 @@ public class RobotContainer {
         //pattern for 2 stage commands
         //TODO:  paramerterize photon camera wrapper so we only have 1 instance floating around.
         joystick.a().whileTrue(
-            new AlignToAprilTag(drivetrain, new PhotonCameraWrapper() , m_RobotState.getProcessorTags(), 0, 
+            new AlignToAprilTag(drivetrain, m_PhotonCameraWrapper , m_RobotState.getProcessorTags(), 0, 
                 0, 0, () -> joystick.getLeftY(), null)
                 .alongWith(new ScoreAlgae(elevator, collector, 
                     ElevatorConstants.FLOOR.GROUND.position, AlgaeCollectorConstants.ALGAE.PROCESS.angle, joystick.rightTrigger())
