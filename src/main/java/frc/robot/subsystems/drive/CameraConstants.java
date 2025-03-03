@@ -63,4 +63,14 @@ public class CameraConstants {
 
     public static final double yLeftError = 0.5;
     public static final double yRightError = -0.5;
+
+    //sets of tag ids for targeting
+    public static final int[] RED_HUMAN_PLAYER_TAGS = {1,2};
+    public static final int[] BLUE_HUMAN_PLAYER_TAGS = {12,13};
+    public static final int[] RED_REEF_TAGS = {6,7,8,9,10,11};
+    public static final int[] BLUE_REEF_TAGS = {17,18,19,20,21,22};
+    public static final int[] RED_PROCESSOR_TAGS = {3};
+    public static final int[] BLUE_PROCESSOR_TAGS = {16};
+    public static final int[] RED_BARGE_TAGS = {5,15};
+    public static final int[] BLUE_BARGE_TAGS = {4,14};
 }

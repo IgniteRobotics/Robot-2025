@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drive;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import java.io.UncheckedIOException;
@@ -203,19 +204,14 @@ public class PhotonCameraWrapper{
         
         double minimumAmbiguity = 1;
 
-        Optional<PhotonTrackedTarget> target = Optional.empty();
         var newResult = m_robotState.getLatestPhotonVisionResult(cam.getName());
         if(newResult != null){
-            for (int id : ids) {
-                Optional<PhotonTrackedTarget> tempTarget = lookForTarget(newResult, id);
-                if(tempTarget.isPresent() && tempTarget.get().getPoseAmbiguity() < minimumAmbiguity){
-                    minimumAmbiguity = tempTarget.get().getPoseAmbiguity();
-                    target = tempTarget;
-                    return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.get().getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
-                        target.get().getYaw(), id, cam.getName()));
-    
-                }
-            }
+            PhotonTrackedTarget target = newResult.getBestTarget();
+            if (Arrays.asList(ids).contains(target.getFiducialId()) )
+                if(target != null && target.getPoseAmbiguity() < minimumAmbiguity){
+                    return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
+                        target.getYaw(), target.getFiducialId(), cam.getName()));
+                    }
         }
         return Optional.empty();
 

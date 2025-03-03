@@ -7,6 +7,8 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -34,17 +36,21 @@ import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.composite.IntakeAlgae;
 import frc.robot.commands.composite.OuttakeAlgae;
 import frc.robot.commands.composite.Score;
+import frc.robot.commands.composite.ScoreAlgae;
 import frc.robot.commands.composite.ScoreCoral;
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
+import frc.robot.commands.drive.AlignToAprilTag;
 import frc.robot.commands.drive.AlignToTarget;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.RobotState;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.algae.AlgaeCollector;
+import frc.robot.subsystems.algae.AlgaeCollectorConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberConstants;
 import frc.robot.subsystems.coral.Corraler;
@@ -112,7 +118,10 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
+
+        configureSubsytemDefaultCommands();
         configureBindings();
+        drivetrain.registerTelemetry(logger::telemeterize);
     }
 
     private void configureManipulatorController(){
@@ -131,7 +140,7 @@ public class RobotContainer {
        
     }
 
-    private void configureBindings() {
+    private void configureSubsytemDefaultCommands(){
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
          
@@ -146,6 +155,14 @@ public class RobotContainer {
         
 
         corraler.setDefaultCommand(corralerDefaultCommand);
+
+        
+
+        elevator.setDefaultCommand(new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position));  
+    }
+
+    private void configureBindings() {
+
 
         //joystick.x().onTrue(AutoBuilder.followPath(createTestPath()));
          
@@ -211,6 +228,7 @@ public class RobotContainer {
         SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
         SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
         SmartDashboard.putData("Elevator Level 4", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
+        
 
 
         // joystick.a().whileTrue(drivetrain.followPath(createHPPath()));
@@ -227,16 +245,25 @@ public class RobotContainer {
         //joystick.rightBumper().onTrue(new InstantCommand( () -> elevator.alterMech(armLength.getValue(), wristAngle.getValue())));
 
         joystick.x().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position).withName("score trough"));
-        joystick.a().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L2"));
-        joystick.b().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L3"));
+        // joystick.a().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L2"));
+        // joystick.b().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L3"));
         joystick.y().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L4"));
 
         joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
 
+        //pattern for 2 stage commands
+        //TODO:  paramerterize photon camera wrapper so we only have 1 instance floating around.
+        joystick.a().whileTrue(
+            new AlignToAprilTag(drivetrain, new PhotonCameraWrapper() , m_RobotState.getProcessorTags(), 0, 
+                0, 0, () -> joystick.getLeftY(), null)
+                .alongWith(new ScoreAlgae(elevator, collector, 
+                    ElevatorConstants.FLOOR.GROUND.position, AlgaeCollectorConstants.ALGAE.PROCESS.angle, joystick.rightTrigger())
+                    .finallyDo(() -> collector.stopAlgaeMotor()))  
+                );
+        
 
         configureManipulatorController();                                   
         
-        drivetrain.registerTelemetry(logger::telemeterize);
 
 
     }

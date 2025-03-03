@@ -13,6 +13,7 @@ public class ToSetpoint extends Command {
   public ToSetpoint(Elevator elevator, double position) {
     m_elevator = elevator;
     setpoint = position;
+    addRequirements(elevator);
   }
 
   @Override
