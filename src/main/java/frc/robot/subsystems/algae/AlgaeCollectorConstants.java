@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.algae;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
@@ -73,6 +74,13 @@ public class AlgaeCollectorConstants {
         slot.kI = AlgaeCollectorConstants.ALGAE_kI;
         slot.kD = AlgaeCollectorConstants.ALGAE_kD;
         return slot;
+    }
+
+    public static CurrentLimitsConfigs createCurrentLimitsConfigs(){
+        CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
+        configs.StatorCurrentLimit = 15;
+        configs.StatorCurrentLimitEnable = true;
+        return configs;
     }
 
     public static final StaticFeedforwardSignValue wristFeedforward = StaticFeedforwardSignValue.UseClosedLoopSign;

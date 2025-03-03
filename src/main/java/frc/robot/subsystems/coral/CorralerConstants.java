@@ -1,5 +1,6 @@
 package frc.robot.subsystems.coral;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.ProximityParamsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;

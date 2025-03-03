@@ -50,6 +50,8 @@ public class AlgaeCollector extends SubsystemBase {
     m_algaeMotor.getConfigurator().apply(AlgaeCollectorConstants.createAlgaeMotorOutputConfigs());
     m_algaeSlot0Configs = AlgaeCollectorConstants.createAlgaeMotorSlot0Configs();
     m_algaeMotor.getConfigurator().apply(m_algaeSlot0Configs);
+    m_algaeMotor.getConfigurator().apply(AlgaeCollectorConstants.createCurrentLimitsConfigs());
+  
 
 
     m_wristMotor = new TalonFX(AlgaeCollectorConstants.kWristMotorId);
