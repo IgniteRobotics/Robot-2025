@@ -15,6 +15,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -106,7 +107,6 @@ public class RobotContainer {
     private final Command corralerDefaultCommand = new CorralerDefaultCommand(corraler);
 
 
-
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
@@ -117,8 +117,16 @@ public class RobotContainer {
     //}};
 
     public RobotContainer() {
+        NamedCommands.registerCommand("Score Level 4 at Reef J", null);
+        NamedCommands.registerCommand("Score Level 4 at Reef L", null);
+        NamedCommands.registerCommand("Score Level 4 at Reef J", null);
+        NamedCommands.registerCommand("Intake at HP", null);
 
-        autoChooser = AutoBuilder.buildAutoChooser("Tests");
+
+
+
+        autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
+        autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
         SmartDashboard.putData("Auto Mode", autoChooser);
 
 
@@ -166,29 +174,7 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-
-        //joystick.x().onTrue(AutoBuilder.followPath(createTestPath()));
-         
-        // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
-        //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        // ));
-
-        //joystick.x().whileTrue(new RunCommand(() -> elevator.setPositionRevolutions(Preferences.elevatorPosition)));
-        //joystick.y().onTrue(new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG)));
-
-        SmartDashboard.putData("Elevator to preset", new RunCommand(() -> elevator.setPositionRevolutions(Preferences.elevatorPosition)));
-        SmartDashboard.putData("Set Elevator PID", new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG, Preferences.elevatorkS)));
-        SmartDashboard.putData("Set Elevator Motion Magic Configs", new InstantCommand(() -> elevator.setElevatorMotionMagic(Preferences.elevatorMMCruiseVelocity, Preferences.elevatorMMAccel, Preferences.elevatorMMJerk)));
-        
         SmartDashboard.putData("Elevator Ground", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
-        // SmartDashboard.putData("Elevator Trough", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.TROUGH.position))
-        //     .until(() -> elevator.atSetpoint())
-        //     .andThen( new RunCommand(() -> endEffector.outtakeCoral())
-        //     .withTimeout(1)
-        //     .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
-        //     );
-         
         SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
         SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
         SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
@@ -203,44 +189,6 @@ public class RobotContainer {
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
 
-        // SmartDashboard.putData("Climber to preset", new InstantCommand(() -> climber.setPositionRevolutions(Preferences.climberPosition)));
-        // SmartDashboard.putData("Set Climber PID", new InstantCommand(() -> climber.setClimberPID(Preferences.climberkP, Preferences.climberkD, Preferences.climberkI, Preferences.climberkG)));
-        // SmartDashboard.putData("Set Climber Motion Magic Configs", new InstantCommand(() -> climber.setClimberMotionMagic(Preferences.climberMMCruiseVelocity, Preferences.climberMMAccel, Preferences.climberMMJerk)));
-
-        // SmartDashboard.putData("Drive Sysid Rotation", drivetrain.sysIdRotation());
-        // SmartDashboard.putData("Drive Sysid Translation", drivetrain.sysIdTranslation());
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        /* 
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-        */
-
-         
-        // joystick.a().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
-        //             .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
-        // joystick.b().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))
-        //             .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
-        // joystick.x().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
-        // joystick.y().whileTrue(new RunCommand( () -> new Score(m_RobotState, elevator, endEffector, drivetrain), elevator, endEffector, drivetrain));
-        
-
-        SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
-        SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
-        SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
-        SmartDashboard.putData("Elevator Level 4", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
-        
-
-
-        // joystick.a().whileTrue(drivetrain.followPath(createHPPath()));
-        // joystick.b().whileTrue(drivetrain.followPath(createREEF1Path()));
-        // joystick.x().whileTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
-        // joystick.y().whileTrue(new OuttakeAlgae(elevator, endEffector));
-        // joystick.a().whileTrue(new RunCommand(() -> endEffector.intakeAlgae()).until(() -> endEffector.seesAlgae()));
-        // joystick.b().whileTrue(new RunCommand(() -> endEffector.setWristPosition(Preferences.wirstPosition)));
-        // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         joystick.leftTrigger().onTrue(new OuttakeCommand(corraler));
@@ -266,7 +214,7 @@ public class RobotContainer {
 
         configureManipulatorController();                                  
     }
-    
+
     public Command getAutonomousCommand() {
         /* First put the drivetrain into auto run mode, then run the auto */
         return autoChooser.getSelected();
