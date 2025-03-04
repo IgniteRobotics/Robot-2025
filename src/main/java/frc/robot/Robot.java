@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.test.PhotonAngleTests;
-import frc.robot.statemachines.RobotState;
 import frc.robot.statemachines.AllianceState;
 
 @Logged

@@ -4,6 +4,8 @@
 
 package frc.robot.statemachines;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
@@ -63,7 +65,7 @@ public class CoralState {
     }
 
     @Logged(name = "CT_TROUGH", importance = Importance.CRITICAL)
-    public boolean coralTargetTrough(){
+    public boolean coralTarget_TROUGH(){
         return coralTarget == CoralTarget.TROUGH;
     }
 
@@ -114,14 +116,14 @@ public class CoralState {
         }
     }
 
-    public double getYAlignmentError(){
+    public double getYCoralAlignment(double d){
         if(coralTarget == CoralTarget.L4_LEFT || coralTarget == CoralTarget.L3_LEFT || coralTarget == CoralTarget.L2_LEFT){
-            return CameraConstants.yLeftError;
+            return CameraConstants.getCorallYawOffsetDegreesLeft(d);
         }
         else if(coralTarget == CoralTarget.L4_RIGHT || coralTarget == CoralTarget.L3_RIGHT || coralTarget == CoralTarget.L2_RIGHT){
-            return CameraConstants.yRightError;
+            return CameraConstants.getCorallYawOffsetDegreesRight(d);
         }
-        else return 0;
+        else return 0.0;
     }
 
     public void setHasCoral(boolean bool){

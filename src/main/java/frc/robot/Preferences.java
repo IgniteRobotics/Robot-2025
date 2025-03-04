@@ -40,6 +40,7 @@ public class Preferences {
     // ********** Corraler ********** 
     public static DoublePreference coralIntakePower = new DoublePreference("Coraller/IntakePower", AlgaeCollectorConstants.INTAKE_CORAL_POWER);
     public static DoublePreference coralOuttakePower = new DoublePreference("Coraller/OuttakePower", AlgaeCollectorConstants.OUTTAKE_CORAL_POWER);
+    public static DoublePreference coralXDriveOffset = new DoublePreference("Coraller/XDriveOffset", 0.02);
 
     // ********** Algae Collector****
     public static DoublePreference algaeIntakePower = new DoublePreference("AlgaeCollector/IntakePower", AlgaeCollectorConstants.INTAKE_ALGAE_POWER);

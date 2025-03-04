@@ -16,11 +16,11 @@ public class PhotonAngleTests {
         // Add your constructor implementation here
         for (double d : distances) {
             System.out.print("Input Distance: " + d);
-            System.out.print(" Algae Distance: " + CameraConstants.getAlgaeXOffsetMeters(d));
-            System.out.print(" Alage Left Angle:  " + CameraConstants.getAlgaeYawOffestDegreesLeft(d));
-            System.out.print(" Alage Right Angle: " + CameraConstants.getAlgaeYawOffestDegreesRight(d));
-            System.out.print(" Coral Left Angle:  " + CameraConstants.getCorallYawOffestDegreesLeft(d));
-            System.out.println(" Coral Right Angle: " + CameraConstants.getCorallYawOffestDegreesRight(d));
+            System.out.print(" Algae Distance: " + CameraConstants.getXOffsetMeters(d));
+            System.out.print(" Alage Left Angle:  " + CameraConstants.getAlgaeYawOffsetDegreesLeft(d));
+            System.out.print(" Alage Right Angle: " + CameraConstants.getAlgaeYawOffsetDegreesRight(d));
+            System.out.print(" Coral Left Angle:  " + CameraConstants.getCorallYawOffsetDegreesLeft(d));
+            System.out.println(" Coral Right Angle: " + CameraConstants.getCorallYawOffsetDegreesRight(d));
         }
             
     }
