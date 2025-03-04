@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drive;
 
 import java.util.HashMap;
+import java.util.function.DoubleSupplier;
 
 import org.photonvision.PhotonCamera;
 
@@ -84,40 +85,38 @@ public class CameraConstants {
     //this is the offset, in meters from the center of the tag,
     //to the center of the camera
     //when the robot is centered on the tag at the given BUMPER! distance
-    public static final double getAlgaeXOffsetMeters(double distance) {
-        distance += offsetToBumper.get(photonCameraNameOuttakeLeft);
-        return distance;
+    public static final double getXOffsetMeters(double distance) {
+        return distance + offsetToBumper.get(photonCameraNameOuttakeLeft);
     }
     
     //this is the offset, in meters from the center of the tag,
     //to the center of the camera
     //when the robot is centered on the tag at the given BUMPER! distance
-    public static final double getAlgaeYawOffestDegreesLeft(double distance) {
-        distance += offsetToBumper.get(photonCameraNameOuttakeLeft);
-        return Math.toDegrees(photonCameraTransformOuttakeLeft.getY()/distance);
+    public static final double getAlgaeYawOffsetDegreesLeft(double distance) {
+        
+        return Math.toDegrees(photonCameraTransformOuttakeLeft.getY()
+            /(distance + offsetToBumper.get(photonCameraNameOuttakeLeft)));
     }
 
-    public static final double getAlgaeYawOffestDegreesRight(double distance) {
-        distance += offsetToBumper.get(photonCameraNameOuttakeRight);
-        return Math.toDegrees(photonCameraTransformOuttakeRight.getY()/distance);
+    public static final double getAlgaeYawOffsetDegreesRight(double distance) {
+        return Math.toDegrees(photonCameraTransformOuttakeRight.getY()
+        /(distance + offsetToBumper.get(photonCameraNameOuttakeRight)));
     }
 
     //this is the offset, in meters from the center of the tag,
     //to the center of the camera
     //when the robot is centered on the reef branch
     //at the given BUMPER! distance
-    public static final double getCorallYawOffestDegreesLeft(double distance) {
-        distance += offsetToBumper.get(photonCameraNameOuttakeLeft);
+    public static final double getCorallYawOffsetDegreesLeft(double distance) {
         double yOffset = -0.077;
-        return Math.toDegrees(yOffset/distance);
+        return Math.toDegrees(yOffset/(distance + offsetToBumper.get(photonCameraNameOuttakeLeft)));
     }
     //this is the offset, in meters from the center of the tag,
     //to the center of the camera=        
     //when the robot is centered on the reef branch
-    public static final double getCorallYawOffestDegreesRight(double distance) {
-        distance += offsetToBumper.get(photonCameraNameOuttakeRight);
+    public static final double getCorallYawOffsetDegreesRight(double distance) {
         double yOffset = 0.077;
-        return Math.toDegrees(yOffset/distance);
+        return Math.toDegrees(yOffset/(distance + offsetToBumper.get(photonCameraNameOuttakeRight)));
     }
 
 }
