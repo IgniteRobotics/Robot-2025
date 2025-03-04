@@ -61,7 +61,7 @@ public class AutoScoreCoralGroup extends ParallelCommandGroup{
     return createAlignCommand()
       .alongWith(new WaitUntilCommand(m_go)
                   .andThen(new ScoreCoral(m_Elevator, m_Corraler, CoralState.getInstance().getCoralHeight(), ElevatorConstants.FLOOR.GROUND.position)
-                  )
+                  ).finallyDo(() -> CoralState.getInstance().setCoralTarget(CoralTarget.NONE))
       );
   }
 
