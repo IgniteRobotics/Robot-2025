@@ -20,7 +20,6 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -42,7 +41,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
-import frc.robot.statemachines.RobotState;
+import frc.robot.statemachines.DriveState;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.Side;
 
 import edu.wpi.first.math.numbers.N1;
@@ -56,7 +55,7 @@ import edu.wpi.first.math.numbers.N3;
 @Logged
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
 
-    private RobotState m_robotState = RobotState.getInstance();
+    private DriveState m_driveState = DriveState.getInstance();
 
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
@@ -305,9 +304,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     @Override
     public void periodic() {
 
-        SmartDashboard.putString("Zone", m_robotState.getZoneName());
-        SmartDashboard.putString("Coral Target", m_robotState.getCoralTargetName());
-        SmartDashboard.putString("Algae Target", m_robotState.getAlgaeTargetName());
+        SmartDashboard.putString("Zone", m_driveState.getZoneName());
 
         SmartDashboard.putNumber("Robot Pose X", getPose().getX());
         SmartDashboard.putNumber("Robot Pose Y", getPose().getY());
@@ -322,7 +319,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             SmartDashboard.putString("Last Selected Robot Path Name", loggedPath.toString());
         }
 
-        m_robotState.setPose2d(getPose());
+        m_driveState.setPose2d(getPose());
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.

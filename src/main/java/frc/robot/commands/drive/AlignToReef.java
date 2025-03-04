@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Preferences;
 import frc.robot.PreferenceTypes.DoublePreference;
-import frc.robot.statemachines.RobotState;
 import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
@@ -40,8 +39,6 @@ public class AlignToReef extends Command {
   PIDController driveXController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-  RobotState m_robotState = RobotState.getInstance();
-
   /** Creates a new AlignToTarget. */
   public AlignToReef(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, int cameraID, DoublePreference adj, CommandXboxController joystick){
     m_drive = drive;
@@ -63,7 +60,7 @@ public class AlignToReef extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, m_cameraId);
+    Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, m_cameraId);
     double rotation;
     double driveX;
     double driveY;
