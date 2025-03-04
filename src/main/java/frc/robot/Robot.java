@@ -127,17 +127,12 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {
         //Tests if Alert reason is true, if so activates indicator
-        TestAlert.test2.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
+        TestAlert mmmmm = new TestAlert();
+        TestAlert().test2.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-          TestAlert.warning = true;
           factsBro = true;
         } else {
           factsBro = false;
-          TestAlert.warning = false;
         }
-  }
-
-  public boolean getFlash(){
-    return TestAlert.warning;
   }
 }
