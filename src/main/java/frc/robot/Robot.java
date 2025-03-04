@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.PreferenceTypes.DoublePreference;
-import frc.robot.statemachines.RobotState;
+import frc.robot.statemachines.AllianceState;
 
 @Logged
 public class Robot extends TimedRobot {
@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
 
   private final boolean kUseLimelight = false;
 
-  private final RobotState m_robotState = RobotState.getInstance();
+  private final AllianceState m_allianceState = AllianceState.getInstance();
 
   private boolean hasAlliance  = false;
 
@@ -63,12 +63,7 @@ public class Robot extends TimedRobot {
   private void getAllianceInfo(){
     if (DriverStation.getAlliance().isPresent()) {
       hasAlliance = true;
-      m_robotState.setAlliance(DriverStation.getAlliance().get());
-      if (DriverStation.getAlliance().get() == Alliance.Red){
-        m_robotState.setGrid(Alliance.Red);
-      } else {
-        m_robotState.setGrid(Alliance.Blue);
-      }
+      m_allianceState.setAlliance(DriverStation.getAlliance().get());
     }
   }
 

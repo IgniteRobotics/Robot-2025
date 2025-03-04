@@ -15,6 +15,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -44,7 +45,8 @@ import frc.robot.commands.drive.AlignToAprilTag;
 import frc.robot.commands.drive.AlignToTarget;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.generated.TunerConstants;
-import frc.robot.statemachines.RobotState;
+import frc.robot.statemachines.AllianceState;
+import frc.robot.statemachines.DriveState;
 import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
@@ -106,19 +108,27 @@ public class RobotContainer {
     private final Command corralerDefaultCommand = new CorralerDefaultCommand(corraler);
 
 
-
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
-    private RobotState m_RobotState = RobotState.getInstance();
+    private DriveState m_driveState = DriveState.getInstance();
+
+    private AllianceState m_allianceState = AllianceState.getInstance();
     //drive command
     //Command arcadeDrive =  new RunCommand(() -> drivetrain.drive(-joystick.getLeftY(), -joystick.getLeftX(), -joystick.getRightX(), m_RobotState.getMaxSpeed())) {{
     //   addRequirements(drivetrain);
     //}};
 
     public RobotContainer() {
+        /* 
+        NamedCommands.registerCommand("Score Level 4 at Reef J", null);
+        NamedCommands.registerCommand("Score Level 4 at Reef L", null);
+        NamedCommands.registerCommand("Score Level 4 at Reef J", null);
+        NamedCommands.registerCommand("Intake at HP", null);
+        */
 
-        autoChooser = AutoBuilder.buildAutoChooser("Tests");
+        autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
+        //autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
         SmartDashboard.putData("Auto Mode", autoChooser);
 
 
@@ -150,9 +160,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * m_RobotState.getMaxSpeed()) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * m_RobotState.getMaxSpeed()) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * m_RobotState.getMaxRotation()) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-joystick.getLeftY() * m_driveState.getMaxSpeed()) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getLeftX() * m_driveState.getMaxSpeed()) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * m_driveState.getMaxRotation()) // Drive counterclockwise with negative X (left)
             )
         );
         
@@ -166,29 +176,7 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-
-        //joystick.x().onTrue(AutoBuilder.followPath(createTestPath()));
-         
-        // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
-        //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        // ));
-
-        //joystick.x().whileTrue(new RunCommand(() -> elevator.setPositionRevolutions(Preferences.elevatorPosition)));
-        //joystick.y().onTrue(new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG)));
-
-        SmartDashboard.putData("Elevator to preset", new RunCommand(() -> elevator.setPositionRevolutions(Preferences.elevatorPosition)));
-        SmartDashboard.putData("Set Elevator PID", new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG, Preferences.elevatorkS)));
-        SmartDashboard.putData("Set Elevator Motion Magic Configs", new InstantCommand(() -> elevator.setElevatorMotionMagic(Preferences.elevatorMMCruiseVelocity, Preferences.elevatorMMAccel, Preferences.elevatorMMJerk)));
-        
         SmartDashboard.putData("Elevator Ground", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
-        // SmartDashboard.putData("Elevator Trough", new RunCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.TROUGH.position))
-        //     .until(() -> elevator.atSetpoint())
-        //     .andThen( new RunCommand(() -> endEffector.outtakeCoral())
-        //     .withTimeout(1)
-        //     .andThen(new InstantCommand(() -> endEffector.stopCoralMotor())))
-        //     );
-         
         SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
         SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
         SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
@@ -203,44 +191,6 @@ public class RobotContainer {
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
 
-        // SmartDashboard.putData("Climber to preset", new InstantCommand(() -> climber.setPositionRevolutions(Preferences.climberPosition)));
-        // SmartDashboard.putData("Set Climber PID", new InstantCommand(() -> climber.setClimberPID(Preferences.climberkP, Preferences.climberkD, Preferences.climberkI, Preferences.climberkG)));
-        // SmartDashboard.putData("Set Climber Motion Magic Configs", new InstantCommand(() -> climber.setClimberMotionMagic(Preferences.climberMMCruiseVelocity, Preferences.climberMMAccel, Preferences.climberMMJerk)));
-
-        // SmartDashboard.putData("Drive Sysid Rotation", drivetrain.sysIdRotation());
-        // SmartDashboard.putData("Drive Sysid Translation", drivetrain.sysIdTranslation());
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        /* 
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-        */
-
-         
-        // joystick.a().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
-        //             .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
-        // joystick.b().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))
-        //             .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
-        // joystick.x().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
-        // joystick.y().whileTrue(new RunCommand( () -> new Score(m_RobotState, elevator, endEffector, drivetrain), elevator, endEffector, drivetrain));
-        
-
-        SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
-        SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
-        SmartDashboard.putData("Elevator Level 3", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position));
-        SmartDashboard.putData("Elevator Level 4", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
-        
-
-
-        // joystick.a().whileTrue(drivetrain.followPath(createHPPath()));
-        // joystick.b().whileTrue(drivetrain.followPath(createREEF1Path()));
-        // joystick.x().whileTrue(new ScoreCoral(elevator, endEffector, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
-        // joystick.y().whileTrue(new OuttakeAlgae(elevator, endEffector));
-        // joystick.a().whileTrue(new RunCommand(() -> endEffector.intakeAlgae()).until(() -> endEffector.seesAlgae()));
-        // joystick.b().whileTrue(new RunCommand(() -> endEffector.setWristPosition(Preferences.wirstPosition)));
-        // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         joystick.leftTrigger().onTrue(new OuttakeCommand(corraler));
@@ -256,7 +206,7 @@ public class RobotContainer {
 
         //pattern for 2 stage commands
         joystick.a().whileTrue(
-            new AlignToAprilTag(drivetrain, m_PhotonCameraWrapper , m_RobotState.getProcessorTags(), 0, 
+            new AlignToAprilTag(drivetrain, m_PhotonCameraWrapper , m_allianceState.getProcessorTags(), 0, 
                 () -> CameraConstants.getAlgaeXOffsetMeters(.75), () -> CameraConstants.getAlgaeYawOffestDegreesLeft(.75), () -> joystick.getLeftY(), null)
                 .alongWith(new ScoreAlgae(elevator, collector, 
                     ElevatorConstants.FLOOR.GROUND.position, AlgaeCollectorConstants.ALGAE.PROCESS.angle, joystick.b())
@@ -264,10 +214,7 @@ public class RobotContainer {
                 );
         
 
-        configureManipulatorController();                                   
-        
-
-
+        configureManipulatorController();                                  
     }
 
     public Command getAutonomousCommand() {
@@ -275,74 +222,5 @@ public class RobotContainer {
         return autoChooser.getSelected();
     }
 
-    public PathPlannerPath createTestPath(){
-        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-        new Pose2d(2.254, 6.476, Rotation2d.fromDegrees(0)),
-        new Pose2d(4.471, 6.524, Rotation2d.fromDegrees(0)),
-        new Pose2d(5.586, 5.577, Rotation2d.fromDegrees(-45))
-            );
-
-        PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
-        // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
-
-        // Create the path using the waypoints created above
-        PathPlannerPath path = new PathPlannerPath(
-              waypoints,
-               constraints,
-               null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                new GoalEndState(0, Rotation2d.fromDegrees(60)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-        );
-
-        // Prevent the path from being flipped if the coordinates are already correct
-        path.preventFlipping = true;
-
-        return path;
-    }
-
-    public PathPlannerPath createHPPath(){
-        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-        new Pose2d(1.95, 5.21, Rotation2d.fromDegrees(135)),
-        new Pose2d(1.2, 6, Rotation2d.fromDegrees(135))
-            );
-
-        PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
-        // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
-
-        // Create the path using the waypoints created above
-        PathPlannerPath path = new PathPlannerPath(
-              waypoints,
-               constraints,
-               null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                new GoalEndState(0, Rotation2d.fromDegrees(135)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-        );
-
-        // Prevent the path from being flipped if the coordinates are already correct
-        path.preventFlipping = true;
-
-        return path;
-    }
-
-    public PathPlannerPath createREEF1Path(){
-        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-        new Pose2d(1.95, 5.21, Rotation2d.fromDegrees(-50)),
-        new Pose2d(3, 3.72, Rotation2d.fromDegrees(0))
-            );
-
-        PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
-        // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
-
-        // Create the path using the waypoints created above
-        PathPlannerPath path = new PathPlannerPath(
-              waypoints,
-               constraints,
-               null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                new GoalEndState(0, Rotation2d.fromDegrees(180)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-        );
-
-        // Prevent the path from being flipped if the coordinates are already correct
-        path.preventFlipping = true;
-
-        return path;
-    }
-
+   
 }

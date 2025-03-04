@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Preferences;
 import frc.robot.PreferenceTypes.DoublePreference;
-import frc.robot.statemachines.RobotState;
 import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
@@ -34,8 +33,6 @@ public class AlignToTarget extends Command {
   PIDController driveYController;
   PIDController driveXController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-
-  RobotState m_robotState = RobotState.getInstance();
 
   /** Creates a new AlignToTarget. */
   public AlignToTarget(CommandSwerveDrivetrain drive, PhotonCameraWrapper camera, int targetID, DoublePreference adj){

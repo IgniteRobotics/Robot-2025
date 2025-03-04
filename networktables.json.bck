@@ -262,5 +262,85 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/alignCommand/drive/kP",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/alignCommand/drive/kD",
+    "type": "double",
+    "value": 0.3,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/alignCommand/adjustment",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/EndEffector/Algae/IntakePower",
+    "type": "double",
+    "value": 0.25,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/EndEffector/Algae/OuttakePower",
+    "type": "double",
+    "value": 0.25,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/EndEffector/Algae/HopperPower",
+    "type": "double",
+    "value": 0.03,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/EndEffector/Wrist/Position",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/EndEffector/Outtake Delay",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/Down Power",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/Servo Position",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
   }
 ]

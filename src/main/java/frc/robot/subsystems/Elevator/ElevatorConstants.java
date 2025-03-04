@@ -91,7 +91,8 @@ public class ElevatorConstants {
             TROUGH(4.61),
             LEVEL_2(7.40),
             LEVEL_3(15.13),
-            LEVEL_4(25.68);
+            LEVEL_4(25.68),
+            HP(25);
 
             public final double position;
             FLOOR(double value){

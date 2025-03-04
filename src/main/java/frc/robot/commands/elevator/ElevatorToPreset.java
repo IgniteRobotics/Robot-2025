@@ -7,21 +7,24 @@ package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
-import frc.robot.statemachines.RobotState;
+import frc.robot.statemachines.AlgaeState;
+import frc.robot.statemachines.CoralState;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ElevatorToPreset extends Command {
   Elevator m_elevator;
-  RobotState m_robotState;
+  CoralState m_coralState;
+  AlgaeState m_algaeState;
   private double m_targetPosition = 0;
   /** Creates a new ElevatorToPreset. */
   public ElevatorToPreset(Elevator elevator) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevator = elevator;
     addRequirements(m_elevator);
-    m_robotState = RobotState.getInstance();
+    m_coralState = CoralState.getInstance();
+    m_algaeState = AlgaeState.getInstance();
   }
 
   // Called when the command is initially scheduled.
@@ -31,10 +34,10 @@ public class ElevatorToPreset extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_robotState.getCoralTarget() != RobotState.CoralTarget.NONE) {
-      m_targetPosition = m_robotState.getCoralHeight();
-    } else if (m_robotState.getAlgaeTarget() != RobotState.AlgaeTarget.NONE) {
-      m_targetPosition = m_robotState.getAlgaeHeight();
+    if (m_coralState.getCoralTarget() != CoralState.CoralTarget.NONE) {
+      m_targetPosition = m_coralState.getCoralHeight();
+    } else if (m_algaeState.getAlgaeTarget() != AlgaeState.AlgaeTarget.NONE) {
+      m_targetPosition = m_algaeState.getAlgaeHeight();
     }
     if (m_targetPosition != m_elevator.getPosition()) {
       m_elevator.setPositionRevolutions(m_targetPosition);

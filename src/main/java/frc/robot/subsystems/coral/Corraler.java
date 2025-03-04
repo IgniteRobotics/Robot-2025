@@ -8,9 +8,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Preferences;
-import frc.robot.statemachines.RobotState;
+import frc.robot.statemachines.CoralState;
 
 @Logged
 public class Corraler extends SubsystemBase{
@@ -21,7 +22,7 @@ public class Corraler extends SubsystemBase{
     private final CANrange m_beambreak_enter;
     private final CANrange m_beambreak_prep;
 
-    private final RobotState m_robotState = RobotState.getInstance();
+    private final CoralState m_coralState = CoralState.getInstance();
 
     public Corraler(){
         m_coralMotor = new TalonFX(CorralerConstants.kCoralMotorId);
@@ -79,7 +80,8 @@ public class Corraler extends SubsystemBase{
 
     @Override
     public void periodic() {
-        m_robotState.setHasCoral(!seesCoralEnter() && coralPreped());
+        SmartDashboard.putString("Coral Target", m_coralState.getCoralTargetName());
+        m_coralState.setHasCoral(!seesCoralEnter() && coralPreped());
     }
 
 
