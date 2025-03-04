@@ -60,7 +60,7 @@ public class AlignToReef extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, m_cameraId);
+    Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, m_cameraId);
     double rotation;
     double driveX;
     double driveY;

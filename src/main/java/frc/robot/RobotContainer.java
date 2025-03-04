@@ -120,16 +120,15 @@ public class RobotContainer {
     //}};
 
     public RobotContainer() {
+        /* 
         NamedCommands.registerCommand("Score Level 4 at Reef J", null);
         NamedCommands.registerCommand("Score Level 4 at Reef L", null);
         NamedCommands.registerCommand("Score Level 4 at Reef J", null);
         NamedCommands.registerCommand("Intake at HP", null);
-
-
-
+        */
 
         autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
-        autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
+        //autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
         SmartDashboard.putData("Auto Mode", autoChooser);
 
 

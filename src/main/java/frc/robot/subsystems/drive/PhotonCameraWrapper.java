@@ -198,7 +198,45 @@ public class PhotonCameraWrapper{
 
     }
 
-    public Optional<TargetInfo> seekTargets(int[] ids, int cameraId){
+    public Optional<TargetInfo> seekGeneralTargets(int[] ids, int cameraId){
+
+        PhotonCamera cam = CameraConstants.allCameras[cameraId];
+        
+        double minimumAmbiguity = 1;
+
+        var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
+        if(newResult != null){
+            PhotonTrackedTarget target = newResult.getBestTarget();
+            if (Arrays.asList(ids).contains(target.getFiducialId()) )
+                if(target != null && target.getPoseAmbiguity() < minimumAmbiguity){
+                    return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
+                        target.getYaw(), target.getFiducialId(), cam.getName()));
+                    }
+        }
+        return Optional.empty();
+
+    }
+
+    public Optional<TargetInfo> seekIntakeTargets(int[] ids){
+
+        PhotonCamera cam = CameraConstants.photonCameraIntake;
+        
+        double minimumAmbiguity = 1;
+
+        var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
+        if(newResult != null){
+            PhotonTrackedTarget target = newResult.getBestTarget();
+            if (Arrays.asList(ids).contains(target.getFiducialId()) )
+                if(target != null && target.getPoseAmbiguity() < minimumAmbiguity){
+                    return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
+                        target.getYaw(), target.getFiducialId(), cam.getName()));
+                    }
+        }
+        return Optional.empty();
+
+    }
+
+    public Optional<TargetInfo> seekOuttakeTargets(int[] ids, int cameraId){
 
         PhotonCamera cam = CameraConstants.outtakeCameras[cameraId];
         
@@ -216,6 +254,10 @@ public class PhotonCameraWrapper{
         return Optional.empty();
 
     }
+
+
+
+
 
 
 
