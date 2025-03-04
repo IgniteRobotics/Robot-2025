@@ -12,33 +12,32 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Preferences;
 import frc.robot.commands.elevator.ToSetpoint;
-import frc.robot.statemachines.RobotState;
+import frc.robot.statemachines.AlgaeState;
+import frc.robot.statemachines.CoralState;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.algae.AlgaeCollector;
 import frc.robot.subsystems.coral.Corraler;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+
 public class Score extends SequentialCommandGroup {
-  /** Creates a new CommandDispatcher. */
-  public Score(RobotState robotState, 
-                           Elevator elevator, 
+  AlgaeState m_algaeState = AlgaeState.getInstance();
+  CoralState m_coralState = CoralState.getInstance();
+  public Score(Elevator elevator, 
                            Corraler corraler, 
                            AlgaeCollector collector,
                            CommandSwerveDrivetrain drive) {
     
     //ready to score coral
-    if (robotState.hasCoral() && robotState.getCoralHeight() != 0){
-      addCommands(new ScoreCoral(elevator, corraler, robotState.getCoralHeight(), ElevatorConstants.FLOOR.GROUND.position));
+    if (m_coralState.hasCoral() && m_coralState.getCoralHeight() != 0){
+      addCommands(new ScoreCoral(elevator, corraler, m_coralState.getCoralHeight(), ElevatorConstants.FLOOR.GROUND.position));
     //ready to score algae
-    } else if (robotState.hasAlgae() && robotState.getAlgaeHeight() != 0){
+    } else if (m_algaeState.hasAlgae() && m_algaeState.getAlgaeHeight() != 0){
       addCommands(
         new ParallelCommandGroup(
-          new ToSetpoint(elevator, robotState.getAlgaeHeight()),
-          new RunCommand(() -> collector.setWristPosition(robotState.getAlgaeWristPosition()))
+          new ToSetpoint(elevator, m_algaeState.getAlgaeHeight()),
+          new RunCommand(() -> collector.setWristPosition(m_algaeState.getAlgaeWristPosition()))
             .withName("SetWristPosition")
             .until(() -> collector.isWristAtPosition())
         ),
@@ -47,26 +46,26 @@ public class Score extends SequentialCommandGroup {
           .withTimeout(.50),
         new ParallelCommandGroup(
           new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position),
-          new RunCommand(() -> collector.setWristPosition(robotState.getAlgaeWristPosition()))
+          new RunCommand(() -> collector.setWristPosition(m_algaeState.getAlgaeWristPosition()))
             .withName("StowWrist")
             .until(() -> collector.isWristAtPosition())
         )
       );
     //ready to intake algae from reef
-    } else if (!robotState.hasCoral() && !robotState.hasAlgae() &&robotState.getAlgaeHeight() !=0){
+    } else if (!m_coralState.hasCoral() && !m_algaeState.hasAlgae() && m_algaeState.getAlgaeHeight() !=0){
       addCommands(
         new ParallelCommandGroup(
-          new ToSetpoint(elevator, robotState.getAlgaeHeight()),
-          new RunCommand(() -> collector.setWristPosition(robotState.getAlgaeWristPosition()))
+          new ToSetpoint(elevator, m_algaeState.getAlgaeHeight()),
+          new RunCommand(() -> collector.setWristPosition(m_algaeState.getAlgaeWristPosition()))
             .withName("SetWristPosition")
             .until(() -> collector.isWristAtPosition())
         ),
         new RunCommand(()-> collector.intakeAlgae())
           .withName("IntakeAlgae")
-          .until(() -> robotState.hasAlgae()),
+          .until(() -> m_algaeState.hasAlgae()),
         new ParallelCommandGroup(
-          new ToSetpoint(elevator, robotState.getAlgaeHeight()),
-          new RunCommand(() -> collector.setWristPosition(robotState.getAlgaeWristPosition()))
+          new ToSetpoint(elevator, m_algaeState.getAlgaeHeight()),
+          new RunCommand(() -> collector.setWristPosition(m_algaeState.getAlgaeWristPosition()))
             .withName("StowWrist")
             .until(() -> collector.isWristAtPosition())
         )

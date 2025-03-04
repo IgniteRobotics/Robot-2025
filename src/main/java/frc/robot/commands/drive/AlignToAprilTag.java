@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Preferences;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.generated.TunerConstants;
-import frc.robot.statemachines.RobotState;
 import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
@@ -35,9 +34,6 @@ public class AlignToAprilTag extends Command {
   PIDController driveYController;
   PIDController driveXController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-
-  RobotState m_robotState = RobotState.getInstance();
-
 
   private final int m_cameraId;
   

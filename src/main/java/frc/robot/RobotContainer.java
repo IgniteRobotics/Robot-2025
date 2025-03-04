@@ -45,7 +45,8 @@ import frc.robot.commands.drive.AlignToAprilTag;
 import frc.robot.commands.drive.AlignToTarget;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.generated.TunerConstants;
-import frc.robot.statemachines.RobotState;
+import frc.robot.statemachines.AllianceState;
+import frc.robot.statemachines.DriveState;
 import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
@@ -110,7 +111,9 @@ public class RobotContainer {
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
-    private RobotState m_RobotState = RobotState.getInstance();
+    private DriveState m_driveState = DriveState.getInstance();
+
+    private AllianceState m_allianceState = AllianceState.getInstance();
     //drive command
     //Command arcadeDrive =  new RunCommand(() -> drivetrain.drive(-joystick.getLeftY(), -joystick.getLeftX(), -joystick.getRightX(), m_RobotState.getMaxSpeed())) {{
     //   addRequirements(drivetrain);
@@ -158,9 +161,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * m_RobotState.getMaxSpeed()) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * m_RobotState.getMaxSpeed()) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * m_RobotState.getMaxRotation()) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-joystick.getLeftY() * m_driveState.getMaxSpeed()) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getLeftX() * m_driveState.getMaxSpeed()) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * m_driveState.getMaxRotation()) // Drive counterclockwise with negative X (left)
             )
         );
         
@@ -204,7 +207,7 @@ public class RobotContainer {
 
         //pattern for 2 stage commands
         joystick.a().whileTrue(
-            new AlignToAprilTag(drivetrain, m_PhotonCameraWrapper , m_RobotState.getProcessorTags(), 0, 
+            new AlignToAprilTag(drivetrain, m_PhotonCameraWrapper , m_allianceState.getProcessorTags(), 0, 
                 () -> CameraConstants.getAlgaeXOffsetMeters(.75), () -> CameraConstants.getAlgaeYawOffestDegreesLeft(.75), () -> joystick.getLeftY(), null)
                 .alongWith(new ScoreAlgae(elevator, collector, 
                     ElevatorConstants.FLOOR.GROUND.position, AlgaeCollectorConstants.ALGAE.PROCESS.angle, joystick.b())

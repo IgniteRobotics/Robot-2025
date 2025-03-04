@@ -15,10 +15,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Preferences;
 import frc.robot.PreferenceTypes.DoublePreference;
-import frc.robot.statemachines.RobotState;
+import frc.robot.statemachines.AlgaeState;
 
 @Logged
 public class AlgaeCollector extends SubsystemBase {
@@ -41,7 +42,7 @@ public class AlgaeCollector extends SubsystemBase {
 
   
 
-  private final RobotState m_robotState = RobotState.getInstance();
+  private final AlgaeState m_algaeState = AlgaeState.getInstance();
     
     
   /** Creates a new EndEffector. */
@@ -107,7 +108,7 @@ public class AlgaeCollector extends SubsystemBase {
   }
 
   public void stow(){
-    if(m_robotState.hasAlgae()){
+    if(m_algaeState.hasAlgae()){
       setWristPosition(Preferences.collectorStowPositionWithAlgae);
     }
     else{
@@ -122,7 +123,8 @@ public class AlgaeCollector extends SubsystemBase {
 
   @Override
   public void periodic() {
-    m_robotState.setHasAlgae(seesAlgae());
+    SmartDashboard.putString("Algae Target", m_algaeState.getAlgaeTargetName());
+    m_algaeState.setHasAlgae(seesAlgae());
   }
 
 }
