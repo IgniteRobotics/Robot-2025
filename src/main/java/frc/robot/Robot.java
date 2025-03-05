@@ -42,6 +42,8 @@ public class Robot extends TimedRobot {
 
   private boolean Idontcarewhatitscalled = false;
 
+  public final TestAlert alerts = new TestAlert();
+
   public Robot() {
     m_robotContainer = new RobotContainer();
     DataLogManager.start();
@@ -64,6 +66,8 @@ public class Robot extends TimedRobot {
     if (!hasAlliance) {getAllianceInfo();}
 
     CommandScheduler.getInstance().run();
+
+    alerts.Testg();
 
     /*
      * This example of adding Limelight is very simple and may not be sufficient for on-field use.
@@ -147,8 +151,6 @@ public class Robot extends TimedRobot {
   TestAlert mmmmm = new TestAlert();
   @Override
   public void simulationPeriodic() {
-        //Tests if Alert reason is true, if so activates indicator
-        
         mmmmm.test2.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
   }
 }

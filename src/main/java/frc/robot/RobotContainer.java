@@ -68,7 +68,7 @@ public class RobotContainer {
 
     private final Command autoIngestCoral = new AutoIngestCoral(endEffector);
 
-    public final TestAlert alerts = new TestAlert();
+
 
 
     /* Path follower */
