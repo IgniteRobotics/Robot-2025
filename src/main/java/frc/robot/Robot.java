@@ -85,7 +85,19 @@ public class Robot extends TimedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    if (DriverStation.isFMSAttached() && Idontcarewhatitscalled == false){
+      Epilogue.configure(config -> {
+        if (Robot.isSimulation()) {
+            config.backend = EpilogueBackend.multi(
+                    new FileBackend(DataLogManager.getLog())
+            );
+        }
+    });
+    Epilogue.bind(this);
+    Idontcarewhatitscalled = true;
+    }
+  }
 
   @Override
   public void disabledExit() {}
@@ -97,6 +109,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    Idontcarewhatitscalled = true;
   }
 
   @Override
@@ -110,20 +123,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-            if (Robot.isReal())
-        {
-            DataLogManager.start("/media/sda1/");
-        }
-
-        Epilogue.configure(config -> {
-            if (Robot.isSimulation()) {
-                config.backend = EpilogueBackend.multi(
-                        new FileBackend(DataLogManager.getLog()),
-                        new NTEpilogueBackend(NetworkTableInstance.getDefault())
-                );
-            }
-        });
-        Epilogue.bind(this);
+    Idontcarewhatitscalled = true;
     }
   
 
