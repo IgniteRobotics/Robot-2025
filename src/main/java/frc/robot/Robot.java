@@ -11,7 +11,10 @@ import com.ctre.phoenix6.Utils;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.epilogue.logging.EpilogueBackend;
 import edu.wpi.first.epilogue.logging.FileBackend;
+import edu.wpi.first.epilogue.logging.NTEpilogueBackend;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -36,6 +39,8 @@ public class Robot extends TimedRobot {
   private final RobotState m_robotState = RobotState.getInstance();
 
   private boolean hasAlliance  = false;
+
+  private boolean Idontcarewhatitscalled = false;
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -105,7 +110,22 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-  }
+            if (Robot.isReal())
+        {
+            DataLogManager.start("/media/sda1/");
+        }
+
+        Epilogue.configure(config -> {
+            if (Robot.isSimulation()) {
+                config.backend = EpilogueBackend.multi(
+                        new FileBackend(DataLogManager.getLog()),
+                        new NTEpilogueBackend(NetworkTableInstance.getDefault())
+                );
+            }
+        });
+        Epilogue.bind(this);
+    }
+  
 
   @Override
   public void teleopPeriodic() {}

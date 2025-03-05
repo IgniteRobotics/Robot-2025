@@ -18,6 +18,7 @@ public class TestAlert {
   private double ts = ((int)RobotController.getFPGATime() / 500000) % 2;
   public void Testg(){
     if (test2.get() == true){
+      ts = ((int)RobotController.getFPGATime() / 500000) % 2;
       if(ts % 2 == 1){
        flash = true;
        } else if(ts % 2 == 0){
