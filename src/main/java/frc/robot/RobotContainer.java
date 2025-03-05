@@ -172,7 +172,7 @@ public class RobotContainer {
 
         elevator.setDefaultCommand(new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position));  
 
-        collector.setDefaultCommand(new RunCommand(() -> collector.stow()));
+        collector.setDefaultCommand(new RunCommand(() -> collector.stow(), collector));
     }
 
     private void configureBindings() {
