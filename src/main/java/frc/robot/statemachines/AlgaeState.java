@@ -95,24 +95,20 @@ public class AlgaeState {
 
     public double getAlgaeWristPosition(){
         if(getAlgaeTarget() == AlgaeTarget.BARGE){
-            return AlgaeCollectorConstants.ALGAE.BARGE.angle;
+            return AlgaeCollectorConstants.WRIST.BARGE.angle;
         }
         else if (getAlgaeTarget() == AlgaeTarget.PROCESSOR){
-            return AlgaeCollectorConstants.ALGAE.PROCESS.angle;
+            return AlgaeCollectorConstants.WRIST.PROCESS.angle;
         }
         else if (getAlgaeTarget() == AlgaeTarget.REEF){
             if(driveState.getZone() == ZoneTypes.REEF.REEF_AB || driveState.getZone() == ZoneTypes.REEF.REEF_EF || driveState.getZone() == ZoneTypes.REEF.REEF_IJ){
-                return AlgaeCollectorConstants.ALGAE.REEF.angle;
+                return AlgaeCollectorConstants.WRIST.REEF.angle;
             }
             else{ 
-                return AlgaeCollectorConstants.ALGAE.REEF.angle;
+                return AlgaeCollectorConstants.WRIST.REEF.angle;
             }
         } else {
-            if (hasAlgae) {
-                return AlgaeCollectorConstants.ALGAE.STOW_FULL.angle;
-            } else {
-                return AlgaeCollectorConstants.ALGAE.STOW_EMPTY.angle;
-            }
+            return AlgaeCollectorConstants.WRIST.STOW.angle;
         }
     }
 

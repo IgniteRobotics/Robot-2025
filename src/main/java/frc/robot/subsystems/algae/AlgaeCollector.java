@@ -33,14 +33,9 @@ public class AlgaeCollector extends SubsystemBase {
   private TalonFXConfiguration m_wristTalonFXConfiguration;
   private MotorOutputConfigs m_wristMotorOutputConfigs;
 
-  private final CANrange m_beambreak_algae;
-
   private double m_wristTargetPosition;
 
   public final static double WRIST_POSITION_ERROR = 0.1;
-
-
-  
 
   private final AlgaeState m_algaeState = AlgaeState.getInstance();
     
@@ -65,22 +60,8 @@ public class AlgaeCollector extends SubsystemBase {
     m_wristMotor.getConfigurator().apply(m_wristMotorOutputConfigs);
     m_wristMotor.setPosition(0.282715);
 
-    m_beambreak_algae = new CANrange(AlgaeCollectorConstants.kAlgaeBeamBreakId);
-    
-    configureCANrange();
   }
 
-  public void configureCANrange(){
-    ProximityParamsConfigs proximityParamsConfigs = new ProximityParamsConfigs();
-
-    m_beambreak_algae.getConfigurator().refresh(proximityParamsConfigs);
-    m_beambreak_algae.getConfigurator().apply(
-      proximityParamsConfigs
-        .withProximityThreshold(Units.Inches.of(1))
-        .withProximityHysteresis(Units.Inches.of(.25))
-      );
-    
-  }
 
   public void stopAlgaeMotor(){
     m_algaeMotor.stopMotor();
@@ -107,18 +88,17 @@ public class AlgaeCollector extends SubsystemBase {
     return Math.abs(m_wristMotor.getPosition().getValue().magnitude() - m_wristTargetPosition)  <=  AlgaeCollectorConstants.WRIST_POSITION_ERROR; 
   }
 
+  public void setToIntakePosition(){
+    setWristPosition(AlgaeCollectorConstants.WRIST.REEF.angle);
+  }
+
   public void stow(){
-    if(m_algaeState.hasAlgae()){
-      setWristPosition(Preferences.collectorStowPositionWithAlgae);
-    }
-    else{
-      setWristPosition(Preferences.collectorStowPositionWithAlgae);
-    }
+    setWristPosition(Preferences.collectorStowPosition);
   }
 
   @Logged
   public boolean seesAlgae(){
-    return m_beambreak_algae.getIsDetected().getValue();
+    return false;
   }
 
   @Override

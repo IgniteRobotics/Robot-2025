@@ -47,9 +47,7 @@ public class Preferences {
     public static DoublePreference algaeOuttakePower = new DoublePreference("AlgaeCollector/OuttakePower", AlgaeCollectorConstants.OUTTAKE_ALGAE_POWER);
     public static DoublePreference algaeHoldPower = new DoublePreference("AlgaeCollector/HopperPower", AlgaeCollectorConstants.ALGAE_HOLD_POWER);
 
-    public static DoublePreference collectorStowPositionNoAlgae = new DoublePreference("AlgaeCollector/Wrist/Stow Position/No Algae", AlgaeCollectorConstants.STOW_POSITION_NO_ALGAE);
-    public static DoublePreference collectorStowPositionWithAlgae = new DoublePreference("AlgaeCollector/Wrist/Stow Position/WithAlgae", AlgaeCollectorConstants.STOW_POSITION_WITH_ALGAE);
-    
+    public static DoublePreference collectorStowPosition = new DoublePreference("AlgaeCollector/Wrist/Stow Position", AlgaeCollectorConstants.WRIST.STOW.angle);
     public static DoublePreference collectorWristPosition = new DoublePreference("AlgaeCollector/Wrist/Position",0);
 
     public static DoublePreference collectorOuttakeDelay = new DoublePreference("AlgaeCollector/Outtake Delay", 0.5);

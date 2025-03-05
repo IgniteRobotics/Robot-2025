@@ -96,7 +96,7 @@ public class AlignToAprilTag extends Command {
   
     //override with joystick input if present
     if(m_xInput != null && Math.abs(m_xInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
-      rotation = m_xInput.getAsDouble();
+      driveX = m_xInput.getAsDouble();
     }
 
     if(m_yInput != null && Math.abs(m_yInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
