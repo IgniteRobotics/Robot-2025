@@ -44,7 +44,6 @@ import frc.robot.commands.composite.ScoreCoral;
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.drive.AlignToAprilTag;
-import frc.robot.commands.drive.AlignToTarget;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.AllianceState;
@@ -172,6 +171,8 @@ public class RobotContainer {
         
 
         elevator.setDefaultCommand(new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position));  
+
+        collector.setDefaultCommand(new RunCommand(() -> collector.stow()));
     }
 
     private void configureBindings() {
@@ -208,6 +209,8 @@ public class RobotContainer {
         joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
                 Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), joystick.b())
         );
+
+        joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getRightX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
         
 
         configureManipulatorController();                                  

@@ -48,7 +48,7 @@ public class AutonAlignToReefLeft extends Command {
   @Override
   public void execute() {
 
-    Optional<TargetInfo> targeting = m_pcw.seekRightOuttakeTargets(m_allianceState.getReefTags());
+    Optional<TargetInfo> targeting = m_pcw.seekLeftOuttakeTargets(m_allianceState.getReefTags());
     double rotation;
     double driveX;
     double driveY;

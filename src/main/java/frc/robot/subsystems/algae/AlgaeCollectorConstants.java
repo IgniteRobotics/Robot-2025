@@ -55,9 +55,6 @@ public class AlgaeCollectorConstants {
     public static final double OUTTAKE_ALGAE_POWER = 0.25;
     public static final double ALGAE_HOLD_POWER = 0.03;
 
-    public static final double STOW_POSITION_WITH_ALGAE = 0.2;
-    public static final double STOW_POSITION_NO_ALGAE = 0.2;
-
 
     public static MotorOutputConfigs createAlgaeMotorOutputConfigs(){
         MotorOutputConfigs configs = new MotorOutputConfigs();
@@ -138,16 +135,15 @@ public class AlgaeCollectorConstants {
 
 
 
-    public enum ALGAE{
+    public enum WRIST{
         
         PROCESS(.15),
         REEF(-0.046143),
         BARGE(-0.15),
-        STOW_FULL(-0.2),
-        STOW_EMPTY(-0.25);
+        STOW(-0.2);
 
         public final double angle;
-        ALGAE(double value){
+        WRIST(double value){
             angle = value;
         }
 
