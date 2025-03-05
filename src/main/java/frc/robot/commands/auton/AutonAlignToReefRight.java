@@ -18,9 +18,8 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
 
-public class AutonAlignToReef extends Command {
+public class AutonAlignToReefRight extends Command {
   private final CommandSwerveDrivetrain m_drive;
-  private final int m_cameraId;
   private final AllianceState m_allianceState = AllianceState.getInstance();
   private boolean closeEnough = false;
   PhotonCameraWrapper m_pcw;
@@ -32,9 +31,8 @@ public class AutonAlignToReef extends Command {
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   /** Creates a new AlignToTarget. */
-  public AutonAlignToReef(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, int cameraID){
+  public AutonAlignToReefRight(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw){
     m_drive = drive;
-    m_cameraId = cameraID;
     m_pcw = pcw;
     addRequirements(m_drive);
   }
@@ -50,39 +48,40 @@ public class AutonAlignToReef extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    closeEnough = true; 
 
-    Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(m_allianceState.getReefTags(), m_cameraId);
+    Optional<TargetInfo> targeting = m_pcw.seekRightOuttakeTargets(m_allianceState.getReefTags());
     double rotation;
     double driveX;
     double driveY;
 
     //TODO: Add constant for 0.1
     if(targeting.isPresent()){
+
       double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
+      rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
+      SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
+
+      double offset = CameraConstants.offsetToBumper.get(targeting.get().getCameraName());
+      driveX = driveXController.calculate(targeting.get().getDistance(), offset);
+      SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
+      
+      double yawOffset = CameraConstants.getCorallYawOffsetDegreesRight(0.02);
+      driveY = -driveYController.calculate(targeting.get().getYaw(), yawOffset);
+      SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
+
+      closeEnough = true; 
+      
+      if(Math.abs(targeting.get().getDistance() - offset) > 0.1){
+        closeEnough = false;
+      }
 
       if(Math.abs(m_drive.getYaw() - targetHeading) > 0.1){
         closeEnough = false;
       }
 
-      rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
-      SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
-
-      double offset = CameraConstants.offsetToBumper.get(targeting.get().getCameraName());
-
-      if(Math.abs(targeting.get().getDistance() - offset) > 0.1){
+      if(Math.abs(targeting.get().getYaw() - yawOffset) > 0.1){
         closeEnough = false;
       }
-
-      driveX = driveXController.calculate(targeting.get().getDistance(), offset);
-      SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
-      
-      //TODO: Add Constant for -1
-      if(Math.abs(targeting.get().getDistance() - (-1)) > 0.1){
-        closeEnough = false;
-      }
-      driveY = -driveYController.calculate(targeting.get().getYaw(), -1);
-      SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
     }
 
     else{

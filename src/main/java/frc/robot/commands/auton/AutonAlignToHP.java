@@ -51,38 +51,37 @@ public class AutonAlignToHP extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    closeEnough = true;
-
     Optional<TargetInfo> targeting = m_pcw.seekIntakeTargets(m_allianceState.getHumanPlayerTags());
     double rotation;
     double driveX;
     double driveY;
 
     if(targeting.isPresent()){
+      
       double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
+      rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
+      SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
+
+      double offset = CameraConstants.offsetToBumper.get(targeting.get().getCameraName());
+      driveX = driveXController.calculate(targeting.get().getDistance(), offset);
+      SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
+
+      driveY = -driveYController.calculate(targeting.get().getYaw(), 0);
+      SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
+
+      closeEnough = true; 
+      
+      if(Math.abs(targeting.get().getDistance() - offset) > 0.1){
+        closeEnough = false;
+      }
 
       if(Math.abs(m_drive.getYaw() - targetHeading) > 0.1){
         closeEnough = false;
       }
 
-      rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
-      SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
-
-      double offset = CameraConstants.offsetToBumper.get(targeting.get().getCameraName());
-
-      if(Math.abs(targeting.get().getDistance() - offset) > 0.1){
+      if(Math.abs(targeting.get().getYaw()) > 0.1){
         closeEnough = false;
       }
-
-      driveX = driveXController.calculate(targeting.get().getDistance(), offset);
-      SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
-      
-      //TODO: Add Constant for -1
-      if(Math.abs(targeting.get().getDistance() - (-1)) > 0.1){
-        closeEnough = false;
-      }
-      driveY = -driveYController.calculate(targeting.get().getYaw(), -1);
-      SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
     }
 
     else{

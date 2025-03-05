@@ -236,9 +236,9 @@ public class PhotonCameraWrapper{
 
     }
 
-    public Optional<TargetInfo> seekOuttakeTargets(int[] ids, int cameraId){
+    public Optional<TargetInfo> seekRightOuttakeTargets(int[] ids){
 
-        PhotonCamera cam = CameraConstants.outtakeCameras[cameraId];
+        PhotonCamera cam = CameraConstants.photonCameraOuttakeRight;
         
         double minimumAmbiguity = 1;
 
@@ -255,11 +255,43 @@ public class PhotonCameraWrapper{
 
     }
 
+    public Optional<TargetInfo> seekLeftOuttakeTargets(int[] ids){
 
+        PhotonCamera cam = CameraConstants.photonCameraOuttakeLeft;
+        
+        double minimumAmbiguity = 1;
 
+        var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
+        if(newResult != null){
+            PhotonTrackedTarget target = newResult.getBestTarget();
+            if (Arrays.asList(ids).contains(target.getFiducialId()) )
+                if(target != null && target.getPoseAmbiguity() < minimumAmbiguity){
+                    return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
+                        target.getYaw(), target.getFiducialId(), cam.getName()));
+                    }
+        }
+        return Optional.empty();
 
+    }
 
+    public Optional<TargetInfo> seekGeneralOuttakeTargets(int[] ids, int cameraIndex){
 
+        PhotonCamera cam = CameraConstants.outtakeCameras[cameraIndex];
+        
+        double minimumAmbiguity = 1;
+
+        var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
+        if(newResult != null){
+            PhotonTrackedTarget target = newResult.getBestTarget();
+            if (Arrays.asList(ids).contains(target.getFiducialId()) )
+                if(target != null && target.getPoseAmbiguity() < minimumAmbiguity){
+                    return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
+                        target.getYaw(), target.getFiducialId(), cam.getName()));
+                    }
+        }
+        return Optional.empty();
+
+    }
 
     private Optional<PhotonTrackedTarget> lookForTarget(PhotonPipelineResult result, int targetId){
         for (var target : result.getTargets()){

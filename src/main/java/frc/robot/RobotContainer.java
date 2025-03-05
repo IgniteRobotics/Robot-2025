@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.commands.auton.AutonComposites;
 import frc.robot.commands.composite.AutoScoreCoralGroup;
 import frc.robot.commands.composite.IntakeAlgae;
 import frc.robot.commands.composite.OuttakeAlgae;
@@ -119,15 +120,15 @@ public class RobotContainer {
 
 
     public RobotContainer() {
-        /* 
-        NamedCommands.registerCommand("Score Level 4 at Reef J", null);
-        NamedCommands.registerCommand("Score Level 4 at Reef L", null);
-        NamedCommands.registerCommand("Score Level 4 at Reef J", null);
-        NamedCommands.registerCommand("Intake at HP", null);
-        */
+        
+        NamedCommands.registerCommand("Score Level 4 at Reef K", AutonComposites.ScoreLevel4ReefK(drivetrain, m_PhotonCameraWrapper, elevator, corraler));
+        NamedCommands.registerCommand("Score Level 4 at Reef L", AutonComposites.ScoreLevel4ReefL(drivetrain, m_PhotonCameraWrapper, elevator, corraler));
+        NamedCommands.registerCommand("Score Level 4 at Reef J", AutonComposites.ScoreLevel4ReefJ(drivetrain, m_PhotonCameraWrapper, elevator, corraler));
+        NamedCommands.registerCommand("Intake at HP", AutonComposites.IntakeCoralHP(drivetrain, m_PhotonCameraWrapper, elevator));
+        
 
         autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
-        //autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
+        autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
         SmartDashboard.putData("Auto Mode", autoChooser);
 
 
