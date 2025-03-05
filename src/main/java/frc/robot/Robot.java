@@ -124,17 +124,11 @@ public class Robot extends TimedRobot {
   @Override
   public void testExit() {}
 
-  @NotLogged TestAlert mmmmm = new TestAlert();
-  private boolean factsBro = false;
+  TestAlert mmmmm = new TestAlert();
   @Override
   public void simulationPeriodic() {
         //Tests if Alert reason is true, if so activates indicator
         
         mmmmm.test2.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
-        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-          factsBro = true;
-        } else {
-          factsBro = false;
-        }
   }
 }
