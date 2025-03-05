@@ -1,36 +1,26 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
-package frc.robot.commands.drive;
+package frc.robot.commands.auton;
 
 import java.util.Optional;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Preferences;
 import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.statemachines.AllianceState;
 import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.epilogue.Logged;
 
-
-@Logged
-public class AlignToReef extends Command {
+public class AutonAlignToReefLeft extends Command {
   private final CommandSwerveDrivetrain m_drive;
-  private final int m_cameraId;
-  private final DoublePreference adjustment;
-  private final int targetIDs[] = {17,18,19,20,21,22 };
-  private CommandXboxController m_joystick;
+  private final AllianceState m_allianceState = AllianceState.getInstance();
+  private boolean closeEnough = false;
   PhotonCameraWrapper m_pcw;
   
 
@@ -40,13 +30,10 @@ public class AlignToReef extends Command {
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   /** Creates a new AlignToTarget. */
-  public AlignToReef(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, int cameraID, DoublePreference adj, CommandXboxController joystick){
+  public AutonAlignToReefLeft(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw){
     m_drive = drive;
-    m_cameraId = cameraID;
     m_pcw = pcw;
-    adjustment = adj;
     addRequirements(m_drive);
-    m_joystick = joystick;
   }
 
   // Called when the command is initially scheduled.
@@ -60,22 +47,40 @@ public class AlignToReef extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Optional<TargetInfo> targeting = m_pcw.seekGeneralOuttakeTargets(targetIDs, m_cameraId);
+
+    Optional<TargetInfo> targeting = m_pcw.seekRightOuttakeTargets(m_allianceState.getReefTags());
     double rotation;
     double driveX;
     double driveY;
 
+    //TODO: Add constant for 0.1
     if(targeting.isPresent()){
+
       double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
       rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
       SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
 
-      double offset = CameraConstants.offsetToBumper.get(targeting.get().getCameraName());
-      driveX = driveXController.calculate(targeting.get().getDistance(), offset);
+      double xOffset = CameraConstants.offsetToBumper.get(targeting.get().getCameraName());
+      driveX = driveXController.calculate(targeting.get().getDistance(), xOffset);
       SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
       
-      driveY = -driveYController.calculate(targeting.get().getYaw(), adjustment.getValue());
+      double yawOffset = CameraConstants.getCorallYawOffsetDegreesLeft(0.02);
+      driveY = -driveYController.calculate(targeting.get().getYaw(), yawOffset);
       SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
+
+      closeEnough = true; 
+
+      if(Math.abs(targeting.get().getDistance() - xOffset) > 0.1){
+        closeEnough = false;
+      }
+
+      if(Math.abs(m_drive.getYaw() - targetHeading) > 0.1){
+        closeEnough = false;
+      }
+
+      if(Math.abs(targeting.get().getYaw() - yawOffset) > 0.1){
+        closeEnough = false;
+      }
     }
 
     else{
@@ -89,7 +94,7 @@ public class AlignToReef extends Command {
     SmartDashboard.putNumber("Alignment/Power/driveX", driveX);
     SmartDashboard.putNumber("Alignment/Power/driveY", driveY);
     
-    m_drive.driveRobotCentric(m_joystick.getLeftY(), driveY, rotation);
+    m_drive.driveRobotCentric(driveX, driveY, rotation);
   }
 
   // Called once the command ends or is interrupted.
@@ -99,6 +104,6 @@ public class AlignToReef extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return closeEnough;
   }
 }
