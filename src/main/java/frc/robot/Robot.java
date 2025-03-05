@@ -10,6 +10,8 @@ import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.epilogue.logging.FileBackend;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -122,13 +124,13 @@ public class Robot extends TimedRobot {
   @Override
   public void testExit() {}
 
-
+  @NotLogged TestAlert mmmmm = new TestAlert();
   private boolean factsBro = false;
   @Override
   public void simulationPeriodic() {
         //Tests if Alert reason is true, if so activates indicator
-        TestAlert mmmmm = new TestAlert();
-        TestAlert().test2.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
+        
+        mmmmm.test2.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
           factsBro = true;
         } else {

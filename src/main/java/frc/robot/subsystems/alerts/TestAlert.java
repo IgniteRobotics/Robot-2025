@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.RobotController;
 
 @Logged
 public class TestAlert {
-  public Alert test2 = new Alert("test alert", AlertType.kInfo);
+  @NotLogged public Alert test2 = new Alert("test alert", AlertType.kInfo);
   private boolean flash = false;
   private double ts = ((int)RobotController.getFPGATime() / 500000) % 2;
   public void Testg(){
