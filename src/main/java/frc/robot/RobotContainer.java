@@ -144,18 +144,18 @@ public class RobotContainer {
     }
 
     private void configureManipulatorController(){
-        coralTroughButton.whileTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.TROUGH)));
-        coralL2LeftButton.whileTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.L2_LEFT)));
-        coralL2RightButton.whileTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.L2_RIGHT)));
-        coralL3LeftButton.whileTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.L3_LEFT)));
-        coralL3RightButton.whileTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.L3_RIGHT)));
-        coralL4LeftButton.whileTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.L4_LEFT)));
-        coralL4RightButton.whileTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.L4_RIGHT)));
-        algaeProcessorButton.whileTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.PROCESSOR)));
-        algaeReefButton.whileTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.REEF)));
-        algaeBargeButton.whileTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.BARGE)));
-        coralCancelButton.whileTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.NONE)));
-        algaeCancelButton.whileTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.NONE)));
+        coralTroughButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.TROUGH)));
+        coralL2LeftButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.L2_LEFT)));
+        coralL2RightButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.L2_RIGHT)));
+        coralL3LeftButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.L3_LEFT)));
+        coralL3RightButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.L3_RIGHT)));
+        coralL4LeftButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.L4_LEFT)));
+        coralL4RightButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.L4_RIGHT)));
+        algaeProcessorButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.PROCESSOR)));
+        algaeReefButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.REEF)));
+        algaeBargeButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.BARGE)));
+        coralCancelButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.NONE)));
+        algaeCancelButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.NONE)));
        
     }
 
