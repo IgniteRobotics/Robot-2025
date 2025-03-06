@@ -221,7 +221,7 @@ public class RobotContainer {
 
         //score coral.
         joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
-                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), joystick.b())
+                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), joystick.rightTrigger())
         );
 
         joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getRightX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));

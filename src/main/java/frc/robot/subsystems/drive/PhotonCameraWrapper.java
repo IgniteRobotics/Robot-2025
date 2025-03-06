@@ -205,13 +205,19 @@ public class PhotonCameraWrapper{
         double minimumAmbiguity = 1;
 
         var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
-        if(newResult != null){
-            PhotonTrackedTarget target = newResult.getBestTarget();
-            if (Arrays.asList(ids).contains(target.getFiducialId()) )
-                if(target != null && target.getPoseAmbiguity() < minimumAmbiguity){
+        SmartDashboard.putBoolean("cameraHasTarget", newResult.hasTargets());
+        if(newResult != null && newResult.hasTargets()){
+            for (PhotonTrackedTarget target : newResult.getTargets()) {
+                if (Arrays.asList(ids).contains(target.getFiducialId()) && target.getPoseAmbiguity() < minimumAmbiguity){
                     return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
                         target.getYaw(), target.getFiducialId(), cam.getName()));
-                    }
+                }
+            }
+            // if (target != null && Arrays.asList(ids).contains(target.getFiducialId()) )
+            //     if(target.getPoseAmbiguity() < minimumAmbiguity){
+            //         return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
+            //             target.getYaw(), target.getFiducialId(), cam.getName()));
+            //         }
         }
         return Optional.empty();
 
@@ -226,8 +232,8 @@ public class PhotonCameraWrapper{
         var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
         if(newResult != null){
             PhotonTrackedTarget target = newResult.getBestTarget();
-            if (Arrays.asList(ids).contains(target.getFiducialId()) )
-                if(target != null && target.getPoseAmbiguity() < minimumAmbiguity){
+            if (target != null && Arrays.asList(ids).contains(target.getFiducialId()) )
+                if(target.getPoseAmbiguity() < minimumAmbiguity){
                     return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
                         target.getYaw(), target.getFiducialId(), cam.getName()));
                     }
@@ -245,8 +251,8 @@ public class PhotonCameraWrapper{
         var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
         if(newResult != null){
             PhotonTrackedTarget target = newResult.getBestTarget();
-            if (Arrays.asList(ids).contains(target.getFiducialId()) )
-                if(target != null && target.getPoseAmbiguity() < minimumAmbiguity){
+            if (target != null && Arrays.asList(ids).contains(target.getFiducialId()) )
+                if(target.getPoseAmbiguity() < minimumAmbiguity){
                     return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
                         target.getYaw(), target.getFiducialId(), cam.getName()));
                     }
@@ -264,8 +270,8 @@ public class PhotonCameraWrapper{
         var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
         if(newResult != null){
             PhotonTrackedTarget target = newResult.getBestTarget();
-            if (Arrays.asList(ids).contains(target.getFiducialId()) )
-                if(target != null && target.getPoseAmbiguity() < minimumAmbiguity){
+            if (target != null &&  Arrays.asList(ids).contains(target.getFiducialId()) )
+                if(target.getPoseAmbiguity() < minimumAmbiguity){
                     return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
                         target.getYaw(), target.getFiducialId(), cam.getName()));
                     }
@@ -283,8 +289,8 @@ public class PhotonCameraWrapper{
         var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
         if(newResult != null){
             PhotonTrackedTarget target = newResult.getBestTarget();
-            if (Arrays.asList(ids).contains(target.getFiducialId()) )
-                if(target != null && target.getPoseAmbiguity() < minimumAmbiguity){
+            if (target != null && Arrays.asList(ids).contains(target.getFiducialId()) )
+                if(target.getPoseAmbiguity() < minimumAmbiguity){
                     return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
                         target.getYaw(), target.getFiducialId(), cam.getName()));
                     }
