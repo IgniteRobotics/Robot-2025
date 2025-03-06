@@ -112,6 +112,6 @@ public class ElevatorConstants {
             }
         }
 
-        public final static double POSITION_ERROR = 0.1;
+        public final static double POSITION_ERROR = 0.25;
 }
 
