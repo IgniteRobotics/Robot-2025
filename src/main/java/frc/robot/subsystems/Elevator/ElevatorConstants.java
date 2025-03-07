@@ -91,7 +91,7 @@ public class ElevatorConstants {
             TROUGH(4.61),
             LEVEL_2(8.40),
             LEVEL_3(16.13),
-            LEVEL_4(26.68),
+            LEVEL_4(25.5),
             HP(.25);
 
             public final double position;
@@ -104,7 +104,7 @@ public class ElevatorConstants {
             PROCESSOR(1),
             LOW_REEF(8.6),
             HIGH_REEF(14.9),
-            BARGE(2);
+            BARGE(25.5);
 
             public final double height;
             ALGAE(double value){
