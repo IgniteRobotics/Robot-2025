@@ -4,6 +4,7 @@
 
 package frc.robot.statemachines;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.drive.CameraConstants;
 
@@ -11,7 +12,7 @@ public class AllianceState {
 
     private static AllianceState single_instance = null;
 
-    private Alliance alliance = Alliance.Blue;
+    
 
     private AllianceState() {
         
@@ -25,37 +26,37 @@ public class AllianceState {
         return single_instance;
     }
 
-    public void setAlliance(Alliance newAlliance){
-        alliance = newAlliance;
-    }
+    // public void setAlliance(Alliance newAlliance){
+    //     alliance = newAlliance;
+    // }
 
     public Alliance getAlliance(){
-        return alliance;
+        return DriverStation.isDSAttached() ? DriverStation.getAlliance().get() : Alliance.Blue;
     }
 
     public int[] getReefTags(){
-        if(alliance == Alliance.Red){
+        if(getAlliance() == Alliance.Red){
             return CameraConstants.RED_REEF_TAGS;
         }
         else return CameraConstants.BLUE_REEF_TAGS;
     }
 
     public int[] getBargeTags(){
-        if(alliance == Alliance.Red){
+        if(getAlliance() == Alliance.Red){
             return CameraConstants.RED_BARGE_TAGS;
         }
         else return CameraConstants.BLUE_BARGE_TAGS;
     }
 
     public int[] getProcessorTags(){
-        if(alliance == Alliance.Red){
+        if(getAlliance() == Alliance.Red){
             return CameraConstants.RED_PROCESSOR_TAGS;
         }
         else return CameraConstants.BLUE_PROCESSOR_TAGS;
     }   
 
     public int[] getHumanPlayerTags(){
-        if(alliance == Alliance.Red){
+        if(getAlliance() == Alliance.Red){
             return CameraConstants.RED_HUMAN_PLAYER_TAGS;
         } else {
             return CameraConstants.BLUE_HUMAN_PLAYER_TAGS;

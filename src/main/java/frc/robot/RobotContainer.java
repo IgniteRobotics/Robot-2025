@@ -44,7 +44,8 @@ import frc.robot.commands.composite.ScoreCoral;
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.drive.AlignIntakeSide;
-import frc.robot.commands.drive.AlignToAprilTag;
+import frc.robot.commands.drive.AlignThenDrive;
+import frc.robot.commands.drive.AlignToReefTags;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.AllianceState;
@@ -225,9 +226,22 @@ public class RobotContainer {
                 Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), joystick.rightTrigger())
         );
 
-        joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getLeftX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
+        //joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getLeftX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
         joystick.x().whileTrue(new AlignIntakeSide(drivetrain, m_PhotonCameraWrapper, m_allianceState.getHumanPlayerTags(), 2, 0.1, 0, () -> joystick.getLeftY(), () -> joystick.getLeftX()));
         
+        joystick.b().onTrue(
+            new ToSetpoint(elevator, ElevatorConstants.ALGAE.LOW_REEF.height).alongWith(
+                new RunCommand(() -> collector.setToIntakePosition()).alongWith(
+                    new AlignThenDrive(drivetrain, m_PhotonCameraWrapper, AllianceState.getInstance().getReefTags(), 1, 0.5, CameraConstants.getAlgaeYawOffsetDegreesRight(0.5),() -> joystick.getLeftY(),() ->  joystick.getLeftX()).alongWith(
+                        new RunCommand(() -> collector.intakeAlgae())
+                    )
+                )
+            )
+        ).onFalse(
+            new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
+                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))
+            )
+        );
 
         configureManipulatorController();                                  
     }

@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Preferences;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.generated.TunerConstants;
+import frc.robot.statemachines.AllianceState;
+import frc.robot.statemachines.CoralState;
 import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
@@ -27,7 +29,7 @@ import edu.wpi.first.epilogue.Logged;
 
 
 @Logged
-public class AlignToAprilTag extends Command {
+public class AlignToReefTags extends Command {
   private final CommandSwerveDrivetrain m_drive;
   PhotonCameraWrapper m_pcw;
   PIDController rotationController;
@@ -35,7 +37,7 @@ public class AlignToAprilTag extends Command {
   PIDController driveXController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-  private final int m_cameraId;
+  private int m_cameraId;
   
   private int targetIDs[] = {};
 
@@ -47,15 +49,11 @@ public class AlignToAprilTag extends Command {
   private double m_yawDegrees;
   
   /** Creates a new AlignToTarget. */
-  public AlignToAprilTag(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, int[] targets, int cameraID, double distanceMeters, double yawDegrees, DoubleSupplier xInput, DoubleSupplier yInput){
+  public AlignToReefTags(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, DoubleSupplier xInput, DoubleSupplier yInput){
     m_drive = drive;
-    m_cameraId = cameraID;
     m_pcw = pcw;
-    m_distanceMeters = distanceMeters;
-    m_yawDegrees = yawDegrees;
     m_xInput = xInput;
     m_yInput = yInput;
-    targetIDs = targets;
     addRequirements(m_drive);
   }
 
@@ -65,13 +63,19 @@ public class AlignToAprilTag extends Command {
     rotationController = new PIDController(Preferences.alignRotKP.get(), 0, Preferences.alignRotKD.get());
     driveYController = new PIDController(Preferences.alignDriveYKP.get(), 0, Preferences.alignDriveYKD.get());
     driveXController = new PIDController(Preferences.alignDriveXKP.get(), 0, Preferences.alignDriveXKD.get());
+    targetIDs = AllianceState.getInstance().getReefTags();
+    m_cameraId = CoralState.getInstance().pickCamera();
+    m_distanceMeters = Preferences.coralXDriveOffset.get();
+    m_yawDegrees = CoralState.getInstance().getYCoralAlignment(m_distanceMeters);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
-    //Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, m_cameraId);
+    //Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
+    
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, m_cameraId);
     double rotation;
     double driveX;
     double driveY;

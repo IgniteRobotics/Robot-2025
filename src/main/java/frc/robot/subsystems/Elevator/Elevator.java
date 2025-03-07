@@ -116,6 +116,12 @@ public class Elevator implements Subsystem {
   public double getPosition(){
     return m_elevatorMotorLeader.getPosition().getValueAsDouble();
   }
+
+  @Logged
+  public double getTargetPosition(){
+    return m_targetPosition;
+  
+  }
   
   @Logged
   public boolean atSetpoint(){

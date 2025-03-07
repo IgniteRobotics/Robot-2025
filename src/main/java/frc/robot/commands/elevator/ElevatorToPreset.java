@@ -39,14 +39,17 @@ public class ElevatorToPreset extends Command {
     } else if (m_algaeState.getAlgaeTarget() != AlgaeState.AlgaeTarget.NONE) {
       m_targetPosition = m_algaeState.getAlgaeHeight();
     }
-    if (m_targetPosition != m_elevator.getPosition()) {
+    if (m_targetPosition != m_elevator.getTargetPosition()){
       m_elevator.setPositionRevolutions(m_targetPosition);
     }
+  
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_elevator.stopMotors();
+  }
 
   // Returns true when the command should end.
   @Override

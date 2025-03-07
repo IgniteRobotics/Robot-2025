@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.PreferenceTypes.DoublePreference;
-import frc.robot.commands.drive.AlignToAprilTag;
+import frc.robot.commands.drive.AlignToReefTags;
 import frc.robot.statemachines.AlgaeState;
 import frc.robot.statemachines.CoralState;
 import frc.robot.statemachines.CoralState.CoralTarget;
@@ -66,9 +66,7 @@ public class AutoScoreCoralGroup extends ParallelCommandGroup{
   }
 
   private Command createAlignCommand(){
-    return new AlignToAprilTag(m_swerveDrivetrain, m_PhotonCameraWrapper,
-        AllianceState.getInstance().getReefTags(), pickCamera(), 
-        CameraConstants.getXOffsetMeters(m_distancePreference.get()), CoralState.getInstance().getYCoralAlignment(m_distancePreference.get()), 
+    return new AlignToReefTags(m_swerveDrivetrain, m_PhotonCameraWrapper,
         m_DriveFwdBackSupplier, null);
   
   }
@@ -77,17 +75,7 @@ public class AutoScoreCoralGroup extends ParallelCommandGroup{
   //  return 
   // }
 
-  private int pickCamera(){
-    //LEFT CAMERA IS ZERO
-    //ALIGN TO LEFT POST IS LEFT CAMERA (I HOPE!)
-    CoralState c = CoralState.getInstance();
-    if (c.coralTargetL2_LEFT() || c.coralTargetL3_LEFT() || c.coralTargetL4_LEFT() || c.coralTarget_TROUGH()){
-      return 0;
-    }
-    else{
-      return 1;
-    }
-  }
+  
  
 
 }
