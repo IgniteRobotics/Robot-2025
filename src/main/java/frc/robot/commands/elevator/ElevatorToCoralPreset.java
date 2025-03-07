@@ -13,13 +13,13 @@ import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ElevatorToPreset extends Command {
+public class ElevatorToCoralPreset extends Command {
   Elevator m_elevator;
   CoralState m_coralState;
   AlgaeState m_algaeState;
   private double m_targetPosition = 0;
   /** Creates a new ElevatorToPreset. */
-  public ElevatorToPreset(Elevator elevator) {
+  public ElevatorToCoralPreset(Elevator elevator) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevator = elevator;
     addRequirements(m_elevator);
@@ -36,12 +36,11 @@ public class ElevatorToPreset extends Command {
   public void execute() {
     if (m_coralState.getCoralTarget() != CoralState.CoralTarget.NONE) {
       m_targetPosition = m_coralState.getCoralHeight();
-    } else if (m_algaeState.getAlgaeTarget() != AlgaeState.AlgaeTarget.NONE) {
-      m_targetPosition = m_algaeState.getAlgaeHeight();
+      if (m_targetPosition != m_elevator.getTargetPosition()){
+        m_elevator.setPositionRevolutions(m_targetPosition);
+      }
     }
-    if (m_targetPosition != m_elevator.getTargetPosition()){
-      m_elevator.setPositionRevolutions(m_targetPosition);
-    }
+   
   
   }
 
