@@ -40,12 +40,13 @@ import frc.robot.commands.composite.IntakeAlgae;
 import frc.robot.commands.composite.OuttakeAlgae;
 import frc.robot.commands.composite.Score;
 import frc.robot.commands.composite.ScoreAlgae;
-import frc.robot.commands.composite.ScoreCoral;
+import frc.robot.commands.composite.SemiAutoScoreCoralGroup;
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.drive.AlignIntakeSide;
 import frc.robot.commands.drive.AlignThenDrive;
 import frc.robot.commands.drive.AlignToReefTags;
+import frc.robot.commands.elevator.ElevatorToAlgaePreset;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.AllianceState;
@@ -85,9 +86,9 @@ public class RobotContainer {
     private final JoystickButton coralL4LeftButton = new JoystickButton(manipulatorJoystick, 6);
     private final JoystickButton coralL4RightButton = new JoystickButton(manipulatorJoystick, 7);
     private final JoystickButton algaeProcessorButton = new JoystickButton(manipulatorJoystick, 8);
-    private final JoystickButton algaeReefButton = new JoystickButton(manipulatorJoystick, 9);
-    private final JoystickButton algaeBargeButton = new JoystickButton(manipulatorJoystick, 10);
-    private final JoystickButton algaeCancelButton = new JoystickButton(manipulatorJoystick, 11);
+    private final JoystickButton algaeReefLowButton = new JoystickButton(manipulatorJoystick, 9);
+    private final JoystickButton algaeReefHighButton = new JoystickButton(manipulatorJoystick, 10);
+    private final JoystickButton algaeBargeButton = new JoystickButton(manipulatorJoystick, 11);
     private final JoystickButton coralCancelButton = new JoystickButton(manipulatorJoystick, 12);
 
 
@@ -142,6 +143,7 @@ public class RobotContainer {
 
         configureSubsytemDefaultCommands();
         configureBindings();
+        configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
@@ -154,10 +156,10 @@ public class RobotContainer {
         coralL4LeftButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.L4_LEFT)));
         coralL4RightButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.L4_RIGHT)));
         algaeProcessorButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.PROCESSOR)));
-        algaeReefButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.REEF)));
+        algaeReefLowButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.LOW_REEF)));
+        algaeReefHighButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.HIGH_REEF)));
         algaeBargeButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.BARGE)));
         coralCancelButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.NONE)));
-        algaeCancelButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.NONE)));
        
     }
 
@@ -203,7 +205,7 @@ public class RobotContainer {
 
         joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        joystick.leftTrigger().onTrue(new OuttakeCommand(corraler));
+        joystick.leftBumper().onTrue(new OuttakeCommand(corraler));
 
         //joystick.rightBumper().onTrue(new InstantCommand( () -> elevator.alterMech(armLength.getValue(), wristAngle.getValue())));
 
@@ -226,11 +228,15 @@ public class RobotContainer {
                 Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), joystick.rightTrigger())
         );
 
+        joystick.y().whileTrue(new SemiAutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
+                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), joystick.rightTrigger(), joystick.leftTrigger())
+        );
+
         //joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getLeftX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
         joystick.x().whileTrue(new AlignIntakeSide(drivetrain, m_PhotonCameraWrapper, m_allianceState.getHumanPlayerTags(), 2, 0.1, 0, () -> joystick.getLeftY(), () -> joystick.getLeftX()));
         
         joystick.b().onTrue(
-            new ToSetpoint(elevator, ElevatorConstants.ALGAE.LOW_REEF.height).alongWith(
+            new ElevatorToAlgaePreset(elevator).alongWith(
                 new RunCommand(() -> collector.setToIntakePosition()).alongWith(
                     new AlignThenDrive(drivetrain, m_PhotonCameraWrapper, AllianceState.getInstance().getReefTags(), 1, 0.5, CameraConstants.getAlgaeYawOffsetDegreesRight(0.5),() -> joystick.getLeftY(),() ->  joystick.getLeftX()).alongWith(
                         new RunCommand(() -> collector.intakeAlgae())
@@ -243,7 +249,7 @@ public class RobotContainer {
             )
         );
 
-        configureManipulatorController();                                  
+                                         
     }
 
     public Command getAutonomousCommand() {
