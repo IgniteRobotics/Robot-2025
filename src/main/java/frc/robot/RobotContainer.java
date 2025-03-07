@@ -43,6 +43,7 @@ import frc.robot.commands.composite.ScoreAlgae;
 import frc.robot.commands.composite.ScoreCoral;
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
+import frc.robot.commands.drive.AlignIntakeSide;
 import frc.robot.commands.drive.AlignToAprilTag;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.generated.TunerConstants;
@@ -224,7 +225,8 @@ public class RobotContainer {
                 Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), joystick.rightTrigger())
         );
 
-        joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getRightX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
+        joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getLeftX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
+        joystick.x().whileTrue(new AlignIntakeSide(drivetrain, m_PhotonCameraWrapper, m_allianceState.getHumanPlayerTags(), 2, 0.1, 0, () -> joystick.getLeftY(), () -> joystick.getLeftX()));
         
 
         configureManipulatorController();                                  

@@ -27,7 +27,7 @@ import edu.wpi.first.epilogue.Logged;
 
 
 @Logged
-public class AlignToAprilTag extends Command {
+public class AlignIntakeSide extends Command {
   private final CommandSwerveDrivetrain m_drive;
   PhotonCameraWrapper m_pcw;
   PIDController rotationController;
@@ -47,7 +47,7 @@ public class AlignToAprilTag extends Command {
   private double m_yawDegrees;
   
   /** Creates a new AlignToTarget. */
-  public AlignToAprilTag(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, int[] targets, int cameraID, double distanceMeters, double yawDegrees, DoubleSupplier xInput, DoubleSupplier yInput){
+  public AlignIntakeSide(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, int[] targets, int cameraID, double distanceMeters, double yawDegrees, DoubleSupplier xInput, DoubleSupplier yInput){
     m_drive = drive;
     m_cameraId = cameraID;
     m_pcw = pcw;
@@ -71,7 +71,6 @@ public class AlignToAprilTag extends Command {
   @Override
   public void execute() {
     Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
-    //Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, m_cameraId);
     double rotation;
     double driveX;
     double driveY;
@@ -85,7 +84,9 @@ public class AlignToAprilTag extends Command {
       driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
       SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
       
-      driveY = -driveYController.calculate(targeting.get().getYaw(), m_yawDegrees);
+      //this is positive because of the camera location.
+      //TODO Generalize.
+      driveY = driveYController.calculate(targeting.get().getYaw(), m_yawDegrees);
       SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
     }
 
@@ -97,7 +98,8 @@ public class AlignToAprilTag extends Command {
   
     //override with joystick input if present
     if(m_xInput != null && Math.abs(m_xInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
-      driveX = m_xInput.getAsDouble();
+      driveX = -m_xInput.getAsDouble();
+      driveY = 0;
     }
 
     if(m_yInput != null && Math.abs(m_yInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
