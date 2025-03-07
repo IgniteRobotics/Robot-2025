@@ -139,7 +139,7 @@ public class AlgaeCollectorConstants {
         
         PROCESS(-0.12),
         REEF(-0.046143),
-        BARGE(-0.15),
+        BARGE(0.15),
         STOW(0.2);
 
         public final double angle;

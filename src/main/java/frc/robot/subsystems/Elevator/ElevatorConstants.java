@@ -47,6 +47,7 @@ public class ElevatorConstants {
         }
 
         //SoftLimitConfig
+        //26.4 max
         public static final double ELEVATOR_FORWARD_SOFT_LIMIT = 26;
         public static final double ELEVATOR_REVERSE_SOFT_LIMIT = 0.04;
 
