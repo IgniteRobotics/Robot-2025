@@ -237,12 +237,16 @@ public class RobotContainer {
 
         joystick.a().whileTrue(new SemiAutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
                 Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), () -> joystick.getLeftX(), joystick.rightTrigger(), joystick.leftTrigger())
-        );
+        ).
+        onFalse(
+            new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position)
+            .finallyDo(() -> CoralState.getInstance().setCoralTarget(CoralTarget.NONE))
+            );
 
         //joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getLeftX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
         joystick.x().whileTrue(
             new ToSetpoint(elevator, ElevatorConstants.ALGAE.PROCESSOR.height).alongWith(
-                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle))
+                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle)).until(() -> collector.isWristAtPosition())
             ).andThen(new WaitUntilCommand(joystick.rightTrigger()).andThen(
                 new RunCommand(() -> collector.outtakeAlgae()).withTimeout(.5))
             )
@@ -269,7 +273,7 @@ public class RobotContainer {
 
         joystick.y().onTrue(
             new ToSetpoint(elevator, ElevatorConstants.ALGAE.BARGE.height).alongWith(
-                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.BARGE.angle))
+                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.BARGE.angle)).until(() -> collector.isWristAtPosition())
             ).andThen(new WaitUntilCommand(joystick.rightTrigger()).andThen(
                 new RunCommand(() -> collector.outtakeAlgae()).withTimeout(.5))
             )
@@ -280,10 +284,10 @@ public class RobotContainer {
         );
 
         joystick.back().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll())
-        .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
-        .andThen(new InstantCommand(() -> corraler.stopCoralMotor()))
-        .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
-        .andThen(new InstantCommand(() -> collector.stow()))
+            .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
+            .andThen(new InstantCommand(() -> corraler.stopCoralMotor()))
+            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
+            .andThen(new InstantCommand(() -> collector.stow()))
         );
 
                                          
