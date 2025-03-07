@@ -238,7 +238,9 @@ public class RobotContainer {
         );
 
         //joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getLeftX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
-        joystick.x().whileTrue(new OuttakeAlgae(elevator, collector));
+        joystick.x().whileTrue(new OuttakeAlgae(elevator, collector)
+        ).onFalse(new InstantCommand(() -> collector.stopAlgaeMotor()));
+
         joystick.b().onTrue(
             new ElevatorToAlgaePreset(elevator).alongWith(
                 new RunCommand(() -> collector.setToIntakePosition()).alongWith(
@@ -261,8 +263,8 @@ public class RobotContainer {
             )
         ).onFalse(
             new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
-                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))
-            )
+                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))).alongWith(
+                new InstantCommand(() -> collector.stopAlgaeMotor()))
         );
 
                                          
