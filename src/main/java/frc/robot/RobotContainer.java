@@ -41,6 +41,7 @@ import frc.robot.commands.composite.IntakeAlgae;
 import frc.robot.commands.composite.OuttakeAlgae;
 import frc.robot.commands.composite.Score;
 import frc.robot.commands.composite.ScoreAlgae;
+import frc.robot.commands.composite.ScoreCoral;
 import frc.robot.commands.composite.SemiAutoScoreCoralGroup;
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
@@ -139,6 +140,9 @@ public class RobotContainer {
 
         autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
         autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
+        
+        autoChooser.addOption("Simple Auton", new RunCommand(() -> drivetrain.driveRobotCentric(1, 0, 0)).withTimeout(2)
+            .alongWith(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position)));
         SmartDashboard.putData("Auto Mode", autoChooser);
 
 
@@ -234,8 +238,7 @@ public class RobotContainer {
         );
 
         //joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getLeftX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
-        joystick.x().whileTrue(new AlignIntakeSide(drivetrain, m_PhotonCameraWrapper, m_allianceState.getHumanPlayerTags(), 2, 0.1, 0, () -> joystick.getLeftY(), () -> joystick.getLeftX()));
-        
+        joystick.x().whileTrue(new OuttakeAlgae(elevator, collector));
         joystick.b().onTrue(
             new ElevatorToAlgaePreset(elevator).alongWith(
                 new RunCommand(() -> collector.setToIntakePosition()).alongWith(
