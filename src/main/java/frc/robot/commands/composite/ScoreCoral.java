@@ -12,6 +12,7 @@ import frc.robot.commands.elevator.ElevatorToCoralPreset;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.coral.Corraler;
+import frc.robot.subsystems.coral.CorralerConstants;
 
 public class ScoreCoral extends SequentialCommandGroup {
   Elevator m_elevator;
@@ -23,6 +24,6 @@ public class ScoreCoral extends SequentialCommandGroup {
     m_corraler = corraler;
     scoreHeight = score;
     endHeight = end;
-    addCommands(new ElevatorToCoralPreset(elevator), new OuttakeCommand(m_corraler).withTimeout(1), new ToSetpoint(m_elevator, endHeight));
+    addCommands(new ElevatorToCoralPreset(elevator), new OuttakeCommand(m_corraler).withTimeout(CorralerConstants.OUTTAKE_DELAY), new ToSetpoint(m_elevator, endHeight));
   }
 }

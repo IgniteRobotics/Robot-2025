@@ -69,7 +69,7 @@ public class SemiAutoScoreCoralGroup extends ParallelCommandGroup{
       .alongWith(new WaitUntilCommand(m_raiseElevator)
                   .andThen(new ElevatorToCoralPreset(m_Elevator)
                   .andThen(new WaitUntilCommand(m_releaseCoral)
-                    .andThen(new OuttakeCommand(m_Corraler).withTimeout(1))))
+                    .andThen(new OuttakeCommand(m_Corraler).withTimeout(CorralerConstants.OUTTAKE_DELAY))))
       );
   }
 
