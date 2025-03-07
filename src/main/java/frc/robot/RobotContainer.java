@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -224,12 +225,12 @@ public class RobotContainer {
         
 
         //score coral.
-        joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
-                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), joystick.rightTrigger())
-        );
+        // joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
+        //         Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), joystick.rightTrigger())
+        // );
 
-        joystick.y().whileTrue(new SemiAutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
-                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), joystick.rightTrigger(), joystick.leftTrigger())
+        joystick.a().whileTrue(new SemiAutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
+                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), () -> joystick.getLeftX(), joystick.rightTrigger(), joystick.leftTrigger())
         );
 
         //joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getLeftX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
@@ -242,6 +243,18 @@ public class RobotContainer {
                         new RunCommand(() -> collector.intakeAlgae())
                     )
                 )
+            )
+        ).onFalse(
+            new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
+                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))
+            )
+        );
+
+        joystick.y().onTrue(
+            new ToSetpoint(elevator, ElevatorConstants.ALGAE.BARGE.height).alongWith(
+                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.BARGE.angle))
+            ).andThen(new WaitUntilCommand(joystick.rightTrigger()).andThen(
+                new RunCommand(() -> collector.outtakeAlgae()).withTimeout(.5))
             )
         ).onFalse(
             new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(

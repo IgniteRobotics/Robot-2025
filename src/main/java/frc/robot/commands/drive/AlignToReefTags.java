@@ -80,32 +80,32 @@ public class AlignToReefTags extends Command {
     double driveX;
     double driveY;
 
-    if(targeting.isPresent()){
-      double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
-      rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
-      SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
+    // if(targeting.isPresent()){
+    //   double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
+    //   rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
+    //   SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
 
-      //double offset = CameraConstants.offsetToBumper.get(targeting.get().getCameraName());
-      driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
-      SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
+    //   //double offset = CameraConstants.offsetToBumper.get(targeting.get().getCameraName());
+    //   driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
+    //   SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
       
-      driveY = -driveYController.calculate(targeting.get().getYaw(), m_yawDegrees);
-      SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
-    }
+    //   driveY = -driveYController.calculate(targeting.get().getYaw(), m_yawDegrees);
+    //   SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
+    // }
 
-    else{
+    // else{
       rotation = 0;
       driveX = 0;
       driveY = 0;
-    }
+    // }
   
     //override with joystick input if present
     if(m_xInput != null && Math.abs(m_xInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
-      driveX = m_xInput.getAsDouble();
+      driveX = 1.25*m_xInput.getAsDouble();
     }
 
     if(m_yInput != null && Math.abs(m_yInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
-      driveY = m_yInput.getAsDouble();
+      driveY = 1.25*m_yInput.getAsDouble();
     }
 
     SmartDashboard.putNumber("Alignment/Power/rotation", rotation);

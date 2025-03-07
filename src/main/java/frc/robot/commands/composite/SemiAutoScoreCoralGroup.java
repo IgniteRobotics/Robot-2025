@@ -43,19 +43,21 @@ public class SemiAutoScoreCoralGroup extends ParallelCommandGroup{
   private PhotonCameraWrapper m_PhotonCameraWrapper;
   private DoublePreference m_distancePreference;
   private DoubleSupplier m_DriveFwdBackSupplier;
+  private DoubleSupplier m_DriveSideSupplier;
   private BooleanSupplier m_raiseElevator;
   private BooleanSupplier m_releaseCoral;
 
 
   /** Creates a new CommandFactory. */
   public SemiAutoScoreCoralGroup(CommandSwerveDrivetrain swerveDrivetrain, Elevator elevator, Corraler corraler, 
-      PhotonCameraWrapper photonCameraWrapper, DoublePreference distancePreference, DoubleSupplier driveFwdBackSupplier, BooleanSupplier raiseElevator, BooleanSupplier releaseCoral){
+      PhotonCameraWrapper photonCameraWrapper, DoublePreference distancePreference, DoubleSupplier driveFwdBackSupplier, DoubleSupplier driveSideSupplier, BooleanSupplier raiseElevator, BooleanSupplier releaseCoral){
     m_swerveDrivetrain = swerveDrivetrain;
     m_Elevator = elevator;
     m_Corraler = corraler;
     m_PhotonCameraWrapper = photonCameraWrapper;
     m_distancePreference = distancePreference;
     m_DriveFwdBackSupplier = driveFwdBackSupplier;
+    m_DriveSideSupplier = driveSideSupplier;
     m_raiseElevator = raiseElevator;
     m_releaseCoral = releaseCoral;
 
@@ -75,7 +77,7 @@ public class SemiAutoScoreCoralGroup extends ParallelCommandGroup{
 
   private Command createAlignCommand(){
     return new AlignToReefTags(m_swerveDrivetrain, m_PhotonCameraWrapper,
-        m_DriveFwdBackSupplier, null);
+        m_DriveFwdBackSupplier, m_DriveSideSupplier);
   
   }
 
