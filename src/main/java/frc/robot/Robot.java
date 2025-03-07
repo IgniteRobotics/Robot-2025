@@ -64,13 +64,13 @@ public class Robot extends TimedRobot {
   private void getAllianceInfo(){
     if (DriverStation.getAlliance().isPresent()) {
       hasAlliance = true;
-      m_allianceState.setAlliance(DriverStation.getAlliance().get());
+      // m_allianceState.setAlliance(DriverStation.getAlliance().get());
     }
   }
 
   @Override
   public void robotPeriodic() {
-    if (!hasAlliance) {getAllianceInfo();}
+    // if (!hasAlliance) {getAllianceInfo();}
 
     CommandScheduler.getInstance().run();
 

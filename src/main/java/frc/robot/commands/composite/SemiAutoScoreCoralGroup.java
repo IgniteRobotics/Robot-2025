@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.drive.AlignToReefTags;
+import frc.robot.commands.corraler.OuttakeCommand;
+import frc.robot.commands.elevator.ElevatorToCoralPreset;
+import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.statemachines.AlgaeState;
 import frc.robot.statemachines.CoralState;
 import frc.robot.statemachines.CoralState.CoralTarget;
@@ -31,7 +34,7 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AutoScoreCoralGroup extends ParallelCommandGroup{
+public class SemiAutoScoreCoralGroup extends ParallelCommandGroup{
 
   private CommandSwerveDrivetrain m_swerveDrivetrain;
   private Elevator m_Elevator;
@@ -40,27 +43,32 @@ public class AutoScoreCoralGroup extends ParallelCommandGroup{
   private PhotonCameraWrapper m_PhotonCameraWrapper;
   private DoublePreference m_distancePreference;
   private DoubleSupplier m_DriveFwdBackSupplier;
-  private BooleanSupplier m_go;
+  private BooleanSupplier m_raiseElevator;
+  private BooleanSupplier m_releaseCoral;
 
 
   /** Creates a new CommandFactory. */
-  public AutoScoreCoralGroup(CommandSwerveDrivetrain swerveDrivetrain, Elevator elevator, Corraler corraler, 
-      PhotonCameraWrapper photonCameraWrapper, DoublePreference distancePreference, DoubleSupplier driveFwdBackSupplier, BooleanSupplier go){
+  public SemiAutoScoreCoralGroup(CommandSwerveDrivetrain swerveDrivetrain, Elevator elevator, Corraler corraler, 
+      PhotonCameraWrapper photonCameraWrapper, DoublePreference distancePreference, DoubleSupplier driveFwdBackSupplier, BooleanSupplier raiseElevator, BooleanSupplier releaseCoral){
     m_swerveDrivetrain = swerveDrivetrain;
     m_Elevator = elevator;
     m_Corraler = corraler;
     m_PhotonCameraWrapper = photonCameraWrapper;
     m_distancePreference = distancePreference;
     m_DriveFwdBackSupplier = driveFwdBackSupplier;
-    m_go = go;
+    m_raiseElevator = raiseElevator;
+    m_releaseCoral = releaseCoral;
 
     this.addCommands(createCommand());
   }
 
   public ParallelCommandGroup createCommand(){
     return createAlignCommand()
-      .alongWith(new WaitUntilCommand(m_go)
-                  .andThen(new ScoreCoral(m_Elevator, m_Corraler, CoralState.getInstance().getCoralHeight(), ElevatorConstants.FLOOR.GROUND.position)
+      .alongWith(new WaitUntilCommand(m_raiseElevator)
+                  .andThen(new ElevatorToCoralPreset(m_Elevator)
+                  .andThen(new WaitUntilCommand(m_releaseCoral)
+                    .andThen(new OuttakeCommand(m_Corraler).withTimeout(1)))
+                    .andThen(new ToSetpoint(m_Elevator, ElevatorConstants.FLOOR.GROUND.position))
                   ).finallyDo(() -> CoralState.getInstance().setCoralTarget(CoralTarget.NONE))
       );
   }

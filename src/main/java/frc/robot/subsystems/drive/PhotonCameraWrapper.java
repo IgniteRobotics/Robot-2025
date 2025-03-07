@@ -206,12 +206,44 @@ public class PhotonCameraWrapper{
 
         var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
         if(newResult != null){
-            PhotonTrackedTarget target = newResult.getBestTarget();
-            if (Arrays.asList(ids).contains(target.getFiducialId()) )
-                if(target != null && target.getPoseAmbiguity() < minimumAmbiguity){
-                    return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
-                        target.getYaw(), target.getFiducialId(), cam.getName()));
+            SmartDashboard.putBoolean("cameraHasTarget", newResult.hasTargets());
+            if (newResult.hasTargets()){
+                for (PhotonTrackedTarget target : newResult.getTargets()) {
+                    if (contains(ids, target.getFiducialId()) && target.getPoseAmbiguity() < minimumAmbiguity){
+                        return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
+                            target.getYaw(), target.getFiducialId(), cam.getName()));
                     }
+                }
+                // if (target != null && Arrays.asList(ids).contains(target.getFiducialId()) )
+                //     if(target.getPoseAmbiguity() < minimumAmbiguity){
+                //         return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
+                //             target.getYaw(), target.getFiducialId(), cam.getName()));
+                //         }
+            }
+        }
+        return Optional.empty();
+
+    }
+
+    public Optional<TargetInfo> seekTargets(int[] ids, int cameraId){
+
+        PhotonCamera cam = CameraConstants.outtakeCameras[cameraId];
+        
+        double minimumAmbiguity = 0.3;
+
+        Optional<PhotonTrackedTarget> target = Optional.empty();
+        var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
+        if(newResult != null){
+            for (int id : ids) {
+                Optional<PhotonTrackedTarget> tempTarget = lookForTarget(newResult, id);
+                if(tempTarget.isPresent() && tempTarget.get().getPoseAmbiguity() < minimumAmbiguity){
+                    minimumAmbiguity = tempTarget.get().getPoseAmbiguity();
+                    target = tempTarget;
+                    return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.get().getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
+                        target.get().getYaw(), id, cam.getName()));
+    
+                }
+            }
         }
         return Optional.empty();
 
@@ -226,8 +258,8 @@ public class PhotonCameraWrapper{
         var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
         if(newResult != null){
             PhotonTrackedTarget target = newResult.getBestTarget();
-            if (Arrays.asList(ids).contains(target.getFiducialId()) )
-                if(target != null && target.getPoseAmbiguity() < minimumAmbiguity){
+            if (target != null && contains(ids, target.getFiducialId()) )
+                if(target.getPoseAmbiguity() < minimumAmbiguity){
                     return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
                         target.getYaw(), target.getFiducialId(), cam.getName()));
                     }
@@ -245,8 +277,8 @@ public class PhotonCameraWrapper{
         var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
         if(newResult != null){
             PhotonTrackedTarget target = newResult.getBestTarget();
-            if (Arrays.asList(ids).contains(target.getFiducialId()) )
-                if(target != null && target.getPoseAmbiguity() < minimumAmbiguity){
+            if (target != null && contains(ids, target.getFiducialId()) )
+                if(target.getPoseAmbiguity() < minimumAmbiguity){
                     return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
                         target.getYaw(), target.getFiducialId(), cam.getName()));
                     }
@@ -264,8 +296,8 @@ public class PhotonCameraWrapper{
         var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
         if(newResult != null){
             PhotonTrackedTarget target = newResult.getBestTarget();
-            if (Arrays.asList(ids).contains(target.getFiducialId()) )
-                if(target != null && target.getPoseAmbiguity() < minimumAmbiguity){
+            if (target != null &&  contains(ids, target.getFiducialId()) )
+                if(target.getPoseAmbiguity() < minimumAmbiguity){
                     return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
                         target.getYaw(), target.getFiducialId(), cam.getName()));
                     }
@@ -283,8 +315,8 @@ public class PhotonCameraWrapper{
         var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
         if(newResult != null){
             PhotonTrackedTarget target = newResult.getBestTarget();
-            if (Arrays.asList(ids).contains(target.getFiducialId()) )
-                if(target != null && target.getPoseAmbiguity() < minimumAmbiguity){
+            if (target != null && contains(ids, target.getFiducialId()) )
+                if(target.getPoseAmbiguity() < minimumAmbiguity){
                     return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
                         target.getYaw(), target.getFiducialId(), cam.getName()));
                     }
@@ -325,6 +357,10 @@ public class PhotonCameraWrapper{
     public void setPipeline(int index){
         CameraConstants.photonCameraOuttakeLeft.setPipelineIndex(index);
         CameraConstants.photonCameraOuttakeRight.setPipelineIndex(index);
+    }
+
+    public static boolean contains(final int[] arr, final int key) {
+        return Arrays.stream(arr).anyMatch(i -> i == key);
     }
 
 }

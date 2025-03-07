@@ -133,4 +133,16 @@ public class CoralState {
     public boolean hasCoral(){
         return hasCoral;
     }
+
+    public int pickCamera(){
+        //LEFT CAMERA IS ZERO
+        //ALIGN TO LEFT POST IS LEFT CAMERA (I HOPE!)
+        CoralState c = CoralState.getInstance();
+        if (c.coralTargetL2_LEFT() || c.coralTargetL3_LEFT() || c.coralTargetL4_LEFT() || c.coralTarget_TROUGH()){
+          return 0;
+        }
+        else{
+          return 1;
+        }
+      }
 }

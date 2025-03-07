@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.drive.AlignThenDrive;
+import frc.robot.commands.drive.AlignIntakeSide;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.algae.AlgaeCollector;
@@ -44,6 +44,6 @@ public class IntakeAlgae extends ParallelCommandGroup{
     m_elevator = elevator;
     m_collector = collector;
     position = height;
-    addCommands(new ToSetpoint(m_elevator, position), new RunCommand(() -> collector.setToIntakePosition()), new AlignThenDrive(drive, drive.m_photonCameraWrapper, targets, m_cameraID, m_distance, m_yawDegrees, xInput, yInput));
+    addCommands(new ToSetpoint(m_elevator, position), new RunCommand(() -> collector.setToIntakePosition()), new AlignIntakeSide(drive, drive.m_photonCameraWrapper, targets, m_cameraID, m_distance, m_yawDegrees, xInput, yInput));
   }
 }

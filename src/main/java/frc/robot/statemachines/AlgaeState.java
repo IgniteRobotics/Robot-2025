@@ -34,7 +34,8 @@ public class AlgaeState {
     public static enum AlgaeTarget {
         NONE("NONE"),
         PROCESSOR("PROCESSOR"),
-        REEF("REEF"),
+        LOW_REEF("LOW_REEF"),
+        HIGH_REEF("HIGH_REEF"),
         BARGE("BARGE");
 
         public final String name;
@@ -63,9 +64,14 @@ public class AlgaeState {
         return algaeTarget == AlgaeTarget.PROCESSOR;
     }
 
-    @Logged(name = "AT_REEF", importance = Importance.CRITICAL)
+    @Logged(name = "AT_LOW_REEF", importance = Importance.CRITICAL)
     public boolean algaeTargetREEF_L2(){
-        return algaeTarget == AlgaeTarget.REEF;
+        return algaeTarget == AlgaeTarget.LOW_REEF;
+    }
+
+    @Logged(name = "AT_HIGH_REEF", importance = Importance.CRITICAL)
+    public boolean algaeTargetREEF_L3(){
+        return algaeTarget == AlgaeTarget.HIGH_REEF;
     }
 
 
@@ -81,13 +87,11 @@ public class AlgaeState {
         else if (getAlgaeTarget() == AlgaeTarget.PROCESSOR){
             return ElevatorConstants.ALGAE.PROCESSOR.height;
         }
-        else if (getAlgaeTarget() == AlgaeTarget.REEF){
-            if(driveState.getZone() == ZoneTypes.REEF.REEF_AB || driveState.getZone() == ZoneTypes.REEF.REEF_EF || driveState.getZone() == ZoneTypes.REEF.REEF_IJ){
-                return ElevatorConstants.ALGAE.HIGH_REEF.height;
-            }
-            else{ 
+        else if (getAlgaeTarget() == AlgaeTarget.LOW_REEF){
                 return ElevatorConstants.ALGAE.LOW_REEF.height;
-            }
+        }
+        else if (getAlgaeTarget() == AlgaeTarget.HIGH_REEF){ 
+                return ElevatorConstants.ALGAE.HIGH_REEF.height;
         } else {
             return 0;
         }
@@ -100,13 +104,8 @@ public class AlgaeState {
         else if (getAlgaeTarget() == AlgaeTarget.PROCESSOR){
             return AlgaeCollectorConstants.WRIST.PROCESS.angle;
         }
-        else if (getAlgaeTarget() == AlgaeTarget.REEF){
-            if(driveState.getZone() == ZoneTypes.REEF.REEF_AB || driveState.getZone() == ZoneTypes.REEF.REEF_EF || driveState.getZone() == ZoneTypes.REEF.REEF_IJ){
-                return AlgaeCollectorConstants.WRIST.REEF.angle;
-            }
-            else{ 
-                return AlgaeCollectorConstants.WRIST.REEF.angle;
-            }
+        else if (getAlgaeTarget() == AlgaeTarget.LOW_REEF || getAlgaeTarget() == AlgaeTarget.HIGH_REEF){
+            return AlgaeCollectorConstants.WRIST.REEF.angle;
         } else {
             return AlgaeCollectorConstants.WRIST.STOW.angle;
         }
