@@ -137,7 +137,7 @@ public class AlgaeCollectorConstants {
 
     public enum WRIST{
         
-        PROCESS(.15),
+        PROCESS(-0.12),
         REEF(-0.046143),
         BARGE(-0.15),
         STOW(-0.2);

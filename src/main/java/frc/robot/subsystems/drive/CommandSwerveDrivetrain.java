@@ -290,10 +290,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             .andThen(m_sysIdRoutineRotation.dynamic(Direction.kForward).withTimeout(4)).andThen(m_sysIdRoutineRotation.dynamic(Direction.kReverse).withTimeout(4));
     }
 
-
-
-
-
     public void driveRobotCentric(double x, double y, double rot){
         SwerveRequest.RobotCentric m_driveRequest = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
