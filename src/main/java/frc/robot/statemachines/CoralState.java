@@ -112,7 +112,7 @@ public class CoralState {
             return ElevatorConstants.FLOOR.TROUGH.position;
         }
         else{
-            return 0;
+            return ElevatorConstants.FLOOR.GROUND.position;
         }
     }
 
