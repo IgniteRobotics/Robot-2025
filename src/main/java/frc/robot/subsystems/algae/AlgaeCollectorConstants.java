@@ -75,7 +75,7 @@ public class AlgaeCollectorConstants {
 
     public static CurrentLimitsConfigs createCurrentLimitsConfigs(){
         CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
-        configs.StatorCurrentLimit = 15;
+        configs.StatorCurrentLimit = 25;
         configs.StatorCurrentLimitEnable = true;
         return configs;
     }
