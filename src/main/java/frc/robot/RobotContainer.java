@@ -140,12 +140,18 @@ public class RobotContainer {
         NamedCommands.registerCommand("Intake at HP", AutonComposites.IntakeCoralHP(drivetrain, m_PhotonCameraWrapper, elevator));
         
 
+
         autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
         autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
         autoChooser.addOption("Simple Drive Auton", AutoBuilder.buildAuto("Simple Auton"));
         
-        autoChooser.addOption("Line Up and Score", new RunCommand(() -> drivetrain.driveRobotCentric(-1, 0, 0)).withTimeout(2)
-            .alongWith(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position)));
+        autoChooser.addOption("Line Up and Score Level 4", new InstantCommand(() -> elevator.setPositionRevolutions(Preferences.elevatorAutonHeight), elevator)
+            .andThen(new RunCommand(() -> drivetrain.driveRobotCentric(-1.5, 0, 0), drivetrain).withTimeout(2))
+            .andThen(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position)));
+        
+        autoChooser.addOption("Line Up and Score Trough", new InstantCommand(() -> elevator.setPositionRevolutions(Preferences.elevatorAutonHeight), elevator)
+            .andThen(new RunCommand(() -> drivetrain.driveRobotCentric(-1.5, 0, 0), drivetrain).withTimeout(2)));
+        
         SmartDashboard.putData("Auto Mode", autoChooser);
 
 
@@ -153,6 +159,8 @@ public class RobotContainer {
         configureBindings();
         configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
+
+        collector.stow();
     }
 
     private void configureManipulatorController(){
@@ -190,8 +198,6 @@ public class RobotContainer {
         
 
         // elevator.setDefaultCommand(new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position));  
-
-        collector.setDefaultCommand(new RunCommand(() -> collector.stow(), collector));
     }
 
     private void configureBindings() {
@@ -224,13 +230,14 @@ public class RobotContainer {
 
         //joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
 
-        SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(0.5)));
+        SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(Preferences.servoPosition)));
+        
 
-        joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
-                    .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
-        joystick.povDown().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))
-                    .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
-        joystick.povLeft().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
+        joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed), climber))
+                    .onFalse(new InstantCommand(() -> climber.setSpeed(0), climber));
+        joystick.povDown().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed), climber))
+                    .onFalse(new InstantCommand(() -> climber.setSpeed(0), climber));
+        joystick.povLeft().whileTrue(new InstantCommand(() -> climber.setSpeed(0), climber));
         
 
         //score coral
@@ -248,15 +255,15 @@ public class RobotContainer {
 
         //joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getLeftX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
         joystick.x().whileTrue(
-            new ToSetpoint(elevator, ElevatorConstants.ALGAE.PROCESSOR.height).withTimeout(2).alongWith(
-                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle)).until(() -> collector.isWristAtPosition()).withTimeout(2)
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.PROCESSOR.height), elevator).andThen(
+                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle), collector)
             ).andThen(new WaitUntilCommand(joystick.rightTrigger()).andThen(
-                new RunCommand(() -> collector.outtakeAlgae()).withTimeout( .5))
+                new RunCommand(() -> collector.outtakeAlgae(), collector).withTimeout( .5))
             )
         ).onFalse(
-            new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
-                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))).alongWith(
-                new InstantCommand(() -> collector.stopAlgaeMotor()))
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position), elevator).andThen(
+                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle), collector)).andThen(
+                new InstantCommand(() -> collector.stopAlgaeMotor(), collector))
         );
 
         joystick.b().onTrue(
@@ -274,23 +281,32 @@ public class RobotContainer {
             )
         );
 
-        joystick.y().onTrue(
-            new ToSetpoint(elevator, ElevatorConstants.ALGAE.BARGE.height).alongWith(
-                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.BARGE.angle)).until(() -> collector.isWristAtPosition())
+        joystick.y().whileTrue(
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.BARGE.height), elevator).andThen(
+                new RunCommand(() -> collector.setWristPosition(Preferences.collectorWristPosition), collector)
             ).andThen(new WaitUntilCommand(joystick.rightTrigger()).andThen(
-                new RunCommand(() -> collector.outtakeAlgae()).withTimeout(.5))
+                new RunCommand(() -> collector.outtakeAlgae(), collector).withTimeout( .5))
             )
         ).onFalse(
-            new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
-                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))).alongWith(
-                new InstantCommand(() -> collector.stopAlgaeMotor()))
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position), elevator).andThen(
+                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle), collector)).andThen(
+                new InstantCommand(() -> collector.stopAlgaeMotor(), collector))
         );
+        
 
         joystick.back().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll())
-            .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
-            .andThen(new InstantCommand(() -> corraler.stopCoralMotor()))
-            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
-            .andThen(new InstantCommand(() -> collector.stow()))
+            .andThen(new InstantCommand(() -> collector.stopAlgaeMotor(), collector))
+            .andThen(new InstantCommand(() -> corraler.stopCoralMotor(), corraler))
+            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position), elevator))
+            .andThen(new InstantCommand(() -> collector.stow(), collector))
+        );
+
+        joystick.rightBumper().whileTrue(
+            drivetrain.applyRequest(() ->
+                drive.withVelocityX(-joystick.getLeftY()) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getLeftX()) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick.getRightX()) // Drive counterclockwise with negative X (left)
+            )
         );
 
                                          

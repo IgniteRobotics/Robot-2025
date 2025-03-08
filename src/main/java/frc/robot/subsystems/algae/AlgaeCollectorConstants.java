@@ -45,16 +45,9 @@ public class AlgaeCollectorConstants {
     public static final double WRIST_kD_1 = 0;
     public static final double WRIST_kG_1 = 0.2;
 
-    public static final double INTAKE_CORAL_VOLTAGE = 1;
-    public static final double OUTTAKE_CORAL_VOLTAGE = -1;
-
-    public static final double INTAKE_CORAL_POWER = 0.25;
-    public static final double OUTTAKE_CORAL_POWER = 0.25;
-
     public static final double INTAKE_ALGAE_POWER = 0.25;
     public static final double OUTTAKE_ALGAE_POWER = 0.25;
     public static final double ALGAE_HOLD_POWER = 0.03;
-
 
     public static MotorOutputConfigs createAlgaeMotorOutputConfigs(){
         MotorOutputConfigs configs = new MotorOutputConfigs();
@@ -147,5 +140,14 @@ public class AlgaeCollectorConstants {
             angle = value;
         }
 
+    }
+
+    public enum OUTTAKE{
+        PROCESS(0.5),
+        BARGE(1);
+        public final double power;
+        OUTTAKE(double value){
+            power = value;
+        }
     }
 }

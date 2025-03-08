@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.subsystems.climber.ClimberConstants;
+import frc.robot.subsystems.coral.CorralerConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.algae.AlgaeCollector;
 import frc.robot.subsystems.algae.AlgaeCollectorConstants;
@@ -37,9 +38,10 @@ public class Preferences {
     public static DoublePreference elevatorMMAccel = new DoublePreference("Elevator/Motion Magic/Acceleration", ElevatorConstants.ELEVATOR_MM_ACCEL);
     public static DoublePreference elevatorMMCruiseVelocity = new DoublePreference("Elevator/Motion Magic/Cruise Velocity", ElevatorConstants.ELEVATOR_MM_CRUISE_VELOCITY);
     
+    public static DoublePreference elevatorAutonHeight = new DoublePreference("Elevator/Auton Height", 3.4);
     // ********** Corraler ********** 
-    public static DoublePreference coralIntakePower = new DoublePreference("Coraller/IntakePower", AlgaeCollectorConstants.INTAKE_CORAL_POWER);
-    public static DoublePreference coralOuttakePower = new DoublePreference("Coraller/OuttakePower", AlgaeCollectorConstants.OUTTAKE_CORAL_POWER);
+    public static DoublePreference coralIntakePower = new DoublePreference("Coraller/IntakePower", CorralerConstants.INTAKE_CORAL_POWER);
+    public static DoublePreference coralOuttakePower = new DoublePreference("Coraller/OuttakePower", CorralerConstants.OUTTAKE_CORAL_POWER);
     public static DoublePreference coralXDriveOffset = new DoublePreference("Coraller/XDriveOffset", 0.02);
 
     // ********** Algae Collector****

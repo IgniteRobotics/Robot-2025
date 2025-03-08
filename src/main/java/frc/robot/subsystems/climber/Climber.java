@@ -136,6 +136,10 @@ public class Climber implements Subsystem {
     m_rightServo.set(position);
     m_leftServo.set(1.0 - position);
   }
+
+  public void setServoPosition(DoublePreference position){
+    setServoPosition(position.getValue());
+  }
   
   public void resetServoPosition(){
     m_rightServo.set(0);
