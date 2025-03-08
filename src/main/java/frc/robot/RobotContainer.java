@@ -159,8 +159,6 @@ public class RobotContainer {
         configureBindings();
         configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
-
-        collector.stow();
     }
 
     private void configureManipulatorController(){
@@ -233,11 +231,11 @@ public class RobotContainer {
         SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(Preferences.servoPosition)));
         
 
-        joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed), climber))
-                    .onFalse(new InstantCommand(() -> climber.setSpeed(0), climber));
-        joystick.povDown().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed), climber))
-                    .onFalse(new InstantCommand(() -> climber.setSpeed(0), climber));
-        joystick.povLeft().whileTrue(new InstantCommand(() -> climber.setSpeed(0), climber));
+        joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
+                    .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
+        joystick.povDown().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))
+                    .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
+        joystick.povLeft().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
         
 
         //score coral
@@ -255,15 +253,15 @@ public class RobotContainer {
 
         //joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getLeftX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
         joystick.x().whileTrue(
-            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.PROCESSOR.height), elevator).andThen(
-                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle), collector)
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.PROCESSOR.height)).andThen(
+                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle))
             ).andThen(new WaitUntilCommand(joystick.rightTrigger()).andThen(
-                new RunCommand(() -> collector.outtakeAlgae(), collector).withTimeout( .5))
+                new RunCommand(() -> collector.outtakeAlgae()).withTimeout( .5))
             )
         ).onFalse(
-            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position), elevator).andThen(
-                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle), collector)).andThen(
-                new InstantCommand(() -> collector.stopAlgaeMotor(), collector))
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)).andThen(
+                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))).andThen(
+                new InstantCommand(() -> collector.stopAlgaeMotor()))
         );
 
         joystick.b().onTrue(
@@ -282,23 +280,23 @@ public class RobotContainer {
         );
 
         joystick.y().whileTrue(
-            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.BARGE.height), elevator).andThen(
-                new RunCommand(() -> collector.setWristPosition(Preferences.collectorWristPosition), collector)
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.BARGE.height)).andThen(
+                new RunCommand(() -> collector.setWristPosition(Preferences.collectorWristPosition))
             ).andThen(new WaitUntilCommand(joystick.rightTrigger()).andThen(
-                new RunCommand(() -> collector.outtakeAlgae(), collector).withTimeout( .5))
+                new RunCommand(() -> collector.outtakeAlgae()).withTimeout( .5))
             )
         ).onFalse(
-            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position), elevator).andThen(
-                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle), collector)).andThen(
-                new InstantCommand(() -> collector.stopAlgaeMotor(), collector))
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)).andThen(
+                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))).andThen(
+                new InstantCommand(() -> collector.stopAlgaeMotor()))
         );
         
 
         joystick.back().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll())
-            .andThen(new InstantCommand(() -> collector.stopAlgaeMotor(), collector))
-            .andThen(new InstantCommand(() -> corraler.stopCoralMotor(), corraler))
+            .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
+            .andThen(new InstantCommand(() -> corraler.stopCoralMotor()))
             .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position), elevator))
-            .andThen(new InstantCommand(() -> collector.stow(), collector))
+            .andThen(new InstantCommand(() -> collector.stow()))
         );
 
         joystick.rightBumper().whileTrue(
