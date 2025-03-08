@@ -90,8 +90,8 @@ public class ElevatorConstants {
         public enum FLOOR{
             GROUND(0.25),
             TROUGH(4.61),
-            LEVEL_2(8.40),
-            LEVEL_3(16.13),
+            LEVEL_2(7.25),
+            LEVEL_3(14.88),
             LEVEL_4(26),
             HP(.25);
 
