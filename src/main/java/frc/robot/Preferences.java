@@ -37,6 +37,7 @@ public class Preferences {
     public static DoublePreference elevatorMMAccel = new DoublePreference("Elevator/Motion Magic/Acceleration", ElevatorConstants.ELEVATOR_MM_ACCEL);
     public static DoublePreference elevatorMMCruiseVelocity = new DoublePreference("Elevator/Motion Magic/Cruise Velocity", ElevatorConstants.ELEVATOR_MM_CRUISE_VELOCITY);
     
+    public static DoublePreference elevatorAutonHeight = new DoublePreference("Elevator/Auton Height");
     // ********** Corraler ********** 
     public static DoublePreference coralIntakePower = new DoublePreference("Coraller/IntakePower", AlgaeCollectorConstants.INTAKE_CORAL_POWER);
     public static DoublePreference coralOuttakePower = new DoublePreference("Coraller/OuttakePower", AlgaeCollectorConstants.OUTTAKE_CORAL_POWER);

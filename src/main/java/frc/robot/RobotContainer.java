@@ -144,10 +144,13 @@ public class RobotContainer {
         autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
         autoChooser.addOption("Simple Drive Auton", AutoBuilder.buildAuto("Simple Auton"));
         
-        autoChooser.addOption("Line Up and Score", new RunCommand(() -> drivetrain.driveRobotCentric(-1, 0, 0)).withTimeout(2)
-            .alongWith(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position)));
+        autoChooser.addOption("Line Up and Score Level 4", new RunCommand(() -> drivetrain.driveRobotCentric(-1.5, 0, 0), drivetrain).withTimeout(2)
+            .andThen(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position)));
+        
+        autoChooser.addOption("Line Up and Score Trough", new InstantCommand(() -> elevator.setPositionRevolutions(Preferences.elevatorAutonHeight), elevator)
+            .andThen(new RunCommand(() -> drivetrain.driveRobotCentric(-1.5, 0, 0), drivetrain).withTimeout(2)));
+        
         SmartDashboard.putData("Auto Mode", autoChooser);
-
 
         configureSubsytemDefaultCommands();
         configureBindings();
