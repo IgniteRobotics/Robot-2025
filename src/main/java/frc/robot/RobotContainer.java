@@ -99,7 +99,8 @@ public class RobotContainer {
     public final double maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED;
     public final double deadband = TunerConstants.DEADBAND_FACTOR;
     
-    SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    SwerveRequest.FieldCentric 
+    drive = new SwerveRequest.FieldCentric()
         .withDeadband(default_Max_Speed*deadband).withRotationalDeadband(maxAngularRate * deadband) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);;
 
@@ -221,7 +222,9 @@ public class RobotContainer {
         // joystick.b().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L3"));
         // joystick.y().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L4"));
 
-        // joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
+        //joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
+
+        SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(0.5)));
 
         joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
                     .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
@@ -230,7 +233,7 @@ public class RobotContainer {
         joystick.povLeft().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
         
 
-        //score coral.
+        //score coral
         // joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
         //         Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), joystick.rightTrigger())
         // );
@@ -245,10 +248,10 @@ public class RobotContainer {
 
         //joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getLeftX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
         joystick.x().whileTrue(
-            new ToSetpoint(elevator, ElevatorConstants.ALGAE.PROCESSOR.height).alongWith(
-                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle)).until(() -> collector.isWristAtPosition())
+            new ToSetpoint(elevator, ElevatorConstants.ALGAE.PROCESSOR.height).withTimeout(2).alongWith(
+                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle)).until(() -> collector.isWristAtPosition()).withTimeout(2)
             ).andThen(new WaitUntilCommand(joystick.rightTrigger()).andThen(
-                new RunCommand(() -> collector.outtakeAlgae()).withTimeout(.5))
+                new RunCommand(() -> collector.outtakeAlgae()).withTimeout( .5))
             )
         ).onFalse(
             new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
