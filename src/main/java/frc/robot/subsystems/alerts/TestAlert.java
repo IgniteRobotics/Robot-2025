@@ -15,15 +15,18 @@ import edu.wpi.first.wpilibj.RobotController;
 public class TestAlert {
   @NotLogged public Alert test2 = new Alert("test alert", AlertType.kInfo);
   private boolean flash = false;
-  private double ts = ((int)RobotController.getFPGATime() / 500000) % 2;
+  //private double ts = ((int)RobotController.getFPGATime() / 500000) % 2;
   public void Testg(){
     if (test2.get() == true){
-      ts = ((int)RobotController.getFPGATime() / 500000) % 2;
-      if(ts % 2 == 1){
+      //ts = ((int)RobotController.getFPGATime() / 500000) % 2;
+      if(((int)RobotController.getFPGATime() / 500000) % 2 == 1){
        flash = true;
-       } else if(ts % 2 == 0){
+       } else if(((int)RobotController.getFPGATime() / 500000) % 2 == 0){
        flash = false;
        }
    }
-  };     
+  };
+  public boolean TestH(){
+    return flash;
+  }     
 }
