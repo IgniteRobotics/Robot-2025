@@ -47,6 +47,6 @@ public class OuttakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (delayTimer.hasElapsed(0.2));
+    return (delayTimer.hasElapsed(0.5));
   }
 }

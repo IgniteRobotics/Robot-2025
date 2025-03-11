@@ -28,8 +28,10 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -40,6 +42,7 @@ import frc.robot.commands.composite.IntakeAlgae;
 import frc.robot.commands.composite.OuttakeAlgae;
 import frc.robot.commands.composite.Score;
 import frc.robot.commands.composite.ScoreAlgae;
+import frc.robot.commands.composite.ScoreCoral;
 import frc.robot.commands.composite.SemiAutoScoreCoralGroup;
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
@@ -96,7 +99,8 @@ public class RobotContainer {
     public final double maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED;
     public final double deadband = TunerConstants.DEADBAND_FACTOR;
     
-    SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    SwerveRequest.FieldCentric 
+    drive = new SwerveRequest.FieldCentric()
         .withDeadband(default_Max_Speed*deadband).withRotationalDeadband(maxAngularRate * deadband) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);;
 
@@ -138,6 +142,10 @@ public class RobotContainer {
 
         autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
         autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
+        autoChooser.addOption("Simple Drive Auton", AutoBuilder.buildAuto("Simple Auton"));
+        
+        autoChooser.addOption("Line Up and Score", new RunCommand(() -> drivetrain.driveRobotCentric(-1, 0, 0)).withTimeout(2)
+            .alongWith(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position)));
         SmartDashboard.putData("Auto Mode", autoChooser);
 
 
@@ -214,7 +222,9 @@ public class RobotContainer {
         // joystick.b().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_3.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L3"));
         // joystick.y().onTrue(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position).withName("score L4"));
 
-        // joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
+        //joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
+
+        SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(0.5)));
 
         joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
                     .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
@@ -223,18 +233,32 @@ public class RobotContainer {
         joystick.povLeft().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
         
 
-        //score coral.
-        joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
-                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), joystick.rightTrigger())
-        );
+        //score coral
+        // joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
+        //         Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), joystick.rightTrigger())
+        // );
 
-        joystick.y().whileTrue(new SemiAutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
-                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), joystick.rightTrigger(), joystick.leftTrigger())
-        );
+        joystick.a().whileTrue(new SemiAutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
+                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), () -> joystick.getLeftX(), joystick.rightTrigger(), joystick.leftTrigger())
+        ).
+        onFalse(
+            new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position)
+            .finallyDo(() -> CoralState.getInstance().setCoralTarget(CoralTarget.NONE))
+            );
 
         //joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getLeftX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
-        joystick.x().whileTrue(new AlignIntakeSide(drivetrain, m_PhotonCameraWrapper, m_allianceState.getHumanPlayerTags(), 2, 0.1, 0, () -> joystick.getLeftY(), () -> joystick.getLeftX()));
-        
+        joystick.x().whileTrue(
+            new ToSetpoint(elevator, ElevatorConstants.ALGAE.PROCESSOR.height).withTimeout(2).alongWith(
+                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle)).until(() -> collector.isWristAtPosition()).withTimeout(2)
+            ).andThen(new WaitUntilCommand(joystick.rightTrigger()).andThen(
+                new RunCommand(() -> collector.outtakeAlgae()).withTimeout( .5))
+            )
+        ).onFalse(
+            new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
+                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))).alongWith(
+                new InstantCommand(() -> collector.stopAlgaeMotor()))
+        );
+
         joystick.b().onTrue(
             new ElevatorToAlgaePreset(elevator).alongWith(
                 new RunCommand(() -> collector.setToIntakePosition()).alongWith(
@@ -244,9 +268,29 @@ public class RobotContainer {
                 )
             )
         ).onFalse(
+
             new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
                 new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))
             )
+        );
+
+        joystick.y().onTrue(
+            new ToSetpoint(elevator, ElevatorConstants.ALGAE.BARGE.height).alongWith(
+                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.BARGE.angle)).until(() -> collector.isWristAtPosition())
+            ).andThen(new WaitUntilCommand(joystick.rightTrigger()).andThen(
+                new RunCommand(() -> collector.outtakeAlgae()).withTimeout(.5))
+            )
+        ).onFalse(
+            new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
+                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))).alongWith(
+                new InstantCommand(() -> collector.stopAlgaeMotor()))
+        );
+
+        joystick.back().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll())
+            .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
+            .andThen(new InstantCommand(() -> corraler.stopCoralMotor()))
+            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
+            .andThen(new InstantCommand(() -> collector.stow()))
         );
 
                                          

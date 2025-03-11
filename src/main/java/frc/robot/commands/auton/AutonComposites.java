@@ -5,6 +5,7 @@
 package frc.robot.commands.auton;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.elevator.ToSetpoint;
@@ -20,14 +21,17 @@ public class AutonComposites {
     private final static CoralState m_coralState = CoralState.getInstance();
     
     public static Command ScoreLevel4ReefJ(CommandSwerveDrivetrain drive, PhotonCameraWrapper camera, Elevator elevator, Corraler corraler){
-        return (new AutonAlignToReefRight(drive, camera).alongWith(new ToSetpoint(elevator , ElevatorConstants.FLOOR.LEVEL_4.position))).andThen(new OuttakeCommand(corraler));
+        return (new AutonAlignToReefRight(drive, camera).alongWith(new ToSetpoint(elevator , ElevatorConstants.FLOOR.LEVEL_4.position))).andThen(new OuttakeCommand(corraler)
+        .andThen(new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position)));
     }
 
     public static Command ScoreLevel4ReefL(CommandSwerveDrivetrain drive, PhotonCameraWrapper camera, Elevator elevator, Corraler corraler){
-        return (new AutonAlignToReefRight(drive, camera).alongWith(new ToSetpoint(elevator , ElevatorConstants.FLOOR.LEVEL_4.position))).andThen(new OuttakeCommand(corraler));
+        return (new AutonAlignToReefRight(drive, camera).alongWith(new ToSetpoint(elevator , ElevatorConstants.FLOOR.LEVEL_4.position))).andThen(new OuttakeCommand(corraler)
+        .andThen(new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position)));
     }
     public static Command ScoreLevel4ReefK(CommandSwerveDrivetrain drive, PhotonCameraWrapper camera, Elevator elevator, Corraler corraler){
-        return (new AutonAlignToReefLeft(drive, camera).alongWith(new ToSetpoint(elevator , ElevatorConstants.FLOOR.LEVEL_4.position))).andThen(new OuttakeCommand(corraler));
+        return (new AutonAlignToReefLeft(drive, camera).alongWith(new ToSetpoint(elevator , ElevatorConstants.FLOOR.LEVEL_4.position))).andThen(new OuttakeCommand(corraler)
+        .andThen(new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position)));
     }
 
     public static Command IntakeCoralHP(CommandSwerveDrivetrain drive, PhotonCameraWrapper camera, Elevator elevator){

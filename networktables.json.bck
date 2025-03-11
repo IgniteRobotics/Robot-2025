@@ -446,5 +446,21 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/Coraller/XDriveOffset",
+    "type": "double",
+    "value": 0.02,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/AlgaeCollector/Wrist/Stow Position",
+    "type": "double",
+    "value": 0.2,
+    "properties": {
+      "persistent": true
+    }
   }
 ]

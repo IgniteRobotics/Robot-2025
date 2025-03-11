@@ -70,5 +70,8 @@ public class Preferences {
 
     public static DoublePreference servoPosition = new DoublePreference("Climber/Servo Position", 0);
 
+    public static DoublePreference climberPos1 = new DoublePreference("Climber/Position 1", 1);
+    public static DoublePreference climberPos2 = new DoublePreference("Climber/Position 2", 2);
+
     
 }

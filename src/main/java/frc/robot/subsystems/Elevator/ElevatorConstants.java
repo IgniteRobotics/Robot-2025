@@ -47,7 +47,8 @@ public class ElevatorConstants {
         }
 
         //SoftLimitConfig
-        public static final double ELEVATOR_FORWARD_SOFT_LIMIT = 26;
+        //26.4 max
+        public static final double ELEVATOR_FORWARD_SOFT_LIMIT = 26.4;
         public static final double ELEVATOR_REVERSE_SOFT_LIMIT = 0.04;
 
         public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
@@ -89,10 +90,10 @@ public class ElevatorConstants {
         public enum FLOOR{
             GROUND(0.25),
             TROUGH(4.61),
-            LEVEL_2(7.40),
-            LEVEL_3(15.13),
-            LEVEL_4(25.68),
-            HP(25);
+            LEVEL_2(7.25),
+            LEVEL_3(14.88),
+            LEVEL_4(26),
+            HP(.25);
 
             public final double position;
             FLOOR(double value){
@@ -102,9 +103,9 @@ public class ElevatorConstants {
 
         public enum ALGAE{
             PROCESSOR(1),
-            LOW_REEF(8.6),
-            HIGH_REEF(14.9),
-            BARGE(2);
+            LOW_REEF(6.6),
+            HIGH_REEF(12.9),
+            BARGE(26);
 
             public final double height;
             ALGAE(double value){

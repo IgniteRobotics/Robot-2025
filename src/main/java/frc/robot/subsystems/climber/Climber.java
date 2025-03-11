@@ -15,6 +15,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.PreferenceTypes.DoublePreference;
@@ -135,17 +136,10 @@ public class Climber implements Subsystem {
     m_rightServo.set(position);
     m_leftServo.set(1.0 - position);
   }
-
-  //TODO: fix?
+  
   public void resetServoPosition(){
     m_rightServo.set(0);
     m_leftServo.set(1);
-  }
-
-
-  @Override
-  public void periodic() {
-    
   }
 
   @Override
@@ -229,6 +223,12 @@ public class Climber implements Subsystem {
   @Logged(name = "Left Servo Position", importance = Importance.CRITICAL)
   public double getLeftServoPosition(){
     return m_leftServo.getPosition();
+  }
+  
+  @Override
+  public void periodic(){
+    SmartDashboard.putNumber("Right Servo Position", m_rightServo.getPosition());
+    SmartDashboard.putNumber("Left Servo Position", m_leftServo.getPosition());
   }
 
 

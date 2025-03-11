@@ -43,19 +43,21 @@ public class SemiAutoScoreCoralGroup extends ParallelCommandGroup{
   private PhotonCameraWrapper m_PhotonCameraWrapper;
   private DoublePreference m_distancePreference;
   private DoubleSupplier m_DriveFwdBackSupplier;
+  private DoubleSupplier m_DriveSideSupplier;
   private BooleanSupplier m_raiseElevator;
   private BooleanSupplier m_releaseCoral;
 
 
   /** Creates a new CommandFactory. */
   public SemiAutoScoreCoralGroup(CommandSwerveDrivetrain swerveDrivetrain, Elevator elevator, Corraler corraler, 
-      PhotonCameraWrapper photonCameraWrapper, DoublePreference distancePreference, DoubleSupplier driveFwdBackSupplier, BooleanSupplier raiseElevator, BooleanSupplier releaseCoral){
+      PhotonCameraWrapper photonCameraWrapper, DoublePreference distancePreference, DoubleSupplier driveFwdBackSupplier, DoubleSupplier driveSideSupplier, BooleanSupplier raiseElevator, BooleanSupplier releaseCoral){
     m_swerveDrivetrain = swerveDrivetrain;
     m_Elevator = elevator;
     m_Corraler = corraler;
     m_PhotonCameraWrapper = photonCameraWrapper;
     m_distancePreference = distancePreference;
     m_DriveFwdBackSupplier = driveFwdBackSupplier;
+    m_DriveSideSupplier = driveSideSupplier;
     m_raiseElevator = raiseElevator;
     m_releaseCoral = releaseCoral;
 
@@ -67,15 +69,13 @@ public class SemiAutoScoreCoralGroup extends ParallelCommandGroup{
       .alongWith(new WaitUntilCommand(m_raiseElevator)
                   .andThen(new ElevatorToCoralPreset(m_Elevator)
                   .andThen(new WaitUntilCommand(m_releaseCoral)
-                    .andThen(new OuttakeCommand(m_Corraler).withTimeout(1)))
-                    .andThen(new ToSetpoint(m_Elevator, ElevatorConstants.FLOOR.GROUND.position))
-                  ).finallyDo(() -> CoralState.getInstance().setCoralTarget(CoralTarget.NONE))
+                    .andThen(new OuttakeCommand(m_Corraler))))
       );
   }
 
   private Command createAlignCommand(){
     return new AlignToReefTags(m_swerveDrivetrain, m_PhotonCameraWrapper,
-        m_DriveFwdBackSupplier, null);
+        m_DriveFwdBackSupplier, m_DriveSideSupplier);
   
   }
 

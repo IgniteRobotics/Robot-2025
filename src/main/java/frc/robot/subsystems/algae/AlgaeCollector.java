@@ -64,7 +64,7 @@ public class AlgaeCollector extends SubsystemBase {
 
 
   public void stopAlgaeMotor(){
-    m_algaeMotor.stopMotor();
+    m_algaeMotor.set(0);
   }
 
   public void intakeAlgae(){

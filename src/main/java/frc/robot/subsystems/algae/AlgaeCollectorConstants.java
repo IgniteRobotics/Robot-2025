@@ -75,7 +75,7 @@ public class AlgaeCollectorConstants {
 
     public static CurrentLimitsConfigs createCurrentLimitsConfigs(){
         CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
-        configs.StatorCurrentLimit = 15;
+        configs.StatorCurrentLimit = 25;
         configs.StatorCurrentLimitEnable = true;
         return configs;
     }
@@ -137,10 +137,10 @@ public class AlgaeCollectorConstants {
 
     public enum WRIST{
         
-        PROCESS(.15),
+        PROCESS(-0.12),
         REEF(-0.046143),
-        BARGE(-0.15),
-        STOW(-0.2);
+        BARGE(0.15),
+        STOW(0.2);
 
         public final double angle;
         WRIST(double value){

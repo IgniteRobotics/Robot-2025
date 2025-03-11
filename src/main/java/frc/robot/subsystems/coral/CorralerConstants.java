@@ -28,6 +28,7 @@ public class CorralerConstants {
     public static final int kPrepBeamBreakId = 9;
     public static final int kIntakeFunnelBeanmBreakId = 17;
 
+    public static final double OUTTAKE_DELAY = 0.5;
     public static Slot0Configs createCoralMotorSlot0Configs(){
         Slot0Configs slot = new Slot0Configs();
         slot.kV = CorralerConstants.CORAL_kV;
