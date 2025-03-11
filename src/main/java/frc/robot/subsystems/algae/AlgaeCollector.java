@@ -14,6 +14,7 @@ import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -105,6 +106,39 @@ public class AlgaeCollector extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putString("Algae Target", m_algaeState.getAlgaeTargetName());
     m_algaeState.setHasAlgae(seesAlgae());
+  }
+
+  //Voltage, Current, Temperature
+
+  /*********Logging Motors*************/
+  @Logged(name = "Wrist Motor Voltage", importance = Importance.CRITICAL)
+  public double getWristVoltage(){
+    return m_wristMotor.getMotorVoltage().getValueAsDouble();
+  }
+
+  @Logged(name = "Wrist Motor Current", importance = Importance.CRITICAL)
+  public double getWristCurrent(){
+    return m_wristMotor.getSupplyCurrent().getValueAsDouble();
+  }
+
+  @Logged(name = "Wrist Motor Temperature", importance = Importance.CRITICAL)
+  public double getWristTemperature(){
+    return m_wristMotor.getDeviceTemp().getValueAsDouble();
+  }
+
+  @Logged(name = "Algae Motor Voltage", importance = Importance.CRITICAL)
+  public double getAlgaeVoltage(){
+    return m_algaeMotor.getMotorVoltage().getValueAsDouble();
+  }
+
+  @Logged(name = "Algae Motor Current", importance = Importance.CRITICAL)
+  public double getAlgaeCurrent(){
+    return m_algaeMotor.getSupplyCurrent().getValueAsDouble();
+  }
+
+  @Logged(name = "Algae Motor Temperature", importance = Importance.CRITICAL)
+  public double getAlgaeTemperature(){
+    return m_algaeMotor.getDeviceTemp().getValueAsDouble();
   }
 
 }

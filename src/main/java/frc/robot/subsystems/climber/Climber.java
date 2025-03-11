@@ -205,16 +205,6 @@ public class Climber implements Subsystem {
     return m_Slot0Configs.kG;
   }
 
-  @Logged(name = "Voltage", importance = Importance.CRITICAL)
-  public double getVoltage(){
-    return m_climberMotorLeader.getMotorVoltage().getValueAsDouble();
-  }
-
-  @Logged(name = "Current", importance = Importance.CRITICAL)
-  public double getCurrent(){
-    return m_climberMotorLeader.getStatorCurrent().getValueAsDouble();
-  }
-
   @Logged(name = "Right Servo Position", importance = Importance.CRITICAL )
   public double getRightServoPosition(){
     return m_rightServo.getPosition();
@@ -230,6 +220,41 @@ public class Climber implements Subsystem {
     SmartDashboard.putNumber("Right Servo Position", m_rightServo.getPosition());
     SmartDashboard.putNumber("Left Servo Position", m_leftServo.getPosition());
   }
+
+  //Voltage, Current, Temperature
+
+  /*********Logging Motors*************/
+  @Logged(name = "Leader Motor Voltage", importance = Importance.CRITICAL)
+  public double getLeaderVoltage(){
+    return m_climberMotorLeader.getMotorVoltage().getValueAsDouble();
+  }
+
+  @Logged(name = "Leader Motor Current", importance = Importance.CRITICAL)
+  public double getLeaderCurrent(){
+    return m_climberMotorLeader.getSupplyCurrent().getValueAsDouble();
+  }
+
+  @Logged(name = "Leader Motor Temperature", importance = Importance.CRITICAL)
+  public double getLeaderTemperature(){
+    return m_climberMotorLeader.getDeviceTemp().getValueAsDouble();
+  }
+
+  @Logged(name = "Follower Motor Voltage", importance = Importance.CRITICAL)
+  public double getFollowerVoltage(){
+    return m_climberMotorFollower.getMotorVoltage().getValueAsDouble();
+  }
+
+  @Logged(name = "Follower Motor Current", importance = Importance.CRITICAL)
+  public double getFollowerCurrent(){
+    return m_climberMotorFollower.getSupplyCurrent().getValueAsDouble();
+  }
+
+  @Logged(name = "Follower Motor Temperature", importance = Importance.CRITICAL)
+  public double getFollowerTemperature(){
+    return m_climberMotorFollower.getDeviceTemp().getValueAsDouble();
+  }
+
+
 
 
 }
