@@ -7,6 +7,7 @@ import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -84,5 +85,22 @@ public class Corraler extends SubsystemBase{
         m_coralState.setHasCoral(!seesCoralEnter() && coralPreped());
     }
 
+    //Voltage, Current, Temperature
+
+    /*********Logging Motors*************/
+    @Logged(name = "Motor Voltage", importance = Importance.CRITICAL)
+    public double getMotorVoltage(){
+        return m_coralMotor.getMotorVoltage().getValueAsDouble();
+    }
+
+    @Logged(name = "Motor Current", importance = Importance.CRITICAL)
+    public double getMotorCurrent(){
+        return m_coralMotor.getSupplyCurrent().getValueAsDouble();
+    }
+
+    @Logged(name = "Motor Temperature", importance = Importance.CRITICAL)
+    public double getMotorTemperature(){
+        return m_coralMotor.getDeviceTemp().getValueAsDouble();
+    }
 
 }
