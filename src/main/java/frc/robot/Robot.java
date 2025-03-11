@@ -83,11 +83,11 @@ public class Robot extends TimedRobot {
 
     if (DriverStation.isFMSAttached() && logToFile == false){
       Epilogue.configure(config -> {
-        if (Robot.isSimulation()) {
+        
             config.backend = EpilogueBackend.multi(
                     new FileBackend(DataLogManager.getLog())
             );
-        }
+        
       });
       Epilogue.bind(this);
       logToFile = true;
