@@ -305,6 +305,7 @@ public class RobotContainer {
         joystick.a().whileTrue(new RotateToHeading(drivetrain, m_PhotonCameraWrapper, () -> Preferences.rotationTestTarget.get()));
         joystick.y().whileTrue(new AlignSideToSide(drivetrain, m_PhotonCameraWrapper));
         joystick.x().whileTrue(new DriveIntoTarget(drivetrain, m_PhotonCameraWrapper));
+        joystick.b().whileTrue(new AlignToReefTags(drivetrain, m_PhotonCameraWrapper, ()-> joystick.getLeftY(), () -> joystick.getLeftX()));
     }
 
     public Command getAutonomousCommand() {
