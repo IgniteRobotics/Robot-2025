@@ -21,6 +21,7 @@ import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,6 +37,9 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.EndEffector.EndEffector;
+import frc.robot.subsystems.alerts.Alerts;
+import frc.robot.subsystems.alerts.AlertsLogger;
+
 @Logged
 public class RobotContainer {
 
@@ -66,7 +70,7 @@ public class RobotContainer {
 
     private final Command autoIngestCoral = new AutoIngestCoral(endEffector);
 
-
+    public final Alerts alerts = new Alerts();
 
 
     /* Path follower */
