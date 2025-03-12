@@ -11,7 +11,7 @@ public class Alerts {
   //Flashing epiloge warning light code
   public static boolean flash = false;
   private boolean Warning = false;
-  public void Testg(){
+  public void Flashing(){
     if (flash == true){
       if(((int)RobotController.getFPGATime() / 500000) % 2 == 1){
        Warning = true;
