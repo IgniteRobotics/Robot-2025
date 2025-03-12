@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.RobotController;
 public class Alerts {
   //Alerts go here
   public Alert example = new Alert("example alert", AlertType.kInfo);
+  public Alert elevatorground = new Alert("Elevator is at ground level", AlertType.kInfo);
 
   //Flashing epiloge warning light code
   public static boolean flash = false;
