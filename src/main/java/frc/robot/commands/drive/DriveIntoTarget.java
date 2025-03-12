@@ -29,11 +29,9 @@ import edu.wpi.first.epilogue.Logged;
 
 
 @Logged
-public class AlignSideToSide extends Command {
+public class DriveIntoTarget extends Command {
   private final CommandSwerveDrivetrain m_drive;
   PhotonCameraWrapper m_pcw;
-  PIDController rotationController;
-  PIDController driveYController;
   PIDController driveXController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
@@ -46,7 +44,7 @@ public class AlignSideToSide extends Command {
   private double m_yawDegrees;
   
   /** Creates a new AlignToTarget. */
-  public AlignSideToSide(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw){
+  public DriveIntoTarget(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw){
     m_drive = drive;
     m_pcw = pcw;
     addRequirements(m_drive);
@@ -55,8 +53,8 @@ public class AlignSideToSide extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveYController = new PIDController(Preferences.alignDriveYKP.get(), 0, Preferences.alignDriveYKD.get());
-    driveYController.setTolerance(Preferences.yAlignTolerancePreference.get());
+    driveXController = new PIDController(Preferences.alignDriveXKP.get(), 0, Preferences.alignDriveXKD.get());
+    driveXController.setTolerance(Preferences.xAlignTolerancePreference.get());
   
     targetIDs = AllianceState.getInstance().getReefTags();
     m_cameraId = CoralState.getInstance().pickCamera();
@@ -71,24 +69,25 @@ public class AlignSideToSide extends Command {
     //Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
     
     Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, m_cameraId);
-    double driveY;
+    double driveX;
 
     if(targeting.isPresent()){
     
       
-      driveY = -driveYController.calculate(targeting.get().getYaw(), m_yawDegrees);
-      SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
+      driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
+      SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
+    
     }
 
     else{
-      driveY = 0;
+      driveX = 0;
     }
   
     
 
-    SmartDashboard.putNumber("Alignment/Power/driveY", driveY);
+    SmartDashboard.putNumber("Alignment/Power/driveX", driveX);
     
-    m_drive.driveRobotCentric(0, driveY, 0);
+    m_drive.driveRobotCentric(driveX, 0, 0);
   }
 
   // Called once the command ends or is interrupted.
@@ -100,6 +99,6 @@ public class AlignSideToSide extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return driveYController.atSetpoint();
+    return driveXController.atSetpoint();
   }
 }

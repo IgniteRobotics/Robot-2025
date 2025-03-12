@@ -50,6 +50,7 @@ import frc.robot.commands.drive.AlignIntakeSide;
 import frc.robot.commands.drive.AlignSideToSide;
 import frc.robot.commands.drive.AlignThenDrive;
 import frc.robot.commands.drive.AlignToReefTags;
+import frc.robot.commands.drive.DriveIntoTarget;
 import frc.robot.commands.drive.RotateToHeading;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
 import frc.robot.commands.elevator.ToSetpoint;
@@ -303,6 +304,7 @@ public class RobotContainer {
     private void configureTestBindings() {
         joystick.a().whileTrue(new RotateToHeading(drivetrain, m_PhotonCameraWrapper, () -> Preferences.rotationTestTarget.get()));
         joystick.y().whileTrue(new AlignSideToSide(drivetrain, m_PhotonCameraWrapper));
+        joystick.x().whileTrue(new DriveIntoTarget(drivetrain, m_PhotonCameraWrapper));
     }
 
     public Command getAutonomousCommand() {
