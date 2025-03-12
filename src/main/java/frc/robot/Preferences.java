@@ -25,6 +25,7 @@ public class Preferences {
     public static DoublePreference alignAdj = new DoublePreference("alignCommand/adjustment", 0);
     public static DoublePreference rotationTolerancePreference = new DoublePreference("alignCommand/rotationTolerance", 0.5);
     public static DoublePreference rotationTestTarget = new DoublePreference("alignCommand/rotationTarget", 0);
+    public static DoublePreference yAlignTolerancePreference = new DoublePreference("alignCommand/yAlignTolerance", 0.5);
 
     // ********** Elevator **********
     public static DoublePreference elevatorkV = new DoublePreference("Elevator/kV", ElevatorConstants.ELEVATOR_kV);

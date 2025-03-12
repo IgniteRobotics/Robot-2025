@@ -47,6 +47,7 @@ import frc.robot.commands.composite.SemiAutoScoreCoralGroup;
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.drive.AlignIntakeSide;
+import frc.robot.commands.drive.AlignSideToSide;
 import frc.robot.commands.drive.AlignThenDrive;
 import frc.robot.commands.drive.AlignToReefTags;
 import frc.robot.commands.drive.RotateToHeading;
@@ -301,6 +302,7 @@ public class RobotContainer {
 
     private void configureTestBindings() {
         joystick.a().whileTrue(new RotateToHeading(drivetrain, m_PhotonCameraWrapper, () -> Preferences.rotationTestTarget.get()));
+        joystick.y().whileTrue(new AlignSideToSide(drivetrain, m_PhotonCameraWrapper));
     }
 
     public Command getAutonomousCommand() {
