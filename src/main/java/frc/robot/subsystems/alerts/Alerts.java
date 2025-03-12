@@ -1,9 +1,11 @@
 package frc.robot.subsystems.alerts;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.RobotController;
 
+@Logged
 public class Alerts {
   //Alerts go here
   public Alert example = new Alert("example alert", AlertType.kInfo);
