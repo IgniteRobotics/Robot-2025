@@ -147,10 +147,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testExit() {}
-
   TestAlert mmmmm = new TestAlert();
   @Override
   public void simulationPeriodic() {
         mmmmm.test2.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
+        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red){
+          TestAlert.flash = true;
+        }
   }
 }

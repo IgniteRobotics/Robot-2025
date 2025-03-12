@@ -13,20 +13,20 @@ import edu.wpi.first.wpilibj.RobotController;
 
 @Logged
 public class TestAlert {
+  public static boolean flash = false;
   public Alert test2 = new Alert("test alert", AlertType.kInfo);
-  private boolean flash = false;
-  //private double ts = ((int)RobotController.getFPGATime() / 500000) % 2;
+  private boolean Warning = false;
   public void Testg(){
-    if (test2.get() == true){
-      //ts = ((int)RobotController.getFPGATime() / 500000) % 2;
+    if (flash == true){
       if(((int)RobotController.getFPGATime() / 500000) % 2 == 1){
-       flash = true;
+       Warning = true;
        } else if(((int)RobotController.getFPGATime() / 500000) % 2 == 0){
-       flash = false;
+       Warning = false;
        }
+      flash = false;
    }
   };
-  public boolean TestH(){
-    return flash;
-  }     
+  //public boolean Testh(){
+  //  return flash;
+  //}     
 }
