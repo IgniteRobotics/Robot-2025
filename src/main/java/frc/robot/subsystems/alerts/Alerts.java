@@ -1,20 +1,15 @@
 package frc.robot.subsystems.alerts;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.epilogue.NotLogged;
-import edu.wpi.first.epilogue.Logged.Importance;
-
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import frc.robot.Robot;
 import edu.wpi.first.wpilibj.RobotController;
 
-@Logged
-public class TestAlert {
+public class Alerts {
+  //Alerts go here
+  public Alert example = new Alert("example alert", AlertType.kInfo);
+
+  //Flashing epiloge warning light code
   public static boolean flash = false;
-  public Alert test2 = new Alert("test alert", AlertType.kInfo);
   private boolean Warning = false;
   public void Testg(){
     if (flash == true){
@@ -25,8 +20,5 @@ public class TestAlert {
        }
       flash = false;
    }
-  };
-  //public boolean Testh(){
-  //  return flash;
-  //}     
+  }; 
 }

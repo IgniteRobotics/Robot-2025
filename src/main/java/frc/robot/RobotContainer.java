@@ -36,7 +36,7 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.EndEffector.EndEffector;
-import frc.robot.subsystems.alerts.TestAlert;
+import frc.robot.subsystems.alerts.Alerts;
 import frc.robot.subsystems.alerts.TestAlertLogger;
 @Logged
 public class RobotContainer {

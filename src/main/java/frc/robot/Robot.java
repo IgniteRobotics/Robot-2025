@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.PreferenceTypes.DoublePreference;
-import frc.robot.subsystems.alerts.TestAlert;
+import frc.robot.subsystems.alerts.Alerts;
 
 @Logged
 public class Robot extends TimedRobot {
@@ -41,8 +41,6 @@ public class Robot extends TimedRobot {
   private boolean hasAlliance  = false;
 
   private boolean Idontcarewhatitscalled = false;
-
-  public final TestAlert alerts = new TestAlert();
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -66,8 +64,6 @@ public class Robot extends TimedRobot {
     if (!hasAlliance) {getAllianceInfo();}
 
     CommandScheduler.getInstance().run();
-
-    alerts.Testg();
 
     /*
      * This example of adding Limelight is very simple and may not be sufficient for on-field use.
@@ -147,12 +143,16 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testExit() {}
-  TestAlert mmmmm = new TestAlert();
+  //call the alert subsystem
+  public final Alerts alerts = new Alerts();
+  Alerts example = new Alerts();
   @Override
   public void simulationPeriodic() {
-        mmmmm.test2.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
+        //set the alert
+        example.example.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
+        //set the warning flash if desired
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red){
-          TestAlert.flash = true;
+          Alerts.flash = true;
         }
   }
 }
