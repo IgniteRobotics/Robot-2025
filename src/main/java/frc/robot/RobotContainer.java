@@ -47,8 +47,11 @@ import frc.robot.commands.composite.SemiAutoScoreCoralGroup;
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.drive.AlignIntakeSide;
+import frc.robot.commands.drive.AlignSideToSide;
 import frc.robot.commands.drive.AlignThenDrive;
 import frc.robot.commands.drive.AlignToReefTags;
+import frc.robot.commands.drive.DriveIntoTarget;
+import frc.robot.commands.drive.RotateToHeading;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.generated.TunerConstants;
@@ -150,7 +153,9 @@ public class RobotContainer {
 
 
         configureSubsytemDefaultCommands();
-        configureBindings();
+        // configureBindings();
+        //TODO MUST REMOVE
+        configureTestBindings();
         configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -294,6 +299,16 @@ public class RobotContainer {
         );
 
                                          
+    }
+
+    private void configureTestBindings() {
+        joystick.a().whileTrue(new RotateToHeading(drivetrain, m_PhotonCameraWrapper, () -> Preferences.rotationTestTarget.get()));
+        joystick.y().whileTrue(new AlignSideToSide(drivetrain, m_PhotonCameraWrapper));
+        joystick.x().whileTrue(new DriveIntoTarget(drivetrain, m_PhotonCameraWrapper));
+        joystick.b().whileTrue(new AlignToReefTags(drivetrain, m_PhotonCameraWrapper, ()-> joystick.getLeftY(), () -> joystick.getLeftX()));
+
+        joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    
     }
 
     public Command getAutonomousCommand() {

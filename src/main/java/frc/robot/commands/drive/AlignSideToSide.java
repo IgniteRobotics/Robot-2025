@@ -29,7 +29,7 @@ import edu.wpi.first.epilogue.Logged;
 
 
 @Logged
-public class AlignToReefTags extends Command {
+public class AlignSideToSide extends Command {
   private final CommandSwerveDrivetrain m_drive;
   PhotonCameraWrapper m_pcw;
   PIDController rotationController;
@@ -42,45 +42,26 @@ public class AlignToReefTags extends Command {
   private int targetIDs[] = {};
 
 
-  private final DoubleSupplier m_xInput;
-  private final DoubleSupplier m_yInput;
-
   private double m_distanceMeters;
   private double m_yawDegrees;
-
-  private double m_rotation = 0;
-  private double m_driveX = 0;
-  private double m_driveY = 0;
   
   /** Creates a new AlignToTarget. */
-  public AlignToReefTags(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, DoubleSupplier xInput, DoubleSupplier yInput){
+  public AlignSideToSide(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw){
     m_drive = drive;
     m_pcw = pcw;
-    m_xInput = xInput;
-    m_yInput = yInput;
     addRequirements(m_drive);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    rotationController = new PIDController(Preferences.alignRotKP.get(), 0, Preferences.alignRotKD.get());
-    rotationController.setTolerance(Preferences.rotationTolerancePreference.get());
-    rotationController.enableContinuousInput(-180, 180);
-    
     driveYController = new PIDController(Preferences.alignDriveYKP.get(), 0, Preferences.alignDriveYKD.get());
     driveYController.setTolerance(Preferences.yAlignTolerancePreference.get());
-    driveXController = new PIDController(Preferences.alignDriveXKP.get(), 0, Preferences.alignDriveXKD.get());
-    driveXController.setTolerance(Preferences.xAlignTolerancePreference.get());
-
+  
     targetIDs = AllianceState.getInstance().getReefTags();
     m_cameraId = CoralState.getInstance().pickCamera();
     m_distanceMeters = Preferences.coralXDriveOffset.get();
     m_yawDegrees = CoralState.getInstance().getYCoralAlignment(m_distanceMeters);
-
-    m_rotation = 0;
-    m_driveX = 0;
-    m_driveY = 0;
 
   }
 
@@ -90,59 +71,34 @@ public class AlignToReefTags extends Command {
     //Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
     
     Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, m_cameraId);
-
+    double driveY;
 
     if(targeting.isPresent()){
-      double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
-      m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
-      SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
-
-      //double offset = CameraConstants.offsetToBumper.get(targeting.get().getCameraName());
-      m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
-      SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
+    
       
-      m_driveY = -driveYController.calculate(targeting.get().getYaw(), m_yawDegrees);
-      SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
+      driveY = -driveYController.calculate(targeting.get().getYaw(), 0);
     }
-
-    //rotate and line up before driving forward.
-    if (!rotationController.atSetpoint() || !driveYController.atSetpoint()){
-      m_driveX = 0;
-    }
-
 
     else{
-      m_rotation = 0;
-      m_driveX = 0;
-      m_driveY = 0;
+      driveY = 0;
     }
   
-    //override with joystick input if present
-    if(m_xInput != null && Math.abs(m_xInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
-      m_driveX = 1.25*m_xInput.getAsDouble();
-    }
-
-    if(m_yInput != null && Math.abs(m_yInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
-      m_driveY = 1.25*m_yInput.getAsDouble();
-    }
-
-    SmartDashboard.putNumber("Alignment/Power/rotation", m_rotation);
-    SmartDashboard.putNumber("Alignment/Power/driveX", m_driveX);
-    SmartDashboard.putNumber("Alignment/Power/driveY", m_driveY);
     
-    m_drive.driveRobotCentric(m_driveX, m_driveY, m_rotation);
+
+    SmartDashboard.putNumber("Alignment/Power/driveY", driveY);
+    
+    m_drive.driveRobotCentric(0, driveY, 0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drive.driveRobotCentric(0, 0,0);
+    m_drive.driveRobotCentric(0, 0, 0);
   }
-
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return rotationController.atSetpoint() && driveXController.atSetpoint() && driveYController.atSetpoint();
+    return driveYController.atSetpoint();
   }
 }
