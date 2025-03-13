@@ -66,6 +66,8 @@ public class AlignToReefTags extends Command {
   public void initialize() {
     rotationController = new PIDController(Preferences.alignRotKP.get(), 0, Preferences.alignRotKD.get());
     rotationController.setTolerance(Preferences.rotationTolerancePreference.get());
+    rotationController.enableContinuousInput(-180, 180);
+    
     driveYController = new PIDController(Preferences.alignDriveYKP.get(), 0, Preferences.alignDriveYKD.get());
     driveYController.setTolerance(Preferences.yAlignTolerancePreference.get());
     driveXController = new PIDController(Preferences.alignDriveXKP.get(), 0, Preferences.alignDriveXKD.get());

@@ -76,8 +76,7 @@ public class AlignSideToSide extends Command {
     if(targeting.isPresent()){
     
       
-      driveY = -driveYController.calculate(targeting.get().getYaw(), m_yawDegrees);
-      SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
+      driveY = -driveYController.calculate(targeting.get().getYaw(), 0);
     }
 
     else{

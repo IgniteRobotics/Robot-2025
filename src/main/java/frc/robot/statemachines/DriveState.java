@@ -30,6 +30,8 @@ public class DriveState {
 
     private static Pose2d robotPose2d;
 
+    private static double robotYaw;
+
     Map<String, PhotonPipelineResult> cameraResults = new HashMap<>(){};
 
     private DriveState() {
@@ -51,6 +53,14 @@ public class DriveState {
 
     public Pose2d getPose2d(){
         return robotPose2d;
+    }
+
+    public synchronized void setYaw(double yaw){
+        robotYaw = yaw;
+    }
+
+    public double getYaw(){
+        return robotYaw;
     }
 
     //**********ZONE***********//

@@ -44,6 +44,7 @@ public class RotateToHeading extends Command {
   public void initialize() {
     rotationController = new PIDController(Preferences.alignRotKP.get(), 0, Preferences.alignRotKD.get());
     rotationController.setTolerance(Preferences.rotationTolerancePreference.get());
+    rotationController.enableContinuousInput(-180, 180);
     m_targetHeading = m_headingSupplier.getAsDouble();
 
   }
