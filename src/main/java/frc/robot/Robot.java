@@ -42,6 +42,8 @@ public class Robot extends TimedRobot {
 
   private boolean Idontcarewhatitscalled = false;
 
+  public final Alerts alerts = new Alerts();
+
   public Robot() {
     m_robotContainer = new RobotContainer();
     DataLogManager.start();
@@ -61,6 +63,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    alerts.Flashing();
     if (!hasAlliance) {getAllianceInfo();}
 
     CommandScheduler.getInstance().run();
