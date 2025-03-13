@@ -16,4 +16,8 @@ public class DriveCommandConstants {
     public static final double DRIVE_Y_P = 0.2;
     public static final double DRIVE_Y_D = 0.01;
 
+    public static final double DRIVE_Y_TOLERANCE = 0.1;
+    public static final double DRIVE_X_TOLERANCE = 0.1;
+    public static final double ROTATION_TOLERANCE = 0.1;
+
 }

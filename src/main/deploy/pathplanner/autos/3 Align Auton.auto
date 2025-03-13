@@ -1,0 +1,73 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start To Reef JI"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align To J and Wait"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef J To HP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align To HP and Wait"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HP To Reef LK"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align To K and Wait"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef K To HP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align To HP and Wait"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HP To Reef LK"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align To L and Wait"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

@@ -68,7 +68,7 @@ public class DriveIntoTarget extends Command {
   public void execute() {
     //Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
     
-    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, m_cameraId);
+    Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, m_cameraId);
     double driveX;
 
     if(targeting.isPresent()){
