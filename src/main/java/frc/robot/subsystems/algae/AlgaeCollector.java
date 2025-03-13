@@ -102,10 +102,18 @@ public class AlgaeCollector extends SubsystemBase {
     return false;
   }
 
+  public void checkCurrentSpike(double algaeHoldPower){
+    double supplyCurrent = m_algaeMotor.getSupplyCurrent().getValueAsDouble();
+    if (supplyCurrent > AlgaeCollectorConstants.createCurrentLimitsConfigs().StatorCurrentLimit) {
+      m_algaeMotor.set(algaeHoldPower);
+    }
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putString("Algae Target", m_algaeState.getAlgaeTargetName());
     m_algaeState.setHasAlgae(seesAlgae());
+
   }
 
   //Voltage, Current, Temperature
