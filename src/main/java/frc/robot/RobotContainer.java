@@ -70,6 +70,7 @@ public class RobotContainer {
 
     private final Command autoIngestCoral = new AutoIngestCoral(endEffector);
 
+    public final Alerts alerts = new Alerts();
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;

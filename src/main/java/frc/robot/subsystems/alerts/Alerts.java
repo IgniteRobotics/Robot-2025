@@ -4,16 +4,20 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 @Logged
-public class Alerts {
+public class Alerts extends SubsystemBase {
   //Alerts go here
   public Alert example = new Alert("example alert", AlertType.kInfo);
 
   //Flashing epiloge warning light code
   public static boolean flash = false;
   private boolean Warning = false;
-  public void Flashing(){
+
+  @Override
+  public void periodic(){
     if (flash == true){
       if(((int)RobotController.getFPGATime() / 500000) % 2 == 1){
        Warning = true;
@@ -22,5 +26,10 @@ public class Alerts {
        }
       flash = false;
    }
-  }; 
+  } 
+
+  @Override
+  public void simulationPeriodic() {
+    periodic();
+  }
 }

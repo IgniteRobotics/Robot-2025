@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
 
   private boolean Idontcarewhatitscalled = false;
 
-  public final Alerts alerts = new Alerts();
+
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -63,7 +63,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    alerts.Flashing();
     if (!hasAlliance) {getAllianceInfo();}
 
     CommandScheduler.getInstance().run();
@@ -147,11 +146,10 @@ public class Robot extends TimedRobot {
   @Override
   public void testExit() {}
   //call the alert subsystem
-  Alerts example = new Alerts();
   @Override
   public void simulationPeriodic() {
         //set the alert
-        example.example.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
+        m_robotContainer.alerts.example.set(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red);
         //set the warning flash if desired
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red){
           Alerts.flash = true;
