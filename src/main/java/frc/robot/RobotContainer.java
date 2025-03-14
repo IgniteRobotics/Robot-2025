@@ -146,8 +146,6 @@ public class RobotContainer {
         NamedCommands.registerCommand("Align To L and Wait", AutonComposites.AlignReefL(drivetrain, m_PhotonCameraWrapper));
         NamedCommands.registerCommand("Align To K and Wait", AutonComposites.AlignReefK(drivetrain, m_PhotonCameraWrapper));
         NamedCommands.registerCommand("Align To HP and Wait", AutonComposites.AlignHP(drivetrain, m_PhotonCameraWrapper));
-        
-        
 
         autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
         autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
