@@ -91,18 +91,24 @@ public class DriveState {
 
     @Logged(name = "Max Speed", importance = Importance.CRITICAL)
     public double getMaxSpeed(){
+        /* 
         if(getZone() == null){
             return TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
         }
         else return getZone().maxSpeed.doubleValue();
+        */
+        return TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     }
 
     @Logged(name = "Max Rotation", importance = Importance.CRITICAL)
     public double getMaxRotation(){
+        /* 
         if(getZone() == null){
             return TunerConstants.MAX_ANGULAR_SPEED;
         }
         else return getZone().maxRotation.doubleValue();
+        */
+        return TunerConstants.MAX_ANGULAR_SPEED;
     }
 
     //**********Vision***********//

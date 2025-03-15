@@ -23,7 +23,6 @@ public class AlgaeState {
     {
         if (single_instance == null)
             single_instance = new AlgaeState();
-        
         return single_instance;
     }
 
