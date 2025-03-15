@@ -58,8 +58,6 @@ public class DriveIntoTarget extends Command {
   
     targetIDs = AllianceState.getInstance().getReefTags();
     m_cameraId = CoralState.getInstance().pickCamera();
-    m_distanceMeters = Preferences.coralXDriveOffset.get();
-    m_yawDegrees = CoralState.getInstance().getYCoralAlignment(m_distanceMeters);
 
   }
 
@@ -73,7 +71,7 @@ public class DriveIntoTarget extends Command {
 
     if(targeting.isPresent()){
     
-      
+      m_distanceMeters = 0.347;
       driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
       SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
     

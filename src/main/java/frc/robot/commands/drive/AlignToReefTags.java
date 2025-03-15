@@ -116,9 +116,8 @@ public class AlignToReefTags extends Command {
       }
 
       else if(!atDriveXSetpoint){
-        m_distanceMeters = CameraConstants.offsetToBumper.get(targeting.get().getCameraName()) + 1;
+        m_distanceMeters = 0.347;
         m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
-        
         SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
 
         atDriveXSetpoint = driveXController.atSetpoint();
