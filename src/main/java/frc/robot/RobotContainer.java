@@ -158,9 +158,9 @@ public class RobotContainer {
 
 
         configureSubsytemDefaultCommands();
-        configureBindings();
+        //configureBindings();
         //TODO MUST REMOVE
-        //configureTestBindings();
+        configureTestBindings();
         configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -307,6 +307,16 @@ public class RobotContainer {
     }
 
     private void configureTestBindings() {
+
+        SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(Preferences.servoPosition)));
+
+        joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
+                    .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
+        joystick.povDown().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))
+                    .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
+        joystick.povLeft().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
+        
+
         joystick.a().whileTrue(new RotateToHeading(drivetrain, m_PhotonCameraWrapper));
         joystick.y().whileTrue(new AlignSideToSide(drivetrain, m_PhotonCameraWrapper));
         joystick.x().whileTrue(new DriveIntoTarget(drivetrain, m_PhotonCameraWrapper));

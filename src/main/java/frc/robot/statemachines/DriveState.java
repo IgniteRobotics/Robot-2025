@@ -70,7 +70,7 @@ public class DriveState {
         }
         else return Grid.BLUE_GRID;
     }
-
+    /* 
     @NotLogged
     public Zone getZone(){
         if(robotPose2d == null 
@@ -82,12 +82,15 @@ public class DriveState {
             return getGrid()[(int)(robotPose2d.getX()/blockWidth)][ (int)(robotPose2d.getY()/blockWidth)];
         }
     }
+    */
 
+    /* 
     @Logged(name = "Zone", importance = Importance.CRITICAL)
     public String getZoneName(){
         if(getZone() == null) return "currentZone is nonexistent";
         else return getZone().name;
     }
+    */
 
     @Logged(name = "Max Speed", importance = Importance.CRITICAL)
     public double getMaxSpeed(){
