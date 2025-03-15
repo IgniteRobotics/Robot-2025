@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.auton.AutonComposites;
@@ -97,6 +98,7 @@ public class RobotContainer {
     private final JoystickButton algaeBargeButton = new JoystickButton(manipulatorJoystick, 11);
     private final JoystickButton coralCancelButton = new JoystickButton(manipulatorJoystick, 12);
 
+    private final Trigger climbTrigger = new Trigger(() -> manipulatorJoystick.getY() < -0.98);
 
     public final double default_Max_Speed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public final double maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED;
@@ -158,9 +160,9 @@ public class RobotContainer {
 
 
         configureSubsytemDefaultCommands();
-        //configureBindings();
+        configureBindings();
         //TODO MUST REMOVE
-        configureTestBindings();
+        //configureTestBindings();
         configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -178,7 +180,7 @@ public class RobotContainer {
         algaeReefHighButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.HIGH_REEF)));
         algaeBargeButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.BARGE)));
         coralCancelButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.NONE)));
-       
+        climbTrigger.onTrue(new InstantCommand(() -> climber.setServoPosition(0)));
     }
 
     private void configureSubsytemDefaultCommands(){

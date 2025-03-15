@@ -128,6 +128,10 @@ public class AlignToReefTags extends Command {
     else{
         //m_rotation = rotationController.calculate(m_drive.getYaw(), AllianceState.getInstance().getHeadingToReef(m_drive.getPose()));
     }
+
+    if(atDriveXSetpoint && atDriveYSetpoint && atRotationSetpoint){
+      m_driveX = -0.75;
+    }
   
     //override with joystick input if present
     if(m_xInput != null && Math.abs(m_xInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
