@@ -155,6 +155,7 @@ public class AlignToReefTags extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return rotationController.atSetpoint() && driveXController.atSetpoint() && driveYController.atSetpoint();
+    return false;
+    //return rotationController.atSetpoint() && driveXController.atSetpoint() && driveYController.atSetpoint();
   }
 }
