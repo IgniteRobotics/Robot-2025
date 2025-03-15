@@ -81,7 +81,7 @@ public class CameraConstants {
     
     public static final double ALGAE_PROCESSOR_STOP_DISTANCE_METERS = 0.5;
 
-    public static final double MINIMUM_AMBIGUITY = 0.3;
+    public static final double MINIMUM_AMBIGUITY = 0.7;
 
 
     //this is the offset, in meters from the center of the tag,

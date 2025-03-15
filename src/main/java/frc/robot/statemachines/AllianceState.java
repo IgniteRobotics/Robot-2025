@@ -75,12 +75,12 @@ public class AllianceState {
         double deltaY;
 
         if(getAlliance() == Alliance.Red){
-            deltaX = RED_REEF_X - pose2d.getX();
-            deltaY = RED_REEF_Y - pose2d.getY(); 
+            deltaX = pose2d.getX() - RED_REEF_X;
+            deltaY = pose2d.getY() - RED_REEF_Y; 
         }
         else{
-            deltaX = BLUE_REEF_X - pose2d.getX();
-            deltaY = BLUE_REEF_Y - pose2d.getY();
+            deltaX = pose2d.getX() - BLUE_REEF_X;
+            deltaY = pose2d.getX() - BLUE_REEF_Y;
         }
 
         return Math.atan2(deltaY, deltaX);

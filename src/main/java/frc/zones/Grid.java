@@ -3,24 +3,27 @@ import static edu.wpi.first.units.Units.*;
 
 public class Grid {
     public static final Zone NULL = new Zone(){{
-        
+        setName("NULL");
     }};
 
     public static final Zone FREE = new Zone() {{
         setMaxSpeed(5);
         setMaxRotation(RotationsPerSecond.of(0.5).in(RadiansPerSecond));
+        setName("FREE");
        
     }};
 
     public static final Zone HP_TOP = new Zone(){{
         setMaxSpeed(3.5);
         setMaxRotation(RotationsPerSecond.of(0.5).in(RadiansPerSecond));
+        setName("HP_TOP");
         
     }};
 
     public static final Zone HP_BOTTOM = new Zone(){{
         setMaxSpeed(3.5);
         setMaxRotation(RotationsPerSecond.of(0.5).in(RadiansPerSecond));
+        setName("HP_BOTTOM");
        
     }};
 
@@ -28,6 +31,7 @@ public class Grid {
         setMaxSpeed(2);
         setTargetID(16);
         setMaxRotation(RotationsPerSecond.of(0.5).in(RadiansPerSecond));
+        setName("ALGAE_PROC");
         
     }};
 
@@ -35,36 +39,42 @@ public class Grid {
             setMaxSpeed(2);
             setTargetID(7);
             setMaxRotation(RotationsPerSecond.of(0.5).in(RadiansPerSecond));
+            setName("REEF_AB");
             
         }};
         
         public static final Zone REEF_CD = new Zone(){{
             setMaxSpeed(2);
             setMaxRotation(RotationsPerSecond.of(0.5).in(RadiansPerSecond));
+            setName("REEF_CD");
             
         }};
 
         public static final Zone REEF_EF = new Zone(){{
             setMaxSpeed(2);
             setMaxRotation(RotationsPerSecond.of(0.5).in(RadiansPerSecond));
+            setName("REEF_EF");
             
         }};
 
         public static final Zone REEF_GH = new Zone(){{
             setMaxSpeed(2);
             setMaxRotation(RotationsPerSecond.of(0.5).in(RadiansPerSecond));
+            setName("REEF_GH");
             
         }};
 
         public static final Zone REEF_IJ = new Zone(){{
             setMaxSpeed(2);
             setMaxRotation(RotationsPerSecond.of(0.5).in(RadiansPerSecond));
+            setName("REEF_IJ");
             
         }};
 
         public static final Zone REEF_KL = new Zone(){{
             setMaxSpeed(2);
             setMaxRotation(RotationsPerSecond.of(0.5).in(RadiansPerSecond));
+            setName("REEF_KL");
             
         }};
     
@@ -72,7 +82,7 @@ public class Grid {
     public static final Zone OPPONENT = new Zone(){{
             setMaxSpeed(1);
             setMaxRotation(RotationsPerSecond.of(0.25).in(RadiansPerSecond));
-            
+            setName("OPPONENT");
     }};
 
     
