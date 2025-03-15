@@ -307,10 +307,10 @@ public class RobotContainer {
     }
 
     private void configureTestBindings() {
-        joystick.a().whileTrue(new RotateToHeading(drivetrain, m_PhotonCameraWrapper, () -> Preferences.rotationTestTarget.get()));
+        joystick.a().whileTrue(new RotateToHeading(drivetrain, m_PhotonCameraWrapper));
         joystick.y().whileTrue(new AlignSideToSide(drivetrain, m_PhotonCameraWrapper));
         joystick.x().whileTrue(new DriveIntoTarget(drivetrain, m_PhotonCameraWrapper));
-        joystick.b().whileTrue(new AlignToReefTags(drivetrain, m_PhotonCameraWrapper, ()-> joystick.getLeftY(), () -> joystick.getLeftX()));
+        joystick.b().whileTrue(new AlignToReefTags(drivetrain, m_PhotonCameraWrapper, ()-> joystick.getLeftY(), () -> joystick.getLeftX()).andThen(new RunCommand(() -> drivetrain.driveRobotCentric(-0.5, 0, 0))));
 
         joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 

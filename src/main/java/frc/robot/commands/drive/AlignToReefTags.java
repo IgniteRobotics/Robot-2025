@@ -116,7 +116,9 @@ public class AlignToReefTags extends Command {
       }
 
       else if(!atDriveXSetpoint){
+        m_distanceMeters = CameraConstants.offsetToBumper.get(targeting.get().getCameraName());
         m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
+        
         SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
 
         atDriveXSetpoint = driveXController.atSetpoint();
@@ -125,7 +127,7 @@ public class AlignToReefTags extends Command {
     }
 
     else{
-        m_rotation = rotationController.calculate(m_drive.getYaw(), AllianceState.getInstance().getHeadingToReef(m_drive.getPose()));
+        //m_rotation = rotationController.calculate(m_drive.getYaw(), AllianceState.getInstance().getHeadingToReef(m_drive.getPose()));
     }
   
     //override with joystick input if present

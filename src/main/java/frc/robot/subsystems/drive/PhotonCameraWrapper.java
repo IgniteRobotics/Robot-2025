@@ -252,7 +252,7 @@ public class PhotonCameraWrapper{
                 }
             }
 
-            return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.get().getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
+            return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.get().getBestCameraToTarget())),
                 target.get().getYaw(), target.get().getFiducialId(), cam.getName()));
         }
         

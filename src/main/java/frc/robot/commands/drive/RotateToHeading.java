@@ -4,14 +4,18 @@
 
 package frc.robot.commands.drive;
 
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Preferences;
+import frc.robot.statemachines.AllianceState;
+import frc.robot.statemachines.CoralState;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
+import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
@@ -26,16 +30,16 @@ public class RotateToHeading extends Command {
   PIDController driveXController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-  private DoubleSupplier m_headingSupplier;
+  private int m_cameraId;
+  
+  private int targetIDs[] = {};
 
-  private double m_targetHeading;
-
+  double rotation;
   
   /** Creates a new AlignToTarget. */
-  public RotateToHeading(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, DoubleSupplier headingSupplier){
+  public RotateToHeading(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw){
     m_drive = drive;
     m_pcw = pcw;
-    m_headingSupplier = headingSupplier;
     addRequirements(m_drive);
   }
 
@@ -45,21 +49,25 @@ public class RotateToHeading extends Command {
     rotationController = new PIDController(Preferences.alignRotKP.get(), 0, Preferences.alignRotKD.get());
     rotationController.setTolerance(Preferences.rotationTolerancePreference.get());
     rotationController.enableContinuousInput(-180, 180);
-    m_targetHeading = m_headingSupplier.getAsDouble();
 
+    targetIDs = AllianceState.getInstance().getReefTags();
+    m_cameraId = CoralState.getInstance().pickCamera();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    double rotation;
-    
-    rotation = rotationController.calculate(m_drive.getYaw(), m_targetHeading);
-    SmartDashboard.putNumber("Alignment/Data/Heading", m_targetHeading);
 
-    
-  
+    rotation = 0;
+
+    Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, m_cameraId);
+
+    if(targeting.isPresent()){
+      double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());
+      rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
+      SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
+    }
+
     SmartDashboard.putNumber("Alignment/Power/rotation", rotation);
     
     m_drive.driveRobotCentric(0, 0, rotation);
