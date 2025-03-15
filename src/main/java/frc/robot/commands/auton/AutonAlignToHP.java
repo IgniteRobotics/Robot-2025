@@ -5,34 +5,53 @@
 package frc.robot.commands.auton;
 
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Preferences;
 import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.AllianceState;
+import frc.robot.statemachines.CoralState;
 import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.epilogue.Logged;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+
+@Logged
 public class AutonAlignToHP extends Command {
   private final CommandSwerveDrivetrain m_drive;
-  private final AllianceState m_allianceState = AllianceState.getInstance();
-  private boolean closeEnough = false;
   PhotonCameraWrapper m_pcw;
-  
-
   PIDController rotationController;
   PIDController driveYController;
   PIDController driveXController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
+  private boolean atRotationSetpoint;
+  private boolean atDriveYSetpoint;
+  private boolean atDriveXSetpoint;
+
+  private int m_cameraId;
+  
+  private int targetIDs[] = {};
+
+  private double m_distanceMeters;
+  private double m_yawDegrees;
+
+  private double m_rotation = 0;
+  private double m_driveX = 0;
+  private double m_driveY = 0;
+  
   /** Creates a new AlignToTarget. */
   public AutonAlignToHP(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw){
     m_drive = drive;
@@ -44,67 +63,81 @@ public class AutonAlignToHP extends Command {
   @Override
   public void initialize() {
     rotationController = new PIDController(Preferences.alignRotKP.get(), 0, Preferences.alignRotKD.get());
+    rotationController.setTolerance(Preferences.rotationTolerancePreference.get());
+    rotationController.enableContinuousInput(-180, 180);
+    
     driveYController = new PIDController(Preferences.alignDriveYKP.get(), 0, Preferences.alignDriveYKD.get());
+    driveYController.setTolerance(Preferences.yAlignTolerancePreference.get());
+
     driveXController = new PIDController(Preferences.alignDriveXKP.get(), 0, Preferences.alignDriveXKD.get());
+    driveXController.setTolerance(Preferences.xAlignTolerancePreference.get());
+
+    targetIDs = AllianceState.getInstance().getHumanPlayerTags();
+
+    atRotationSetpoint = false;
+    atDriveYSetpoint = false;
+    atDriveXSetpoint = false;
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Optional<TargetInfo> targeting = m_pcw.seekIntakeTargets(m_allianceState.getHumanPlayerTags());
-    double rotation;
-    double driveX;
-    double driveY;
+    //Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
+    
+    Optional<TargetInfo> targeting = m_pcw.seekIntakeTargets(targetIDs);
+
+    m_rotation = 0;
+    m_driveX = 0;
+    m_driveY = 0;
 
     if(targeting.isPresent()){
-      
-      double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
-      rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
-      SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
 
-      double offset = CameraConstants.offsetToBumper.get(targeting.get().getCameraName());
-      driveX = driveXController.calculate(targeting.get().getDistance(), offset);
-      SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
+      if(!atRotationSetpoint){
+        double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
+        m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
+        SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
 
-      driveY = -driveYController.calculate(targeting.get().getYaw(), 0);
-      SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
-
-      closeEnough = true; 
-      
-      if(Math.abs(targeting.get().getDistance() - offset) > 0.1){
-        closeEnough = false;
+        atRotationSetpoint = rotationController.atSetpoint();
       }
 
-      if(Math.abs(m_drive.getYaw() - targetHeading) > 0.1){
-        closeEnough = false;
+      else if(!atDriveYSetpoint){
+        m_driveY = -driveYController.calculate(targeting.get().getYaw(), CoralState.getInstance().getYCoralAlignment(targeting.get().getDistance()));
+        SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
+
+        atDriveYSetpoint = driveYController.atSetpoint();
       }
 
-      if(Math.abs(targeting.get().getYaw()) > 0.1){
-        closeEnough = false;
+      else if(!atDriveXSetpoint){
+        m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
+        SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
+
+        atDriveXSetpoint = driveYController.atSetpoint();
       }
+
     }
 
     else{
-      rotation = 0;
-      driveX = 0;
-      driveY = 0;
+        m_rotation = rotationController.calculate(m_drive.getYaw(), AllianceState.getInstance().getHeadingToReef(m_drive.getPose()));
     }
-  
 
-    SmartDashboard.putNumber("Alignment/Power/rotation", rotation);
-    SmartDashboard.putNumber("Alignment/Power/driveX", driveX);
-    SmartDashboard.putNumber("Alignment/Power/driveY", driveY);
+    SmartDashboard.putNumber("Alignment/Power/rotation", m_rotation);
+    SmartDashboard.putNumber("Alignment/Power/driveX", m_driveX);
+    SmartDashboard.putNumber("Alignment/Power/driveY", m_driveY);
     
-    m_drive.driveRobotCentric(driveX, driveY, rotation);
+    m_drive.driveRobotCentric(m_driveX, m_driveY, m_rotation);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_drive.driveRobotCentric(0, 0,0);
+  }
+
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return closeEnough;
+    return rotationController.atSetpoint() && driveXController.atSetpoint() && driveYController.atSetpoint();
   }
 }

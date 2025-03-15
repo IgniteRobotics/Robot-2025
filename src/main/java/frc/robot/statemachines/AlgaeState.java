@@ -8,7 +8,6 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.algae.AlgaeCollectorConstants;
-import frc.zones.ZoneTypes;
 
 @Logged
 public class AlgaeState {

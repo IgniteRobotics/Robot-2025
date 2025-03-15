@@ -37,6 +37,10 @@ public class AlignToReefTags extends Command {
   PIDController driveXController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
+  private boolean atRotationSetpoint;
+  private boolean atDriveYSetpoint;
+  private boolean atDriveXSetpoint;
+
   private int m_cameraId;
   
   private int targetIDs[] = {};
@@ -70,17 +74,16 @@ public class AlignToReefTags extends Command {
     
     driveYController = new PIDController(Preferences.alignDriveYKP.get(), 0, Preferences.alignDriveYKD.get());
     driveYController.setTolerance(Preferences.yAlignTolerancePreference.get());
+
     driveXController = new PIDController(Preferences.alignDriveXKP.get(), 0, Preferences.alignDriveXKD.get());
     driveXController.setTolerance(Preferences.xAlignTolerancePreference.get());
 
     targetIDs = AllianceState.getInstance().getReefTags();
     m_cameraId = CoralState.getInstance().pickCamera();
-    m_distanceMeters = Preferences.coralXDriveOffset.get();
-    m_yawDegrees = CoralState.getInstance().getYCoralAlignment(m_distanceMeters);
 
-    m_rotation = 0;
-    m_driveX = 0;
-    m_driveY = 0;
+    atRotationSetpoint = false;
+    atDriveYSetpoint = false;
+    atDriveXSetpoint = false;
 
   }
 
@@ -89,32 +92,40 @@ public class AlignToReefTags extends Command {
   public void execute() {
     //Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
     
-    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, m_cameraId);
+    Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, m_cameraId);
 
+    m_rotation = 0;
+    m_driveX = 0;
+    m_driveY = 0;
 
     if(targeting.isPresent()){
-      double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
-      m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
-      SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
 
-      //double offset = CameraConstants.offsetToBumper.get(targeting.get().getCameraName());
-      m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
-      SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
-      
-      m_driveY = -driveYController.calculate(targeting.get().getYaw(), m_yawDegrees);
-      SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
+      if(!atRotationSetpoint){
+        double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
+        m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
+        SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
+
+        atRotationSetpoint = rotationController.atSetpoint();
+      }
+
+      else if(!atDriveYSetpoint){
+        m_driveY = -driveYController.calculate(targeting.get().getYaw(), CoralState.getInstance().getYCoralAlignment(targeting.get().getDistance()));
+        SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
+
+        atDriveYSetpoint = driveYController.atSetpoint();
+      }
+
+      else if(!atDriveXSetpoint){
+        m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
+        SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
+
+        atDriveXSetpoint = driveYController.atSetpoint();
+      }
+
     }
-
-    //rotate and line up before driving forward.
-    if (!rotationController.atSetpoint() || !driveYController.atSetpoint()){
-      m_driveX = 0;
-    }
-
 
     else{
-      m_rotation = 0;
-      m_driveX = 0;
-      m_driveY = 0;
+        m_rotation = rotationController.calculate(m_drive.getYaw(), AllianceState.getInstance().getHeadingToReef(m_drive.getPose()));
     }
   
     //override with joystick input if present

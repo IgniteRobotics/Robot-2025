@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.commands.drive.DriveCommandConstants;
 import frc.robot.subsystems.climber.ClimberConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.algae.AlgaeCollector;
@@ -16,17 +17,17 @@ public class Preferences {
     // ********** Drive *********//
 
     
-    public static DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", 0.5);
-    public static DoublePreference alignRotKD = new DoublePreference("alignCommand/rotation/kD", 0);
-    public static DoublePreference alignDriveYKP = new DoublePreference("alignCommand/driveY/kP", 0.5);
-    public static DoublePreference alignDriveYKD = new DoublePreference("alignCommand/driveY/kD", 0.3);
-    public static DoublePreference alignDriveXKP = new DoublePreference("alignCommand/driveX/kP", 0.5);
-    public static DoublePreference alignDriveXKD = new DoublePreference("alignCommand/driveX/kD", 0.3);
+    public static DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", DriveCommandConstants.ROTATION_P);
+    public static DoublePreference alignRotKD = new DoublePreference("alignCommand/rotation/kD", DriveCommandConstants.ROTATION_D);
+    public static DoublePreference alignDriveYKP = new DoublePreference("alignCommand/driveY/kP", DriveCommandConstants.DRIVE_Y_P);
+    public static DoublePreference alignDriveYKD = new DoublePreference("alignCommand/driveY/kD", DriveCommandConstants.DRIVE_Y_D);
+    public static DoublePreference alignDriveXKP = new DoublePreference("alignCommand/driveX/kP", DriveCommandConstants.DRIVE_X_P);
+    public static DoublePreference alignDriveXKD = new DoublePreference("alignCommand/driveX/kD", DriveCommandConstants.DRIVE_X_D);
     public static DoublePreference alignAdj = new DoublePreference("alignCommand/adjustment", 0);
-    public static DoublePreference rotationTolerancePreference = new DoublePreference("alignCommand/rotationTolerance", 0.5);
+    public static DoublePreference rotationTolerancePreference = new DoublePreference("alignCommand/rotationTolerance", DriveCommandConstants.ROTATION_TOLERANCE);
     public static DoublePreference rotationTestTarget = new DoublePreference("alignCommand/rotationTarget", 0);
-    public static DoublePreference yAlignTolerancePreference = new DoublePreference("alignCommand/yAlignTolerance", 0.5);
-    public static DoublePreference xAlignTolerancePreference = new DoublePreference("alignCommand/xAlignTolerance", 0.1);
+    public static DoublePreference yAlignTolerancePreference = new DoublePreference("alignCommand/yAlignTolerance", DriveCommandConstants.DRIVE_Y_TOLERANCE);
+    public static DoublePreference xAlignTolerancePreference = new DoublePreference("alignCommand/xAlignTolerance", DriveCommandConstants.DRIVE_X_TOLERANCE);
 
     // ********** Elevator **********
     public static DoublePreference elevatorkV = new DoublePreference("Elevator/kV", ElevatorConstants.ELEVATOR_kV);
