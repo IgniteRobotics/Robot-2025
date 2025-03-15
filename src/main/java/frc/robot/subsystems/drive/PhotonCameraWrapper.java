@@ -198,33 +198,6 @@ public class PhotonCameraWrapper{
 
     }
 
-    public Optional<TargetInfo> seekGeneralTargets(int[] ids, int cameraId){
-
-        PhotonCamera cam = CameraConstants.allCameras[cameraId];
-        
-        double minimumAmbiguity = 1;
-
-        var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
-        if(newResult != null){
-            SmartDashboard.putBoolean("cameraHasTarget", newResult.hasTargets());
-            if (newResult.hasTargets()){
-                for (PhotonTrackedTarget target : newResult.getTargets()) {
-                    if (contains(ids, target.getFiducialId()) && target.getPoseAmbiguity() < minimumAmbiguity){
-                        return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
-                            target.getYaw(), target.getFiducialId(), cam.getName()));
-                    }
-                }
-                // if (target != null && Arrays.asList(ids).contains(target.getFiducialId()) )
-                //     if(target.getPoseAmbiguity() < minimumAmbiguity){
-                //         return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
-                //             target.getYaw(), target.getFiducialId(), cam.getName()));
-                //         }
-            }
-        }
-        return Optional.empty();
-
-    }
-
     public Optional<TargetInfo> seekOuttakeTargets(int[] ids, int cameraId){
 
         //0 is left, 1 is right
@@ -287,7 +260,7 @@ public class PhotonCameraWrapper{
                 }
             }
 
-            return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.get().getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(cam.getName())),
+            return Optional.of(new TargetInfo(getDistanceFromTransform3d(target.get().getBestCameraToTarget()),
                 target.get().getYaw(), target.get().getFiducialId(), cam.getName()));
         }
         

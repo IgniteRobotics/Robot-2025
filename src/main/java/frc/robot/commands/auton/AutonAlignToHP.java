@@ -45,6 +45,7 @@ public class AutonAlignToHP extends Command {
   
   private int targetIDs[] = {};
 
+
   private double m_distanceMeters;
   private double m_yawDegrees;
 
@@ -94,7 +95,7 @@ public class AutonAlignToHP extends Command {
     if(targeting.isPresent()){
 
       if(!atRotationSetpoint){
-        double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
+        double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().rotateBy(new Rotation3d(0, 0, Math.PI)).getZ());
         m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
         SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
 
@@ -102,23 +103,23 @@ public class AutonAlignToHP extends Command {
       }
 
       else if(!atDriveYSetpoint){
-        m_driveY = -driveYController.calculate(targeting.get().getYaw(), CoralState.getInstance().getYCoralAlignment(targeting.get().getDistance()));
+        m_driveY = -driveYController.calculate(targeting.get().getYaw(), 0);
         SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
 
         atDriveYSetpoint = driveYController.atSetpoint();
       }
 
       else if(!atDriveXSetpoint){
-        m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
+        m_driveX = driveXController.calculate(targeting.get().getDistance(), CameraConstants.offsetToBumper.get(targeting.get().getCameraName()));
         SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
 
-        atDriveXSetpoint = driveYController.atSetpoint();
+        atDriveXSetpoint = driveXController.atSetpoint();
       }
 
     }
 
     else{
-        m_rotation = rotationController.calculate(m_drive.getYaw(), AllianceState.getInstance().getHeadingToReef(m_drive.getPose()));
+        //m_rotation = rotationController.calculate(m_drive.getYaw(), AllianceState.getInstance().getHeadingToReef(m_drive.getPose()));
     }
 
     SmartDashboard.putNumber("Alignment/Power/rotation", m_rotation);

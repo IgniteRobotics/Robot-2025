@@ -40,8 +40,11 @@ public class AutonAlignToReefRight extends Command {
   private boolean atRotationSetpoint;
   private boolean atDriveYSetpoint;
   private boolean atDriveXSetpoint;
+
+  private int m_cameraId;
   
   private int targetIDs[] = {};
+
 
   private double m_distanceMeters;
   private double m_yawDegrees;
@@ -92,7 +95,7 @@ public class AutonAlignToReefRight extends Command {
     if(targeting.isPresent()){
 
       if(!atRotationSetpoint){
-        double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
+        double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());
         m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
         SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
 
@@ -107,16 +110,17 @@ public class AutonAlignToReefRight extends Command {
       }
 
       else if(!atDriveXSetpoint){
+        m_distanceMeters = 0.347;
         m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
         SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
 
-        atDriveXSetpoint = driveYController.atSetpoint();
+        atDriveXSetpoint = driveXController.atSetpoint();
       }
 
     }
 
     else{
-        m_rotation = rotationController.calculate(m_drive.getYaw(), AllianceState.getInstance().getHeadingToReef(m_drive.getPose()));
+        //m_rotation = rotationController.calculate(m_drive.getYaw(), AllianceState.getInstance().getHeadingToReef(m_drive.getPose()));
     }
 
     SmartDashboard.putNumber("Alignment/Power/rotation", m_rotation);
