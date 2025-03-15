@@ -36,6 +36,7 @@ public class Preferences {
     public static DoublePreference elevatorkG = new DoublePreference("Elevator/kG", ElevatorConstants.ELEVATOR_kG);
     public static DoublePreference elevatorkS = new DoublePreference("Elevator/kS", ElevatorConstants.ELEVATOR_kS);
     public static DoublePreference elevatorPosition = new DoublePreference("Elevator/Position", 0);
+    public static DoublePreference elevatorTestPower = new DoublePreference("Elevator/Test Power", 0.08);
 
     public static DoublePreference elevatorMMJerk = new DoublePreference("Elevator/Motion Magic/Jerk", ElevatorConstants.ELEVATOR_MM_JERK);
     public static DoublePreference elevatorMMAccel = new DoublePreference("Elevator/Motion Magic/Acceleration", ElevatorConstants.ELEVATOR_MM_ACCEL);

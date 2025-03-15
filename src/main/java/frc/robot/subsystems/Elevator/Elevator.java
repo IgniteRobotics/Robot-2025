@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -12,11 +13,13 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.epilogue.Logged.Importance;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.PreferenceTypes.DoublePreference;
 
 @Logged
-public class Elevator implements Subsystem {
+public class Elevator extends SubsystemBase {
     private final TalonFX m_elevatorMotorLeader;
     private final TalonFX m_elevatorMotorFollower;
 
@@ -33,6 +36,9 @@ public class Elevator implements Subsystem {
   private TalonFXConfiguration m_fxCfg = new TalonFXConfiguration();
 
   public MotionMagicVoltage m_MMPosition =   new MotionMagicVoltage(0);
+
+  private final DutyCycleOut dcOut = new DutyCycleOut(0);
+
 
   //logged stuff
   @Logged(name = "Target Position", importance = Importance.CRITICAL)
@@ -135,6 +141,12 @@ public class Elevator implements Subsystem {
 
   public void stopMotors(){
     m_elevatorMotorLeader.stopMotor();
+  }
+
+  public void setPower(double power){
+    power = MathUtil.clamp(power, -1.0, 1.0);
+    dcOut.Output = power;
+    m_elevatorMotorLeader.setControl(dcOut);
   }
 
 
