@@ -119,7 +119,7 @@ public class AlignToReefTags extends Command {
         m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
         SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
 
-        atDriveXSetpoint = driveYController.atSetpoint();
+        atDriveXSetpoint = driveXController.atSetpoint();
       }
 
     }

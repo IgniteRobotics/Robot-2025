@@ -116,7 +116,7 @@ public class AutonAlignToReefLeft extends Command {
     }
 
     else{
-        m_rotation = rotationController.calculate(m_drive.getYaw(), AllianceState.getInstance().getHeadingToReef(m_drive.getPose()));
+        //m_rotation = rotationController.calculate(m_drive.getYaw(), AllianceState.getInstance().getHeadingToReef(m_drive.getPose()));
     }
 
     SmartDashboard.putNumber("Alignment/Power/rotation", m_rotation);
