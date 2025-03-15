@@ -46,7 +46,7 @@ public class RotateToHeading extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    rotationController = new PIDController(Preferences.alignRotKP.get(), 0, Preferences.alignRotKD.get());
+    rotationController = new PIDController(Preferences.alignRotKP.get(), Preferences.alignRotKI.get(), Preferences.alignRotKD.get());
     rotationController.setTolerance(Preferences.rotationTolerancePreference.get());
     rotationController.enableContinuousInput(-180, 180);
 

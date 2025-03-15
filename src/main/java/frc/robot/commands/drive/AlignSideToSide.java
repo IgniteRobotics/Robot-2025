@@ -55,7 +55,7 @@ public class AlignSideToSide extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveYController = new PIDController(Preferences.alignDriveYKP.get(), 0, Preferences.alignDriveYKD.get());
+    driveYController = new PIDController(Preferences.alignDriveYKP.get(), Preferences.alignDriveYKI.get(), Preferences.alignDriveYKD.get());
     driveYController.setTolerance(Preferences.yAlignTolerancePreference.get());
   
     targetIDs = AllianceState.getInstance().getReefTags();

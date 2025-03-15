@@ -53,7 +53,7 @@ public class DriveIntoTarget extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveXController = new PIDController(Preferences.alignDriveXKP.get(), 0, Preferences.alignDriveXKD.get());
+    driveXController = new PIDController(Preferences.alignDriveXKP.get(), Preferences.alignDriveXKI.get(), Preferences.alignDriveXKD.get());
     driveXController.setTolerance(Preferences.xAlignTolerancePreference.get());
   
     targetIDs = AllianceState.getInstance().getReefTags();
