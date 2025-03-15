@@ -153,9 +153,9 @@ public class RobotContainer {
 
 
         configureSubsytemDefaultCommands();
-        // configureBindings();
+        configureBindings();
         //TODO MUST REMOVE
-        configureTestBindings();
+        //configureTestBindings();
         configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -308,6 +308,9 @@ public class RobotContainer {
         joystick.b().whileTrue(new AlignToReefTags(drivetrain, m_PhotonCameraWrapper, ()-> joystick.getLeftY(), () -> joystick.getLeftX()));
 
         joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+        joystick.leftBumper().onTrue(new OuttakeCommand(corraler));
+
     
     }
 
