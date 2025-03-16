@@ -53,13 +53,11 @@ public class DriveIntoTarget extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveXController = new PIDController(Preferences.alignDriveXKP.get(), 0, Preferences.alignDriveXKD.get());
+    driveXController = new PIDController(Preferences.alignDriveXKP.get(), Preferences.alignDriveXKI.get(), Preferences.alignDriveXKD.get());
     driveXController.setTolerance(Preferences.xAlignTolerancePreference.get());
   
     targetIDs = AllianceState.getInstance().getReefTags();
     m_cameraId = CoralState.getInstance().pickCamera();
-    m_distanceMeters = Preferences.coralXDriveOffset.get();
-    m_yawDegrees = CoralState.getInstance().getYCoralAlignment(m_distanceMeters);
 
   }
 
@@ -73,7 +71,7 @@ public class DriveIntoTarget extends Command {
 
     if(targeting.isPresent()){
     
-      
+      m_distanceMeters = 0.347;
       driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
       SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
     

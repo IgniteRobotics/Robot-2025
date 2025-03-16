@@ -19,10 +19,17 @@ public class Preferences {
     
     public static DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", DriveCommandConstants.ROTATION_P);
     public static DoublePreference alignRotKD = new DoublePreference("alignCommand/rotation/kD", DriveCommandConstants.ROTATION_D);
+    public static DoublePreference alignRotKI = new DoublePreference("alignCommand/rotation/kI", 0);
+    
     public static DoublePreference alignDriveYKP = new DoublePreference("alignCommand/driveY/kP", DriveCommandConstants.DRIVE_Y_P);
     public static DoublePreference alignDriveYKD = new DoublePreference("alignCommand/driveY/kD", DriveCommandConstants.DRIVE_Y_D);
+    public static DoublePreference alignDriveYKI = new DoublePreference("alignCommand/driveY/kI", 0);
+    
     public static DoublePreference alignDriveXKP = new DoublePreference("alignCommand/driveX/kP", DriveCommandConstants.DRIVE_X_P);
     public static DoublePreference alignDriveXKD = new DoublePreference("alignCommand/driveX/kD", DriveCommandConstants.DRIVE_X_D);
+    public static DoublePreference alignDriveXKI = new DoublePreference("alignCommand/driveX/kI",0);
+
+
     public static DoublePreference alignAdj = new DoublePreference("alignCommand/adjustment", 0);
     public static DoublePreference rotationTolerancePreference = new DoublePreference("alignCommand/rotationTolerance", DriveCommandConstants.ROTATION_TOLERANCE);
     public static DoublePreference rotationTestTarget = new DoublePreference("alignCommand/rotationTarget", 0);

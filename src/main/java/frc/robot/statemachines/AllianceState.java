@@ -5,6 +5,7 @@
 package frc.robot.statemachines;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.drive.CameraConstants;
@@ -71,19 +72,7 @@ public class AllianceState {
     }
 
     public double getHeadingToReef(Pose2d pose2d){
-        double deltaX;
-        double deltaY;
-
-        if(getAlliance() == Alliance.Red){
-            deltaX = RED_REEF_X - pose2d.getX();
-            deltaY = RED_REEF_Y - pose2d.getY(); 
-        }
-        else{
-            deltaX = BLUE_REEF_X - pose2d.getX();
-            deltaY = BLUE_REEF_Y - pose2d.getY();
-        }
-
-        return Math.atan2(deltaY, deltaX);
+       return 0;
     }
 
 }

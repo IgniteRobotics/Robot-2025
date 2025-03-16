@@ -101,7 +101,7 @@ public class AlignToReefTags extends Command {
     if(targeting.isPresent()){
 
       if(!atRotationSetpoint){
-        double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().rotateBy(new Rotation3d(0,0,Math.PI)).getZ());
+        double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());
         m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
         SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
 
@@ -116,16 +116,21 @@ public class AlignToReefTags extends Command {
       }
 
       else if(!atDriveXSetpoint){
+        m_distanceMeters = 0.347;
         m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
         SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
 
-        atDriveXSetpoint = driveYController.atSetpoint();
+        atDriveXSetpoint = driveXController.atSetpoint();
       }
 
     }
 
     else{
-        m_rotation = rotationController.calculate(m_drive.getYaw(), AllianceState.getInstance().getHeadingToReef(m_drive.getPose()));
+        //m_rotation = rotationController.calculate(m_drive.getYaw(), AllianceState.getInstance().getHeadingToReef(m_drive.getPose()));
+    }
+
+    if(atDriveXSetpoint && atDriveYSetpoint && atRotationSetpoint){
+      m_driveX = -0.75;
     }
   
     //override with joystick input if present
@@ -154,6 +159,7 @@ public class AlignToReefTags extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return rotationController.atSetpoint() && driveXController.atSetpoint() && driveYController.atSetpoint();
+    return false;
+    //return rotationController.atSetpoint() && driveXController.atSetpoint() && driveYController.atSetpoint();
   }
 }

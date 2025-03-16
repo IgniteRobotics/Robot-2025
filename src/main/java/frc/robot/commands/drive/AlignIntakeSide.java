@@ -70,7 +70,7 @@ public class AlignIntakeSide extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
+    Optional<TargetInfo> targeting = m_pcw.seekIntakeTargets(targetIDs);
     double rotation;
     double driveX;
     double driveY;
