@@ -19,8 +19,8 @@ public class PhotonAngleTests {
             System.out.print(" Algae Distance: " + CameraConstants.getXOffsetMeters(d));
             System.out.print(" Alage Left Angle:  " + CameraConstants.getAlgaeYawOffsetDegreesLeft(d));
             System.out.print(" Alage Right Angle: " + CameraConstants.getAlgaeYawOffsetDegreesRight(d));
-            System.out.print(" Coral Left Angle:  " + CameraConstants.getCorallYawOffsetDegreesLeft(d));
-            System.out.println(" Coral Right Angle: " + CameraConstants.getCorallYawOffsetDegreesRight(d));
+            System.out.print(" Coral Left Y Offset:  " + (d + 0.077));
+            System.out.println(" Coral Right Y Offset: " + (d - 0.077));
         }
             
     }

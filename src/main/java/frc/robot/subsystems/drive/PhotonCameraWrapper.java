@@ -36,14 +36,14 @@ public class PhotonCameraWrapper{
     public class TargetInfo{
         private double yaw;
 
-        private double distance;
+        private Transform3d transform3d;
 
         private String cameraName;
 
         private int m_tag_Id;
 
-        public TargetInfo(double distance, double yaw, int tag_Id, String name){
-            this.distance = distance;
+        public TargetInfo(Transform3d transform, double yaw, int tag_Id, String name){
+            this.transform3d = transform;
             this.yaw = yaw;
             cameraName = name;
             m_tag_Id = tag_Id;
@@ -57,12 +57,12 @@ public class PhotonCameraWrapper{
             this.yaw = yaw;
         }
 
-        public double getDistance() {
-            return distance;
+        public Transform3d getTransform(){
+            return transform3d;
         }
 
-        public void setDistance(double distance) {
-            this.distance = distance;
+        public void setTransform(Transform3d transform){
+            transform3d = transform;
         }
 
         public int getTagId(){
@@ -167,36 +167,6 @@ public class PhotonCameraWrapper{
         return getEstimatedGlobalPose(prevEstimatedRobotPose, Side.INTAKE);
     }
 
-    public Optional<TargetInfo> seekTarget(int id){
-
-        //loop through all cameras to find the one with least ambiguity
-        PhotonCamera designatedCameras[] = CameraConstants.targetCameras.get(id);
-        double minimumAmbiguity = 1;
-        int bestCamera = -1;
-        Optional<PhotonTrackedTarget> target = Optional.empty();
-        for (int i = 0; i < designatedCameras.length; i++){
-            var newResult = m_driveState.getLatestPhotonVisionResult(designatedCameras[i].getName());
-            if(newResult != null){
-                Optional<PhotonTrackedTarget> tempTarget = lookForTarget(newResult, id);
-                if(tempTarget.isPresent() && tempTarget.get().getPoseAmbiguity() < minimumAmbiguity){
-                    bestCamera = i;
-                    minimumAmbiguity = tempTarget.get().getPoseAmbiguity();
-                    target = tempTarget;
-                }
-            }
-        }
-
-        //the best camera, if any, is used
-        if(bestCamera != -1){
-            m_seesTarget = true;
-            return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.get().getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(designatedCameras[bestCamera].getName())),
-                target.get().getYaw(), id, designatedCameras[bestCamera].getName()));
-        }
-        
-        //no targets found anywhere.
-        return Optional.empty();
-
-    }
 
     public Optional<TargetInfo> seekOuttakeTargets(int[] ids, int cameraId){
 
@@ -225,7 +195,7 @@ public class PhotonCameraWrapper{
                 }
             }
 
-            return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.get().getBestCameraToTarget())),
+            return Optional.of(new TargetInfo(target.get().getBestCameraToTarget(),
                 target.get().getYaw(), target.get().getFiducialId(), cam.getName()));
         }
         
@@ -260,7 +230,7 @@ public class PhotonCameraWrapper{
                 }
             }
 
-            return Optional.of(new TargetInfo(getDistanceFromTransform3d(target.get().getBestCameraToTarget()),
+            return Optional.of(new TargetInfo(target.get().getBestCameraToTarget(),
                 target.get().getYaw(), target.get().getFiducialId(), cam.getName()));
         }
         
@@ -288,14 +258,6 @@ public class PhotonCameraWrapper{
              new ArrayList<TargetCorner>(4)
              ));
         }
-    }
-
-
-    private double getDistanceFromTransform3d(Transform3d t){
-        return Math.sqrt(
-                Math.pow(t.getX(), 2) + 
-                Math.pow(t.getY(), 2)
-        );
     }
 
     public void setPipeline(int index){

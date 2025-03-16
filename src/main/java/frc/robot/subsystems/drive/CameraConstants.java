@@ -105,6 +105,7 @@ public class CameraConstants {
         /(distance + offsetToBumper.get(photonCameraNameOuttakeRight)));
     }
 
+    /* 
     //this is the offset, in meters from the center of the tag,
     //to the center of the camera
     //when the robot is centered on the reef branch
@@ -120,6 +121,7 @@ public class CameraConstants {
         double yOffset = 0.077;
         return Math.toDegrees(Math.asin(yOffset/(distance)));
     }
+    */
 
 }
 

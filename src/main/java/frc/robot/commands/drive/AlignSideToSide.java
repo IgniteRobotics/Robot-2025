@@ -74,9 +74,14 @@ public class AlignSideToSide extends Command {
     double driveY;
 
     if(targeting.isPresent()){
-    
       
-      driveY = -driveYController.calculate(targeting.get().getYaw(), 0);
+      if(targetIDs.length > 1){
+        targetIDs = new int[1];
+        targetIDs[0] = targeting.get().getTagId();
+      }
+
+      driveY = driveYController.calculate(CoralState.getInstance().getYCoralAlignment(targeting.get().getTransform().getY()), 0);
+        
     }
 
     else{

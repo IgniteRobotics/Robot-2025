@@ -37,9 +37,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
-import frc.robot.commands.auton.AutonComposites;
 import frc.robot.commands.composite.AutoScoreCoralGroup;
-import frc.robot.commands.composite.IntakeAlgae;
 import frc.robot.commands.composite.OuttakeAlgae;
 import frc.robot.commands.composite.Score;
 import frc.robot.commands.composite.ScoreAlgae;
@@ -47,9 +45,7 @@ import frc.robot.commands.composite.ScoreCoral;
 import frc.robot.commands.composite.SemiAutoScoreCoralGroup;
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
-import frc.robot.commands.drive.AlignIntakeSide;
 import frc.robot.commands.drive.AlignSideToSide;
-import frc.robot.commands.drive.AlignThenDrive;
 import frc.robot.commands.drive.AlignToReefTags;
 import frc.robot.commands.drive.DriveIntoTarget;
 import frc.robot.commands.drive.RotateToHeading;
@@ -138,7 +134,7 @@ public class RobotContainer {
 
 
     public RobotContainer() {
-        
+        /* 
         NamedCommands.registerCommand("Score Level 4 at Reef K", AutonComposites.ScoreLevel4ReefK(drivetrain, m_PhotonCameraWrapper, elevator, corraler));
         NamedCommands.registerCommand("Score Level 4 at Reef L", AutonComposites.ScoreLevel4ReefL(drivetrain, m_PhotonCameraWrapper, elevator, corraler));
         NamedCommands.registerCommand("Score Level 4 at Reef J", AutonComposites.ScoreLevel4ReefJ(drivetrain, m_PhotonCameraWrapper, elevator, corraler));
@@ -148,16 +144,17 @@ public class RobotContainer {
         NamedCommands.registerCommand("Align To L and Wait", AutonComposites.AlignReefL(drivetrain, m_PhotonCameraWrapper));
         NamedCommands.registerCommand("Align To K and Wait", AutonComposites.AlignReefK(drivetrain, m_PhotonCameraWrapper));
         NamedCommands.registerCommand("Align To HP and Wait", AutonComposites.AlignHP(drivetrain, m_PhotonCameraWrapper));
-
+        */ 
         autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
+        /* 
         autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
         autoChooser.addOption("Simple Drive Auton", AutoBuilder.buildAuto("Simple Auton"));
         autoChooser.addOption("3 Align Auton", AutoBuilder.buildAuto("3 Align Auton"));
         
         autoChooser.addOption("Line Up and Score", new RunCommand(() -> drivetrain.driveRobotCentric(-1, 0, 0)).withTimeout(2)
-            .alongWith(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position)));
+         .alongWith(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position)));
         SmartDashboard.putData("Auto Mode", autoChooser);
-
+        */
 
         configureSubsytemDefaultCommands();
         configureBindings();
@@ -255,7 +252,7 @@ public class RobotContainer {
         ).
         onFalse(
             new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position)
-            .finallyDo(() -> CoralState.getInstance().setCoralTarget(CoralTarget.NONE))
+           // .finallyDo(() -> CoralState.getInstance().setCoralTarget(CoralTarget.NONE))
             );
 
         //joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getLeftX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
@@ -271,6 +268,7 @@ public class RobotContainer {
                 new InstantCommand(() -> collector.stopAlgaeMotor()))
         );
 
+        /* 
         joystick.b().onTrue(
             new ElevatorToAlgaePreset(elevator).alongWith(
                 new RunCommand(() -> collector.setToIntakePosition()).alongWith(
@@ -285,6 +283,7 @@ public class RobotContainer {
                 new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))
             )
         );
+        */
 
         joystick.y().onTrue(
             new ToSetpoint(elevator, ElevatorConstants.ALGAE.BARGE.height).alongWith(
@@ -331,6 +330,7 @@ public class RobotContainer {
     
     }
 
+    
     public Command getAutonomousCommand() {
         /* First put the drivetrain into auto run mode, then run the auto */
         return autoChooser.getSelected();

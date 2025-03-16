@@ -117,10 +117,10 @@ public class CoralState {
 
     public double getYCoralAlignment(double d){
         if(coralTarget == CoralTarget.L4_LEFT || coralTarget == CoralTarget.L3_LEFT || coralTarget == CoralTarget.L2_LEFT){
-            return CameraConstants.getCorallYawOffsetDegreesLeft(d);
+            return d + 0.077;
         }
         else if(coralTarget == CoralTarget.L4_RIGHT || coralTarget == CoralTarget.L3_RIGHT || coralTarget == CoralTarget.L2_RIGHT){
-            return CameraConstants.getCorallYawOffsetDegreesRight(d);
+            return d - 0.077;
         }
         else return 0.0;
     }

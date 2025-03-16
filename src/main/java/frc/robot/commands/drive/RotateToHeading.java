@@ -63,6 +63,12 @@ public class RotateToHeading extends Command {
     Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, m_cameraId);
 
     if(targeting.isPresent()){
+
+      if(targetIDs.length > 1){
+        targetIDs = new int[1];
+        targetIDs[0] = targeting.get().getTagId();
+      }
+      
       double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());
       rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
       SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);

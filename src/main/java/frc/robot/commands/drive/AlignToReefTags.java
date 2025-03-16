@@ -50,7 +50,6 @@ public class AlignToReefTags extends Command {
   private final DoubleSupplier m_yInput;
 
   private double m_distanceMeters;
-  private double m_yawDegrees;
 
   private double m_rotation = 0;
   private double m_driveX = 0;
@@ -100,6 +99,11 @@ public class AlignToReefTags extends Command {
 
     if(targeting.isPresent()){
 
+      if(targetIDs.length > 1){
+        targetIDs = new int[1];
+        targetIDs[0] = targeting.get().getTagId();
+      }
+
       if(!atRotationSetpoint){
         double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());
         m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
@@ -109,7 +113,7 @@ public class AlignToReefTags extends Command {
       }
 
       else if(!atDriveYSetpoint){
-        m_driveY = -driveYController.calculate(targeting.get().getYaw(), CoralState.getInstance().getYCoralAlignment(targeting.get().getDistance()));
+        m_driveY = driveYController.calculate(CoralState.getInstance().getYCoralAlignment(targeting.get().getTransform().getY()), 0);
         SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
 
         atDriveYSetpoint = driveYController.atSetpoint();
@@ -117,8 +121,8 @@ public class AlignToReefTags extends Command {
 
       else if(!atDriveXSetpoint){
         m_distanceMeters = 0.347;
-        m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
-        SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
+        m_driveX = driveXController.calculate(targeting.get().getTransform().getX(), 0);
+        SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getTransform().getX());
 
         atDriveXSetpoint = driveXController.atSetpoint();
       }

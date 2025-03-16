@@ -70,10 +70,14 @@ public class DriveIntoTarget extends Command {
     double driveX;
 
     if(targeting.isPresent()){
+
+      if(targetIDs.length > 1){
+        targetIDs = new int[1];
+        targetIDs[0] = targeting.get().getTagId();
+      }
     
-      m_distanceMeters = 0.347;
-      driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
-      SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
+      driveX = driveXController.calculate(targeting.get().getTransform().getX(), 0);
+      SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getTransform().getX());
     
     }
 
