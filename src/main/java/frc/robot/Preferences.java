@@ -29,6 +29,23 @@ public class Preferences {
     public static DoublePreference alignDriveXKD = new DoublePreference("alignCommand/driveX/kD", DriveCommandConstants.DRIVE_X_D);
     public static DoublePreference alignDriveXKI = new DoublePreference("alignCommand/driveX/kI",0);
 
+    public static DoublePreference profiledAlignRotKP = new DoublePreference("profiledAlignCommand/rotation/kP", DriveCommandConstants.ROTATION_P);
+    public static DoublePreference profiledAlignRotKD = new DoublePreference("profiledAlignCommand/rotation/kD", DriveCommandConstants.ROTATION_D);
+    public static DoublePreference profiledAlignRotKI = new DoublePreference("profiledAlignCommand/rotation/kI", 0);
+    public static DoublePreference profiledAlignRotMaxVel = new DoublePreference("profiledAlignCommand/rotation/maxVel", 45);
+    public static DoublePreference profiledAlignRotMaxAcc = new DoublePreference("profiledAlignCommand/rotation/maxAcc", 90);    
+
+    public static DoublePreference profiledDriveYKP = new DoublePreference("profiledAlignCommand/driveY/kP", DriveCommandConstants.DRIVE_Y_P);
+    public static DoublePreference profiledDriveYKD = new DoublePreference("profiledAlignCommand/driveY/kD", DriveCommandConstants.DRIVE_Y_D);
+    public static DoublePreference profiledDriveYKI = new DoublePreference("profiledAlignCommand/driveY/kI", 0);
+    public static DoublePreference profiledDriveYMaxVel = new DoublePreference("profiledAlignCommand/driveY/maxVel", 8);
+    public static DoublePreference profiledDriveYMaxAcc = new DoublePreference("profiledAlignCommand/driveY/maxAcc", 16);
+
+    public static DoublePreference profiledDriveXKP = new DoublePreference("profiledAlignCommand/driveX/kP", DriveCommandConstants.DRIVE_X_P);
+    public static DoublePreference profiledDriveXKD = new DoublePreference("profiledAlignCommand/driveX/kD", DriveCommandConstants.DRIVE_X_D);
+    public static DoublePreference profiledDriveXKI = new DoublePreference("profiledAlignCommand/driveX/kI", 3);
+    public static DoublePreference profiledDriveXMaxVel = new DoublePreference("profiledAlignCommand/driveX/maxVel", 6);
+    public static DoublePreference profiledDriveXMaxAcc = new DoublePreference("profiledAlignCommand/driveX/maxAcc", 12);
 
     public static DoublePreference alignAdj = new DoublePreference("alignCommand/adjustment", 0);
     public static DoublePreference rotationTolerancePreference = new DoublePreference("alignCommand/rotationTolerance", DriveCommandConstants.ROTATION_TOLERANCE);
