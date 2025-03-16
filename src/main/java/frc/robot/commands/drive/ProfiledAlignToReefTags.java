@@ -39,6 +39,9 @@ public class ProfiledAlignToReefTags extends Command {
   private boolean atDriveYGoal;
   private boolean atDriveXGoal;
 
+  private boolean driverOverrideY;
+  private boolean driverOverrideX;
+
   private int m_cameraId;
   
   private int targetIDs[] = {};
@@ -70,14 +73,17 @@ public class ProfiledAlignToReefTags extends Command {
     rotationController = new ProfiledPIDController(Preferences.profiledAlignRotKP.get(), Preferences.profiledAlignRotKI.get(), Preferences.profiledAlignRotKD.get(), m_RotConstraints);
     rotationController.setTolerance(Preferences.rotationTolerancePreference.get());
     rotationController.enableContinuousInput(-180, 180);
+    rotationController.setIZone(Double.POSITIVE_INFINITY);
     
     m_YConstraints = new Constraints(Preferences.profiledDriveYMaxVel.get(), Preferences.profiledDriveYMaxAcc.get());
     driveYController = new ProfiledPIDController(Preferences.profiledDriveYKP.get(), Preferences.profiledDriveYKI.get(), Preferences.profiledDriveYKD.get(), m_YConstraints);
     driveYController.setTolerance(Preferences.yAlignTolerancePreference.get());
+    driveYController.setIZone(Double.POSITIVE_INFINITY);
 
     m_XConstraints = new Constraints(Preferences.profiledDriveXMaxVel.get(), Preferences.profiledDriveXMaxAcc.get());
     driveXController = new ProfiledPIDController(Preferences.profiledDriveXKP.get(), Preferences.profiledDriveXKI.get(), Preferences.profiledDriveXKD.get(), m_XConstraints);
     driveXController.setTolerance(Preferences.xAlignTolerancePreference.get());
+    driveXController.setIZone(Double.POSITIVE_INFINITY);
 
     targetIDs = AllianceState.getInstance().getReefTags();
     m_cameraId = CoralState.getInstance().pickCamera();
@@ -106,23 +112,26 @@ public class ProfiledAlignToReefTags extends Command {
         m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
         SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
         SmartDashboard.putNumber("Alignment/Data/HeadingError", rotationController.getPositionError());
+        SmartDashboard.putNumber("Alignment/Data/HeadingAccumulatedError", rotationController.getAccumulatedError());
 
         atRotationGoal = rotationController.atGoal();
       }
 
-      else if(!atDriveYGoal){
+      else if(!atDriveYGoal && !driverOverrideY){
         m_driveY = -driveYController.calculate(targeting.get().getYaw(), CoralState.getInstance().getYCoralAlignment(targeting.get().getDistance()));
         SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
         SmartDashboard.putNumber("Alignment/Data/YawError", driveYController.getPositionError());
+        SmartDashboard.putNumber("Alignment/Data/YawAccumulatedError", driveYController.getAccumulatedError());
 
         atDriveYGoal = driveYController.atGoal();
       }
 
-      else if(!atDriveXGoal){
+      else if(!atDriveXGoal && !driverOverrideX){
         m_distanceMeters = 0.347;
         m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
         SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
         SmartDashboard.putNumber("Alignment/Data/DistanceError", driveXController.getPositionError());
+        SmartDashboard.putNumber("Alignment/Data/DistanceAccumulatedError", driveXController.getAccumulatedError());
 
         atDriveXGoal = driveXController.atGoal();
       }
@@ -139,10 +148,12 @@ public class ProfiledAlignToReefTags extends Command {
   
     //override with joystick input if present
     if(m_xInput != null && Math.abs(m_xInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
+      driverOverrideX = true;
       m_driveX = 1.25*m_xInput.getAsDouble();
     }
 
     if(m_yInput != null && Math.abs(m_yInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
+      driverOverrideY = true;
       m_driveY = 1.25*m_yInput.getAsDouble();
     }
 
