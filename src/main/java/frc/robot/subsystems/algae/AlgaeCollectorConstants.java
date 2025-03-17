@@ -5,6 +5,7 @@
 package frc.robot.subsystems.algae;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
@@ -133,6 +134,17 @@ public class AlgaeCollectorConstants {
         return configs;
     }
 
+    //MotionMagicConfigs
+        public static final double WRIST_MM_JERK = 10;
+        public static final double WRIST_MM_ACCEL = 1;
+        public static final double WRIST_MM_CRUISE_VELOCITY = 0.5;
+        public static MotionMagicConfigs createWristMotionMagicConfigs(){
+            MotionMagicConfigs newConfigs = new MotionMagicConfigs();
+            newConfigs.MotionMagicJerk = WRIST_MM_JERK;
+            newConfigs.MotionMagicAcceleration = WRIST_MM_ACCEL;
+            newConfigs.MotionMagicCruiseVelocity = WRIST_MM_CRUISE_VELOCITY;
+            return newConfigs;
+        }
 
 
     public enum WRIST{
