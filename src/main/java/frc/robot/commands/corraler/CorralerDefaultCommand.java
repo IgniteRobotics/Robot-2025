@@ -5,7 +5,6 @@
 package frc.robot.commands.corraler;
 
 import frc.robot.subsystems.coral.Corraler;
-import frc.robot.Preferences;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class CorralerDefaultCommand extends Command {

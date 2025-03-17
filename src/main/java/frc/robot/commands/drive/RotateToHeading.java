@@ -5,7 +5,6 @@
 package frc.robot.commands.drive;
 
 import java.util.Optional;
-import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

@@ -4,32 +4,19 @@
 
 package frc.robot.commands.composite;
 
-import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.drive.AlignToReefTags;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.elevator.ElevatorToCoralPreset;
-import frc.robot.commands.elevator.ToSetpoint;
-import frc.robot.statemachines.AlgaeState;
-import frc.robot.statemachines.CoralState;
 import frc.robot.statemachines.CoralState.CoralTarget;
-import frc.robot.statemachines.AlgaeState.AlgaeTarget;
-import frc.robot.statemachines.AllianceState;
 import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.Elevator.ElevatorConstants;
-import frc.robot.subsystems.algae.AlgaeCollector;
 import frc.robot.subsystems.coral.Corraler;
-import frc.robot.subsystems.coral.CorralerConstants;
-import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 
