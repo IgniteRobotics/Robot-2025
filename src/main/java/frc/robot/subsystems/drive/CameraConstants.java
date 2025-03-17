@@ -110,14 +110,14 @@ public class CameraConstants {
     //when the robot is centered on the reef branch
     //at the given BUMPER! distance
     public static final double getCorallYawOffsetDegreesLeft(double distance) {
-        double yOffset = -0.077;
+        double yOffset = -0.132;
         return Math.toDegrees(Math.asin(yOffset/(distance)));
     }
     //this is the offset, in meters from the center of the tag,
     //to the center of the camera=        
     //when the robot is centered on the reef branch
     public static final double getCorallYawOffsetDegreesRight(double distance) {
-        double yOffset = 0.077;
+        double yOffset = 0.132;
         return Math.toDegrees(Math.asin(yOffset/(distance)));
     }
 
