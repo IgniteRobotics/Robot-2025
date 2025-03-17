@@ -181,33 +181,33 @@ public class Climber implements Subsystem {
     m_MMJerk = m_motionMagicConfigs.MotionMagicJerk;
   }
 
-  @NotLogged
-  public double getClimberkP(){
-    m_Slot0Configs = new Slot0Configs();
-    m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kP;
-  }
+  // @NotLogged
+  // public double getClimberkP(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kP;
+  // }
 
-  @NotLogged
-  public double getClimberkD(){
-    m_Slot0Configs = new Slot0Configs();
-    m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kD;
-  }
+  // @NotLogged
+  // public double getClimberkD(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kD;
+  // }
 
-  @NotLogged
-  public double getClimberkI(){
-    m_Slot0Configs = new Slot0Configs();
-    m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kI;
-  }
+  // @NotLogged
+  // public double getClimberkI(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kI;
+  // }
 
-  @NotLogged
-  public double getClimberkG(){
-    m_Slot0Configs = new Slot0Configs();
-    m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kG;
-  }
+  // @NotLogged
+  // public double getClimberkG(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kG;
+  // }
 
   @Logged(name = "Right Servo Position", importance = Importance.CRITICAL )
   public double getRightServoPosition(){
