@@ -143,19 +143,21 @@ public class ProfiledAlignToReefTags extends Command {
     }
 
     if(atDriveXGoal && atDriveYGoal && atRotationGoal){
-      m_driveX = -0.75;
+      m_driveX = -Preferences.reefPushAgainstPreference.getValue();
     }
   
     //override with joystick input if present
     if(m_xInput != null && Math.abs(m_xInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
       driverOverrideX = true;
-      m_driveX = 1.25*m_xInput.getAsDouble();
+      m_driveX = Preferences.xySlowLimitPreference.getValue()*m_xInput.getAsDouble();
     }
 
     if(m_yInput != null && Math.abs(m_yInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
       driverOverrideY = true;
-      m_driveY = 1.25*m_yInput.getAsDouble();
+      m_driveY = Preferences.xySlowLimitPreference.getValue()*m_yInput.getAsDouble();
     }
+
+    
 
     SmartDashboard.putNumber("Alignment/Power/rotation", m_rotation);
     SmartDashboard.putNumber("Alignment/Power/driveX", m_driveX);

@@ -124,7 +124,7 @@ public class AlignToReefTags extends Command {
     // }
 
     if(atDriveXSetpoint && atDriveYSetpoint && atRotationSetpoint){
-      m_driveX = -0.75;
+      m_driveX = -Preferences.reefPushAgainstPreference.getValue();
     }
   
     //override with joystick input if present
