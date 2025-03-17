@@ -4,6 +4,9 @@
 
 package frc.robot.commands.drive;
 
+import static edu.wpi.first.units.Units.*;
+
+
 /** Add your docs here. */
 public class DriveCommandConstants {
 
@@ -19,5 +22,11 @@ public class DriveCommandConstants {
     public static final double DRIVE_Y_TOLERANCE = 0.1;
     public static final double DRIVE_X_TOLERANCE = 0.1;
     public static final double ROTATION_TOLERANCE = 0.1;
+
+    //max XY in m/
+    public static final double SLOW_DRIVE_XY_FACTOR = 1.25;
+    //max rotations in radians/s
+    public static final double SLOW_DRIVE_ROTATION_FACTOR = RotationsPerSecond.of(0.25).in(RadiansPerSecond);;
+
 
 }

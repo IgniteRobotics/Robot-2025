@@ -161,9 +161,9 @@ public class RobotContainer {
 
 
         configureSubsytemDefaultCommands();
-        //configureBindings();
+        configureBindings();
         //TODO MUST REMOVE
-        configureTestBindings();
+        // configureTestBindings();
         configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -238,6 +238,7 @@ public class RobotContainer {
         //joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
 
         SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(0.5)));
+        SmartDashboard.putData("Set Elevator PID", new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG, Preferences.elevatorkS)));
 
         joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
                     .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
@@ -252,7 +253,7 @@ public class RobotContainer {
         // );
 
         joystick.a().whileTrue(new SemiAutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
-                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), () -> joystick.getLeftX(), joystick.rightTrigger(), joystick.leftTrigger())
+                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), () -> joystick.getLeftX(),() -> joystick.getRightX() , joystick.rightTrigger(), joystick.leftTrigger())
         ).
         onFalse(
             new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position)

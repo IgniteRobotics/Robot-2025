@@ -53,6 +53,9 @@ public class Preferences {
     public static DoublePreference yAlignTolerancePreference = new DoublePreference("alignCommand/yAlignTolerance", DriveCommandConstants.DRIVE_Y_TOLERANCE);
     public static DoublePreference xAlignTolerancePreference = new DoublePreference("alignCommand/xAlignTolerance", DriveCommandConstants.DRIVE_X_TOLERANCE);
 
+    public static DoublePreference xySlowLimitPreference = new DoublePreference("drive/xySlowLimitMPS", DriveCommandConstants.SLOW_DRIVE_XY_FACTOR);
+    public static DoublePreference rotationSlowLimitPreference = new DoublePreference("drive/rotationSlowLimitRadPS", DriveCommandConstants.SLOW_DRIVE_ROTATION_FACTOR);
+
     // ********** Elevator **********
     public static DoublePreference elevatorkV = new DoublePreference("Elevator/kV", ElevatorConstants.ELEVATOR_kV);
     public static DoublePreference elevatorkP = new DoublePreference("Elevator/kP", ElevatorConstants.ELEVATOR_kP);
