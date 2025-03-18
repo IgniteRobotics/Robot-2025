@@ -102,11 +102,17 @@ public class AlgaeCollector extends SubsystemBase {
     return false;
   }
 
-  public void checkCurrentSpike(double algaeHoldPower){
+  public boolean checkCurrentSpike(){
     double supplyCurrent = m_algaeMotor.getSupplyCurrent().getValueAsDouble();
     if (supplyCurrent > AlgaeCollectorConstants.createCurrentLimitsConfigs().StatorCurrentLimit) {
-      m_algaeMotor.set(algaeHoldPower);
+      return true;
+    } else {
+      return false;
     }
+  }
+
+  public void setAlgaePower(double power){
+    m_algaeMotor.set(power);
   }
 
   @Override
