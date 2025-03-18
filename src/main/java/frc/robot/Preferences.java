@@ -64,6 +64,10 @@ public class Preferences {
 
     public static DoublePreference collectorOuttakeDelay = new DoublePreference("AlgaeCollector/Outtake Delay", 0.5);
 
+    public static DoublePreference wristMMCruiseVelocity = new DoublePreference("AlgaeCollector/Wrist/Motion Magic/Cruise Velocity", AlgaeCollectorConstants.WRIST_MM_CRUISE_VELOCITY);
+    public static DoublePreference wristMMAccel = new DoublePreference("AlgaeCollector/Wrist/Motion Magic/Acceleration", AlgaeCollectorConstants.WRIST_MM_ACCEL);
+    public static DoublePreference wristMMJerk = new DoublePreference("AlgaeCollector/Wrist/Motion Magic/Jerk", AlgaeCollectorConstants.WRIST_MM_JERK);
+    
     // ********** Climber **********
     public static DoublePreference climberkV = new DoublePreference("Climber/kV", ClimberConstants.CLIMBER_kV);
     public static DoublePreference climberkP = new DoublePreference("Climber/kP", ClimberConstants.CLIMBER_kP);

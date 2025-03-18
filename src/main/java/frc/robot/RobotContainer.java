@@ -215,6 +215,7 @@ public class RobotContainer {
         // SmartDashboard.putData("Elevator Level 4", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position));
 
         SmartDashboard.putData("Outtake", new RunCommand(() -> corraler.outtakeCoral()).withTimeout(1).andThen(new InstantCommand(() -> corraler.stopCoralMotor())));
+        SmartDashboard.putData("Set Wrist Motion Magic", new InstantCommand(() -> collector.setWristMotionMagic(Preferences.wristMMCruiseVelocity, Preferences.wristMMAccel, Preferences.wristMMJerk)));
         // joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
         //     forwardStraight.withVelocityX(0.5).withVelocityY(0))
         // );

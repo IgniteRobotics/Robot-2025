@@ -486,5 +486,37 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/alignCommand/rotationTolerance",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/alignCommand/rotationTarget",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/alignCommand/yAlignTolerance",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/alignCommand/xAlignTolerance",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
   }
 ]

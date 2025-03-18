@@ -106,11 +106,20 @@ public class AlgaeCollector extends SubsystemBase {
     return false;
   }
 
+  public void setWristMotionMagic(DoublePreference CV, DoublePreference A, DoublePreference J){
+    m_wristMotor.getConfigurator().refresh(m_wristMMConfigs);
+    m_wristMMConfigs.MotionMagicCruiseVelocity = CV.getValue();
+    m_wristMMConfigs.MotionMagicAcceleration = A.getValue();
+    m_wristMMConfigs.MotionMagicJerk = J.getValue();
+    m_wristMotor.getConfigurator().apply(m_wristMMConfigs);
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putString("Algae Target", m_algaeState.getAlgaeTargetName());
     m_algaeState.setHasAlgae(seesAlgae());
   }
+
 
   //Voltage, Current, Temperature
 
