@@ -128,6 +128,10 @@ public class ProfiledAlignToReefTags extends Command {
         SmartDashboard.putNumber("Alignment/Data/YawError", driveYController.getPositionError());
         SmartDashboard.putNumber("Alignment/Data/YawAccumulatedError", driveYController.getAccumulatedError());
 
+        SmartDashboard.putBoolean("Alignment/Data/atSetpoint", driveYController.atSetpoint());
+        SmartDashboard.putBoolean("Alignment/Data/atGoal",driveYController.atGoal());
+        
+
         if (driveYController.atSetpoint() && Math.abs(targeting.get().getYaw()) < 0.5){
           atDriveYGoal = true;
         }
