@@ -161,9 +161,9 @@ public class RobotContainer {
 
 
         configureSubsytemDefaultCommands();
-        configureBindings();
+        //configureBindings();
         //TODO MUST REMOVE
-        // configureTestBindings();
+        configureTestBindings();
         configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -324,7 +324,7 @@ public class RobotContainer {
         joystick.a().whileTrue(new RotateToHeading(drivetrain, m_PhotonCameraWrapper));
         joystick.y().whileTrue(new AlignSideToSide(drivetrain, m_PhotonCameraWrapper));
         joystick.x().whileTrue(new DriveIntoTarget(drivetrain, m_PhotonCameraWrapper));
-        joystick.b().whileTrue(new ProfiledAlignToReefTags(drivetrain, m_PhotonCameraWrapper, ()-> joystick.getLeftY(), () -> joystick.getLeftX()).andThen(new RunCommand(() -> drivetrain.driveRobotCentric(-0.5, 0, 0))));
+        joystick.b().whileTrue(new ProfiledAlignToReefTags(drivetrain, m_PhotonCameraWrapper, ()-> joystick.getLeftY(), () -> joystick.getLeftX()));
 
         joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
