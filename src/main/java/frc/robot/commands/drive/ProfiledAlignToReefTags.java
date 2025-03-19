@@ -76,6 +76,7 @@ public class ProfiledAlignToReefTags extends Command {
     rotationController.setTolerance(Preferences.rotationTolerancePreference.get());
     rotationController.enableContinuousInput(-180, 180);
     rotationController.setIZone(Double.POSITIVE_INFINITY);
+    rotationController.reset(m_drive.getYaw());
     
     m_YConstraints = new Constraints(Preferences.profiledDriveYMaxVel.get(), Preferences.profiledDriveYMaxAcc.get());
     driveYController = new ProfiledPIDController(Preferences.profiledDriveYKP.get(), Preferences.profiledDriveYKI.get(), Preferences.profiledDriveYKD.get(), m_YConstraints);
@@ -109,60 +110,47 @@ public class ProfiledAlignToReefTags extends Command {
 
     if(targeting.isPresent()){
 
-      // if(!atRotationGoal){
-      //   double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());
-      //   m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
-      //   SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
-      //   SmartDashboard.putNumber("Alignment/Data/HeadingError", rotationController.getPositionError());
-      //   SmartDashboard.putNumber("Alignment/Data/HeadingAccumulatedError", rotationController.getAccumulatedError());
+      if(!atRotationGoal){
+        double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());
+        m_rotation = -rotationController.calculate(m_drive.getYaw(), targetHeading);
+        SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
+        SmartDashboard.putNumber("Alignment/Data/HeadingError", rotationController.getPositionError());
+        SmartDashboard.putNumber("Alignment/Data/HeadingAccumulatedError", rotationController.getAccumulatedError());
+        SmartDashboard.putNumber("Alignment/Data/SetpointPos", rotationController.getSetpoint().position);
 
-      //   atRotationGoal = rotationController.atGoal();
+        atRotationGoal = rotationController.atSetpoint();
+      }
+
+      // else 
+      
+      // if(!atDriveYGoal && !driverOverrideY){
+      //   m_driveY = -driveYController.calculate(targeting.get().getYaw(), CoralState.getInstance().getYCoralAlignment(targeting.get().getDistance()));
+      //   m_driveY = MathUtil.clamp(m_driveY, -2, 2);
+      //   SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
+      //   SmartDashboard.putNumber("Alignment/Data/YawError", driveYController.getPositionError());
+      //   SmartDashboard.putNumber("Alignment/Data/YawAccumulatedError", driveYController.getAccumulatedError());
+
+      //   SmartDashboard.putBoolean("Alignment/Data/atSetpoint", driveYController.atSetpoint());
+      //   SmartDashboard.putBoolean("Alignment/Data/atGoal",driveYController.atGoal());
+        
+
+      //   atDriveYGoal = driveYController.atSetpoint(); 
       // }
 
       // else 
       
-      if(!atDriveYGoal && !driverOverrideY){
-        m_driveY = -driveYController.calculate(targeting.get().getYaw(), CoralState.getInstance().getYCoralAlignment(targeting.get().getDistance()));
-        m_driveY = MathUtil.clamp(m_driveY, -2, 2);
-        SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
-        SmartDashboard.putNumber("Alignment/Data/YawError", driveYController.getPositionError());
-        SmartDashboard.putNumber("Alignment/Data/YawAccumulatedError", driveYController.getAccumulatedError());
-
-        SmartDashboard.putBoolean("Alignment/Data/atSetpoint", driveYController.atSetpoint());
-        SmartDashboard.putBoolean("Alignment/Data/atGoal",driveYController.atGoal());
-        
-
-        if (driveYController.atSetpoint() && Math.abs(targeting.get().getYaw()) < 0.5){
-          atDriveYGoal = true;
-        }
-        // atDriveYGoal = driveYController.atGoal();
-      }
-
-      else 
-      
-      if(!atDriveXGoal && !driverOverrideX){
-        m_distanceMeters = 0.347;
-        m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
-        SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
-        SmartDashboard.putNumber("Alignment/Data/DistanceError", driveXController.getPositionError());
-        SmartDashboard.putNumber("Alignment/Data/DistanceAccumulatedError", driveXController.getAccumulatedError());
-
-        if (driveXController.atSetpoint()){
-          State setpoint = driveXController.getSetpoint();
-          State goal = driveXController.getGoal();
-          SmartDashboard.putNumber("Alignment/Data/XSPPosition", setpoint.position);
-          SmartDashboard.putNumber("Alignment/Data/XSPVelocity", setpoint.velocity);
-          SmartDashboard.putNumber("Alignment/Data/XGoalPosition", goal.position);
-          SmartDashboard.putNumber("Alignment/Data/XGoalVelocity", goal.velocity);
-          if (Math.abs(setpoint.position - goal.position) < 0.754
-            && Math.abs(setpoint.velocity - goal.velocity) < 0.1){
-              atDriveXGoal = true;
-            } 
-        }
-        //atDriveXGoal = driveXController.atGoal();
+      // if(!atDriveXGoal && !driverOverrideX){
+      //   m_distanceMeters = 0.347;
+      //   m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
+      //   SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
+      //   SmartDashboard.putNumber("Alignment/Data/DistanceError", driveXController.getPositionError());
+      //   SmartDashboard.putNumber("Alignment/Data/DistanceAccumulatedError", driveXController.getAccumulatedError());
 
 
-      }
+      //   atDriveXGoal = driveXController.atSetpoint();
+
+
+      // }
 
     }
 
