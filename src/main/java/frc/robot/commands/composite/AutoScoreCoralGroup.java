@@ -8,6 +8,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.PreferenceTypes.DoublePreference;
@@ -15,6 +16,7 @@ import frc.robot.commands.drive.ManualDriveAlignment;
 import frc.robot.commands.drive.ProfiledAlignToReefTags;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.elevator.ElevatorToCoralPreset;
+import frc.robot.statemachines.CoralState;
 import frc.robot.statemachines.CoralState.CoralTarget;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.coral.Corraler;
@@ -56,7 +58,8 @@ public class AutoScoreCoralGroup extends ParallelCommandGroup{
       .alongWith(new WaitUntilCommand(m_raiseElevator)
                   .andThen(new ElevatorToCoralPreset(m_Elevator)
                   .andThen(new WaitUntilCommand(m_releaseCoral)
-                            .andThen(new OuttakeCommand(m_Corraler))))
+                            .andThen(new OuttakeCommand(m_Corraler))
+                            .andThen(new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.NONE)))))
       );
   }
 
