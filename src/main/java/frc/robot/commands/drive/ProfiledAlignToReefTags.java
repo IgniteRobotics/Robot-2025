@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -29,7 +30,8 @@ import edu.wpi.first.epilogue.Logged;
 public class ProfiledAlignToReefTags extends Command {
   private final CommandSwerveDrivetrain m_drive;
   PhotonCameraWrapper m_pcw;
-  ProfiledPIDController rotationController;
+    PIDController rotationController;
+
   ProfiledPIDController driveYController;
   ProfiledPIDController driveXController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
@@ -71,12 +73,16 @@ public class ProfiledAlignToReefTags extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_RotConstraints = new Constraints(Preferences.profiledAlignRotMaxVel.get(), Preferences.profiledAlignRotMaxAcc.get());
-    rotationController = new ProfiledPIDController(Preferences.profiledAlignRotKP.get(), Preferences.profiledAlignRotKI.get(), Preferences.profiledAlignRotKD.get(), m_RotConstraints);
+    // m_RotConstraints = new Constraints(Preferences.profiledAlignRotMaxVel.get(), Preferences.profiledAlignRotMaxAcc.get());
+    // rotationController = new ProfiledPIDController(Preferences.profiledAlignRotKP.get(), Preferences.profiledAlignRotKI.get(), Preferences.profiledAlignRotKD.get(), m_RotConstraints);
+    // rotationController.setTolerance(Preferences.rotationTolerancePreference.get());
+    // rotationController.enableContinuousInput(-180, 180);
+    // rotationController.setIZone(Double.POSITIVE_INFINITY);
+    // rotationController.reset(m_drive.getYaw());
+    
+    rotationController = new PIDController(Preferences.profiledAlignRotKP.get(), Preferences.profiledAlignRotKI.get(), Preferences.profiledAlignRotKD.get());
     rotationController.setTolerance(Preferences.rotationTolerancePreference.get());
     rotationController.enableContinuousInput(-180, 180);
-    rotationController.setIZone(Double.POSITIVE_INFINITY);
-    rotationController.reset(m_drive.getYaw());
     
     m_YConstraints = new Constraints(Preferences.profiledDriveYMaxVel.get(), Preferences.profiledDriveYMaxAcc.get());
     driveYController = new ProfiledPIDController(Preferences.profiledDriveYKP.get(), Preferences.profiledDriveYKI.get(), Preferences.profiledDriveYKD.get(), m_YConstraints);
@@ -112,45 +118,44 @@ public class ProfiledAlignToReefTags extends Command {
 
       if(!atRotationGoal){
         double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());
-        m_rotation = -rotationController.calculate(m_drive.getYaw(), targetHeading);
+        m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
         SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
         SmartDashboard.putNumber("Alignment/Data/HeadingError", rotationController.getPositionError());
         SmartDashboard.putNumber("Alignment/Data/HeadingAccumulatedError", rotationController.getAccumulatedError());
-        SmartDashboard.putNumber("Alignment/Data/SetpointPos", rotationController.getSetpoint().position);
 
         atRotationGoal = rotationController.atSetpoint();
       }
 
-      // else 
+      else 
       
-      // if(!atDriveYGoal && !driverOverrideY){
-      //   m_driveY = -driveYController.calculate(targeting.get().getYaw(), CoralState.getInstance().getYCoralAlignment(targeting.get().getDistance()));
-      //   m_driveY = MathUtil.clamp(m_driveY, -2, 2);
-      //   SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
-      //   SmartDashboard.putNumber("Alignment/Data/YawError", driveYController.getPositionError());
-      //   SmartDashboard.putNumber("Alignment/Data/YawAccumulatedError", driveYController.getAccumulatedError());
+      if(!atDriveYGoal && !driverOverrideY){
+        m_driveY = -driveYController.calculate(targeting.get().getYaw(), CoralState.getInstance().getYCoralAlignment(targeting.get().getDistance()));
+        m_driveY = MathUtil.clamp(m_driveY, -2, 2);
+        SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
+        SmartDashboard.putNumber("Alignment/Data/YawError", driveYController.getPositionError());
+        SmartDashboard.putNumber("Alignment/Data/YawAccumulatedError", driveYController.getAccumulatedError());
 
-      //   SmartDashboard.putBoolean("Alignment/Data/atSetpoint", driveYController.atSetpoint());
-      //   SmartDashboard.putBoolean("Alignment/Data/atGoal",driveYController.atGoal());
+        SmartDashboard.putBoolean("Alignment/Data/atSetpoint", driveYController.atSetpoint());
+        SmartDashboard.putBoolean("Alignment/Data/atGoal",driveYController.atGoal());
         
 
-      //   atDriveYGoal = driveYController.atSetpoint(); 
-      // }
+        atDriveYGoal = driveYController.atSetpoint(); 
+      }
 
-      // else 
+      else 
       
-      // if(!atDriveXGoal && !driverOverrideX){
-      //   m_distanceMeters = 0.347;
-      //   m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
-      //   SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
-      //   SmartDashboard.putNumber("Alignment/Data/DistanceError", driveXController.getPositionError());
-      //   SmartDashboard.putNumber("Alignment/Data/DistanceAccumulatedError", driveXController.getAccumulatedError());
+      if(!atDriveXGoal && !driverOverrideX){
+        m_distanceMeters = 0.347;
+        m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
+        SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
+        SmartDashboard.putNumber("Alignment/Data/DistanceError", driveXController.getPositionError());
+        SmartDashboard.putNumber("Alignment/Data/DistanceAccumulatedError", driveXController.getAccumulatedError());
 
 
-      //   atDriveXGoal = driveXController.atSetpoint();
+        atDriveXGoal = driveXController.atSetpoint();
 
 
-      // }
+      }
 
     }
 
