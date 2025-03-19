@@ -11,7 +11,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Preferences;
@@ -73,12 +73,6 @@ public class ProfiledAlignToReefTags extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // m_RotConstraints = new Constraints(Preferences.profiledAlignRotMaxVel.get(), Preferences.profiledAlignRotMaxAcc.get());
-    // rotationController = new ProfiledPIDController(Preferences.profiledAlignRotKP.get(), Preferences.profiledAlignRotKI.get(), Preferences.profiledAlignRotKD.get(), m_RotConstraints);
-    // rotationController.setTolerance(Preferences.rotationTolerancePreference.get());
-    // rotationController.enableContinuousInput(-180, 180);
-    // rotationController.setIZone(Double.POSITIVE_INFINITY);
-    // rotationController.reset(m_drive.getYaw());
     
     rotationController = new PIDController(Preferences.profiledAlignRotKP.get(), Preferences.profiledAlignRotKI.get(), Preferences.profiledAlignRotKD.get());
     rotationController.setTolerance(Preferences.rotationTolerancePreference.get());
@@ -106,7 +100,6 @@ public class ProfiledAlignToReefTags extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
     
     Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, m_cameraId);
 
