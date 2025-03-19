@@ -140,6 +140,10 @@ public class ProfiledAlignToReefTags extends Command {
       if(!atDriveXGoal && !driverOverrideX){
         m_distanceMeters = 0.347;
         m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
+        //if Y alignment is still running, scale X alignment power to curve in.
+        // if (!atDriveYGoal) {
+        //   m_driveX = MathUtil.clamp(m_driveX, -m_driveX*0.5, m_driveX*0.5);
+        // }
         SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
         SmartDashboard.putNumber("Alignment/Data/DistanceError", driveXController.getPositionError());
         SmartDashboard.putNumber("Alignment/Data/DistanceAccumulatedError", driveXController.getAccumulatedError());

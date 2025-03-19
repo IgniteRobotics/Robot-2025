@@ -257,7 +257,7 @@ public class RobotContainer {
         // ).
         .onFalse(
             new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position)
-            .finallyDo(() -> CoralState.getInstance().setCoralTarget(CoralTarget.NONE))
+            // .finallyDo(() -> CoralState.getInstance().setCoralTarget(CoralTarget.NONE))
             );
 
         //joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getLeftX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
