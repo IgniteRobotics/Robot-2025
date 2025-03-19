@@ -248,14 +248,14 @@ public class RobotContainer {
         
 
         //score coral
-        // joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
-        //         Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), joystick.rightTrigger())
-        // );
+        joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
+                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), () -> joystick.getLeftX(), joystick.rightTrigger(), joystick.leftTrigger())
+        )
 
-        joystick.a().whileTrue(new SemiAutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
-                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), () -> joystick.getLeftX(),() -> joystick.getRightX() , joystick.rightTrigger(), joystick.leftTrigger())
-        ).
-        onFalse(
+        // joystick.a().whileTrue(new SemiAutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
+        //         Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), () -> joystick.getLeftX(),() -> joystick.getRightX() , joystick.rightTrigger(), joystick.leftTrigger())
+        // ).
+        .onFalse(
             new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position)
             .finallyDo(() -> CoralState.getInstance().setCoralTarget(CoralTarget.NONE))
             );
