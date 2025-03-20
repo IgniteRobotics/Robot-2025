@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.algae.IntakeAlgae;
 import frc.robot.commands.auton.AutonComposites;
+import frc.robot.commands.auton.AutonScoreCoralGroup;
 import frc.robot.commands.composite.AutoScoreCoralGroup;
 
 import frc.robot.commands.composite.OuttakeAlgae;
@@ -152,10 +153,15 @@ public class RobotContainer {
         NamedCommands.registerCommand("Align To K and Wait", AutonComposites.AlignReefK(drivetrain, m_PhotonCameraWrapper));
         NamedCommands.registerCommand("Align To HP and Wait", AutonComposites.AlignHP(drivetrain, m_PhotonCameraWrapper));
 
+        Command driveInCoralLeftL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_LEFT);
+        Command driveInCoralRightL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_RIGHT);
+
         autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
         autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
         autoChooser.addOption("Simple Drive Auton", AutoBuilder.buildAuto("Simple Auton"));
         autoChooser.addOption("3 Align Auton", AutoBuilder.buildAuto("3 Align Auton"));
+        autoChooser.addOption("Drive Coral Left L4", driveInCoralLeftL4);
+        autoChooser.addOption("Drive Coral Right L4", driveInCoralRightL4);
         
         autoChooser.addOption("Line Up and Score", new RunCommand(() -> drivetrain.driveRobotCentric(-1, 0, 0)).withTimeout(2)
             .alongWith(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position)));
