@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -163,8 +164,11 @@ public class RobotContainer {
         autoChooser.addOption("Drive Coral Left L4", driveInCoralLeftL4);
         autoChooser.addOption("Drive Coral Right L4", driveInCoralRightL4);
         
-        autoChooser.addOption("Line Up and Score", new RunCommand(() -> drivetrain.driveRobotCentric(-1, 0, 0)).withTimeout(2)
-            .alongWith(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position)));
+        autoChooser.addOption("Line Up and Trough", new RunCommand(() -> drivetrain.driveRobotCentric(-1, 0, 0)).withTimeout(2)
+            .alongWith(new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference)))
+            .andThen(new WaitCommand(2))
+            .andThen(new RunCommand(() -> drivetrain.driveRobotCentric(0, 0, 0)))
+        );
         SmartDashboard.putData("Auto Mode", autoChooser);
 
 

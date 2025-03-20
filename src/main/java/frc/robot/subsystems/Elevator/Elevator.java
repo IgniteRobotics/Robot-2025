@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -33,6 +34,8 @@ public class Elevator implements Subsystem {
   private TalonFXConfiguration m_fxCfg = new TalonFXConfiguration();
 
   public MotionMagicVoltage m_MMPosition =   new MotionMagicVoltage(0);
+
+  public DynamicMotionMagicVoltage m_DynMMPosition = new DynamicMotionMagicVoltage(0, 0, 0, 0);
 
   //logged stuff
   @Logged(name = "Target Position", importance = Importance.CRITICAL)
@@ -110,6 +113,25 @@ public class Elevator implements Subsystem {
   @NotLogged
   public void setPositionRevolutions(DoublePreference position){
     setPositionRevolutions(position.get());
+  }
+
+
+  public void setSlowPositionRevolutions(double position) {
+    m_targetPosition = position;
+    //m_elevatorMotorLeader.setControl(m_MMPosition.withPosition(position).withSlot(0));
+    m_elevatorMotorLeader.setControl(
+      m_DynMMPosition
+        .withPosition(position)
+        .withVelocity(10)
+        .withAcceleration(20)
+        .withJerk(50)
+        .withSlot(0)
+    );
+  }
+  
+  @NotLogged
+  public void setSlowPositionRevolutions(DoublePreference position){
+    setSlowPositionRevolutions(position.get());
   }
 
   @Logged
