@@ -171,11 +171,15 @@ public class ProfiledAlignToReefTags extends Command {
     if(m_xInput != null && Math.abs(m_xInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
       driverOverrideX = true;
       m_driveX = Preferences.xySlowLimitPreference.getValue()*m_xInput.getAsDouble();
+    } else if (driverOverrideX && (m_xInput == null || Math.abs(m_xInput.getAsDouble()) <= TunerConstants.DEADBAND_FACTOR)){
+      m_driveX = 0;
     }
 
     if(m_yInput != null && Math.abs(m_yInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
       driverOverrideY = true;
       m_driveY = Preferences.xySlowLimitPreference.getValue()*m_yInput.getAsDouble();
+    } else if (driverOverrideY && (m_xInput == null || Math.abs(m_yInput.getAsDouble()) <= TunerConstants.DEADBAND_FACTOR)){
+      m_driveY = 0;
     }
 
     
