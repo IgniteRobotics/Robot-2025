@@ -72,6 +72,10 @@ public class AlgaeCollector extends SubsystemBase {
     m_algaeMotor.set(Preferences.algaeIntakePower.getValue());
   }
 
+  public void holdAlgae(){
+    m_algaeMotor.set(Preferences.algaeHoldPower.getValue());
+  }
+
   public void outtakeAlgae(){
     m_algaeMotor.set(Preferences.algaeOuttakePower.getValue());
   }
@@ -102,6 +106,15 @@ public class AlgaeCollector extends SubsystemBase {
     return false;
   }
 
+  public boolean checkCurrentSpike(){
+    double supplyCurrent = m_algaeMotor.getSupplyCurrent().getValueAsDouble();
+    if (supplyCurrent > AlgaeCollectorConstants.createCurrentLimitsConfigs().StatorCurrentLimit) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putString("Algae Target", m_algaeState.getAlgaeTargetName());
@@ -111,6 +124,12 @@ public class AlgaeCollector extends SubsystemBase {
   //Voltage, Current, Temperature
 
   /*********Logging Motors*************/
+
+  @Logged(name = "Wrist Motor Position", importance = Importance.CRITICAL)
+  public double getWristPosition(){
+    return m_wristMotor.getPosition().getValueAsDouble();
+  }
+
   @Logged(name = "Wrist Motor Voltage", importance = Importance.CRITICAL)
   public double getWristVoltage(){
     return m_wristMotor.getMotorVoltage().getValueAsDouble();

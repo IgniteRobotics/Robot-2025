@@ -11,11 +11,11 @@ import edu.wpi.first.math.geometry.Translation3d;
 
 public class CameraConstants {
     public static final String photonCameraNameOuttakeLeft = "OUTTAKE_LEFT";
-    public static final Transform3d photonCameraTransformOuttakeLeft= new Transform3d(new Translation3d(.343, -0.271, .239), new Rotation3d(0.0, -15 / 180.0 * Math.PI, Math.PI));
+    public static final Transform3d photonCameraTransformOuttakeLeft= new Transform3d(new Translation3d(.343, -0.296, .239), new Rotation3d(0.0, -15 / 180.0 * Math.PI, Math.PI));
     public static final PhotonCamera photonCameraOuttakeLeft = new PhotonCamera(photonCameraNameOuttakeLeft);
     
     public static final String photonCameraNameOuttakeRight = "OUTTAKE_RIGHT";
-    public static final Transform3d photonCameraTransformOuttakeRight = new Transform3d(new Translation3d(.343, 0.271, .239), new Rotation3d(0.0, -15 / 180.0 * Math.PI, Math.PI));
+    public static final Transform3d photonCameraTransformOuttakeRight = new Transform3d(new Translation3d(.343, 0.296, .239), new Rotation3d(0.0, -15 / 180.0 * Math.PI, Math.PI));
     public static final PhotonCamera photonCameraOuttakeRight = new PhotonCamera(photonCameraNameOuttakeRight);
 
     public static final String photonCameraNameIntake = "INTAKE";
@@ -110,14 +110,14 @@ public class CameraConstants {
     //when the robot is centered on the reef branch
     //at the given BUMPER! distance
     public static final double getCorallYawOffsetDegreesLeft(double distance) {
-        double yOffset = -0.077;
+        double yOffset = -0.132;
         return Math.toDegrees(Math.asin(yOffset/(distance)));
     }
     //this is the offset, in meters from the center of the tag,
     //to the center of the camera=        
     //when the robot is centered on the reef branch
     public static final double getCorallYawOffsetDegreesRight(double distance) {
-        double yOffset = 0.077;
+        double yOffset = 0.132;
         return Math.toDegrees(Math.asin(yOffset/(distance)));
     }
 

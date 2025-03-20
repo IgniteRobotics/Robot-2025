@@ -6,11 +6,9 @@ package frc.robot.commands.elevator;
 
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Robot;
 import frc.robot.statemachines.AlgaeState;
 import frc.robot.statemachines.CoralState;
 import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.Elevator.ElevatorConstants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ElevatorToCoralPreset extends Command {
@@ -47,7 +45,7 @@ public class ElevatorToCoralPreset extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_elevator.stopMotors();
+ 
   }
 
   // Returns true when the command should end.

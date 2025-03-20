@@ -4,32 +4,19 @@
 
 package frc.robot.commands.composite;
 
-import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.PreferenceTypes.DoublePreference;
-import frc.robot.commands.drive.AlignToReefTags;
+import frc.robot.commands.drive.ManualDriveAlignment;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.elevator.ElevatorToCoralPreset;
-import frc.robot.commands.elevator.ToSetpoint;
-import frc.robot.statemachines.AlgaeState;
-import frc.robot.statemachines.CoralState;
 import frc.robot.statemachines.CoralState.CoralTarget;
-import frc.robot.statemachines.AlgaeState.AlgaeTarget;
-import frc.robot.statemachines.AllianceState;
 import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.Elevator.ElevatorConstants;
-import frc.robot.subsystems.algae.AlgaeCollector;
 import frc.robot.subsystems.coral.Corraler;
-import frc.robot.subsystems.coral.CorralerConstants;
-import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 
@@ -44,13 +31,14 @@ public class SemiAutoScoreCoralGroup extends ParallelCommandGroup{
   private DoublePreference m_distancePreference;
   private DoubleSupplier m_DriveFwdBackSupplier;
   private DoubleSupplier m_DriveSideSupplier;
+  private DoubleSupplier m_DriveRotSupplier;
   private BooleanSupplier m_raiseElevator;
   private BooleanSupplier m_releaseCoral;
 
 
   /** Creates a new CommandFactory. */
   public SemiAutoScoreCoralGroup(CommandSwerveDrivetrain swerveDrivetrain, Elevator elevator, Corraler corraler, 
-      PhotonCameraWrapper photonCameraWrapper, DoublePreference distancePreference, DoubleSupplier driveFwdBackSupplier, DoubleSupplier driveSideSupplier, BooleanSupplier raiseElevator, BooleanSupplier releaseCoral){
+      PhotonCameraWrapper photonCameraWrapper, DoublePreference distancePreference, DoubleSupplier driveFwdBackSupplier, DoubleSupplier driveSideSupplier, DoubleSupplier rotSupplier, BooleanSupplier raiseElevator, BooleanSupplier releaseCoral){
     m_swerveDrivetrain = swerveDrivetrain;
     m_Elevator = elevator;
     m_Corraler = corraler;
@@ -58,6 +46,7 @@ public class SemiAutoScoreCoralGroup extends ParallelCommandGroup{
     m_distancePreference = distancePreference;
     m_DriveFwdBackSupplier = driveFwdBackSupplier;
     m_DriveSideSupplier = driveSideSupplier;
+    m_DriveRotSupplier = rotSupplier;
     m_raiseElevator = raiseElevator;
     m_releaseCoral = releaseCoral;
 
@@ -74,8 +63,8 @@ public class SemiAutoScoreCoralGroup extends ParallelCommandGroup{
   }
 
   private Command createAlignCommand(){
-    return new AlignToReefTags(m_swerveDrivetrain, m_PhotonCameraWrapper,
-        m_DriveFwdBackSupplier, m_DriveSideSupplier);
+    return new ManualDriveAlignment(m_swerveDrivetrain,
+        m_DriveFwdBackSupplier, m_DriveSideSupplier, m_DriveRotSupplier);
   
   }
 

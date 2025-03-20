@@ -5,8 +5,6 @@
 package frc.robot.commands.composite;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Preferences;
-import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.elevator.ElevatorToCoralPreset;
 import frc.robot.commands.elevator.ToSetpoint;

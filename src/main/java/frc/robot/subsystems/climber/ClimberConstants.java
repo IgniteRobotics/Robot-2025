@@ -57,7 +57,7 @@ public class ClimberConstants {
         public static SoftwareLimitSwitchConfigs createSoftLimitConigs(){
             SoftwareLimitSwitchConfigs newConfigs = new SoftwareLimitSwitchConfigs();
             newConfigs.ForwardSoftLimitEnable = false;
-            newConfigs.ReverseSoftLimitEnable = true;
+            newConfigs.ReverseSoftLimitEnable = false;
             newConfigs.ForwardSoftLimitThreshold = CLIMBER_FORWARD_SOFT_LIMIT;
              newConfigs.ReverseSoftLimitThreshold = CLIMBER_REVERSE_SOFT_LIMIT;
                 return newConfigs;
