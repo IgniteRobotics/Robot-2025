@@ -80,6 +80,7 @@ public class Preferences {
     public static DoublePreference algaeIntakePower = new DoublePreference("AlgaeCollector/IntakePower", AlgaeCollectorConstants.INTAKE_ALGAE_POWER);
     public static DoublePreference algaeOuttakePower = new DoublePreference("AlgaeCollector/OuttakePower", AlgaeCollectorConstants.OUTTAKE_ALGAE_POWER);
     public static DoublePreference algaeHoldPower = new DoublePreference("AlgaeCollector/HopperPower", AlgaeCollectorConstants.ALGAE_HOLD_POWER);
+    public static DoublePreference algaeIntakeCurrentLimit = new DoublePreference("AlgaeCollector/IntakeCurrentLimit", AlgaeCollectorConstants.ALGAE_INTAKE_CURRENT_LIMIT);
 
     public static DoublePreference collectorStowPosition = new DoublePreference("AlgaeCollector/Wrist/Stow Position", AlgaeCollectorConstants.WRIST.STOW.angle);
     public static DoublePreference collectorWristPosition = new DoublePreference("AlgaeCollector/Wrist/Position",0);

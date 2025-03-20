@@ -115,6 +115,7 @@ public class ProfiledAlignToReefTags extends Command {
         SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
         SmartDashboard.putNumber("Alignment/Data/HeadingError", rotationController.getPositionError());
         SmartDashboard.putNumber("Alignment/Data/HeadingAccumulatedError", rotationController.getAccumulatedError());
+        SmartDashboard.putBoolean("Alignment/Data/atRotationSetpoint", rotationController.atSetpoint());
 
         atRotationGoal = rotationController.atSetpoint();
       }
@@ -128,8 +129,8 @@ public class ProfiledAlignToReefTags extends Command {
         SmartDashboard.putNumber("Alignment/Data/YawError", driveYController.getPositionError());
         SmartDashboard.putNumber("Alignment/Data/YawAccumulatedError", driveYController.getAccumulatedError());
 
-        SmartDashboard.putBoolean("Alignment/Data/atSetpoint", driveYController.atSetpoint());
-        SmartDashboard.putBoolean("Alignment/Data/atGoal",driveYController.atGoal());
+        SmartDashboard.putBoolean("Alignment/Data/atYSetpoint", driveYController.atSetpoint());
+        
         
 
         atDriveYGoal = driveYController.atSetpoint(); 
@@ -147,14 +148,16 @@ public class ProfiledAlignToReefTags extends Command {
         SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
         SmartDashboard.putNumber("Alignment/Data/DistanceError", driveXController.getPositionError());
         SmartDashboard.putNumber("Alignment/Data/DistanceAccumulatedError", driveXController.getAccumulatedError());
+        SmartDashboard.putBoolean("Alignment/Data/atXSetpoint", driveXController.atSetpoint());
 
 
         atDriveXGoal = driveXController.atSetpoint();
 
 
       }
-
     }
+
+    
 
     else{
         //m_rotation = rotationController.calculate(m_drive.getYaw(), AllianceState.getInstance().getHeadingToReef(m_drive.getPose()));

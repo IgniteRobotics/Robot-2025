@@ -37,9 +37,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.commands.algae.IntakeAlgae;
 import frc.robot.commands.auton.AutonComposites;
 import frc.robot.commands.composite.AutoScoreCoralGroup;
-import frc.robot.commands.composite.IntakeAlgae;
+
 import frc.robot.commands.composite.OuttakeAlgae;
 import frc.robot.commands.composite.Score;
 import frc.robot.commands.composite.ScoreAlgae;
@@ -52,6 +53,7 @@ import frc.robot.commands.drive.AlignSideToSide;
 import frc.robot.commands.drive.AlignThenDrive;
 import frc.robot.commands.drive.AlignToReefTags;
 import frc.robot.commands.drive.DriveIntoTarget;
+import frc.robot.commands.drive.ManualDriveAlignment;
 import frc.robot.commands.drive.ProfiledAlignToReefTags;
 import frc.robot.commands.drive.RotateToHeading;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
@@ -161,9 +163,9 @@ public class RobotContainer {
 
 
         configureSubsytemDefaultCommands();
-        //configureBindings();
+        configureBindings();
         //TODO MUST REMOVE
-        configureTestBindings();
+        //configureTestBindings();
         configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -260,12 +262,12 @@ public class RobotContainer {
             // .finallyDo(() -> CoralState.getInstance().setCoralTarget(CoralTarget.NONE))
             );
 
-        //joystick.b().whileTrue(new IntakeAlgae(drivetrain, m_allianceState.getReefTags(), Preferences.alignAdj.getValue(), () -> joystick.getLeftY(), () -> joystick.getLeftX(), elevator, collector, ElevatorConstants.ALGAE.HIGH_REEF.height));
+        
         joystick.x().whileTrue(
             new ToSetpoint(elevator, ElevatorConstants.ALGAE.PROCESSOR.height).withTimeout(2).alongWith(
                 new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle)).until(() -> collector.isWristAtPosition()).withTimeout(2)
             ).andThen(new WaitUntilCommand(joystick.rightTrigger()).andThen(
-                new RunCommand(() -> collector.outtakeAlgae()).withTimeout( .5))
+                new RunCommand(() -> collector.outtakeAlgae()).withTimeout( 1))
             )
         ).onFalse(
             new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
@@ -276,8 +278,8 @@ public class RobotContainer {
         joystick.b().onTrue(
             new ElevatorToAlgaePreset(elevator).alongWith(
                 new RunCommand(() -> collector.setToIntakePosition()).alongWith(
-                    new AlignThenDrive(drivetrain, m_PhotonCameraWrapper, AllianceState.getInstance().getReefTags(), 1, 0.5, CameraConstants.getAlgaeYawOffsetDegreesRight(0.5),() -> joystick.getLeftY(),() ->  joystick.getLeftX()).alongWith(
-                        new RunCommand(() -> collector.intakeAlgae())
+                    new ManualDriveAlignment(drivetrain,() -> joystick.getLeftY(),() ->  joystick.getLeftX(), () -> joystick.getRightX()).alongWith(
+                        new IntakeAlgae(collector)
                     )
                 )
             )

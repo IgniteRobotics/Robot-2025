@@ -50,14 +50,20 @@ public class ManualDriveAlignment extends Command {
     //override with joystick input if present
     if(m_xInput != null && Math.abs(m_xInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
       m_driveX = Preferences.xySlowLimitPreference.getValue()*m_xInput.getAsDouble();
+    } else {
+      m_driveX = 0;
     }
 
     if(m_yInput != null && Math.abs(m_yInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
       m_driveY = Preferences.xySlowLimitPreference.getValue()*m_yInput.getAsDouble();
+    } else {
+      m_driveY = 0;
     }
 
     if (m_rInput != null && Math.abs(m_rInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
       m_rotation = Preferences.rotationSlowLimitPreference.getValue()*m_rInput.getAsDouble();
+    } else {
+      m_rotation = 0;
     }
 
     SmartDashboard.putNumber("Alignment/Power/rotation", m_rotation);
