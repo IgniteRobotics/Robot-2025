@@ -29,7 +29,7 @@ public class ElevatorConstants {
         public static final double ELEVATOR_kP = 7;
         public static final double ELEVATOR_kI = 0;
         public static final double ELEVATOR_kD = 0.25;
-        public static final double ELEVATOR_kG = 0.5;
+        public static final double ELEVATOR_kG = 2.0;
         public static final GravityTypeValue ELEVATOR_GRAVITY = GravityTypeValue.Elevator_Static;
         public static final StaticFeedforwardSignValue ELEVATOR_FEEDFORWARD = StaticFeedforwardSignValue.UseClosedLoopSign;
 
@@ -103,8 +103,8 @@ public class ElevatorConstants {
 
         public enum ALGAE{
             PROCESSOR(1),
-            LOW_REEF(6.6),
-            HIGH_REEF(12.9),
+            LOW_REEF(4.85),
+            HIGH_REEF(13.3),
             BARGE(26);
 
             public final double height;
@@ -113,6 +113,6 @@ public class ElevatorConstants {
             }
         }
 
-        public final static double POSITION_ERROR = 0.25;
+        public final static double POSITION_ERROR = 0.5;
 }
 

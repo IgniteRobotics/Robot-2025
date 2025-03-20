@@ -136,6 +136,10 @@ public class Climber implements Subsystem {
     m_rightServo.set(position);
     m_leftServo.set(1.0 - position);
   }
+
+  public void setServoPosition(DoublePreference position){
+    setServoPosition(position.get());
+  }
   
   public void resetServoPosition(){
     m_rightServo.set(0);
@@ -177,43 +181,33 @@ public class Climber implements Subsystem {
     m_MMJerk = m_motionMagicConfigs.MotionMagicJerk;
   }
 
-  @NotLogged
-  public double getClimberkP(){
-    m_Slot0Configs = new Slot0Configs();
-    m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kP;
-  }
+  // @NotLogged
+  // public double getClimberkP(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kP;
+  // }
 
-  @NotLogged
-  public double getClimberkD(){
-    m_Slot0Configs = new Slot0Configs();
-    m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kD;
-  }
+  // @NotLogged
+  // public double getClimberkD(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kD;
+  // }
 
-  @NotLogged
-  public double getClimberkI(){
-    m_Slot0Configs = new Slot0Configs();
-    m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kI;
-  }
+  // @NotLogged
+  // public double getClimberkI(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kI;
+  // }
 
-  @NotLogged
-  public double getClimberkG(){
-    m_Slot0Configs = new Slot0Configs();
-    m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kG;
-  }
-
-  @Logged(name = "Voltage", importance = Importance.CRITICAL)
-  public double getVoltage(){
-    return m_climberMotorLeader.getMotorVoltage().getValueAsDouble();
-  }
-
-  @Logged(name = "Current", importance = Importance.CRITICAL)
-  public double getCurrent(){
-    return m_climberMotorLeader.getStatorCurrent().getValueAsDouble();
-  }
+  // @NotLogged
+  // public double getClimberkG(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kG;
+  // }
 
   @Logged(name = "Right Servo Position", importance = Importance.CRITICAL )
   public double getRightServoPosition(){
@@ -230,6 +224,41 @@ public class Climber implements Subsystem {
     SmartDashboard.putNumber("Right Servo Position", m_rightServo.getPosition());
     SmartDashboard.putNumber("Left Servo Position", m_leftServo.getPosition());
   }
+
+  //Voltage, Current, Temperature
+
+  /*********Logging Motors*************/
+  @Logged(name = "Leader Motor Voltage", importance = Importance.CRITICAL)
+  public double getLeaderVoltage(){
+    return m_climberMotorLeader.getMotorVoltage().getValueAsDouble();
+  }
+
+  @Logged(name = "Leader Motor Current", importance = Importance.CRITICAL)
+  public double getLeaderCurrent(){
+    return m_climberMotorLeader.getSupplyCurrent().getValueAsDouble();
+  }
+
+  @Logged(name = "Leader Motor Temperature", importance = Importance.CRITICAL)
+  public double getLeaderTemperature(){
+    return m_climberMotorLeader.getDeviceTemp().getValueAsDouble();
+  }
+
+  @Logged(name = "Follower Motor Voltage", importance = Importance.CRITICAL)
+  public double getFollowerVoltage(){
+    return m_climberMotorFollower.getMotorVoltage().getValueAsDouble();
+  }
+
+  @Logged(name = "Follower Motor Current", importance = Importance.CRITICAL)
+  public double getFollowerCurrent(){
+    return m_climberMotorFollower.getSupplyCurrent().getValueAsDouble();
+  }
+
+  @Logged(name = "Follower Motor Temperature", importance = Importance.CRITICAL)
+  public double getFollowerTemperature(){
+    return m_climberMotorFollower.getDeviceTemp().getValueAsDouble();
+  }
+
+
 
 
 }

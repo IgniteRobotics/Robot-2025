@@ -30,6 +30,8 @@ public class DriveState {
 
     private static Pose2d robotPose2d;
 
+    private static double robotYaw;
+
     Map<String, PhotonPipelineResult> cameraResults = new HashMap<>(){};
 
     private DriveState() {
@@ -53,6 +55,14 @@ public class DriveState {
         return robotPose2d;
     }
 
+    public synchronized void setYaw(double yaw){
+        robotYaw = yaw;
+    }
+
+    public double getYaw(){
+        return robotYaw;
+    }
+
     //**********ZONE***********//
     public Zone[][] getGrid(){
         if(allianceState.getAlliance() == Alliance.Red){
@@ -60,7 +70,7 @@ public class DriveState {
         }
         else return Grid.BLUE_GRID;
     }
-
+    /* 
     @NotLogged
     public Zone getZone(){
         if(robotPose2d == null 
@@ -72,27 +82,36 @@ public class DriveState {
             return getGrid()[(int)(robotPose2d.getX()/blockWidth)][ (int)(robotPose2d.getY()/blockWidth)];
         }
     }
+    */
 
+    /* 
     @Logged(name = "Zone", importance = Importance.CRITICAL)
     public String getZoneName(){
         if(getZone() == null) return "currentZone is nonexistent";
         else return getZone().name;
     }
+    */
 
     @Logged(name = "Max Speed", importance = Importance.CRITICAL)
     public double getMaxSpeed(){
+        /* 
         if(getZone() == null){
             return TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
         }
         else return getZone().maxSpeed.doubleValue();
+        */
+        return TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     }
 
     @Logged(name = "Max Rotation", importance = Importance.CRITICAL)
     public double getMaxRotation(){
+        /* 
         if(getZone() == null){
             return TunerConstants.MAX_ANGULAR_SPEED;
         }
         else return getZone().maxRotation.doubleValue();
+        */
+        return TunerConstants.MAX_ANGULAR_SPEED;
     }
 
     //**********Vision***********//

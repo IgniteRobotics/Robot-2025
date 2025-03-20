@@ -300,11 +300,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     @Override
     public void periodic() {
 
-        SmartDashboard.putString("Zone", m_driveState.getZoneName());
+        //SmartDashboard.putString("Zone", m_driveState.getZoneName());
 
         SmartDashboard.putNumber("Robot Pose X", getPose().getX());
         SmartDashboard.putNumber("Robot Pose Y", getPose().getY());
         SmartDashboard.putNumber("Robot Rotation Degrees", getPose().getRotation().getDegrees());
+
+
 
 
         if(loggedPath == null){
@@ -316,6 +318,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
 
         m_driveState.setPose2d(getPose());
+        m_driveState.setYaw(getYaw());
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
@@ -417,8 +420,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     //     super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
     // }
 
+    @Logged
     public double getYaw(){
-        return m_gyro.getYaw().getValueAsDouble();
+        return this.getState().Pose.getRotation().getDegrees();
     }
 }
 

@@ -55,6 +55,8 @@ public class AlgaeCollectorConstants {
     public static final double OUTTAKE_ALGAE_POWER = 0.25;
     public static final double ALGAE_HOLD_POWER = 0.03;
 
+    public static final double ALGAE_INTAKE_CURRENT_LIMIT = 20;
+
 
     public static MotorOutputConfigs createAlgaeMotorOutputConfigs(){
         MotorOutputConfigs configs = new MotorOutputConfigs();
@@ -75,8 +77,8 @@ public class AlgaeCollectorConstants {
 
     public static CurrentLimitsConfigs createCurrentLimitsConfigs(){
         CurrentLimitsConfigs configs = new CurrentLimitsConfigs();
-        configs.StatorCurrentLimit = 25;
-        configs.StatorCurrentLimitEnable = true;
+        // configs.StatorCurrentLimit = 25;
+        // configs.StatorCurrentLimitEnable = true;
         return configs;
     }
 
@@ -138,7 +140,7 @@ public class AlgaeCollectorConstants {
     public enum WRIST{
         
         PROCESS(-0.12),
-        REEF(-0.046143),
+        REEF(0),
         BARGE(0.15),
         STOW(0.2);
 

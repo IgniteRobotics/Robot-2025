@@ -462,5 +462,29 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/Climber/Position 1",
+    "type": "double",
+    "value": 1.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/Position 2",
+    "type": "double",
+    "value": 2.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/Auton Height",
+    "type": "double",
+    "value": 3.4,
+    "properties": {
+      "persistent": true
+    }
   }
 ]

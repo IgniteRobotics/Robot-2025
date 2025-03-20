@@ -179,71 +179,96 @@ public class Elevator implements Subsystem {
     m_MMJerk = m_motionMagicConfigs.MotionMagicJerk;
   }
 
-  @NotLogged
-  public double getElevatorkP(){
-    m_Slot0Configs = new Slot0Configs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kP;
-  }
+  // @NotLogged
+  // public double getElevatorkP(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kP;
+  // }
 
-  @NotLogged
-  public double getElevatorkD(){
-    m_Slot0Configs = new Slot0Configs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kD;
-  }
+  // @NotLogged
+  // public double getElevatorkD(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kD;
+  // }
 
-  @NotLogged
-  public double getElevatorkI(){
-    m_Slot0Configs = new Slot0Configs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kI;
-  }
+  // @NotLogged
+  // public double getElevatorkI(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kI;
+  // }
 
-  @NotLogged
-  public double getElevatorkG(){
-    m_Slot0Configs = new Slot0Configs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kG;
-  }
+  // @NotLogged
+  // public double getElevatorkG(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kG;
+  // }
 
-  @NotLogged
-  public double getElevatorkS(){
-    m_Slot0Configs = new Slot0Configs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
-    return m_Slot0Configs.kS;
-  }
+  // @NotLogged
+  // public double getElevatorkS(){
+  //   m_Slot0Configs = new Slot0Configs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_Slot0Configs);
+  //   return m_Slot0Configs.kS;
+  // }
 
-  @Logged(name = "Voltage", importance = Importance.CRITICAL)
-  public double getVoltage(){
+  // @NotLogged
+  // public double getElevatorMMAccel(){
+  //   m_motionMagicConfigs = new MotionMagicConfigs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
+  //   return m_motionMagicConfigs.MotionMagicAcceleration;
+  // }
+
+  // @NotLogged
+  // public double getElevatorMMJerk(){
+  //   m_motionMagicConfigs = new MotionMagicConfigs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
+  //   return m_motionMagicConfigs.MotionMagicJerk;
+  // }
+
+  // @NotLogged
+  // public double getElevatorMMCruiseVelocity(){
+  //   m_motionMagicConfigs = new MotionMagicConfigs();
+  //   m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
+  //   return m_motionMagicConfigs.MotionMagicCruiseVelocity;
+  // }
+
+
+  //Voltage, Current, Temperature
+
+  /*********Logging Motors*************/
+  @Logged(name = "Leader Motor Voltage", importance = Importance.CRITICAL)
+  public double getLeaderVoltage(){
     return m_elevatorMotorLeader.getMotorVoltage().getValueAsDouble();
   }
 
-  @Logged(name = "Current", importance = Importance.CRITICAL)
-  public double getCurrent(){
-    return m_elevatorMotorLeader.getStatorCurrent().getValueAsDouble();
+  @Logged(name = "Leader Motor Current", importance = Importance.CRITICAL)
+  public double getLeaderCurrent(){
+    return m_elevatorMotorLeader.getSupplyCurrent().getValueAsDouble();
   }
 
-  @NotLogged
-  public double getElevatorMMAccel(){
-    m_motionMagicConfigs = new MotionMagicConfigs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
-    return m_motionMagicConfigs.MotionMagicAcceleration;
+  @Logged(name = "Leader Motor Temperature", importance = Importance.CRITICAL)
+  public double getLeaderTemperature(){
+    return m_elevatorMotorLeader.getDeviceTemp().getValueAsDouble();
   }
 
-  @NotLogged
-  public double getElevatorMMJerk(){
-    m_motionMagicConfigs = new MotionMagicConfigs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
-    return m_motionMagicConfigs.MotionMagicJerk;
+  @Logged(name = "Follower Motor Voltage", importance = Importance.CRITICAL)
+  public double getFollowerVoltage(){
+    return m_elevatorMotorFollower.getMotorVoltage().getValueAsDouble();
   }
 
-  @NotLogged
-  public double getElevatorMMCruiseVelocity(){
-    m_motionMagicConfigs = new MotionMagicConfigs();
-    m_elevatorMotorLeader.getConfigurator().refresh(m_motionMagicConfigs);
-    return m_motionMagicConfigs.MotionMagicCruiseVelocity;
+  @Logged(name = "Follower Motor Current", importance = Importance.CRITICAL)
+  public double getFollowerCurrent(){
+    return m_elevatorMotorFollower.getSupplyCurrent().getValueAsDouble();
   }
+
+  @Logged(name = "Follower Motor Temperature", importance = Importance.CRITICAL)
+  public double getFollowerTemperature(){
+    return m_elevatorMotorFollower.getDeviceTemp().getValueAsDouble();
+  }
+
 
 
 }

@@ -4,6 +4,8 @@
 
 package frc.robot.statemachines;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.drive.CameraConstants;
@@ -11,6 +13,12 @@ import frc.robot.subsystems.drive.CameraConstants;
 public class AllianceState {
 
     private static AllianceState single_instance = null;
+
+    public static final double BLUE_REEF_X = 4.471;
+    public static final double BLUE_REEF_Y = 4.055;
+
+    public static final double RED_REEF_X = 17.55 - 4.471;
+    public static final double RED_REEF_Y = 4.055;
 
     
 
@@ -61,6 +69,10 @@ public class AllianceState {
         } else {
             return CameraConstants.BLUE_HUMAN_PLAYER_TAGS;
         }
+    }
+
+    public double getHeadingToReef(Pose2d pose2d){
+       return 0;
     }
 
 }

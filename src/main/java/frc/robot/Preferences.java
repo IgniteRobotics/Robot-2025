@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.commands.drive.DriveCommandConstants;
 import frc.robot.subsystems.climber.ClimberConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.algae.AlgaeCollector;
@@ -16,13 +17,46 @@ public class Preferences {
     // ********** Drive *********//
 
     
-    public static DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", 0.5);
-    public static DoublePreference alignRotKD = new DoublePreference("alignCommand/rotation/kD", 0);
-    public static DoublePreference alignDriveYKP = new DoublePreference("alignCommand/driveY/kP", 0.5);
-    public static DoublePreference alignDriveYKD = new DoublePreference("alignCommand/driveY/kD", 0.3);
-    public static DoublePreference alignDriveXKP = new DoublePreference("alignCommand/driveX/kP", 0.5);
-    public static DoublePreference alignDriveXKD = new DoublePreference("alignCommand/driveX/kD", 0.3);
+    public static DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", DriveCommandConstants.ROTATION_P);
+    public static DoublePreference alignRotKD = new DoublePreference("alignCommand/rotation/kD", DriveCommandConstants.ROTATION_D);
+    public static DoublePreference alignRotKI = new DoublePreference("alignCommand/rotation/kI", 0);
+    
+    public static DoublePreference alignDriveYKP = new DoublePreference("alignCommand/driveY/kP", DriveCommandConstants.DRIVE_Y_P);
+    public static DoublePreference alignDriveYKD = new DoublePreference("alignCommand/driveY/kD", DriveCommandConstants.DRIVE_Y_D);
+    public static DoublePreference alignDriveYKI = new DoublePreference("alignCommand/driveY/kI", 0);
+    
+    public static DoublePreference alignDriveXKP = new DoublePreference("alignCommand/driveX/kP", DriveCommandConstants.DRIVE_X_P);
+    public static DoublePreference alignDriveXKD = new DoublePreference("alignCommand/driveX/kD", DriveCommandConstants.DRIVE_X_D);
+    public static DoublePreference alignDriveXKI = new DoublePreference("alignCommand/driveX/kI",0);
+
+    public static DoublePreference profiledAlignRotKP = new DoublePreference("profiledAlignCommand/rotation/kP", DriveCommandConstants.ROTATION_P);
+    public static DoublePreference profiledAlignRotKD = new DoublePreference("profiledAlignCommand/rotation/kD", DriveCommandConstants.ROTATION_D);
+    public static DoublePreference profiledAlignRotKI = new DoublePreference("profiledAlignCommand/rotation/kI", 0);
+    public static DoublePreference profiledAlignRotMaxVel = new DoublePreference("profiledAlignCommand/rotation/maxVel", 45);
+    public static DoublePreference profiledAlignRotMaxAcc = new DoublePreference("profiledAlignCommand/rotation/maxAcc", 90);    
+
+    public static DoublePreference profiledDriveYKP = new DoublePreference("profiledAlignCommand/driveY/kP", DriveCommandConstants.DRIVE_Y_P);
+    public static DoublePreference profiledDriveYKD = new DoublePreference("profiledAlignCommand/driveY/kD", DriveCommandConstants.DRIVE_Y_D);
+    public static DoublePreference profiledDriveYKI = new DoublePreference("profiledAlignCommand/driveY/kI", 0);
+    public static DoublePreference profiledDriveYMaxVel = new DoublePreference("profiledAlignCommand/driveY/maxVel", 8);
+    public static DoublePreference profiledDriveYMaxAcc = new DoublePreference("profiledAlignCommand/driveY/maxAcc", 16);
+
+    public static DoublePreference profiledDriveXKP = new DoublePreference("profiledAlignCommand/driveX/kP", DriveCommandConstants.DRIVE_X_P);
+    public static DoublePreference profiledDriveXKD = new DoublePreference("profiledAlignCommand/driveX/kD", DriveCommandConstants.DRIVE_X_D);
+    public static DoublePreference profiledDriveXKI = new DoublePreference("profiledAlignCommand/driveX/kI", 3);
+    public static DoublePreference profiledDriveXMaxVel = new DoublePreference("profiledAlignCommand/driveX/maxVel", 6);
+    public static DoublePreference profiledDriveXMaxAcc = new DoublePreference("profiledAlignCommand/driveX/maxAcc", 12);
+
     public static DoublePreference alignAdj = new DoublePreference("alignCommand/adjustment", 0);
+    public static DoublePreference rotationTolerancePreference = new DoublePreference("alignCommand/rotationTolerance", DriveCommandConstants.ROTATION_TOLERANCE);
+    public static DoublePreference rotationTestTarget = new DoublePreference("alignCommand/rotationTarget", 0);
+    public static DoublePreference yAlignTolerancePreference = new DoublePreference("alignCommand/yAlignTolerance", DriveCommandConstants.DRIVE_Y_TOLERANCE);
+    public static DoublePreference xAlignTolerancePreference = new DoublePreference("alignCommand/xAlignTolerance", DriveCommandConstants.DRIVE_X_TOLERANCE);
+    public static DoublePreference reefPushAgainstPreference = new DoublePreference("alignCommang/reefPushMPS", DriveCommandConstants.REEF_PUSH_DRIVE_X);
+
+    public static DoublePreference xySlowLimitPreference = new DoublePreference("drive/xySlowLimitMPS", DriveCommandConstants.SLOW_DRIVE_XY_FACTOR);
+    public static DoublePreference rotationSlowLimitPreference = new DoublePreference("drive/rotationSlowLimitRadPS", DriveCommandConstants.SLOW_DRIVE_ROTATION_FACTOR);
+    
 
     // ********** Elevator **********
     public static DoublePreference elevatorkV = new DoublePreference("Elevator/kV", ElevatorConstants.ELEVATOR_kV);
@@ -46,6 +80,7 @@ public class Preferences {
     public static DoublePreference algaeIntakePower = new DoublePreference("AlgaeCollector/IntakePower", AlgaeCollectorConstants.INTAKE_ALGAE_POWER);
     public static DoublePreference algaeOuttakePower = new DoublePreference("AlgaeCollector/OuttakePower", AlgaeCollectorConstants.OUTTAKE_ALGAE_POWER);
     public static DoublePreference algaeHoldPower = new DoublePreference("AlgaeCollector/HopperPower", AlgaeCollectorConstants.ALGAE_HOLD_POWER);
+    public static DoublePreference algaeIntakeCurrentLimit = new DoublePreference("AlgaeCollector/IntakeCurrentLimit", AlgaeCollectorConstants.ALGAE_INTAKE_CURRENT_LIMIT);
 
     public static DoublePreference collectorStowPosition = new DoublePreference("AlgaeCollector/Wrist/Stow Position", AlgaeCollectorConstants.WRIST.STOW.angle);
     public static DoublePreference collectorWristPosition = new DoublePreference("AlgaeCollector/Wrist/Position",0);

@@ -14,6 +14,7 @@ import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -71,6 +72,10 @@ public class AlgaeCollector extends SubsystemBase {
     m_algaeMotor.set(Preferences.algaeIntakePower.getValue());
   }
 
+  public void holdAlgae(){
+    m_algaeMotor.set(Preferences.algaeHoldPower.getValue());
+  }
+
   public void outtakeAlgae(){
     m_algaeMotor.set(Preferences.algaeOuttakePower.getValue());
   }
@@ -101,10 +106,58 @@ public class AlgaeCollector extends SubsystemBase {
     return false;
   }
 
+  public boolean checkCurrentSpike(){
+    double supplyCurrent = m_algaeMotor.getSupplyCurrent().getValueAsDouble();
+    if (supplyCurrent > AlgaeCollectorConstants.createCurrentLimitsConfigs().StatorCurrentLimit) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putString("Algae Target", m_algaeState.getAlgaeTargetName());
     m_algaeState.setHasAlgae(seesAlgae());
+  }
+
+  //Voltage, Current, Temperature
+
+  /*********Logging Motors*************/
+
+  @Logged(name = "Wrist Motor Position", importance = Importance.CRITICAL)
+  public double getWristPosition(){
+    return m_wristMotor.getPosition().getValueAsDouble();
+  }
+
+  @Logged(name = "Wrist Motor Voltage", importance = Importance.CRITICAL)
+  public double getWristVoltage(){
+    return m_wristMotor.getMotorVoltage().getValueAsDouble();
+  }
+
+  @Logged(name = "Wrist Motor Current", importance = Importance.CRITICAL)
+  public double getWristCurrent(){
+    return m_wristMotor.getSupplyCurrent().getValueAsDouble();
+  }
+
+  @Logged(name = "Wrist Motor Temperature", importance = Importance.CRITICAL)
+  public double getWristTemperature(){
+    return m_wristMotor.getDeviceTemp().getValueAsDouble();
+  }
+
+  @Logged(name = "Algae Motor Voltage", importance = Importance.CRITICAL)
+  public double getAlgaeVoltage(){
+    return m_algaeMotor.getMotorVoltage().getValueAsDouble();
+  }
+
+  @Logged(name = "Algae Motor Current", importance = Importance.CRITICAL)
+  public double getAlgaeCurrent(){
+    return m_algaeMotor.getSupplyCurrent().getValueAsDouble();
+  }
+
+  @Logged(name = "Algae Motor Temperature", importance = Importance.CRITICAL)
+  public double getAlgaeTemperature(){
+    return m_algaeMotor.getDeviceTemp().getValueAsDouble();
   }
 
 }

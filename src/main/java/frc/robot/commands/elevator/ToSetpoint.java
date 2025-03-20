@@ -26,7 +26,9 @@ public class ToSetpoint extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    m_elevator.stopMotors();
+    if (setpoint < 3){
+      m_elevator.stopMotors();
+    }
   }
 
  
