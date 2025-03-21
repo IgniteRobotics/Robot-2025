@@ -195,6 +195,7 @@ public class RobotContainer {
         algaeBargeButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.BARGE)));
         coralCancelButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.NONE)));
         climbTrigger.onTrue(new InstantCommand(() -> climber.setServoPosition(0)));
+        climbTrigger.onFalse(new InstantCommand(() -> climber.setServoPosition(0.5)));
     }
 
     private void configureSubsytemDefaultCommands(){
