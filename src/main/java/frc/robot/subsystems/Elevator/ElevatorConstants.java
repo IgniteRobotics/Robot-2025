@@ -120,8 +120,8 @@ public class ElevatorConstants {
 
         public enum ALGAE{
             PROCESSOR(1),
-            LOW_REEF(4.85),
-            HIGH_REEF(13.3),
+            LOW_REEF(2),
+            HIGH_REEF(10.5),
             BARGE(26);
 
             public final double height;

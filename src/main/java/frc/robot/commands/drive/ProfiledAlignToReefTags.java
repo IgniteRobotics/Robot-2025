@@ -109,6 +109,10 @@ public class ProfiledAlignToReefTags extends Command {
 
     if(targeting.isPresent()){
 
+      SmartDashboard.putNumber("Alignment/Data/TargetID", targeting.get().getTagId());
+      SmartDashboard.putNumber("Alignment/Data/TargetDistance", targeting.get().getDistance());
+      SmartDashboard.putNumber("Alignment/Data/TargetYAW", targeting.get().getYaw());
+
       if(!atRotationGoal){
         double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());
         m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
