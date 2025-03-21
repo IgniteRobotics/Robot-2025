@@ -3,6 +3,7 @@ package frc.robot.subsystems.Elevator;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
@@ -22,6 +23,7 @@ public class Elevator implements Subsystem {
     private final TalonFX m_elevatorMotorFollower;
 
   private Slot0Configs m_Slot0Configs = new Slot0Configs();
+  private Slot1Configs m_Slot1Configs = new Slot1Configs();
   
   private SoftwareLimitSwitchConfigs m_softLimitConfig = new SoftwareLimitSwitchConfigs();
 
@@ -35,7 +37,7 @@ public class Elevator implements Subsystem {
 
   public MotionMagicVoltage m_MMPosition =   new MotionMagicVoltage(0);
 
-  public DynamicMotionMagicVoltage m_DynMMPosition = new DynamicMotionMagicVoltage(0, 0, 0, 0);
+  public PositionVoltage m_PositionVoltage = new PositionVoltage(0);
 
   //logged stuff
   @Logged(name = "Target Position", importance = Importance.CRITICAL)
@@ -74,6 +76,10 @@ public class Elevator implements Subsystem {
     m_Slot0Configs = ElevatorConstants.createSlot0Configs(); 
     m_elevatorMotorLeader.getConfigurator().apply(m_Slot0Configs);
     m_elevatorMotorFollower.getConfigurator().apply(m_Slot0Configs);
+
+    m_Slot1Configs = ElevatorConstants.createSlot1Configs();
+    m_elevatorMotorLeader.getConfigurator().apply(m_Slot1Configs);
+    m_elevatorMotorFollower.getConfigurator().apply(m_Slot1Configs);
 
     elevatorkP = m_Slot0Configs.kP;
     elevatorkD = m_Slot0Configs.kD;
@@ -120,12 +126,10 @@ public class Elevator implements Subsystem {
     m_targetPosition = position;
     //m_elevatorMotorLeader.setControl(m_MMPosition.withPosition(position).withSlot(0));
     m_elevatorMotorLeader.setControl(
-      m_DynMMPosition
+      m_PositionVoltage
         .withPosition(position)
-        .withVelocity(10)
-        .withAcceleration(20)
-        .withJerk(50)
-        .withSlot(0)
+        .withVelocity(ElevatorConstants.ELEVATOR_SLOW_VELOCITY)
+        .withSlot(1)
     );
   }
   

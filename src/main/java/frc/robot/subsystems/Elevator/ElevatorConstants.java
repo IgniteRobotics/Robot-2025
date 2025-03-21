@@ -3,6 +3,7 @@ package frc.robot.subsystems.Elevator;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -32,6 +33,9 @@ public class ElevatorConstants {
         public static final double ELEVATOR_kG = 2.0;
         public static final GravityTypeValue ELEVATOR_GRAVITY = GravityTypeValue.Elevator_Static;
         public static final StaticFeedforwardSignValue ELEVATOR_FEEDFORWARD = StaticFeedforwardSignValue.UseClosedLoopSign;
+        public static final double ELEVATOR_kP_SLOW = 1.5;
+        public static final double ELEVATOR_kD_SLOW = 0.25;
+        public static final double ELEVATOR_SLOW_VELOCITY = 3;
 
         public static Slot0Configs createSlot0Configs(){ 
             Slot0Configs slot = new Slot0Configs();
@@ -40,6 +44,19 @@ public class ElevatorConstants {
             slot.kP = ELEVATOR_kP;
             slot.kI = ELEVATOR_kI;
             slot.kD = ELEVATOR_kD;
+            slot.kG = ELEVATOR_kG;
+            slot.GravityType = ELEVATOR_GRAVITY;
+            slot.StaticFeedforwardSign = ELEVATOR_FEEDFORWARD;
+            return slot; 
+        }
+
+        public static Slot1Configs createSlot1Configs(){
+            Slot1Configs slot = new Slot1Configs();
+            slot.kV = ELEVATOR_kV;
+            slot.kS = ELEVATOR_kS;
+            slot.kP = ELEVATOR_kP_SLOW;
+            slot.kI = ELEVATOR_kI;
+            slot.kD = ELEVATOR_kD_SLOW;
             slot.kG = ELEVATOR_kG;
             slot.GravityType = ELEVATOR_GRAVITY;
             slot.StaticFeedforwardSign = ELEVATOR_FEEDFORWARD;

@@ -166,8 +166,9 @@ public class RobotContainer {
         
         autoChooser.addOption("Line Up and Trough", new RunCommand(() -> drivetrain.driveRobotCentric(-1, 0, 0)).withTimeout(2)
             .alongWith(new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference)))
-            .andThen(new WaitCommand(2))
+            .andThen(new WaitCommand(1))
             .andThen(new RunCommand(() -> drivetrain.driveRobotCentric(0, 0, 0)))
+            .andThen(new InstantCommand(() -> elevator.setSlowPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
         );
         SmartDashboard.putData("Auto Mode", autoChooser);
 
