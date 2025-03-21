@@ -29,7 +29,7 @@ public class Score extends SequentialCommandGroup {
     
     //ready to score coral
     if (m_coralState.hasCoral() && m_coralState.getCoralHeight() != 0){
-      addCommands(new ScoreCoral(elevator, corraler, m_coralState.getCoralHeight(), ElevatorConstants.FLOOR.GROUND.position));
+      addCommands(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.GROUND.position));
     //ready to score algae
     } else if (m_algaeState.hasAlgae() && m_algaeState.getAlgaeHeight() != 0){
       addCommands(
