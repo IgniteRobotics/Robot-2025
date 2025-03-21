@@ -156,16 +156,16 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("Place Coral Level 4", AutonComposites.ScoreLevel4(elevator, corraler));
 
-        // Command driveInCoralLeftL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_LEFT);
-        // Command driveInCoralRightL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_RIGHT);
+        Command driveInCoralLeftL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_LEFT);
+        Command driveInCoralRightL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_RIGHT);
 
         autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
         autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
         autoChooser.addOption("Simple Drive Auton", AutoBuilder.buildAuto("Simple Auton"));
         autoChooser.addOption("3 Align Auton", AutoBuilder.buildAuto("3 Align Auton"));
         autoChooser.addOption("Straight In Level 4 Right", AutoBuilder.buildAuto("1 Coral Level 4 Right"));
-        // autoChooser.addOption("Drive Coral Left L4", driveInCoralLeftL4);
-        // autoChooser.addOption("Drive Coral Right L4", driveInCoralRightL4);
+        autoChooser.addOption("Drive Coral Left L4", driveInCoralLeftL4);
+        autoChooser.addOption("Drive Coral Right L4", driveInCoralRightL4);
         
         autoChooser.addOption("Line Up and Trough", new RunCommand(() -> drivetrain.driveRobotCentric(Preferences.autonYDrive.getValue(), 0, 0)).withTimeout(2)
             .alongWith(new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference)))
