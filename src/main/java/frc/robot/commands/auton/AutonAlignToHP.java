@@ -86,7 +86,7 @@ public class AutonAlignToHP extends Command {
   public void execute() {
     //Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
     
-    Optional<TargetInfo> targeting = m_pcw.seekIntakeTargets(targetIDs);
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, CameraConstants.photonCameraIntake);
 
     m_rotation = 0;
     m_driveX = 0;

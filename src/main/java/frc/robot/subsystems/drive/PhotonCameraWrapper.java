@@ -16,6 +16,7 @@ import org.photonvision.targeting.TargetCorner;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.cameraserver.CameraServerSharedStore;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -81,43 +82,20 @@ public class PhotonCameraWrapper{
         }
     }
 
-    public PhotonPoseEstimator photonPoseEstimatorOuttakeLeft;
-    public PhotonPoseEstimator photonPoseEstimatorOuttakeRight;
-    public PhotonPoseEstimator photonPoseEstimatorIntake;
-
-    public PhotonPoseEstimator allEstimators[] = new PhotonPoseEstimator[3];
-    
-
-    public AprilTagFieldLayout layout;
-
     public static enum Side {
         OUTTAKE_LEFT, OUTTAKE_RIGHT, INTAKE
     }
 
     public PhotonCameraWrapper() {
         
-        try {
-            layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-
-        } catch (UncheckedIOException e) {
-            e.printStackTrace();
-        }
 
         //TODO: investigate PNP on the co-proc.
-        photonPoseEstimatorOuttakeLeft = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CameraConstants.photonCameraTransformOuttakeLeft);
-        photonPoseEstimatorOuttakeRight = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CameraConstants.photonCameraTransformOuttakeRight);
-        photonPoseEstimatorIntake = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-        CameraConstants.photonCameraTransformIntake);
-       
-        allEstimators[0] = photonPoseEstimatorOuttakeLeft;
-        allEstimators[1] = photonPoseEstimatorOuttakeRight;
-        allEstimators[2] = photonPoseEstimatorIntake;
-
+        
     }
 
     public ArrayList<Optional<EstimatedRobotPose>> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose, Side side) {
         if(side == Side.OUTTAKE_RIGHT) {
-            photonPoseEstimatorOuttakeRight.setReferencePose(prevEstimatedRobotPose);
+            CameraConstants.photonPoseEstimatorOuttakeRight.setReferencePose(prevEstimatedRobotPose);
             var results = CameraConstants.photonCameraOuttakeRight.getAllUnreadResults();
 
 
@@ -128,13 +106,13 @@ public class PhotonCameraWrapper{
 
             ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
             for(var result : results){
-                 estimatedPoses.add(photonPoseEstimatorOuttakeRight.update(result));
+                 estimatedPoses.add(CameraConstants.photonPoseEstimatorOuttakeRight.update(result));
             }
             return estimatedPoses;
 
 
         } else if(side == Side.OUTTAKE_LEFT){
-            photonPoseEstimatorOuttakeLeft.setReferencePose(prevEstimatedRobotPose);
+            CameraConstants.photonPoseEstimatorOuttakeLeft.setReferencePose(prevEstimatedRobotPose);
             var results = CameraConstants.photonCameraOuttakeLeft.getAllUnreadResults();
             
             if(!results.isEmpty()){
@@ -144,13 +122,13 @@ public class PhotonCameraWrapper{
 
             ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
             for(var result : results){
-                    estimatedPoses.add(photonPoseEstimatorOuttakeLeft.update(result));
+                    estimatedPoses.add(CameraConstants.photonPoseEstimatorOuttakeLeft.update(result));
 
             }
             return estimatedPoses;
         }
         else{
-            photonPoseEstimatorIntake.setReferencePose(prevEstimatedRobotPose);
+            CameraConstants.photonPoseEstimatorIntake.setReferencePose(prevEstimatedRobotPose);
             var results = CameraConstants.photonCameraIntake.getAllUnreadResults();
             
             if(!results.isEmpty()){
@@ -160,7 +138,7 @@ public class PhotonCameraWrapper{
 
             ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
             for(var result : results){
-                    estimatedPoses.add(photonPoseEstimatorIntake.update(result));
+                    estimatedPoses.add(CameraConstants.photonPoseEstimatorIntake.update(result));
             }
             return estimatedPoses;
         }
@@ -170,45 +148,11 @@ public class PhotonCameraWrapper{
         return getEstimatedGlobalPose(prevEstimatedRobotPose, Side.INTAKE);
     }
 
-    public Optional<TargetInfo> seekTarget(int id){
-
-        //loop through all cameras to find the one with least ambiguity
-        PhotonCamera designatedCameras[] = CameraConstants.targetCameras.get(id);
-        double minimumAmbiguity = 1;
-        int bestCamera = -1;
-        Optional<PhotonTrackedTarget> target = Optional.empty();
-        for (int i = 0; i < designatedCameras.length; i++){
-            var newResult = m_driveState.getLatestPhotonVisionResult(designatedCameras[i].getName());
-            if(newResult != null){
-                Optional<PhotonTrackedTarget> tempTarget = lookForTarget(newResult, id);
-                if(tempTarget.isPresent() && tempTarget.get().getPoseAmbiguity() < minimumAmbiguity){
-                    bestCamera = i;
-                    minimumAmbiguity = tempTarget.get().getPoseAmbiguity();
-                    target = tempTarget;
-                }
-            }
-        }
-
-        //the best camera, if any, is used
-        if(bestCamera != -1){
-            m_seesTarget = true;
-            return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.get().getBestCameraToTarget()) - CameraConstants.offsetToBumper.get(designatedCameras[bestCamera].getName())),
-                target.get().getYaw(), id, designatedCameras[bestCamera].getName()));
-        }
-        
-        //no targets found anywhere.
-        return Optional.empty();
-
-    }
-
-    public Optional<TargetInfo> seekOuttakeTargets(int[] ids, int cameraId){
-
-        //0 is left, 1 is right
-        PhotonCamera cam = CameraConstants.outtakeCameras[cameraId];
+    public Optional<TargetInfo> seekTargets(int[] ids, PhotonCamera camera){
 
         ArrayList< Optional<PhotonTrackedTarget> > targets = new ArrayList< Optional<PhotonTrackedTarget> >();
 
-        var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
+        var newResult = m_driveState.getLatestPhotonVisionResult(camera.getName());
         if(newResult != null){
             for (int id : ids) {
                 Optional<PhotonTrackedTarget> tempTarget = lookForTarget(newResult, id);
@@ -229,42 +173,7 @@ public class PhotonCameraWrapper{
             }
 
             return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.get().getBestCameraToTarget())),
-                target.get().getYaw(), target.get().getFiducialId(), cam.getName()));
-        }
-        
-        
-        return Optional.empty();
-
-    }
-
-    public Optional<TargetInfo> seekIntakeTargets(int[] ids){
-
-        PhotonCamera cam = CameraConstants.photonCameraIntake;
-
-        ArrayList< Optional<PhotonTrackedTarget> > targets = new ArrayList< Optional<PhotonTrackedTarget> >();
-
-        var newResult = m_driveState.getLatestPhotonVisionResult(cam.getName());
-        if(newResult != null){
-            for (int id : ids) {
-                Optional<PhotonTrackedTarget> tempTarget = lookForTarget(newResult, id);
-                if(tempTarget.isPresent() && tempTarget.get().getPoseAmbiguity() < CameraConstants.MINIMUM_AMBIGUITY){
-                    targets.add(tempTarget);
-                }
-            }
-        }
-
-        if(targets.size() > 0){
-            Optional<PhotonTrackedTarget> target = targets.get(0);
-            double maxArea = target.get().getArea();
-            for(int i = 1; i < targets.size(); i++){
-                if(maxArea < targets.get(i).get().getArea()){
-                    target = targets.get(i);
-                    maxArea = target.get().getArea();
-                }
-            }
-
-            return Optional.of(new TargetInfo(getDistanceFromTransform3d(target.get().getBestCameraToTarget()),
-                target.get().getYaw(), target.get().getFiducialId(), cam.getName()));
+                target.get().getYaw(), target.get().getFiducialId(), camera.getName()));
         }
         
         

@@ -28,8 +28,6 @@ public class RotateToHeading extends Command {
   PIDController driveYController;
   PIDController driveXController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-
-  private int m_cameraId;
   
   private int targetIDs[] = {};
 
@@ -50,7 +48,6 @@ public class RotateToHeading extends Command {
     rotationController.enableContinuousInput(-180, 180);
 
     targetIDs = AllianceState.getInstance().getReefTags();
-    m_cameraId = CoralState.getInstance().pickCamera();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -59,7 +56,7 @@ public class RotateToHeading extends Command {
 
     rotation = 0;
 
-    Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, m_cameraId);
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, CoralState.getInstance().pickReefCamera());
 
     if(targeting.isPresent()){
       double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());

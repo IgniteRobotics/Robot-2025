@@ -461,7 +461,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
 
         this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds(), VecBuilder.fill(xyStds, xyStds, thetaStd));
-
     }
 
 
