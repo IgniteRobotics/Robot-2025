@@ -28,6 +28,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -343,43 +344,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         for(var estimatedPose : estimatedPoseOuttakeLeft){
             if(estimatedPose.isPresent()){
-                EstimatedRobotPose pose = estimatedPose.get();
-                boolean poseOK = true;
-                for(PhotonTrackedTarget target: pose.targetsUsed) {
-                if(target.getPoseAmbiguity() > 0.2) poseOK = false;
-                if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
-                }
-                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds(), VecBuilder.fill(0.05, 0.05, 0.05));
-                SmartDashboard.putBoolean("poseOK", poseOK);
-                SmartDashboard.putNumber("poseTime", pose.timestampSeconds);
-                SmartDashboard.putNumber("fpgaTime", Utils.getCurrentTimeSeconds());
+                calculateVisionMeasurement(estimatedPose.get());
             }
         }
 
         for(var estimatedPose : estimatedPoseOuttakeRight){
             if(estimatedPose.isPresent()){
-                EstimatedRobotPose pose = estimatedPose.get();
-                boolean poseOK = true;
-                for(PhotonTrackedTarget target: pose.targetsUsed) {
-                if(target.getPoseAmbiguity() > 0.2) poseOK = false;
-                if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
-                }
-                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds(), VecBuilder.fill(0.05, 0.05, 0.05));
+                calculateVisionMeasurement(estimatedPose.get());
             }
         }
 
         for(var estimatedPose : estimatedPoseIntake){
             if(estimatedPose.isPresent()){
-                EstimatedRobotPose pose = estimatedPose.get();
-                boolean poseOK = true;
-                for(PhotonTrackedTarget target: pose.targetsUsed) {
-                if(target.getPoseAmbiguity() > 0.2) poseOK = false;
-                if(Arrays.asList(CameraConstants.IGNORED_POSE_TARGETS).contains(target.getFiducialId())) poseOK = false;
-                }
-                if(poseOK) this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds(), VecBuilder.fill(0.05, 0.05, 0.05));
+                calculateVisionMeasurement(estimatedPose.get());
             }
         }
-    
 
     }
 
@@ -424,5 +403,64 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public double getYaw(){
         return this.getState().Pose.getRotation().getDegrees();
     }
+
+    public void calculateVisionMeasurement(EstimatedRobotPose pose){
+        double highestAmbiguity = 0;
+        double maxTargetSize = 0;
+        double xyStds = 0.5;
+        double thetaStd = 0.5;
+        double poseDistance = pose.estimatedPose.toPose2d().getTranslation().getDistance(this.getState().Pose.getTranslation());
+        for(PhotonTrackedTarget target: pose.targetsUsed) {
+            if(target.getPoseAmbiguity() > highestAmbiguity){
+                highestAmbiguity = target.getPoseAmbiguity();
+            }
+            if(target.area > maxTargetSize){
+                maxTargetSize = target.area;
+            }
+        }
+        //if the pose is too ambiguous, don't use it
+        if(highestAmbiguity > 0.7){
+            return;
+        //if the target is large
+        } else if (maxTargetSize > 4){
+            // we're not moving, trust the pose
+            if (this.getState().Speeds.vxMetersPerSecond + this.getState().Speeds.vyMetersPerSecond < 0.2){
+                xyStds = 0.1;
+                thetaStd = 0.1;  
+            // new pose is close to the old pose, trust the pose
+            } else if (poseDistance < 0.5){
+                xyStds = 0.15;
+                thetaStd = 0.15;
+            }
+        } else if (maxTargetSize > 2){
+            // we're not moving, trust the pose
+            if (this.getState().Speeds.vxMetersPerSecond + this.getState().Speeds.vyMetersPerSecond < 0.2){
+                xyStds = 0.2;
+                thetaStd = 0.2;
+            // new pose is close to the old pose, trust the pose
+                } else if (poseDistance < 0.5){
+                xyStds = 0.25;
+                thetaStd = 0.25;
+            }
+        } else if (highestAmbiguity < 0.3) {
+            xyStds = 0.5;
+            thetaStd = 0.5;            
+        }
+
+        //if you're spinning, bail.
+        if(this.getState().Speeds.omegaRadiansPerSecond > Math.PI) {
+            return;
+        }
+
+        //if you're rotating quickly, trust the pose less
+        if (this.getState().Speeds.omegaRadiansPerSecond > 0.5){
+            thetaStd = 0.99;
+        }
+
+        this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds(), VecBuilder.fill(xyStds, xyStds, thetaStd));
+
+    }
+
+
 }
 
