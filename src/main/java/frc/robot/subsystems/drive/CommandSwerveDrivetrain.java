@@ -445,6 +445,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         } else if (highestAmbiguity < 0.3) {
             xyStds = 0.5;
             thetaStd = 0.5;            
+        } else {
+            xyStds = 0.8;
+            thetaStd = 0.8;
         }
 
         //if you're spinning, bail.
