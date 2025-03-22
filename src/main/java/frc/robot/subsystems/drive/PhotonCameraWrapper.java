@@ -82,70 +82,11 @@ public class PhotonCameraWrapper{
         }
     }
 
-    public static enum Side {
-        OUTTAKE_LEFT, OUTTAKE_RIGHT, INTAKE
-    }
-
     public PhotonCameraWrapper() {
         
 
         //TODO: investigate PNP on the co-proc.
         
-    }
-
-    public ArrayList<Optional<EstimatedRobotPose>> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose, Side side) {
-        if(side == Side.OUTTAKE_RIGHT) {
-            CameraConstants.photonPoseEstimatorOuttakeRight.setReferencePose(prevEstimatedRobotPose);
-            var results = CameraConstants.photonCameraOuttakeRight.getAllUnreadResults();
-
-
-            if(!results.isEmpty()){
-                var latestResult = results.get(results.size()-1);
-                m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeRight.getName(), latestResult);
-            }
-
-            ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
-            for(var result : results){
-                 estimatedPoses.add(CameraConstants.photonPoseEstimatorOuttakeRight.update(result));
-            }
-            return estimatedPoses;
-
-
-        } else if(side == Side.OUTTAKE_LEFT){
-            CameraConstants.photonPoseEstimatorOuttakeLeft.setReferencePose(prevEstimatedRobotPose);
-            var results = CameraConstants.photonCameraOuttakeLeft.getAllUnreadResults();
-            
-            if(!results.isEmpty()){
-                var latestResult = results.get(results.size()-1);
-                m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeLeft.getName(), latestResult);
-            }
-
-            ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
-            for(var result : results){
-                    estimatedPoses.add(CameraConstants.photonPoseEstimatorOuttakeLeft.update(result));
-
-            }
-            return estimatedPoses;
-        }
-        else{
-            CameraConstants.photonPoseEstimatorIntake.setReferencePose(prevEstimatedRobotPose);
-            var results = CameraConstants.photonCameraIntake.getAllUnreadResults();
-            
-            if(!results.isEmpty()){
-                var latestResult = results.get(results.size()-1);
-                m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraIntake.getName(), latestResult);
-            }
-
-            ArrayList<Optional<EstimatedRobotPose>> estimatedPoses = new ArrayList<Optional<EstimatedRobotPose>>();
-            for(var result : results){
-                    estimatedPoses.add(CameraConstants.photonPoseEstimatorIntake.update(result));
-            }
-            return estimatedPoses;
-        }
-    }
-
-    public ArrayList<Optional<EstimatedRobotPose>> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
-        return getEstimatedGlobalPose(prevEstimatedRobotPose, Side.INTAKE);
     }
 
     public Optional<TargetInfo> seekTargets(int[] ids, PhotonCamera camera){
