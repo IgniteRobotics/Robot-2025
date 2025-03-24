@@ -6,6 +6,7 @@ package frc.robot.statemachines;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
+import frc.robot.Preferences;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.algae.AlgaeCollectorConstants;
 
@@ -86,10 +87,10 @@ public class AlgaeState {
             return ElevatorConstants.ALGAE.PROCESSOR.height;
         }
         else if (getAlgaeTarget() == AlgaeTarget.LOW_REEF){
-                return ElevatorConstants.ALGAE.LOW_REEF.height;
+                return Preferences.elevatorLowAlgaeReefPreference.getValue();
         }
         else if (getAlgaeTarget() == AlgaeTarget.HIGH_REEF){ 
-                return ElevatorConstants.ALGAE.HIGH_REEF.height;
+                return Preferences.elevatorHighAlgaeReefPreference.getValue();
         } else {
             return 0;
         }

@@ -5,12 +5,15 @@
 package frc.robot.commands.auton;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.commands.composite.ScoreCoral;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.statemachines.CoralState;
+import frc.robot.statemachines.CoralState.CoralTarget;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.coral.Corraler;
@@ -54,5 +57,10 @@ public class AutonComposites {
 
     public static Command AlignHP(CommandSwerveDrivetrain drive, PhotonCameraWrapper camera){
         return new AutonAlignToHP(drive, camera).andThen( new WaitCommand(2));
+    }
+
+    public static Command ScoreLevel4(Elevator elevator, Corraler corraler){
+        return new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.L4_RIGHT))
+            .andThen(new ScoreCoral(elevator, corraler, 0));
     }
 }

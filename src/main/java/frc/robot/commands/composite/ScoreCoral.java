@@ -17,10 +17,9 @@ public class ScoreCoral extends SequentialCommandGroup {
   Corraler m_corraler;
   double scoreHeight;
   double endHeight;
-  public ScoreCoral(Elevator elevator, Corraler corraler, double score, double end) {
+  public ScoreCoral(Elevator elevator, Corraler corraler, double end) {
     m_elevator = elevator;
     m_corraler = corraler;
-    scoreHeight = score;
     endHeight = end;
     addCommands(new ElevatorToCoralPreset(elevator), new OuttakeCommand(m_corraler).withTimeout(CorralerConstants.OUTTAKE_DELAY), new ToSetpoint(m_elevator, endHeight));
   }
