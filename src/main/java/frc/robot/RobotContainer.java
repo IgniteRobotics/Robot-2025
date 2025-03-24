@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -39,6 +40,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.algae.IntakeAlgae;
 import frc.robot.commands.auton.AutonComposites;
+import frc.robot.commands.auton.AutonScoreCoralGroup;
 import frc.robot.commands.composite.AutoScoreCoralGroup;
 
 import frc.robot.commands.composite.OuttakeAlgae;
@@ -152,13 +154,30 @@ public class RobotContainer {
         NamedCommands.registerCommand("Align To K and Wait", AutonComposites.AlignReefK(drivetrain, m_PhotonCameraWrapper));
         NamedCommands.registerCommand("Align To HP and Wait", AutonComposites.AlignHP(drivetrain, m_PhotonCameraWrapper));
 
+        NamedCommands.registerCommand("Place Coral Level 4", AutonComposites.ScoreLevel4(elevator, corraler));
+        NamedCommands.registerCommand("Raise to trough", new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference.getValue()))
+                .andThen(new WaitCommand(7))
+                .andThen(new  InstantCommand(() -> elevator.setSlowPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))));
+
+        Command driveInCoralLeftL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_LEFT);
+        Command driveInCoralRightL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_RIGHT);
+
         autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
         autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
         autoChooser.addOption("Simple Drive Auton", AutoBuilder.buildAuto("Simple Auton"));
         autoChooser.addOption("3 Align Auton", AutoBuilder.buildAuto("3 Align Auton"));
+        autoChooser.addOption("Straight In Level 4 Right", AutoBuilder.buildAuto("1 Coral Level 4 Right"));
+        autoChooser.addOption("Drive Coral Left L4", driveInCoralLeftL4);
+        autoChooser.addOption("Drive Coral Right L4", driveInCoralRightL4);
+        autoChooser.addOption("TroughBump", AutoBuilder.buildAuto("TroughBump"));
         
-        autoChooser.addOption("Line Up and Score", new RunCommand(() -> drivetrain.driveRobotCentric(-1, 0, 0)).withTimeout(2)
-            .alongWith(new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_4.position, ElevatorConstants.FLOOR.GROUND.position)));
+        // autoChooser.addOption("Line Up and Trough", new RunCommand(() -> drivetrain.driveRobotCentric(Preferences.autonYDrive.getValue(), 0, 0)).withTimeout(2)
+        //     .alongWith(new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference)))
+        //     .andThen(new WaitCommand(1))
+
+        //     .andThen(new RunCommand(() -> drivetrain.driveRobotCentric(0, 0, 0)))
+        //     .andThen(new InstantCommand(() -> elevator.setSlowPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)))
+        // );
         SmartDashboard.putData("Auto Mode", autoChooser);
 
 
@@ -184,6 +203,7 @@ public class RobotContainer {
         algaeBargeButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.BARGE)));
         coralCancelButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.NONE)));
         climbTrigger.onTrue(new InstantCommand(() -> climber.setServoPosition(0)));
+        climbTrigger.onFalse(new InstantCommand(() -> climber.setServoPosition(0.5)));
     }
 
     private void configureSubsytemDefaultCommands(){
@@ -251,7 +271,7 @@ public class RobotContainer {
 
         //score coral
         joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
-                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), () -> joystick.getLeftX(), joystick.rightTrigger(), joystick.leftTrigger())
+                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), () -> joystick.getLeftX(), () -> joystick.getRightX(), joystick.rightTrigger(), joystick.leftTrigger())
         )
 
         // joystick.a().whileTrue(new SemiAutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 

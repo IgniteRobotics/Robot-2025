@@ -33,13 +33,14 @@ public class AutoScoreCoralGroup extends ParallelCommandGroup{
   private DoublePreference m_distancePreference;
   private DoubleSupplier m_DriveFwdBackSupplier;
   private DoubleSupplier m_DriveSideSupplier;
+  private DoubleSupplier m_RotSupplier;
   private BooleanSupplier m_raiseElevator;
   private BooleanSupplier m_releaseCoral;
 
 
   /** Creates a new CommandFactory. */
   public AutoScoreCoralGroup(CommandSwerveDrivetrain swerveDrivetrain, Elevator elevator, Corraler corraler, 
-      PhotonCameraWrapper photonCameraWrapper, DoublePreference distancePreference, DoubleSupplier driveFwdBackSupplier, DoubleSupplier driveSideSupplier, BooleanSupplier raiseElevator, BooleanSupplier releaseCoral){
+      PhotonCameraWrapper photonCameraWrapper, DoublePreference distancePreference, DoubleSupplier driveFwdBackSupplier, DoubleSupplier driveSideSupplier, DoubleSupplier rotSupplier, BooleanSupplier raiseElevator, BooleanSupplier releaseCoral){
     m_swerveDrivetrain = swerveDrivetrain;
     m_Elevator = elevator;
     m_Corraler = corraler;
@@ -64,9 +65,10 @@ public class AutoScoreCoralGroup extends ParallelCommandGroup{
   }
 
   private Command createAlignCommand(){
-    return new ProfiledAlignToReefTags(m_swerveDrivetrain, m_PhotonCameraWrapper,
-        m_DriveFwdBackSupplier, m_DriveSideSupplier);
+    // return new ProfiledAlignToReefTags(m_swerveDrivetrain, m_PhotonCameraWrapper,
+    //     m_DriveFwdBackSupplier, m_DriveSideSupplier);
   
+    return new ManualDriveAlignment(m_swerveDrivetrain, m_DriveFwdBackSupplier, m_DriveSideSupplier, m_RotSupplier);
   }
 
   // private Command createCoralCommand(){

@@ -56,6 +56,7 @@ public class Preferences {
 
     public static DoublePreference xySlowLimitPreference = new DoublePreference("drive/xySlowLimitMPS", DriveCommandConstants.SLOW_DRIVE_XY_FACTOR);
     public static DoublePreference rotationSlowLimitPreference = new DoublePreference("drive/rotationSlowLimitRadPS", DriveCommandConstants.SLOW_DRIVE_ROTATION_FACTOR);
+    public static DoublePreference autonYDrive = new DoublePreference("drive/yAutonDrive", -5);
     
 
     // ********** Elevator **********
@@ -70,6 +71,10 @@ public class Preferences {
     public static DoublePreference elevatorMMJerk = new DoublePreference("Elevator/Motion Magic/Jerk", ElevatorConstants.ELEVATOR_MM_JERK);
     public static DoublePreference elevatorMMAccel = new DoublePreference("Elevator/Motion Magic/Acceleration", ElevatorConstants.ELEVATOR_MM_ACCEL);
     public static DoublePreference elevatorMMCruiseVelocity = new DoublePreference("Elevator/Motion Magic/Cruise Velocity", ElevatorConstants.ELEVATOR_MM_CRUISE_VELOCITY);
+
+    public static DoublePreference elevatorTroughBumpPreference = new DoublePreference("Elevator/TroughBump", ElevatorConstants.FLOOR.TROUGH.position);
+    public static DoublePreference elevatorLowAlgaeReefPreference = new DoublePreference("Elevator/ReefLowAlgaeHeight", ElevatorConstants.ALGAE.LOW_REEF.height);
+    public static DoublePreference elevatorHighAlgaeReefPreference = new DoublePreference("Elevator/ReefHighAlgaeHeight", ElevatorConstants.ALGAE.HIGH_REEF.height);
     
     // ********** Corraler ********** 
     public static DoublePreference coralIntakePower = new DoublePreference("Coraller/IntakePower", AlgaeCollectorConstants.INTAKE_CORAL_POWER);

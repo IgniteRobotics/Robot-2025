@@ -81,17 +81,17 @@ public class Robot extends TimedRobot {
     }
 
 
-    if (DriverStation.isFMSAttached() && logToFile == false){
-      Epilogue.configure(config -> {
+    // if (DriverStation.isFMSAttached() && logToFile == false){
+    //   Epilogue.configure(config -> {
         
-            config.backend = EpilogueBackend.multi(
-                    new FileBackend(DataLogManager.getLog())
-            );
+    //         config.backend = EpilogueBackend.multi(
+    //                 new FileBackend(DataLogManager.getLog())
+    //         );
         
-      });
-      Epilogue.bind(this);
-      logToFile = true;
-    }
+    //   });
+    //   Epilogue.bind(this);
+    //   logToFile = true;
+    // }
   }
 
   @Override

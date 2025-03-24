@@ -2,10 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.drive;
+package frc.robot.commands.auton;
 
 import java.util.Optional;
-import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -15,7 +14,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Preferences;
-import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.AllianceState;
 import frc.robot.statemachines.CoralState;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -27,7 +25,7 @@ import edu.wpi.first.epilogue.Logged;
 
 
 @Logged
-public class ProfiledAlignToReefTags extends Command {
+public class AutonAlignToReefTags extends Command {
   private final CommandSwerveDrivetrain m_drive;
   PhotonCameraWrapper m_pcw;
     PIDController rotationController;
@@ -50,10 +48,6 @@ public class ProfiledAlignToReefTags extends Command {
   
   private int targetIDs[] = {};
 
-
-  private final DoubleSupplier m_xInput;
-  private final DoubleSupplier m_yInput;
-
   private double m_distanceMeters;
 
   private double m_rotation = 0;
@@ -61,11 +55,9 @@ public class ProfiledAlignToReefTags extends Command {
   private double m_driveY = 0;
   
   /** Creates a new AlignToTarget. */
-  public ProfiledAlignToReefTags(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, DoubleSupplier xInput, DoubleSupplier yInput){
+  public AutonAlignToReefTags(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw){
     m_drive = drive;
     m_pcw = pcw;
-    m_xInput = xInput;
-    m_yInput = yInput;
     addRequirements(m_drive);
 
   }
@@ -109,10 +101,6 @@ public class ProfiledAlignToReefTags extends Command {
 
     if(targeting.isPresent()){
 
-      SmartDashboard.putNumber("Alignment/Data/TargetID", targeting.get().getTagId());
-      SmartDashboard.putNumber("Alignment/Data/TargetDistance", targeting.get().getDistance());
-      SmartDashboard.putNumber("Alignment/Data/TargetYAW", targeting.get().getYaw());
-
       if(!atRotationGoal){
         double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());
         m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
@@ -135,8 +123,6 @@ public class ProfiledAlignToReefTags extends Command {
 
         SmartDashboard.putBoolean("Alignment/Data/atYSetpoint", driveYController.atSetpoint());
         
-        
-
         atDriveYGoal = driveYController.atSetpoint(); 
       }
 
@@ -170,24 +156,6 @@ public class ProfiledAlignToReefTags extends Command {
     if(atDriveXGoal && atDriveYGoal && atRotationGoal){
       //m_driveX = -Preferences.reefPushAgainstPreference.getValue();
     }
-  
-    //override with joystick input if present
-    if(m_xInput != null && Math.abs(m_xInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
-      driverOverrideX = true;
-      m_driveX = Preferences.xySlowLimitPreference.getValue()*m_xInput.getAsDouble();
-    } else if (driverOverrideX && (m_xInput == null || Math.abs(m_xInput.getAsDouble()) <= TunerConstants.DEADBAND_FACTOR)){
-      m_driveX = 0;
-    }
-
-    if(m_yInput != null && Math.abs(m_yInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
-      driverOverrideY = true;
-      m_driveY = Preferences.xySlowLimitPreference.getValue()*m_yInput.getAsDouble();
-    } else if (driverOverrideY && (m_xInput == null || Math.abs(m_yInput.getAsDouble()) <= TunerConstants.DEADBAND_FACTOR)){
-      m_driveY = 0;
-    }
-
-    
-
     SmartDashboard.putNumber("Alignment/Power/rotation", m_rotation);
     SmartDashboard.putNumber("Alignment/Power/driveX", m_driveX);
     SmartDashboard.putNumber("Alignment/Power/driveY", m_driveY);
@@ -205,7 +173,6 @@ public class ProfiledAlignToReefTags extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
-    //return rotationController.atSetpoint() && driveXController.atSetpoint() && driveYController.atSetpoint();
+    return rotationController.atSetpoint() && driveXController.atSetpoint() && driveYController.atSetpoint();
   }
 }
