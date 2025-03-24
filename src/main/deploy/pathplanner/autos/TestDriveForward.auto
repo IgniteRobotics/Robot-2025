@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Set Wheels to Zero"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "1MeterStraight"
