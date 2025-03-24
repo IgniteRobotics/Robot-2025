@@ -58,6 +58,7 @@ import frc.robot.commands.drive.DriveIntoTarget;
 import frc.robot.commands.drive.ManualDriveAlignment;
 import frc.robot.commands.drive.ProfiledAlignToReefTags;
 import frc.robot.commands.drive.RotateToHeading;
+import frc.robot.commands.drive.test.TurnByAngle;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.generated.TunerConstants;
@@ -139,6 +140,9 @@ public class RobotContainer {
     private CoralState m_CoralState = CoralState.getInstance();
 
     private AlgaeState m_AlgaeState = AlgaeState.getInstance();
+
+    // ******************** Testing Commands ********************
+    private final Command testTurnByAngle = new TurnByAngle(drivetrain, 0.0, () -> Preferences.driveTestTurnAngle.get());
     
 
 
@@ -262,6 +266,8 @@ public class RobotContainer {
 
         SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(0.5)));
         SmartDashboard.putData("Set Elevator PID", new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG, Preferences.elevatorkS)));
+        SmartDashboard.putData("test/turnModules", testTurnByAngle);
+    
 
         joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
                     .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
