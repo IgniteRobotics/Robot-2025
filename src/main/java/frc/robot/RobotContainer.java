@@ -170,6 +170,7 @@ public class RobotContainer {
         autoChooser.addOption("Drive Coral Left L4", driveInCoralLeftL4);
         autoChooser.addOption("Drive Coral Right L4", driveInCoralRightL4);
         autoChooser.addOption("TroughBump", AutoBuilder.buildAuto("TroughBump"));
+        autoChooser.addOption("1MeterAndTurn", AutoBuilder.buildAuto("DriveAndTurn"));
         
         // autoChooser.addOption("Line Up and Trough", new RunCommand(() -> drivetrain.driveRobotCentric(Preferences.autonYDrive.getValue(), 0, 0)).withTimeout(2)
         //     .alongWith(new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference)))
