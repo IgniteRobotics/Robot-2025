@@ -141,6 +141,8 @@ public class RobotContainer {
 
     private AlgaeState m_AlgaeState = AlgaeState.getInstance();
 
+    private final Command setWheelsToZero = new InstantCommand(() -> drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0.0))));
+
     // ******************** Testing Commands ********************
     private final Command testTurnByAngle = new TurnByAngle(drivetrain, 0.0, () -> Preferences.driveTestTurnAngle.get());
     
@@ -162,6 +164,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Raise to trough", new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference.getValue()))
                 .andThen(new WaitCommand(7))
                 .andThen(new  InstantCommand(() -> elevator.setSlowPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))));
+        NamedCommands.registerCommand("Set Wheels to Zero", setWheelsToZero);
 
         Command driveInCoralLeftL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_LEFT);
         Command driveInCoralRightL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_RIGHT);
@@ -175,6 +178,7 @@ public class RobotContainer {
         autoChooser.addOption("Drive Coral Right L4", driveInCoralRightL4);
         autoChooser.addOption("TroughBump", AutoBuilder.buildAuto("TroughBump"));
         autoChooser.addOption("1MeterAndTurn", AutoBuilder.buildAuto("DriveAndTurn"));
+        autoChooser.addOption("TestDriveForward", AutoBuilder.buildAuto("TestDriveForward"));
         
         // autoChooser.addOption("Line Up and Trough", new RunCommand(() -> drivetrain.driveRobotCentric(Preferences.autonYDrive.getValue(), 0, 0)).withTimeout(2)
         //     .alongWith(new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference)))
