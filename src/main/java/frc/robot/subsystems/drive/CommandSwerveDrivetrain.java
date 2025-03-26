@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -27,9 +29,11 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -82,6 +86,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public final PhotonCameraWrapper m_photonCameraWrapper;
 
     private PathPlannerPath loggedPath;
+
+    //this holds a list of the poses of the vision targets used for positioning.
+    //these are FIELD RELATIVE poses, not robot relative.
+    @Logged(name = "Tag Poses", importance = Importance.CRITICAL)
+    private List<Pose3d> tagPosesFieldRelative;
+
+    //this holds a list of the tags used for positioning and some metadata.
+    @Logged(name = "Tags Used", importance = Importance.CRITICAL)
+    private List<TrackedAprilTag> tagsUsed;
+
 
 
 
@@ -300,6 +314,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     @Override
     public void periodic() {
+        tagPosesFieldRelative = new LinkedList<Pose3d>();
+        tagsUsed = new LinkedList<TrackedAprilTag>();
 
         //SmartDashboard.putString("Zone", m_driveState.getZoneName());
 
@@ -344,19 +360,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         for(var estimatedPose : estimatedPoseOuttakeLeft){
             if(estimatedPose.isPresent()){
-                calculateVisionMeasurement(estimatedPose.get());
+                calculateVisionMeasurement(estimatedPose.get(), 0);
             }
         }
 
         for(var estimatedPose : estimatedPoseOuttakeRight){
             if(estimatedPose.isPresent()){
-                calculateVisionMeasurement(estimatedPose.get());
+                calculateVisionMeasurement(estimatedPose.get(), 1);
             }
         }
 
         for(var estimatedPose : estimatedPoseIntake){
             if(estimatedPose.isPresent()){
-                calculateVisionMeasurement(estimatedPose.get());
+                calculateVisionMeasurement(estimatedPose.get(), 2);
             }
         }
 
@@ -404,13 +420,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return this.getState().Pose.getRotation().getDegrees();
     }
 
-    public void calculateVisionMeasurement(EstimatedRobotPose pose){
+    public void calculateVisionMeasurement(EstimatedRobotPose pose, int cameraId){
         double highestAmbiguity = 0;
         double maxTargetSize = 0;
         double xyStds = 0.5;
         double thetaStd = 0.5;
         double poseDistance = pose.estimatedPose.toPose2d().getTranslation().getDistance(this.getState().Pose.getTranslation());
         for(PhotonTrackedTarget target: pose.targetsUsed) {
+            tagsUsed.add(new TrackedAprilTag(target.getFiducialId(), target.getArea(), this.getPose().getTranslation().getDistance(target.bestCameraToTarget.getTranslation().toTranslation2d()) , target.getPoseAmbiguity(), target.getYaw() , cameraId));
+            
+            tagPosesFieldRelative.add(new Pose3d(getPose())
+                .transformBy(m_photonCameraWrapper.allEstimators[cameraId].getRobotToCameraTransform())
+                .transformBy(target.getBestCameraToTarget()));
+                
             if(target.getPoseAmbiguity() > highestAmbiguity){
                 highestAmbiguity = target.getPoseAmbiguity();
             }
