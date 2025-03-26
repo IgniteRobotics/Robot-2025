@@ -27,7 +27,7 @@ public class TrackedAprilTagStruct implements Struct<TrackedAprilTag>{
 
     @Override
     public String getSchema() {
-        return "int id;double area;double distance;double ambiguity;double yaw;int cameraId;";
+        return "int32 id;double area;double distance;double ambiguity;double yaw;int32 cameraId;";
     }
 
     @Override
