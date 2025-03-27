@@ -4,57 +4,39 @@ import java.util.HashMap;
 import java.util.function.DoubleSupplier;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 
 public class CameraConstants {
+
+    private static final AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+
     public static final String photonCameraNameOuttakeLeft = "OUTTAKE_LEFT";
     public static final Transform3d photonCameraTransformOuttakeLeft= new Transform3d(new Translation3d(-.1277, 0.2667, .4964), new Rotation3d(0.0, -15 / 180.0 * Math.PI, Math.PI));
     public static final PhotonCamera photonCameraOuttakeLeft = new PhotonCamera(photonCameraNameOuttakeLeft);
-    
+    public static final PhotonPoseEstimator photonPoseEstimatorOuttakeLeft = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraTransformOuttakeLeft);
+
+
+
     public static final String photonCameraNameOuttakeRight = "OUTTAKE_RIGHT";
     public static final Transform3d photonCameraTransformOuttakeRight = new Transform3d(new Translation3d(-.1277, - 0.2667, .4964), new Rotation3d(0.0, -15 / 180.0 * Math.PI, Math.PI));
     public static final PhotonCamera photonCameraOuttakeRight = new PhotonCamera(photonCameraNameOuttakeRight);
+    public static final PhotonPoseEstimator photonPoseEstimatorOuttakeRight = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraTransformOuttakeRight);
 
     public static final String photonCameraNameIntake = "INTAKE";
     public static final Transform3d photonCameraTransformIntake = new Transform3d(new Translation3d(.343, -0.271, .239), new Rotation3d(0.0, 15 / 180.0 * Math.PI,  0));
     public static final PhotonCamera photonCameraIntake = new PhotonCamera(photonCameraNameIntake);
+    public static final PhotonPoseEstimator photonPoseEstimatorIntake = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CameraConstants.photonCameraTransformIntake);
 
-    public static final PhotonCamera allCameras[] = {photonCameraOuttakeLeft, photonCameraOuttakeRight, photonCameraIntake};
-    public static final double allCameraYawOffsetsDegrees[] = {0,0,0};
-    
+
     public static final PhotonCamera intakeCameras[] = {photonCameraIntake};
     public static final PhotonCamera outtakeCameras[] = {photonCameraOuttakeLeft, photonCameraOuttakeRight};
-    public static final HashMap<Integer, PhotonCamera[]> targetCameras = new HashMap<Integer, PhotonCamera[]>(){{
-        put(1, intakeCameras);
-        put(2, intakeCameras);
-
-        put(3, outtakeCameras);
-        put(4, outtakeCameras);
-        put(5, outtakeCameras);
-        put(6, outtakeCameras);
-        put(7, outtakeCameras);
-        put(8, outtakeCameras);
-        put(9, outtakeCameras);
-        put(10, outtakeCameras);
-        put(11, outtakeCameras);
-
-        put(12, intakeCameras);
-        put(13, intakeCameras);
-
-        put(14, outtakeCameras);
-        put(15, outtakeCameras);
-        put(16, outtakeCameras);
-        put(17, outtakeCameras);
-        put(18, outtakeCameras);
-        put(19, outtakeCameras);
-        put(20, outtakeCameras);
-        put(21, outtakeCameras);
-        put(22, outtakeCameras);
-    }};
-
 
     public static final Integer[] IGNORED_POSE_TARGETS = {50,51};
     public static final HashMap<String, Double> offsetToBumper = new HashMap<String, Double>(){{

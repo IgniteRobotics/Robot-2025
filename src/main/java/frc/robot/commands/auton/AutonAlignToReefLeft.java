@@ -86,7 +86,7 @@ public class AutonAlignToReefLeft extends Command {
   public void execute() {
     //Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
     
-    Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, 0);
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, CameraConstants.photonCameraOuttakeLeft);
 
     m_rotation = 0;
     m_driveX = 0;

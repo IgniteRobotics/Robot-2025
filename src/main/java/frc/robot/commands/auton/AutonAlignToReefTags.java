@@ -43,8 +43,6 @@ public class AutonAlignToReefTags extends Command {
 
   private boolean driverOverrideY;
   private boolean driverOverrideX;
-
-  private int m_cameraId;
   
   private int targetIDs[] = {};
 
@@ -81,7 +79,6 @@ public class AutonAlignToReefTags extends Command {
     driveXController.setIZone(Double.POSITIVE_INFINITY);
 
     targetIDs = AllianceState.getInstance().getReefTags();
-    m_cameraId = CoralState.getInstance().pickCamera();
 
     atRotationGoal = false;
     atDriveYGoal = false;
@@ -93,7 +90,7 @@ public class AutonAlignToReefTags extends Command {
   @Override
   public void execute() {
     
-    Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, m_cameraId);
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, CoralState.getInstance().pickReefCamera());
 
     m_rotation = 0;
     m_driveX = 0;
