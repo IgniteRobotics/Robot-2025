@@ -27,8 +27,6 @@ public class DriveIntoTarget extends Command {
   PIDController driveXController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-  private int m_cameraId;
-  
   private int targetIDs[] = {};
 
 
@@ -49,7 +47,6 @@ public class DriveIntoTarget extends Command {
     driveXController.setTolerance(Preferences.xAlignTolerancePreference.get());
   
     targetIDs = AllianceState.getInstance().getReefTags();
-    m_cameraId = CoralState.getInstance().pickCamera();
 
   }
 
@@ -58,7 +55,7 @@ public class DriveIntoTarget extends Command {
   public void execute() {
     //Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
     
-    Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, m_cameraId);
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, CoralState.getInstance().pickReefCamera());
     double driveX;
 
     if(targeting.isPresent()){

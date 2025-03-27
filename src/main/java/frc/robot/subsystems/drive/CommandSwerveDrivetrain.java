@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
@@ -48,7 +49,6 @@ import frc.robot.Robot;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.statemachines.DriveState;
-import frc.robot.subsystems.drive.PhotonCameraWrapper.Side;
 
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -357,28 +357,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-        ArrayList<Optional<EstimatedRobotPose>> estimatedPoseOuttakeLeft = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.OUTTAKE_LEFT);
-        ArrayList<Optional<EstimatedRobotPose>> estimatedPoseOuttakeRight = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.OUTTAKE_RIGHT);
-        ArrayList<Optional<EstimatedRobotPose>> estimatedPoseIntake = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.INTAKE);
 
-
-        for(var estimatedPose : estimatedPoseOuttakeLeft){
-            if(estimatedPose.isPresent()){
-                calculateVisionMeasurement(estimatedPose.get(), 0);
-            }
-        }
-
-        for(var estimatedPose : estimatedPoseOuttakeRight){
-            if(estimatedPose.isPresent()){
-                calculateVisionMeasurement(estimatedPose.get(), 1);
-            }
-        }
-
-        for(var estimatedPose : estimatedPoseIntake){
-            if(estimatedPose.isPresent()){
-                calculateVisionMeasurement(estimatedPose.get(), 2);
-            }
-        }
+        calculateGlobalPose();
 
     }
 
@@ -424,6 +404,58 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return this.getState().Pose.getRotation().getDegrees();
     }
 
+
+    public void calculateGlobalPose(){
+        //outtake left
+        CameraConstants.photonPoseEstimatorOuttakeLeft.setReferencePose(getPose());
+        var outtakeLeftResults = CameraConstants.photonCameraOuttakeLeft.getAllUnreadResults();
+
+        if(!outtakeLeftResults.isEmpty()){
+            var latestResult = outtakeLeftResults.get(outtakeLeftResults.size()-1);
+            m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeLeft, latestResult);
+        }
+
+        for(var result: outtakeLeftResults){
+            Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeLeft.update(result);
+            if(!estimatedPose.isEmpty()){
+                calculateVisionMeasurement(estimatedPose.get(), 0);
+            }
+        }
+
+        //outtake right
+        CameraConstants.photonPoseEstimatorOuttakeRight.setReferencePose(getPose());
+        var outtakeRightResults = CameraConstants.photonCameraOuttakeRight.getAllUnreadResults();
+
+        if(!outtakeRightResults.isEmpty()){
+            var latestResult = outtakeRightResults.get(outtakeRightResults.size()-1);
+            m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeRight, latestResult);
+        }
+
+        for(var result: outtakeRightResults){
+            Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeRight.update(result);
+            if(!estimatedPose.isEmpty()){
+                calculateVisionMeasurement(estimatedPose.get(), 1);
+            }
+        }
+
+        //intake
+        CameraConstants.photonPoseEstimatorIntake.setReferencePose(getPose());
+        var intakeResults = CameraConstants.photonCameraIntake.getAllUnreadResults();
+
+        if(!intakeResults.isEmpty()){
+            var latestResult = intakeResults.get(intakeResults.size()-1);
+            m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraIntake, latestResult);
+        }
+
+        for(var result: intakeResults){
+            Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorIntake.update(result);
+            if(!estimatedPose.isEmpty()){
+                calculateVisionMeasurement(estimatedPose.get(), 2);
+            }
+        }
+
+    }
+  
     public void calculateVisionMeasurement(EstimatedRobotPose pose, int cameraId){
         double highestAmbiguity = 0;
         double maxTargetSize = 0;
@@ -435,7 +467,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             tagsUsed.add(new TrackedAprilTag(target.getFiducialId(), target.getArea(), distance, target.getPoseAmbiguity(), target.getYaw() , cameraId));
              
             tagPosesFieldRelative.add(new Pose3d(getPose())
-                .transformBy(m_photonCameraWrapper.allEstimators[cameraId].getRobotToCameraTransform())
+                .transformBy(CameraConstants.allPhotonPoseEstimators[cameraId].getRobotToCameraTransform())
                 .transformBy(target.getBestCameraToTarget()));
                 
             if(target.getPoseAmbiguity() > highestAmbiguity){
@@ -487,8 +519,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             thetaStd = 0.99;
         }
 
-        this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds(), VecBuilder.fill(xyStds, xyStds, thetaStd));
-
+        this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds() - 200.0/1000.0, VecBuilder.fill(xyStds, xyStds, thetaStd));
     }
 
 

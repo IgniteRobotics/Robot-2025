@@ -63,6 +63,7 @@ import frc.robot.commands.drive.test.DriveBySpeed;
 import frc.robot.commands.drive.test.TurnByAngle;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
 import frc.robot.commands.elevator.ToSetpoint;
+import frc.robot.commands.test.VisionTest;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.AllianceState;
 import frc.robot.statemachines.CoralState;
@@ -243,6 +244,8 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+
+        SmartDashboard.putData("Vision Test", new InstantCommand(() -> VisionTest.VisionValueTest(drivetrain.m_photonCameraWrapper)));
 
         // SmartDashboard.putData("Elevator Ground", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
         // SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));

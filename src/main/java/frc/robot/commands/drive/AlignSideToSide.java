@@ -28,8 +28,6 @@ public class AlignSideToSide extends Command {
   PIDController driveYController;
   PIDController driveXController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-
-  private int m_cameraId;
   
   private int targetIDs[] = {};
 
@@ -51,7 +49,6 @@ public class AlignSideToSide extends Command {
     driveYController.setTolerance(Preferences.yAlignTolerancePreference.get());
   
     targetIDs = AllianceState.getInstance().getReefTags();
-    m_cameraId = CoralState.getInstance().pickCamera();
     m_distanceMeters = Preferences.coralXDriveOffset.get();
     m_yawDegrees = CoralState.getInstance().getYCoralAlignment(m_distanceMeters);
 
@@ -62,7 +59,7 @@ public class AlignSideToSide extends Command {
   public void execute() {
     //Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
     
-    Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, m_cameraId);
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, CoralState.getInstance().pickReefCamera());
     double driveY;
 
     if(targeting.isPresent()){
