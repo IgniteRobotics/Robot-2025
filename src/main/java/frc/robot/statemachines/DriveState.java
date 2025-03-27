@@ -7,6 +7,7 @@ package frc.robot.statemachines;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.epilogue.Logged;
@@ -32,7 +33,7 @@ public class DriveState {
 
     private static double robotYaw;
 
-    Map<String, PhotonPipelineResult> cameraResults = new HashMap<>(){};
+    Map<PhotonCamera, PhotonPipelineResult> cameraResults = new HashMap<>(){};
 
     private DriveState() {
 
@@ -115,11 +116,11 @@ public class DriveState {
     }
 
     //**********Vision***********//
-    public void setLatestPhotonVisionResult(String camera, PhotonPipelineResult newResult){
+    public void setLatestPhotonVisionResult(PhotonCamera camera, PhotonPipelineResult newResult){
         cameraResults.put(camera, newResult);
     }
 
-    public PhotonPipelineResult getLatestPhotonVisionResult(String camera){
+    public PhotonPipelineResult getLatestPhotonVisionResult(PhotonCamera camera){
         if(cameraResults.containsKey(camera))return cameraResults.get(camera);
         else return null;
     }

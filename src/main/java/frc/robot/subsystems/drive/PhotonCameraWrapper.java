@@ -100,7 +100,7 @@ public class PhotonCameraWrapper{
 
         ArrayList< Optional<PhotonTrackedTarget> > targets = new ArrayList< Optional<PhotonTrackedTarget> >();
 
-        var newResult = m_driveState.getLatestPhotonVisionResult(camera.getName());
+        var newResult = m_driveState.getLatestPhotonVisionResult(camera);
         if(newResult != null){
             for (int id : ids) {
                 Optional<PhotonTrackedTarget> tempTarget = lookForTarget(newResult, id);

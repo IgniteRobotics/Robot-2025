@@ -22,8 +22,6 @@ public class CameraConstants {
     public static final PhotonCamera photonCameraOuttakeLeft = new PhotonCamera(photonCameraNameOuttakeLeft);
     public static final PhotonPoseEstimator photonPoseEstimatorOuttakeLeft = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraTransformOuttakeLeft);
 
-
-
     public static final String photonCameraNameOuttakeRight = "OUTTAKE_RIGHT";
     public static final Transform3d photonCameraTransformOuttakeRight = new Transform3d(new Translation3d(-.1277, - 0.2667, .4964), new Rotation3d(0.0, -15 / 180.0 * Math.PI, Math.PI));
     public static final PhotonCamera photonCameraOuttakeRight = new PhotonCamera(photonCameraNameOuttakeRight);
@@ -35,9 +33,8 @@ public class CameraConstants {
     public static final PhotonPoseEstimator photonPoseEstimatorIntake = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CameraConstants.photonCameraTransformIntake);
 
 
-    public static final PhotonCamera intakeCameras[] = {photonCameraIntake};
-    public static final PhotonCamera outtakeCameras[] = {photonCameraOuttakeLeft, photonCameraOuttakeRight};
-
+    public static final PhotonPoseEstimator[] allPhotonPoseEstimators= {photonPoseEstimatorOuttakeLeft, photonPoseEstimatorOuttakeRight, photonPoseEstimatorIntake};
+    
     public static final Integer[] IGNORED_POSE_TARGETS = {50,51};
     public static final HashMap<String, Double> offsetToBumper = new HashMap<String, Double>(){{
         put("OUTTAKE_LEFT", 0.3429);
