@@ -57,6 +57,9 @@ public class Preferences {
     public static DoublePreference xySlowLimitPreference = new DoublePreference("drive/xySlowLimitMPS", DriveCommandConstants.SLOW_DRIVE_XY_FACTOR);
     public static DoublePreference rotationSlowLimitPreference = new DoublePreference("drive/rotationSlowLimitRadPS", DriveCommandConstants.SLOW_DRIVE_ROTATION_FACTOR);
     public static DoublePreference autonYDrive = new DoublePreference("drive/yAutonDrive", -5);
+
+    public static DoublePreference driveTestTurnAngle = new DoublePreference("drive/test/turnAngle", 60);
+    
     
 
     // ********** Elevator **********
