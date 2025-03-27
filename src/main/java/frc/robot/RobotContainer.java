@@ -58,6 +58,8 @@ import frc.robot.commands.drive.DriveIntoTarget;
 import frc.robot.commands.drive.ManualDriveAlignment;
 import frc.robot.commands.drive.ProfiledAlignToReefTags;
 import frc.robot.commands.drive.RotateToHeading;
+import frc.robot.commands.drive.test.DriveByRPS;
+import frc.robot.commands.drive.test.DriveBySpeed;
 import frc.robot.commands.drive.test.TurnByAngle;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
 import frc.robot.commands.elevator.ToSetpoint;
@@ -145,6 +147,8 @@ public class RobotContainer {
 
     // ******************** Testing Commands ********************
     private final Command testTurnByAngle = new TurnByAngle(drivetrain, 0.0, () -> Preferences.driveTestTurnAngle.get());
+    private final Command testDriveBySpeed = new DriveBySpeed(drivetrain, Preferences.driveTestSpeed);
+    private final Command testDriveByRPS = new DriveByRPS(drivetrain, Preferences.driveTestRPS);
     
 
 
@@ -362,8 +366,13 @@ public class RobotContainer {
         joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         joystick.leftBumper().onTrue(new OuttakeCommand(corraler));
-
     
+    }
+
+    private void configureOdometryTestBindings(){
+        joystick.a().whileTrue(testTurnByAngle);
+        joystick.b().whileTrue(testDriveBySpeed);
+        joystick.x().whileTrue(testDriveByRPS);
     }
 
     public Command getAutonomousCommand() {

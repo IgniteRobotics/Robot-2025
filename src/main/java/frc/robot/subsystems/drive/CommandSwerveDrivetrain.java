@@ -431,8 +431,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         double thetaStd = 0.5;
         double poseDistance = pose.estimatedPose.toPose2d().getTranslation().getDistance(this.getState().Pose.getTranslation());
         for(PhotonTrackedTarget target: pose.targetsUsed) {
-            tagsUsed.add(new TrackedAprilTag(target.getFiducialId(), target.getArea(), this.getPose().getTranslation().getDistance(target.bestCameraToTarget.getTranslation().toTranslation2d()) , target.getPoseAmbiguity(), target.getYaw() , cameraId));
-            
+            double distance = Math.sqrt(Math.pow(target.bestCameraToTarget.getX(), 2) + Math.pow(target.bestCameraToTarget.getY(), 2));
+            tagsUsed.add(new TrackedAprilTag(target.getFiducialId(), target.getArea(), distance, target.getPoseAmbiguity(), target.getYaw() , cameraId));
+             
             tagPosesFieldRelative.add(new Pose3d(getPose())
                 .transformBy(m_photonCameraWrapper.allEstimators[cameraId].getRobotToCameraTransform())
                 .transformBy(target.getBestCameraToTarget()));
@@ -445,10 +446,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             }
         }
         //if the pose is too ambiguous, don't use it
-        if(highestAmbiguity > 0.7){
+        if(highestAmbiguity > 0.2){
             return;
         //if the target is large
-        } else if (maxTargetSize > 4){
+        } else if (maxTargetSize > 2){
             // we're not moving, trust the pose
             if (this.getState().Speeds.vxMetersPerSecond + this.getState().Speeds.vyMetersPerSecond < 0.2){
                 xyStds = 0.1;
@@ -458,7 +459,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 xyStds = 0.15;
                 thetaStd = 0.15;
             }
-        } else if (maxTargetSize > 2){
+        } else if (maxTargetSize > 1){
             // we're not moving, trust the pose
             if (this.getState().Speeds.vxMetersPerSecond + this.getState().Speeds.vyMetersPerSecond < 0.2){
                 xyStds = 0.2;

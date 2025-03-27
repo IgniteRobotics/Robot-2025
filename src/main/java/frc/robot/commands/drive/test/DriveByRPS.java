@@ -6,6 +6,7 @@ package frc.robot.commands.drive.test;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,30 +14,34 @@ import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DriveBySpeed extends Command {
-  private DoublePreference m_driveSpeed;
+public class DriveByRPS extends Command {
+  private DoublePreference m_driveRPS;
   private CommandSwerveDrivetrain m_drivetrain;
 
   private final SwerveRequest.RobotCentric m_driveRequest = new SwerveRequest.RobotCentric()
    .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
    .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
-  public DriveBySpeed(CommandSwerveDrivetrain drivetrain, DoublePreference speed) {  
+public DriveByRPS(CommandSwerveDrivetrain drivetrain, DoublePreference rps) {  
     m_drivetrain = drivetrain;
-    m_driveSpeed = speed;
+    m_driveRPS = rps;
     addRequirements(drivetrain);
   }
-
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drivetrain.setControl(m_driveRequest.withVelocityX(m_driveSpeed.getValue()));;
+    
+    m_drivetrain.getModule(0).getDriveMotor().setControl(new VelocityVoltage(m_driveRPS.getValue()));
+    m_drivetrain.getModule(1).getDriveMotor().setControl(new VelocityVoltage(m_driveRPS.getValue()));
+    m_drivetrain.getModule(2).getDriveMotor().setControl(new VelocityVoltage(m_driveRPS.getValue()));
+    m_drivetrain.getModule(3).getDriveMotor().setControl(new VelocityVoltage(m_driveRPS.getValue()));
+
   }
+  
 
   // Called once the command ends or is .interrupted.
   @Override

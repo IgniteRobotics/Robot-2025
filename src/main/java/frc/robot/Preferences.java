@@ -59,6 +59,8 @@ public class Preferences {
     public static DoublePreference autonYDrive = new DoublePreference("drive/yAutonDrive", -5);
 
     public static DoublePreference driveTestTurnAngle = new DoublePreference("drive/test/turnAngle", 60);
+    public static DoublePreference driveTestRPS = new DoublePreference("drive/test/RPS", 2);
+    public static DoublePreference driveTestSpeed = new DoublePreference("drive/test/speed", 2);
     
     
 
