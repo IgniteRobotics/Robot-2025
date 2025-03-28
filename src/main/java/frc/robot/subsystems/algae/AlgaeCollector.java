@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
@@ -68,9 +69,12 @@ public class AlgaeCollector extends SubsystemBase {
     m_algaeMotor.set(0);
   }
 
+  //allows motor to go slack
   public void stopWristMotor(){
+    m_wristMotor.setNeutralMode(NeutralModeValue.Coast);
     m_wristMotor.stopMotor();
   }
+
 
   public void intakeAlgae(){
     m_algaeMotor.set(Preferences.algaeIntakePower.getValue());
@@ -85,6 +89,7 @@ public class AlgaeCollector extends SubsystemBase {
   }
 
   public void setWristPosition(double position){
+    m_wristMotor.setNeutralMode(NeutralModeValue.Brake);
     m_wristTargetPosition = position;
     m_wristMotor.setControl(new PositionVoltage(position).withSlot(0));
   }
