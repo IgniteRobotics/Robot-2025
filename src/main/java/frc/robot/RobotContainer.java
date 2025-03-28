@@ -299,7 +299,7 @@ public class RobotContainer {
             new ElevatorToAlgaePreset(elevator).alongWith(
                 new RunCommand(() -> collector.setToIntakePosition()).alongWith(
                     new ManualDriveAlignment(drivetrain,() -> joystick.getLeftY(),() ->  joystick.getLeftX(), () -> joystick.getRightX()).alongWith(
-                        new IntakeAlgae(collector)
+                        new IntakeAlgae(collector).andThen(new InstantCommand(() -> collector.stopWristMotor()))
                     )
                 )
             )

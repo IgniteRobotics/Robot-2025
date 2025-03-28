@@ -68,6 +68,10 @@ public class AlgaeCollector extends SubsystemBase {
     m_algaeMotor.set(0);
   }
 
+  public void stopWristMotor(){
+    m_wristMotor.stopMotor();
+  }
+
   public void intakeAlgae(){
     m_algaeMotor.set(Preferences.algaeIntakePower.getValue());
   }
