@@ -83,8 +83,11 @@ public class AlignToReefTags extends Command {
   @Override
   public void execute() {
     //Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
+
+    PhotonCamera camera = CoralState.getInstance().pickReefCamera();
     
-    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, CoralState.getInstance().pickReefCamera());
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, camera);
+    m_drive.lockToCamera(camera);
 
     m_rotation = 0;
     m_driveX = 0;
@@ -144,6 +147,7 @@ public class AlignToReefTags extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_drive.unlockCameras();
     m_drive.driveRobotCentric(0, 0,0);
   }
 
