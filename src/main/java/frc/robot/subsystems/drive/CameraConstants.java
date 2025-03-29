@@ -44,8 +44,8 @@ public class CameraConstants {
         put("OUTTAKE_RIGHT", 0.3429);
     }};
 
-    public static final double yLeftError = 0.5;
-    public static final double yRightError = -0.5;
+    public static final double Y_LEFT_CORAL_OFFSET_METERS = 0.119;
+    public static final double Y_RIGHT_CORAL_OFFSET_METERS = -0.119;
 
     //sets of tag ids for targeting
     public static final int[] RED_HUMAN_PLAYER_TAGS = {1,2};

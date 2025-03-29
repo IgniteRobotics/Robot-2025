@@ -124,7 +124,7 @@ public class ProfiledAlignToTags extends Command {
       if(doTranslation){
       
         if(!driverOverrideY){
-          m_driveY = driveYController.calculate(targeting.get().getTransform3d().getY(), 0);
+          m_driveY = driveYController.calculate(targeting.get().getTransform3d().getY(), CoralState.getInstance().getYCoralOffsetMeters());
           m_driveY = MathUtil.clamp(m_driveY, -2, 2);
           SmartDashboard.putNumber("Alignment/Data/YError", driveYController.getPositionError());
           SmartDashboard.putNumber("Alignment/Data/YAccumulatedError", driveYController.getAccumulatedError());
@@ -133,7 +133,7 @@ public class ProfiledAlignToTags extends Command {
         }
       
         if(!driverOverrideX){
-          m_distanceMeters = 0.347;
+          m_distanceMeters = 0.328; //update based on field measurements.
           m_driveX = driveXController.calculate(targeting.get().getTransform3d().getX(), m_distanceMeters);
           //if Y alignment is still running, scale X alignment power to curve in.
           // if (!atDriveYGoal) {
