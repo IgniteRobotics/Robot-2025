@@ -40,27 +40,18 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.algae.IntakeAlgae;
-import frc.robot.commands.auton.AutonComposites;
 import frc.robot.commands.auton.AutonScoreCoralGroup;
 import frc.robot.commands.composite.AutoScoreCoralGroup;
 
-import frc.robot.commands.composite.OuttakeAlgae;
-import frc.robot.commands.composite.Score;
-import frc.robot.commands.composite.ScoreAlgae;
-import frc.robot.commands.composite.ScoreCoral;
-import frc.robot.commands.composite.SemiAutoScoreCoralGroup;
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
-import frc.robot.commands.drive.AlignIntakeSide;
-import frc.robot.commands.drive.AlignSideToSide;
-import frc.robot.commands.drive.AlignThenDrive;
-import frc.robot.commands.drive.AlignToReefTags;
-import frc.robot.commands.drive.DriveIntoTarget;
 import frc.robot.commands.drive.ManualDriveAlignment;
 import frc.robot.commands.drive.ProfiledAlignToReefTags;
-import frc.robot.commands.drive.RotateToHeading;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
 import frc.robot.commands.elevator.ToSetpoint;
+import frc.robot.commands.test.AlignSideToSide;
+import frc.robot.commands.test.DriveIntoTarget;
+import frc.robot.commands.test.RotateToHeading;
 import frc.robot.commands.test.VisionTest;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.AllianceState;
@@ -146,6 +137,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         
+        /* 
         NamedCommands.registerCommand("Score Level 4 at Reef K", AutonComposites.ScoreLevel4ReefK(drivetrain, m_PhotonCameraWrapper, elevator, corraler));
         NamedCommands.registerCommand("Score Level 4 at Reef L", AutonComposites.ScoreLevel4ReefL(drivetrain, m_PhotonCameraWrapper, elevator, corraler));
         NamedCommands.registerCommand("Score Level 4 at Reef J", AutonComposites.ScoreLevel4ReefJ(drivetrain, m_PhotonCameraWrapper, elevator, corraler));
@@ -157,10 +149,13 @@ public class RobotContainer {
         NamedCommands.registerCommand("Align To HP and Wait", AutonComposites.AlignHP(drivetrain, m_PhotonCameraWrapper));
 
         NamedCommands.registerCommand("Place Coral Level 4", AutonComposites.ScoreLevel4(elevator, corraler));
+        */
+
         NamedCommands.registerCommand("Raise to trough", new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference.getValue()))
                 .andThen(new WaitCommand(7))
                 .andThen(new  InstantCommand(() -> elevator.setSlowPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))));
         NamedCommands.registerCommand("Set Wheels to Zero", setWheelsToZero);
+        
 
         Command driveInCoralLeftL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_LEFT);
         Command driveInCoralRightL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_RIGHT);

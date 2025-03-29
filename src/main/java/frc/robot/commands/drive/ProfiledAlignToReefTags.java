@@ -107,8 +107,8 @@ public class ProfiledAlignToReefTags extends Command {
     if(targeting.isPresent()){
 
       SmartDashboard.putNumber("Alignment/Data/TargetID", targeting.get().getTagId());
-      SmartDashboard.putNumber("Alignment/Data/TargetDistance", targeting.get().getDistance());
-      SmartDashboard.putNumber("Alignment/Data/TargetYAW", targeting.get().getYaw());
+      SmartDashboard.putNumber("Alignment/Data/TargetX", targeting.get().getTransform3d().getX());
+      SmartDashboard.putNumber("Alignment/Data/TargetY", targeting.get().getTransform3d().getY());
 
       if(!atRotationGoal){
         double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());
@@ -126,7 +126,6 @@ public class ProfiledAlignToReefTags extends Command {
         if(!driverOverrideY){
           m_driveY = driveYController.calculate(targeting.get().getTransform3d().getY(), 0);
           m_driveY = MathUtil.clamp(m_driveY, -2, 2);
-          SmartDashboard.putNumber("Alignment/Data/Y", targeting.get().getTransform3d().getY());
           SmartDashboard.putNumber("Alignment/Data/YError", driveYController.getPositionError());
           SmartDashboard.putNumber("Alignment/Data/YAccumulatedError", driveYController.getAccumulatedError());
 
@@ -142,7 +141,6 @@ public class ProfiledAlignToReefTags extends Command {
           // if (!atDriveYGoal) {
           //   m_driveX = MathUtil.clamp(m_driveX, -m_driveX*0.5, m_driveX*0.5);
           // }
-          SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getTransform3d().getX());
           SmartDashboard.putNumber("Alignment/Data/DistanceError", driveXController.getPositionError());
           SmartDashboard.putNumber("Alignment/Data/DistanceAccumulatedError", driveXController.getAccumulatedError());
           SmartDashboard.putBoolean("Alignment/Data/atXSetpoint", driveXController.atSetpoint());

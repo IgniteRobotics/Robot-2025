@@ -112,7 +112,7 @@ public class AutonAlignToReefTags extends Command {
       else 
       
       if(!atDriveYGoal && !driverOverrideY){
-        m_driveY = -driveYController.calculate(targeting.get().getYaw(), CoralState.getInstance().getYCoralAlignment(targeting.get().getDistance()));
+        m_driveY = -driveYController.calculate(targeting.get().getYaw(), CoralState.getInstance().getYCoralAlignment(targeting.get().getTransform3d().getX()));
         m_driveY = MathUtil.clamp(m_driveY, -2, 2);
         SmartDashboard.putNumber("Alignment/Data/Yaw", targeting.get().getYaw());
         SmartDashboard.putNumber("Alignment/Data/YawError", driveYController.getPositionError());
@@ -127,12 +127,12 @@ public class AutonAlignToReefTags extends Command {
       
       if(!atDriveXGoal && !driverOverrideX){
         m_distanceMeters = 0.347;
-        m_driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
+        m_driveX = driveXController.calculate(targeting.get().getTransform3d().getX(), m_distanceMeters);
         //if Y alignment is still running, scale X alignment power to curve in.
         // if (!atDriveYGoal) {
         //   m_driveX = MathUtil.clamp(m_driveX, -m_driveX*0.5, m_driveX*0.5);
         // }
-        SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
+        SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getTransform3d().getX());
         SmartDashboard.putNumber("Alignment/Data/DistanceError", driveXController.getPositionError());
         SmartDashboard.putNumber("Alignment/Data/DistanceAccumulatedError", driveXController.getAccumulatedError());
         SmartDashboard.putBoolean("Alignment/Data/atXSetpoint", driveXController.atSetpoint());

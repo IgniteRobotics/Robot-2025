@@ -65,10 +65,6 @@ public class PhotonCameraWrapper{
             this.yaw = yaw;
         }
 
-        public double getDistance() {
-            return getDistanceFromTransform3d(m_transform3d);
-        }
-
         public int getTagId(){
             return this.m_tag_Id;
         }
@@ -141,14 +137,6 @@ public class PhotonCameraWrapper{
              new ArrayList<TargetCorner>(4)
              ));
         }
-    }
-
-
-    private double getDistanceFromTransform3d(Transform3d t){
-        return Math.sqrt(
-                Math.pow(t.getX(), 2) + 
-                Math.pow(t.getY(), 2)
-        );
     }
 
     public void setPipeline(int index){
