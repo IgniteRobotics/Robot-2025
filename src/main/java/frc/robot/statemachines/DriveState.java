@@ -33,10 +33,15 @@ public class DriveState {
 
     private static double robotYaw;
 
+    private static double maxSpeed;
+    
+    private static double maxAngularRate;
+
     Map<PhotonCamera, PhotonPipelineResult> cameraResults = new HashMap<>(){};
 
     private DriveState() {
-
+        maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+        maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED;
     }
 
     public static synchronized DriveState getInstance()
@@ -101,7 +106,7 @@ public class DriveState {
         }
         else return getZone().maxSpeed.doubleValue();
         */
-        return TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+        return maxSpeed;
     }
 
     @Logged(name = "Max Rotation", importance = Importance.CRITICAL)
@@ -112,7 +117,12 @@ public class DriveState {
         }
         else return getZone().maxRotation.doubleValue();
         */
-        return TunerConstants.MAX_ANGULAR_SPEED;
+        return maxAngularRate;
+    }
+
+    public void slowDown(){
+        maxSpeed /= 2;
+        maxAngularRate /= 2;
     }
 
     //**********Vision***********//
