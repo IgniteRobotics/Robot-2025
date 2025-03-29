@@ -22,8 +22,11 @@ public class CameraConstants {
     public static final PhotonCamera photonCameraOuttakeLeft = new PhotonCamera(photonCameraNameOuttakeLeft);
     public static final PhotonPoseEstimator photonPoseEstimatorOuttakeLeft = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraTransformOuttakeLeft);
 
+    // from pose delta
+    //Rotation:
+    //x = -0.961, y = -0.013, z = 0.277
     public static final String photonCameraNameOuttakeRight = "OUTTAKE_RIGHT";
-    public static final Transform3d photonCameraTransformOuttakeRight = new Transform3d(new Translation3d(-.1277, -0.2667, .4964), new Rotation3d(0.0, -15 / 180.0 * Math.PI, Math.PI));
+    public static final Transform3d photonCameraTransformOuttakeRight = new Transform3d(new Translation3d(-.1277, -0.2667, .4964), new Rotation3d(0, (-15 / 180.0 * Math.PI), Math.PI));
     public static final PhotonCamera photonCameraOuttakeRight = new PhotonCamera(photonCameraNameOuttakeRight);
     public static final PhotonPoseEstimator photonPoseEstimatorOuttakeRight = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraTransformOuttakeRight);
 

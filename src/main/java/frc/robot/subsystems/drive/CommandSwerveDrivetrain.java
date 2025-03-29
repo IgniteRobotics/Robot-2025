@@ -106,14 +106,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     @Logged(name = "Tags Used", importance = Importance.CRITICAL)
     private List<TrackedAprilTag> tagsUsed;
 
-    @Logged(name = "Last Left Pose", importance = Importance.CRITICAL)
-    private Pose3d lastLeftPose3d;
+    @Logged(name = "Last Left Transform", importance = Importance.CRITICAL)
+    private Transform3d lastLeftTransform3d;
 
-    @Logged(name = "Last Right Pose", importance = Importance.CRITICAL)
-    private Pose3d lastRightPose3d;
+    @Logged(name = "Last Right Transform", importance = Importance.CRITICAL)
+    private Transform3d lastRightTransform3d;
 
-    @Logged(name = "LR Post Delta", importance = Importance.CRITICAL)
-    private Transform3d lrPoseDelta;
+    @Logged(name = "LR Transform Delta", importance = Importance.CRITICAL)
+    private Transform3d lrTransformDelta;
 
 
 
@@ -334,10 +334,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public void periodic() {
         tagPosesFieldRelative = new LinkedList<Pose3d>();
         tagsUsed = new LinkedList<TrackedAprilTag>();
-        lastLeftPose3d = null;
-        lastRightPose3d = null;
-        lrPoseDelta = null;
-
         if (Robot.isSimulation()){
             tagsUsed.add(new TrackedAprilTag(18, 0.45, 1.23, 0.4, -15.4, 1));
         }
@@ -452,6 +448,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public void calculateGlobalPose(){
+        lastLeftTransform3d = null;
+        lastRightTransform3d = null;
+        lrTransformDelta = null;
+
         //outtake left
         if(useOuttakeLeftEstimation){
             CameraConstants.photonPoseEstimatorOuttakeLeft.setReferencePose(getPose());
@@ -465,7 +465,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             for(var result: outtakeLeftResults){
                 Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeLeft.update(result);
                 if(!estimatedPose.isEmpty()){
-                    lastLeftPose3d = estimatedPose.get().estimatedPose;
                     calculateVisionMeasurement(estimatedPose.get(), 0);
                 }
             }
@@ -484,7 +483,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             for(var result: outtakeRightResults){
                 Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeRight.update(result);
                 if(!estimatedPose.isEmpty()){
-                    lastRightPose3d = estimatedPose.get().estimatedPose;
                     calculateVisionMeasurement(estimatedPose.get(), 1);
                 }
             }
@@ -508,11 +506,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             }
         }
 
-
-        if (lastLeftPose3d != null && lastRightPose3d != null){
-            lrPoseDelta = lastLeftPose3d.minus(lastRightPose3d);
+        
+        if(lastLeftTransform3d != null && lastRightTransform3d != null){
+            lrTransformDelta = lastLeftTransform3d.plus(lastRightTransform3d.inverse());
         }
-
 
     }
   
@@ -538,6 +535,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 tagPosesFieldRelative.add(new Pose3d(getPose())
                     .transformBy(CameraConstants.allPhotonPoseEstimators[cameraId].getRobotToCameraTransform())
                     .transformBy(target.getBestCameraToTarget()));
+
+                if(cameraId == 0){
+                    lastLeftTransform3d = target.getBestCameraToTarget();
+                } else if(cameraId == 1){
+                    lastRightTransform3d = target.getBestCameraToTarget();
+                }
             }
         }
         //if the pose is too ambiguous, don't use it
