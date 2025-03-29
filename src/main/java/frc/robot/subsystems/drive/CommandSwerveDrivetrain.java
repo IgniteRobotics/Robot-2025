@@ -464,25 +464,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         double xyStds = 0.5;
         double thetaStd = 0.5;
         double poseDistance = pose.estimatedPose.toPose2d().getTranslation().getDistance(this.getState().Pose.getTranslation());
-                //move this to the end so we only see the tags that were used.
-                for(PhotonTrackedTarget target: pose.targetsUsed) {
-                    double distance = Math.sqrt(Math.pow(target.bestCameraToTarget.getX(), 2) + Math.pow(target.bestCameraToTarget.getY(), 2));        
-                        
-                    if(target.getPoseAmbiguity() > highestAmbiguity){
-                        highestAmbiguity = target.getPoseAmbiguity();
-                    }
-                    if(target.area > maxTargetSize){
-                        maxTargetSize = target.area;
-                    }
-                    if(highestAmbiguity > 0.2){
-                        return;
-                    }
-                    tagsUsed.add(new TrackedAprilTag(target.getFiducialId(), target.getArea(), distance, target.getPoseAmbiguity(), target.getYaw() , cameraId));
-                    
-                    tagPosesFieldRelative.add(new Pose3d(getPose())
-                        .transformBy(CameraConstants.allPhotonPoseEstimators[cameraId].getRobotToCameraTransform())
-                        .transformBy(target.getBestCameraToTarget()));
-                }
+        for(PhotonTrackedTarget target: pose.targetsUsed) {
+            double distance = Math.sqrt(Math.pow(target.bestCameraToTarget.getX(), 2) + Math.pow(target.bestCameraToTarget.getY(), 2));
+            tagsUsed.add(new TrackedAprilTag(target.getFiducialId(), target.getArea(), distance, target.getPoseAmbiguity(), target.getYaw() , cameraId));
+
+            tagPosesFieldRelative.add(new Pose3d(getPose())
+                .transformBy(CameraConstants.allPhotonPoseEstimators[cameraId].getRobotToCameraTransform())
+                .transformBy(target.getBestCameraToTarget()));
+                
+            if(target.getPoseAmbiguity() > highestAmbiguity){
+                highestAmbiguity = target.getPoseAmbiguity();
+            }
+            if(target.area > maxTargetSize){
+                maxTargetSize = target.area;
+            }
+        }
         //if the pose is too ambiguous, don't use it
         if(highestAmbiguity > 0.2){
             return;

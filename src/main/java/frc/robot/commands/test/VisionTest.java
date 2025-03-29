@@ -18,7 +18,7 @@ import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
 public class VisionTest {
 
     public static void VisionValueTest(PhotonCameraWrapper m_pcw) {
-        Optional<TargetInfo> targeting = m_pcw.seekTargets(AllianceState.getInstance().getReefTags(), CoralState.getInstance().pickReefCamera());
+        Optional<TargetInfo> targeting = m_pcw.seekTargets(AllianceState.getInstance().getReefTags(), CameraConstants.photonCameraOuttakeLeft);
         
         System.out.println("getX() from transform3d: " + targeting.get().getTransform3d().getX());
         System.out.println("getY() from transform3d: " + targeting.get().getTransform3d().getY());
