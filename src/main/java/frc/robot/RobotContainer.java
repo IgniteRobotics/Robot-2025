@@ -358,6 +358,9 @@ public class RobotContainer {
 
         SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(Preferences.servoPosition)));
 
+        SmartDashboard.putData("Set Level 4 Left", new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.L4_LEFT)));
+        SmartDashboard.putData("Set Level 4 Right", new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.L4_RIGHT)));
+        
         joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
                     .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
         joystick.povDown().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))

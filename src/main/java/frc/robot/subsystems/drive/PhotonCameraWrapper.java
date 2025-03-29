@@ -40,20 +40,17 @@ public class PhotonCameraWrapper{
     public class TargetInfo{
         private double yaw;
 
-        private double distance;
-
         private String cameraName;
 
         private int m_tag_Id;
 
         private Transform3d m_transform3d;
 
-        public TargetInfo(double distance, Transform3d transform3d, double yaw, int tag_Id, String name){
-            this.distance = distance;
+        public TargetInfo(Transform3d transform3d, double yaw, int tag_Id, String name){
             this.yaw = yaw;
-            cameraName = name;
-            m_transform3d = transform3d;
-            m_tag_Id = tag_Id;
+            this.cameraName = name;
+            this.m_transform3d = transform3d;
+            this.m_tag_Id = tag_Id;
         }
 
         public double getYaw() {
@@ -69,11 +66,7 @@ public class PhotonCameraWrapper{
         }
 
         public double getDistance() {
-            return distance;
-        }
-
-        public void setDistance(double distance) {
-            this.distance = distance;
+            return getDistanceFromTransform3d(m_transform3d);
         }
 
         public int getTagId(){
@@ -120,7 +113,7 @@ public class PhotonCameraWrapper{
                 }
             }
 
-            return Optional.of(new TargetInfo((getDistanceFromTransform3d(target.get().getBestCameraToTarget())), target.get().getBestCameraToTarget(),
+            return Optional.of(new TargetInfo(target.get().getBestCameraToTarget(),
                 target.get().getYaw(), target.get().getFiducialId(), camera.getName()));
         }
         
