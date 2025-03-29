@@ -46,7 +46,7 @@ import frc.robot.commands.composite.AutoScoreCoralGroup;
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.drive.ManualDriveAlignment;
-import frc.robot.commands.drive.ProfiledAlignToReefTags;
+import frc.robot.commands.drive.ProfiledAlignToTags;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.commands.test.AlignSideToSide;
@@ -358,8 +358,9 @@ public class RobotContainer {
         joystick.a().whileTrue(new RotateToHeading(drivetrain, m_PhotonCameraWrapper));
         joystick.y().whileTrue(new AlignSideToSide(drivetrain, m_PhotonCameraWrapper));
         joystick.x().whileTrue(new DriveIntoTarget(drivetrain, m_PhotonCameraWrapper));
-        joystick.b().whileTrue(new ProfiledAlignToReefTags(drivetrain, m_PhotonCameraWrapper, ()-> joystick.getLeftY(), () -> joystick.getLeftX()));
+        joystick.b().whileTrue(new ProfiledAlignToTags(drivetrain, m_PhotonCameraWrapper, m_allianceState.getReefTags(), m_CoralState.pickReefCamera(), () -> joystick.getLeftY(), () -> joystick.getLeftX()));
 
+        
         joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         joystick.leftBumper().onTrue(new OuttakeCommand(corraler));

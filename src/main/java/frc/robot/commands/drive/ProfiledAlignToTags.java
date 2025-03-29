@@ -7,6 +7,8 @@ package frc.robot.commands.drive;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
+import org.photonvision.PhotonCamera;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -27,7 +29,7 @@ import edu.wpi.first.epilogue.Logged;
 
 
 @Logged
-public class ProfiledAlignToReefTags extends Command {
+public class ProfiledAlignToTags extends Command {
   private final CommandSwerveDrivetrain m_drive;
   PhotonCameraWrapper m_pcw;
     PIDController rotationController;
@@ -45,7 +47,7 @@ public class ProfiledAlignToReefTags extends Command {
   private boolean driverOverrideX;
   
   private int targetIDs[] = {};
-
+  private PhotonCamera m_camera;
 
   private final DoubleSupplier m_xInput;
   private final DoubleSupplier m_yInput;
@@ -57,9 +59,11 @@ public class ProfiledAlignToReefTags extends Command {
   private double m_driveY = 0;
   
   /** Creates a new AlignToTarget. */
-  public ProfiledAlignToReefTags(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, DoubleSupplier xInput, DoubleSupplier yInput){
+  public ProfiledAlignToTags(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, int[] ids, PhotonCamera camera, DoubleSupplier xInput, DoubleSupplier yInput){
     m_drive = drive;
     m_pcw = pcw;
+    targetIDs = ids;
+    m_camera = camera;
     m_xInput = xInput;
     m_yInput = yInput;
     addRequirements(m_drive);
@@ -84,8 +88,6 @@ public class ProfiledAlignToReefTags extends Command {
     driveXController.setTolerance(Preferences.xAlignTolerancePreference.get());
     driveXController.setIZone(Double.POSITIVE_INFINITY);
 
-    targetIDs = AllianceState.getInstance().getReefTags();
-
     doTranslation = false;
 
   }
@@ -94,7 +96,7 @@ public class ProfiledAlignToReefTags extends Command {
   @Override
   public void execute() {
     
-    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, CoralState.getInstance().pickReefCamera());
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, m_camera);
 
     m_rotation = 0;
     m_driveX = 0;
