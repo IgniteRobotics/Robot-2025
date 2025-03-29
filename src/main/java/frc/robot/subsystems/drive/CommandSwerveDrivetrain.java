@@ -36,6 +36,7 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -99,6 +100,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     @Logged(name = "Tags Used", importance = Importance.CRITICAL)
     private List<TrackedAprilTag> tagsUsed;
 
+    @Logged(name = "Last Left Pose", importance = Importance.CRITICAL)
+    private Pose3d lastLeftPose3d;
+
+    @Logged(name = "Last Right Pose", importance = Importance.CRITICAL)
+    private Pose3d lastRightPose3d;
+
+    @Logged(name = "LR Post Delta", importance = Importance.CRITICAL)
+    private Transform3d lrPoseDelta;
 
 
 
@@ -319,6 +328,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public void periodic() {
         tagPosesFieldRelative = new LinkedList<Pose3d>();
         tagsUsed = new LinkedList<TrackedAprilTag>();
+        lastLeftPose3d = null;
+        lastRightPose3d = null;
+        lrPoseDelta = null;
+
         if (Robot.isSimulation()){
             tagsUsed.add(new TrackedAprilTag(18, 0.45, 1.23, 0.4, -15.4, 1));
         }
@@ -420,6 +433,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         for(var result: outtakeLeftResults){
             Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeLeft.update(result);
             if(!estimatedPose.isEmpty()){
+                lastLeftPose3d = estimatedPose.get().estimatedPose;
                 calculateVisionMeasurement(estimatedPose.get(), 0);
             }
         }
@@ -436,6 +450,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         for(var result: outtakeRightResults){
             Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeRight.update(result);
             if(!estimatedPose.isEmpty()){
+                lastRightPose3d = estimatedPose.get().estimatedPose;
                 calculateVisionMeasurement(estimatedPose.get(), 1);
             }
         }
@@ -454,6 +469,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             if(!estimatedPose.isEmpty()){
                 calculateVisionMeasurement(estimatedPose.get(), 2);
             }
+        }
+
+        if (lastLeftPose3d != null && lastRightPose3d != null){
+            lrPoseDelta = lastLeftPose3d.minus(lastRightPose3d);
+        } else if (Robot.isSimulation()){
+            lrPoseDelta = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0,0,0));
         }
 
     }
