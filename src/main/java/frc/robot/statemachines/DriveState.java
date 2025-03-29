@@ -15,6 +15,7 @@ import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Preferences;
 import frc.robot.generated.TunerConstants;
 import frc.zones.Grid;
 import frc.zones.Zone;
@@ -121,8 +122,8 @@ public class DriveState {
     }
 
     public void nerf(){
-        maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)*0.35;
-        maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED*0.35;
+        maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)*Preferences.nerfFactor.getValue();
+        maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED*Preferences.nerfFactor.getValue();
     }
 
     public void unNerf(){

@@ -15,7 +15,7 @@ import frc.robot.subsystems.algae.AlgaeCollectorConstants;
 public class Preferences {
 
     // ********** Drive *********//
-
+    public static DoublePreference nerfFactor = new DoublePreference("Nerf Factor", 0.35);
     
     public static DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", DriveCommandConstants.ROTATION_P);
     public static DoublePreference alignRotKD = new DoublePreference("alignCommand/rotation/kD", DriveCommandConstants.ROTATION_D);

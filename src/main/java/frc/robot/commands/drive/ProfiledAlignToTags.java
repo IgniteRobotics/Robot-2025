@@ -6,6 +6,7 @@ package frc.robot.commands.drive;
 
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import org.photonvision.PhotonCamera;
 
@@ -46,8 +47,8 @@ public class ProfiledAlignToTags extends Command {
   private boolean driverOverrideY;
   private boolean driverOverrideX;
   
-  private int targetIDs[] = {};
-  private PhotonCamera m_camera;
+  private Supplier<int[]> m_idSupplier;
+  private Supplier<PhotonCamera> m_cameraSupplier;
 
   private final DoubleSupplier m_xInput;
   private final DoubleSupplier m_yInput;
@@ -59,11 +60,11 @@ public class ProfiledAlignToTags extends Command {
   private double m_driveY = 0;
   
   /** Creates a new AlignToTarget. */
-  public ProfiledAlignToTags(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, int[] ids, PhotonCamera camera, DoubleSupplier xInput, DoubleSupplier yInput){
+  public ProfiledAlignToTags(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, Supplier<int[]> idSupplier, Supplier<PhotonCamera> cameraSupplier, DoubleSupplier xInput, DoubleSupplier yInput){
     m_drive = drive;
     m_pcw = pcw;
-    targetIDs = ids;
-    m_camera = camera;
+    m_idSupplier = idSupplier;
+    m_cameraSupplier = cameraSupplier;
     m_xInput = xInput;
     m_yInput = yInput;
     addRequirements(m_drive);
@@ -96,7 +97,7 @@ public class ProfiledAlignToTags extends Command {
   @Override
   public void execute() {
     
-    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, m_camera);
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(m_idSupplier.get(), m_cameraSupplier.get());
 
     m_rotation = 0;
     m_driveX = 0;

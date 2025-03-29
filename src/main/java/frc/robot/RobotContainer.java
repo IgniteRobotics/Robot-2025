@@ -358,7 +358,7 @@ public class RobotContainer {
         joystick.a().whileTrue(new RotateToHeading(drivetrain, m_PhotonCameraWrapper));
         joystick.y().whileTrue(new AlignSideToSide(drivetrain, m_PhotonCameraWrapper));
         joystick.x().whileTrue(new DriveIntoTarget(drivetrain, m_PhotonCameraWrapper));
-        joystick.b().whileTrue(new ProfiledAlignToTags(drivetrain, m_PhotonCameraWrapper, m_allianceState.getReefTags(), m_CoralState.pickReefCamera(), () -> joystick.getLeftY(), () -> joystick.getLeftX()));
+        joystick.b().whileTrue(new ProfiledAlignToTags(drivetrain, m_PhotonCameraWrapper, () -> m_allianceState.getReefTags(), () -> m_CoralState.pickReefCamera(), () -> joystick.getLeftY(), () -> joystick.getLeftX()));
 
         
         joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
