@@ -517,28 +517,31 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
   
     public void calculateVisionMeasurement(EstimatedRobotPose pose, int cameraId){
+        double maxAmibiguity = 0.2;
         double highestAmbiguity = 0;
         double maxTargetSize = 0;
         double xyStds = 0.5;
         double thetaStd = 0.5;
         double poseDistance = pose.estimatedPose.toPose2d().getTranslation().getDistance(this.getState().Pose.getTranslation());
         for(PhotonTrackedTarget target: pose.targetsUsed) {
-            double distance = Math.sqrt(Math.pow(target.bestCameraToTarget.getX(), 2) + Math.pow(target.bestCameraToTarget.getY(), 2));
-            tagsUsed.add(new TrackedAprilTag(target.getFiducialId(), target.getArea(), distance, target.getPoseAmbiguity(), target.getYaw() , cameraId));
-
-            tagPosesFieldRelative.add(new Pose3d(getPose())
-                .transformBy(CameraConstants.allPhotonPoseEstimators[cameraId].getRobotToCameraTransform())
-                .transformBy(target.getBestCameraToTarget()));
-                
+            double distance = Math.sqrt(Math.pow(target.bestCameraToTarget.getX(), 2) + Math.pow(target.bestCameraToTarget.getY(), 2));                
             if(target.getPoseAmbiguity() > highestAmbiguity){
                 highestAmbiguity = target.getPoseAmbiguity();
             }
             if(target.area > maxTargetSize){
                 maxTargetSize = target.area;
             }
+            //only log poses that are not too ambiguous
+            if (highestAmbiguity <= maxAmibiguity){
+                tagsUsed.add(new TrackedAprilTag(target.getFiducialId(), target.getArea(), distance, target.getPoseAmbiguity(), target.getYaw() , cameraId));
+
+                tagPosesFieldRelative.add(new Pose3d(getPose())
+                    .transformBy(CameraConstants.allPhotonPoseEstimators[cameraId].getRobotToCameraTransform())
+                    .transformBy(target.getBestCameraToTarget()));
+            }
         }
         //if the pose is too ambiguous, don't use it
-        if(highestAmbiguity > 0.2){
+        if(highestAmbiguity > maxAmibiguity){
             return;
         //if the target is large
         // at 2m, the target is .5% of the image.
