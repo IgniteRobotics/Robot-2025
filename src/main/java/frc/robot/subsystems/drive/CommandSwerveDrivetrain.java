@@ -532,7 +532,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 maxTargetSize = target.area;
             }
             //only log poses that are not too ambiguous
-            if (highestAmbiguity <= maxAmibiguity){
+            if (target.getPoseAmbiguity() <= maxAmibiguity){
                 tagsUsed.add(new TrackedAprilTag(target.getFiducialId(), target.getArea(), distance, target.getPoseAmbiguity(), target.getYaw() , cameraId));
 
                 tagPosesFieldRelative.add(new Pose3d(getPose())
