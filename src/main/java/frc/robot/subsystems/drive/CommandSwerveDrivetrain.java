@@ -4,11 +4,15 @@ import static edu.wpi.first.units.Units.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
@@ -27,10 +31,15 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -40,10 +49,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Robot;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.statemachines.DriveState;
-import frc.robot.subsystems.drive.PhotonCameraWrapper.Side;
 
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -61,6 +70,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+
+    //use pose estimators
+    private boolean useOuttakeLeftEstimation = true;
+    private boolean useOuttakeRightEstimation = true;
+    private boolean useIntakeEstimation = true;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -83,7 +97,23 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private PathPlannerPath loggedPath;
 
+    //this holds a list of the poses of the vision targets used for positioning.
+    //these are FIELD RELATIVE poses, not robot relative.
+    @Logged(name = "Tag Poses", importance = Importance.CRITICAL)
+    private List<Pose3d> tagPosesFieldRelative;
 
+    //this holds a list of the tags used for positioning and some metadata.
+    @Logged(name = "Tags Used", importance = Importance.CRITICAL)
+    private List<TrackedAprilTag> tagsUsed;
+
+    @Logged(name = "Last Left Transform", importance = Importance.CRITICAL)
+    private Transform3d lastLeftTransform3d;
+
+    @Logged(name = "Last Right Transform", importance = Importance.CRITICAL)
+    private Transform3d lastRightTransform3d;
+
+    @Logged(name = "LR Transform Delta", importance = Importance.CRITICAL)
+    private Transform3d lrTransformDelta;
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -293,13 +323,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public void driveRobotCentric(double x, double y, double rot){
         SwerveRequest.RobotCentric m_driveRequest = new SwerveRequest.RobotCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+            .withDriveRequestType(DriveRequestType.Velocity)
             .withSteerRequestType(SteerRequestType.MotionMagicExpo);
         this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
     }
 
     @Override
     public void periodic() {
+        tagPosesFieldRelative = new LinkedList<Pose3d>();
+        tagsUsed = new LinkedList<TrackedAprilTag>();
+        if (Robot.isSimulation()){
+            tagsUsed.add(new TrackedAprilTag(18, 0.45, 1.23, 0.4, -15.4, 1));
+        }
 
         //SmartDashboard.putString("Zone", m_driveState.getZoneName());
 
@@ -337,28 +372,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-        ArrayList<Optional<EstimatedRobotPose>> estimatedPoseOuttakeLeft = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.OUTTAKE_LEFT);
-        ArrayList<Optional<EstimatedRobotPose>> estimatedPoseOuttakeRight = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.OUTTAKE_RIGHT);
-        ArrayList<Optional<EstimatedRobotPose>> estimatedPoseIntake = m_photonCameraWrapper.getEstimatedGlobalPose(getPose(), Side.INTAKE);
 
-
-        for(var estimatedPose : estimatedPoseOuttakeLeft){
-            if(estimatedPose.isPresent()){
-                calculateVisionMeasurement(estimatedPose.get());
-            }
-        }
-
-        for(var estimatedPose : estimatedPoseOuttakeRight){
-            if(estimatedPose.isPresent()){
-                calculateVisionMeasurement(estimatedPose.get());
-            }
-        }
-
-        for(var estimatedPose : estimatedPoseIntake){
-            if(estimatedPose.isPresent()){
-                calculateVisionMeasurement(estimatedPose.get());
-            }
-        }
+        calculateGlobalPose();
 
     }
 
@@ -404,63 +419,175 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return this.getState().Pose.getRotation().getDegrees();
     }
 
-    public void calculateVisionMeasurement(EstimatedRobotPose pose){
+    public void lockToCamera(PhotonCamera camera){
+        if(camera == CameraConstants.photonCameraOuttakeLeft){
+            useIntakeEstimation= false;
+            useOuttakeLeftEstimation = true;
+            useOuttakeRightEstimation = false;
+        }
+
+        if(camera == CameraConstants.photonCameraOuttakeRight){
+            useIntakeEstimation = false;
+            useOuttakeLeftEstimation = false;
+            useOuttakeRightEstimation = true;
+        }
+
+        else {
+            useIntakeEstimation = true;
+            useOuttakeLeftEstimation = false;
+            useOuttakeRightEstimation = false;
+        }
+    }
+
+    public void unlockCameras(){
+        useOuttakeLeftEstimation = true;
+        useOuttakeRightEstimation = true;
+        useIntakeEstimation = true;
+    }
+
+    public void calculateGlobalPose(){
+        lastLeftTransform3d = null;
+        lastRightTransform3d = null;
+        lrTransformDelta = null;
+
+        //outtake left
+        if(useOuttakeLeftEstimation){
+            CameraConstants.photonPoseEstimatorOuttakeLeft.setReferencePose(getPose());
+            var outtakeLeftResults = CameraConstants.photonCameraOuttakeLeft.getAllUnreadResults();
+
+            if(!outtakeLeftResults.isEmpty()){
+                var latestResult = outtakeLeftResults.get(outtakeLeftResults.size()-1);
+                m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeLeft, latestResult);
+            }
+
+            for(var result: outtakeLeftResults){
+                Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeLeft.update(result);
+                if(!estimatedPose.isEmpty()){
+                    calculateVisionMeasurement(estimatedPose.get(), 0);
+                }
+            }
+        }
+
+        //outtake right
+        if(useOuttakeRightEstimation){
+            CameraConstants.photonPoseEstimatorOuttakeRight.setReferencePose(getPose());
+            var outtakeRightResults = CameraConstants.photonCameraOuttakeRight.getAllUnreadResults();
+
+            if(!outtakeRightResults.isEmpty()){
+                var latestResult = outtakeRightResults.get(outtakeRightResults.size()-1);
+                m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeRight, latestResult);
+            }
+
+            for(var result: outtakeRightResults){
+                Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeRight.update(result);
+                if(!estimatedPose.isEmpty()){
+                    calculateVisionMeasurement(estimatedPose.get(), 1);
+                }
+            }
+        }
+
+        //intake
+        if(useIntakeEstimation){
+            CameraConstants.photonPoseEstimatorIntake.setReferencePose(getPose());
+            var intakeResults = CameraConstants.photonCameraIntake.getAllUnreadResults();
+
+            if(!intakeResults.isEmpty()){
+                var latestResult = intakeResults.get(intakeResults.size()-1);
+                m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraIntake, latestResult);
+            }
+
+            for(var result: intakeResults){
+                Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorIntake.update(result);
+                if(!estimatedPose.isEmpty()){
+                    calculateVisionMeasurement(estimatedPose.get(), 2);
+                }
+            }
+        }
+
+        
+        if(lastLeftTransform3d != null && lastRightTransform3d != null){
+            lrTransformDelta = lastLeftTransform3d.plus(lastRightTransform3d.inverse());
+        }
+
+    }
+  
+    public void calculateVisionMeasurement(EstimatedRobotPose pose, int cameraId){
+        double maxAmibiguity = 0.2;
         double highestAmbiguity = 0;
         double maxTargetSize = 0;
         double xyStds = 0.5;
         double thetaStd = 0.5;
         double poseDistance = pose.estimatedPose.toPose2d().getTranslation().getDistance(this.getState().Pose.getTranslation());
         for(PhotonTrackedTarget target: pose.targetsUsed) {
+            double distance = Math.sqrt(Math.pow(target.bestCameraToTarget.getX(), 2) + Math.pow(target.bestCameraToTarget.getY(), 2));                
             if(target.getPoseAmbiguity() > highestAmbiguity){
                 highestAmbiguity = target.getPoseAmbiguity();
             }
             if(target.area > maxTargetSize){
                 maxTargetSize = target.area;
             }
+            //only log poses that are not too ambiguous
+            if (target.getPoseAmbiguity() <= maxAmibiguity){
+                tagsUsed.add(new TrackedAprilTag(target.getFiducialId(), target.getArea(), distance, target.getPoseAmbiguity(), target.getYaw() , cameraId));
+
+                tagPosesFieldRelative.add(new Pose3d(getPose())
+                    .transformBy(CameraConstants.allPhotonPoseEstimators[cameraId].getRobotToCameraTransform())
+                    .transformBy(target.getBestCameraToTarget()));
+
+                if(cameraId == 0){
+                    lastLeftTransform3d = target.getBestCameraToTarget();
+                } else if(cameraId == 1){
+                    lastRightTransform3d = target.getBestCameraToTarget();
+                }
+            }
         }
         //if the pose is too ambiguous, don't use it
-        if(highestAmbiguity > 0.7){
+        if(highestAmbiguity > maxAmibiguity){
             return;
         //if the target is large
-        } else if (maxTargetSize > 4){
+        // at 2m, the target is .5% of the image.
+        // at 1m, the target is 2.5% of the image.
+        } else if (maxTargetSize > 2){
             // we're not moving, trust the pose
             if (this.getState().Speeds.vxMetersPerSecond + this.getState().Speeds.vyMetersPerSecond < 0.2){
-                xyStds = 0.1;
-                thetaStd = 0.1;  
+                xyStds = 0.05;
+                if(this.getState().Speeds.omegaRadiansPerSecond <  0.1){
+                    thetaStd = 0.05;  
+                }
             // new pose is close to the old pose, trust the pose
             } else if (poseDistance < 0.5){
                 xyStds = 0.15;
                 thetaStd = 0.15;
             }
-        } else if (maxTargetSize > 2){
+        } else if (maxTargetSize > 0.5){
             // we're not moving, trust the pose
             if (this.getState().Speeds.vxMetersPerSecond + this.getState().Speeds.vyMetersPerSecond < 0.2){
-                xyStds = 0.2;
-                thetaStd = 0.2;
+                xyStds = 0.1;
+                thetaStd = 0.1;
+                if(this.getState().Speeds.omegaRadiansPerSecond <  0.1){
+                    thetaStd = 0.1;  
+                }
             // new pose is close to the old pose, trust the pose
                 } else if (poseDistance < 0.5){
                 xyStds = 0.25;
                 thetaStd = 0.25;
             }
-        } else if (highestAmbiguity < 0.3) {
+        } else if (highestAmbiguity > 0.1) {
+            xyStds = 0.75;
+            thetaStd = 0.75;            
+        } else { // ambiguity is low.
             xyStds = 0.5;
-            thetaStd = 0.5;            
-        } else {
-            xyStds = 0.8;
-            thetaStd = 0.8;
+            thetaStd = 0.5;
         }
 
         //if you're spinning, bail.
         if(this.getState().Speeds.omegaRadiansPerSecond > Math.PI) {
             return;
+        } else if (this.getState().Speeds.omegaRadiansPerSecond > 0.5){ //if you're rotating quickly, trust the pose less
+            thetaStd = 0.75;
         }
 
-        //if you're rotating quickly, trust the pose less
-        if (this.getState().Speeds.omegaRadiansPerSecond > 0.5){
-            thetaStd = 0.99;
-        }
-
-        this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds(), VecBuilder.fill(xyStds, xyStds, thetaStd));
+        this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds() - 200.0/1000.0, VecBuilder.fill(xyStds, xyStds, thetaStd));
 
     }
 

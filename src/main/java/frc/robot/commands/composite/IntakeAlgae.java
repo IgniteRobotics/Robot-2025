@@ -39,6 +39,6 @@ public class IntakeAlgae extends ParallelCommandGroup{
     m_elevator = elevator;
     m_collector = collector;
     position = height;
-    addCommands(new ToSetpoint(m_elevator, position), new RunCommand(() -> collector.setToIntakePosition()), new AlignIntakeSide(drive, drive.m_photonCameraWrapper, targets, m_cameraID, m_distance, m_yawDegrees, xInput, yInput));
+    addCommands(new ToSetpoint(m_elevator, position), new RunCommand(() -> collector.setToIntakePosition()), new AlignIntakeSide(drive, drive.m_photonCameraWrapper, targets, m_distance, m_yawDegrees, xInput, yInput));
   }
 }

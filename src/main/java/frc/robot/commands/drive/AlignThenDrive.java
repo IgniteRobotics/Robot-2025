@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Preferences;
 import frc.robot.generated.TunerConstants;
+import frc.robot.statemachines.CoralState;
+import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
@@ -29,8 +31,6 @@ public class AlignThenDrive extends Command {
   PIDController driveYController;
   PIDController driveXController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-
-  private final int m_cameraId;
   
   private int targetIDs[] = {};
 
@@ -42,9 +42,8 @@ public class AlignThenDrive extends Command {
   private double m_yawDegrees;
   
   /** Creates a new AlignToTarget. */
-  public AlignThenDrive(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, int[] targets, int cameraID, double distanceMeters, double yawDegrees, DoubleSupplier xInput, DoubleSupplier yInput){
+  public AlignThenDrive(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, int[] targets, double distanceMeters, double yawDegrees, DoubleSupplier xInput, DoubleSupplier yInput){
     m_drive = drive;
-    m_cameraId = cameraID;
     m_pcw = pcw;
     m_distanceMeters = distanceMeters;
     m_yawDegrees = yawDegrees;
@@ -65,7 +64,7 @@ public class AlignThenDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, m_cameraId);
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, CoralState.getInstance().pickReefCamera());
     double rotation;
     double driveX;
     double driveY;

@@ -12,6 +12,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -60,6 +61,7 @@ import frc.robot.commands.drive.ProfiledAlignToReefTags;
 import frc.robot.commands.drive.RotateToHeading;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
 import frc.robot.commands.elevator.ToSetpoint;
+import frc.robot.commands.test.VisionTest;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.AllianceState;
 import frc.robot.statemachines.CoralState;
@@ -82,7 +84,7 @@ public class RobotContainer {
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+        .withDriveRequestType(DriveRequestType.Velocity);
 
     private final Telemetry logger = new Telemetry(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond));
 
@@ -139,8 +141,8 @@ public class RobotContainer {
     private CoralState m_CoralState = CoralState.getInstance();
 
     private AlgaeState m_AlgaeState = AlgaeState.getInstance();
-    
 
+    private final Command setWheelsToZero = new InstantCommand(() -> drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0.0))));   
 
     public RobotContainer() {
         
@@ -158,6 +160,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Raise to trough", new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference.getValue()))
                 .andThen(new WaitCommand(7))
                 .andThen(new  InstantCommand(() -> elevator.setSlowPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))));
+        NamedCommands.registerCommand("Set Wheels to Zero", setWheelsToZero);
 
         Command driveInCoralLeftL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_LEFT);
         Command driveInCoralRightL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_RIGHT);
@@ -170,6 +173,8 @@ public class RobotContainer {
         autoChooser.addOption("Drive Coral Left L4", driveInCoralLeftL4);
         autoChooser.addOption("Drive Coral Right L4", driveInCoralRightL4);
         autoChooser.addOption("TroughBump", AutoBuilder.buildAuto("TroughBump"));
+        autoChooser.addOption("1MeterAndTurn", AutoBuilder.buildAuto("DriveAndTurn"));
+        autoChooser.addOption("TestDriveForward", AutoBuilder.buildAuto("TestDriveForward"));
         
         // autoChooser.addOption("Line Up and Trough", new RunCommand(() -> drivetrain.driveRobotCentric(Preferences.autonYDrive.getValue(), 0, 0)).withTimeout(2)
         //     .alongWith(new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference)))
@@ -182,9 +187,10 @@ public class RobotContainer {
 
 
         configureSubsytemDefaultCommands();
-        configureBindings();
+        //configureBindings();
         //TODO MUST REMOVE
-        //configureTestBindings();
+        configureTestBindings();
+        //configureOdometryTestBindings();
         configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -231,6 +237,8 @@ public class RobotContainer {
 
     private void configureBindings() {
 
+        SmartDashboard.putData("Vision Test", new InstantCommand(() -> VisionTest.VisionValueTest(drivetrain.m_photonCameraWrapper)));
+
         // SmartDashboard.putData("Elevator Ground", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
         // SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
         // SmartDashboard.putData("Elevator Level 2", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.LEVEL_2.position, ElevatorConstants.FLOOR.GROUND.position));
@@ -261,6 +269,7 @@ public class RobotContainer {
 
         SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(0.5)));
         SmartDashboard.putData("Set Elevator PID", new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG, Preferences.elevatorkS)));
+    
 
         joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
                     .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
@@ -334,8 +343,13 @@ public class RobotContainer {
 
     private void configureTestBindings() {
 
+        SmartDashboard.putData("Vison Test", new InstantCommand(() -> VisionTest.VisionValueTest(drivetrain.m_photonCameraWrapper)));
+
         SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(Preferences.servoPosition)));
 
+        SmartDashboard.putData("Set Level 4 Left", new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.L4_LEFT)));
+        SmartDashboard.putData("Set Level 4 Right", new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.L4_RIGHT)));
+        
         joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
                     .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
         joystick.povDown().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))
@@ -351,8 +365,24 @@ public class RobotContainer {
         joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         joystick.leftBumper().onTrue(new OuttakeCommand(corraler));
-
     
+    }
+
+    private void configureOdometryTestBindings(){
+        joystick.b().onTrue(drivetrain.applyRequest(
+                () -> forwardStraight.withVelocityX(2)
+            ))
+        .onFalse(drivetrain.applyRequest(
+            () -> forwardStraight.withVelocityX(0)
+        ));
+        
+        joystick.a().onTrue(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(Math.PI/2))
+        ))
+        .onFalse(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(0))
+        ));
+        
     }
 
     public Command getAutonomousCommand() {

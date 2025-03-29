@@ -7,6 +7,8 @@ package frc.robot.commands.drive;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
+import org.photonvision.PhotonCamera;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,8 +36,6 @@ public class AlignToReefTags extends Command {
   private boolean atRotationSetpoint;
   private boolean atDriveYSetpoint;
   private boolean atDriveXSetpoint;
-
-  private int m_cameraId;
   
   private int targetIDs[] = {};
 
@@ -44,7 +44,6 @@ public class AlignToReefTags extends Command {
   private final DoubleSupplier m_yInput;
 
   private double m_distanceMeters;
-  private double m_yawDegrees;
 
   private double m_rotation = 0;
   private double m_driveX = 0;
@@ -73,7 +72,6 @@ public class AlignToReefTags extends Command {
     driveXController.setTolerance(Preferences.xAlignTolerancePreference.get());
 
     targetIDs = AllianceState.getInstance().getReefTags();
-    m_cameraId = CoralState.getInstance().pickCamera();
 
     atRotationSetpoint = false;
     atDriveYSetpoint = false;
@@ -85,8 +83,11 @@ public class AlignToReefTags extends Command {
   @Override
   public void execute() {
     //Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
+
+    PhotonCamera camera = CoralState.getInstance().pickReefCamera();
     
-    Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, m_cameraId);
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, camera);
+    m_drive.lockToCamera(camera);
 
     m_rotation = 0;
     m_driveX = 0;
@@ -146,6 +147,7 @@ public class AlignToReefTags extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_drive.unlockCameras();
     m_drive.driveRobotCentric(0, 0,0);
   }
 
