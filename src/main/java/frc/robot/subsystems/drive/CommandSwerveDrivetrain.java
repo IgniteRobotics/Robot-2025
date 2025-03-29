@@ -36,6 +36,8 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -462,64 +464,73 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         double xyStds = 0.5;
         double thetaStd = 0.5;
         double poseDistance = pose.estimatedPose.toPose2d().getTranslation().getDistance(this.getState().Pose.getTranslation());
-        for(PhotonTrackedTarget target: pose.targetsUsed) {
-            double distance = Math.sqrt(Math.pow(target.bestCameraToTarget.getX(), 2) + Math.pow(target.bestCameraToTarget.getY(), 2));
-            tagsUsed.add(new TrackedAprilTag(target.getFiducialId(), target.getArea(), distance, target.getPoseAmbiguity(), target.getYaw() , cameraId));
-             
-            tagPosesFieldRelative.add(new Pose3d(getPose())
-                .transformBy(CameraConstants.allPhotonPoseEstimators[cameraId].getRobotToCameraTransform())
-                .transformBy(target.getBestCameraToTarget()));
-                
-            if(target.getPoseAmbiguity() > highestAmbiguity){
-                highestAmbiguity = target.getPoseAmbiguity();
-            }
-            if(target.area > maxTargetSize){
-                maxTargetSize = target.area;
-            }
-        }
+                //move this to the end so we only see the tags that were used.
+                for(PhotonTrackedTarget target: pose.targetsUsed) {
+                    double distance = Math.sqrt(Math.pow(target.bestCameraToTarget.getX(), 2) + Math.pow(target.bestCameraToTarget.getY(), 2));        
+                        
+                    if(target.getPoseAmbiguity() > highestAmbiguity){
+                        highestAmbiguity = target.getPoseAmbiguity();
+                    }
+                    if(target.area > maxTargetSize){
+                        maxTargetSize = target.area;
+                    }
+                    if(highestAmbiguity > 0.2){
+                        return;
+                    }
+                    tagsUsed.add(new TrackedAprilTag(target.getFiducialId(), target.getArea(), distance, target.getPoseAmbiguity(), target.getYaw() , cameraId));
+                    
+                    tagPosesFieldRelative.add(new Pose3d(getPose())
+                        .transformBy(CameraConstants.allPhotonPoseEstimators[cameraId].getRobotToCameraTransform())
+                        .transformBy(target.getBestCameraToTarget()));
+                }
         //if the pose is too ambiguous, don't use it
         if(highestAmbiguity > 0.2){
             return;
         //if the target is large
+        // at 2m, the target is .5% of the image.
+        // at 1m, the target is 2.5% of the image.
         } else if (maxTargetSize > 2){
             // we're not moving, trust the pose
             if (this.getState().Speeds.vxMetersPerSecond + this.getState().Speeds.vyMetersPerSecond < 0.2){
-                xyStds = 0.1;
-                thetaStd = 0.1;  
+                xyStds = 0.05;
+                if(this.getState().Speeds.omegaRadiansPerSecond <  0.1){
+                    thetaStd = 0.05;  
+                }
             // new pose is close to the old pose, trust the pose
             } else if (poseDistance < 0.5){
                 xyStds = 0.15;
                 thetaStd = 0.15;
             }
-        } else if (maxTargetSize > 1){
+        } else if (maxTargetSize > 0.5){
             // we're not moving, trust the pose
             if (this.getState().Speeds.vxMetersPerSecond + this.getState().Speeds.vyMetersPerSecond < 0.2){
-                xyStds = 0.2;
-                thetaStd = 0.2;
+                xyStds = 0.1;
+                thetaStd = 0.1;
+                if(this.getState().Speeds.omegaRadiansPerSecond <  0.1){
+                    thetaStd = 0.1;  
+                }
             // new pose is close to the old pose, trust the pose
                 } else if (poseDistance < 0.5){
                 xyStds = 0.25;
                 thetaStd = 0.25;
             }
-        } else if (highestAmbiguity < 0.3) {
+        } else if (highestAmbiguity > 0.1) {
+            xyStds = 0.75;
+            thetaStd = 0.75;            
+        } else { // ambiguity is low.
             xyStds = 0.5;
-            thetaStd = 0.5;            
-        } else {
-            xyStds = 0.8;
-            thetaStd = 0.8;
+            thetaStd = 0.5;
         }
 
         //if you're spinning, bail.
         if(this.getState().Speeds.omegaRadiansPerSecond > Math.PI) {
             return;
-        }
-
-        //if you're rotating quickly, trust the pose less
-        if (this.getState().Speeds.omegaRadiansPerSecond > 0.5){
-            thetaStd = 0.99;
+        } else if (this.getState().Speeds.omegaRadiansPerSecond > 0.5){ //if you're rotating quickly, trust the pose less
+            thetaStd = 0.75;
         }
 
         this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds() - 200.0/1000.0, VecBuilder.fill(xyStds, xyStds, thetaStd));
+
     }
 
 
