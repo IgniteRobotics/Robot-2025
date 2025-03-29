@@ -262,7 +262,7 @@ public class RobotContainer {
 
         //joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
 
-        SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(Preferences.servoPosition)).andThen(new InstantCommand(() -> m_driveState.slowDown())));
+        SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(Preferences.servoPosition)));
         SmartDashboard.putData("Set Elevator PID", new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG, Preferences.elevatorkS)));
     
 
@@ -337,6 +337,9 @@ public class RobotContainer {
     }
 
     private void configureTestBindings() {
+
+        SmartDashboard.putData("Nerf", new InstantCommand(() -> m_driveState.nerf()));
+        SmartDashboard.putData("UnNerf", new InstantCommand(() -> m_driveState.unNerf()));
 
         SmartDashboard.putData("Vison Test", new InstantCommand(() -> VisionTest.VisionValueTest(drivetrain.m_photonCameraWrapper)));
 

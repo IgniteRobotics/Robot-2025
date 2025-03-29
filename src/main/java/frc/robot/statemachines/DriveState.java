@@ -120,9 +120,14 @@ public class DriveState {
         return maxAngularRate;
     }
 
-    public void slowDown(){
-        maxSpeed /= 2;
-        maxAngularRate /= 2;
+    public void nerf(){
+        maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)*0.35;
+        maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED*0.35;
+    }
+
+    public void unNerf(){
+        maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+        maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED;
     }
 
     //**********Vision***********//
