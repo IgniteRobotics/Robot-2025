@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.PhotonPipelineResult;
 
@@ -69,6 +70,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+
+    //use pose estimators
+    private boolean useOuttakeLeftEstimation = true;
+    private boolean useOuttakeRightEstimation = true;
+    private boolean useIntakeEstimation = true;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -419,63 +425,94 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return this.getState().Pose.getRotation().getDegrees();
     }
 
+    public void lockToCamera(PhotonCamera camera){
+        if(camera == CameraConstants.photonCameraOuttakeLeft){
+            useIntakeEstimation= false;
+            useOuttakeLeftEstimation = true;
+            useOuttakeRightEstimation = false;
+        }
+
+        if(camera == CameraConstants.photonCameraOuttakeRight){
+            useIntakeEstimation = false;
+            useOuttakeLeftEstimation = false;
+            useOuttakeRightEstimation = true;
+        }
+
+        else {
+            useIntakeEstimation = true;
+            useOuttakeLeftEstimation = false;
+            useOuttakeRightEstimation = false;
+        }
+    }
+
+    public void unlockCameras(){
+        useOuttakeLeftEstimation = true;
+        useOuttakeRightEstimation = true;
+        useIntakeEstimation = true;
+    }
 
     public void calculateGlobalPose(){
         //outtake left
-        CameraConstants.photonPoseEstimatorOuttakeLeft.setReferencePose(getPose());
-        var outtakeLeftResults = CameraConstants.photonCameraOuttakeLeft.getAllUnreadResults();
+        if(useOuttakeLeftEstimation){
+            CameraConstants.photonPoseEstimatorOuttakeLeft.setReferencePose(getPose());
+            var outtakeLeftResults = CameraConstants.photonCameraOuttakeLeft.getAllUnreadResults();
 
-        if(!outtakeLeftResults.isEmpty()){
-            var latestResult = outtakeLeftResults.get(outtakeLeftResults.size()-1);
-            m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeLeft, latestResult);
-        }
+            if(!outtakeLeftResults.isEmpty()){
+                var latestResult = outtakeLeftResults.get(outtakeLeftResults.size()-1);
+                m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeLeft, latestResult);
+            }
 
-        for(var result: outtakeLeftResults){
-            Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeLeft.update(result);
-            if(!estimatedPose.isEmpty()){
-                lastLeftPose3d = estimatedPose.get().estimatedPose;
-                calculateVisionMeasurement(estimatedPose.get(), 0);
+            for(var result: outtakeLeftResults){
+                Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeLeft.update(result);
+                if(!estimatedPose.isEmpty()){
+                    lastLeftPose3d = estimatedPose.get().estimatedPose;
+                    calculateVisionMeasurement(estimatedPose.get(), 0);
+                }
             }
         }
 
         //outtake right
-        CameraConstants.photonPoseEstimatorOuttakeRight.setReferencePose(getPose());
-        var outtakeRightResults = CameraConstants.photonCameraOuttakeRight.getAllUnreadResults();
+        if(useOuttakeRightEstimation){
+            CameraConstants.photonPoseEstimatorOuttakeRight.setReferencePose(getPose());
+            var outtakeRightResults = CameraConstants.photonCameraOuttakeRight.getAllUnreadResults();
 
-        if(!outtakeRightResults.isEmpty()){
-            var latestResult = outtakeRightResults.get(outtakeRightResults.size()-1);
-            m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeRight, latestResult);
-        }
+            if(!outtakeRightResults.isEmpty()){
+                var latestResult = outtakeRightResults.get(outtakeRightResults.size()-1);
+                m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeRight, latestResult);
+            }
 
-        for(var result: outtakeRightResults){
-            Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeRight.update(result);
-            if(!estimatedPose.isEmpty()){
-                lastRightPose3d = estimatedPose.get().estimatedPose;
-                calculateVisionMeasurement(estimatedPose.get(), 1);
+            for(var result: outtakeRightResults){
+                Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeRight.update(result);
+                if(!estimatedPose.isEmpty()){
+                    lastRightPose3d = estimatedPose.get().estimatedPose;
+                    calculateVisionMeasurement(estimatedPose.get(), 1);
+                }
             }
         }
 
         //intake
-        CameraConstants.photonPoseEstimatorIntake.setReferencePose(getPose());
-        var intakeResults = CameraConstants.photonCameraIntake.getAllUnreadResults();
+        if(useIntakeEstimation){
+            CameraConstants.photonPoseEstimatorIntake.setReferencePose(getPose());
+            var intakeResults = CameraConstants.photonCameraIntake.getAllUnreadResults();
 
-        if(!intakeResults.isEmpty()){
-            var latestResult = intakeResults.get(intakeResults.size()-1);
-            m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraIntake, latestResult);
-        }
+            if(!intakeResults.isEmpty()){
+                var latestResult = intakeResults.get(intakeResults.size()-1);
+                m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraIntake, latestResult);
+            }
 
-        for(var result: intakeResults){
-            Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorIntake.update(result);
-            if(!estimatedPose.isEmpty()){
-                calculateVisionMeasurement(estimatedPose.get(), 2);
+            for(var result: intakeResults){
+                Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorIntake.update(result);
+                if(!estimatedPose.isEmpty()){
+                    calculateVisionMeasurement(estimatedPose.get(), 2);
+                }
             }
         }
 
+
         if (lastLeftPose3d != null && lastRightPose3d != null){
             lrPoseDelta = lastLeftPose3d.minus(lastRightPose3d);
-        } else if (Robot.isSimulation()){
-            lrPoseDelta = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0,0,0));
         }
+
 
     }
   
