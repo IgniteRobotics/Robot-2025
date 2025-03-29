@@ -115,8 +115,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     @Logged(name = "LR Transform Delta", importance = Importance.CRITICAL)
     private Transform3d lrTransformDelta;
 
-
-
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(

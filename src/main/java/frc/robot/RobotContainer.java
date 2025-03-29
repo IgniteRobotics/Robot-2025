@@ -199,8 +199,8 @@ public class RobotContainer {
         configureSubsytemDefaultCommands();
         //configureBindings();
         //TODO MUST REMOVE
-        //configureTestBindings();
-        configureOdometryTestBindings();
+        configureTestBindings();
+        //configureOdometryTestBindings();
         configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
