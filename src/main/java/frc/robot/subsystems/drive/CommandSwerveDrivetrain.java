@@ -465,7 +465,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         for(PhotonTrackedTarget target: pose.targetsUsed) {
             double distance = Math.sqrt(Math.pow(target.bestCameraToTarget.getX(), 2) + Math.pow(target.bestCameraToTarget.getY(), 2));
             tagsUsed.add(new TrackedAprilTag(target.getFiducialId(), target.getArea(), distance, target.getPoseAmbiguity(), target.getYaw() , cameraId));
-             
+
             tagPosesFieldRelative.add(new Pose3d(getPose())
                 .transformBy(CameraConstants.allPhotonPoseEstimators[cameraId].getRobotToCameraTransform())
                 .transformBy(target.getBestCameraToTarget()));

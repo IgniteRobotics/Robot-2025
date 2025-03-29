@@ -12,6 +12,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -86,8 +87,8 @@ public class RobotContainer {
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-
+            .withDriveRequestType(DriveRequestType.Velocity);
+            
     private final Telemetry logger = new Telemetry(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond));
 
     private final CommandXboxController joystick = new CommandXboxController(0);
@@ -196,7 +197,8 @@ public class RobotContainer {
 
 
         configureSubsytemDefaultCommands();
-        configureBindings();
+        //configureBindings();
+        configureTestBindings();
         //TODO MUST REMOVE
         //configureTestBindings();
         configureManipulatorController(); 
@@ -351,6 +353,8 @@ public class RobotContainer {
     }
 
     private void configureTestBindings() {
+
+        SmartDashboard.putData("Vison Test", new InstantCommand(() -> VisionTest.VisionValueTest(drivetrain.m_photonCameraWrapper)));
 
         SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(Preferences.servoPosition)));
 
