@@ -18,14 +18,14 @@ import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
 public class VisionTest {
 
     public static void VisionValueTest(PhotonCameraWrapper m_pcw) {
-        Optional<TargetInfo> targeting = m_pcw.seekTargets(AllianceState.getInstance().getReefTags(), CameraConstants.photonCameraOuttakeLeft);
+        Optional<TargetInfo> targeting = m_pcw.seekTargets(AllianceState.getInstance().getReefTags(), CameraConstants.photonCameraOuttakeRight);
         
         System.out.println("getX() from transform3d: " + targeting.get().getTransform3d().getX());
         System.out.println("getY() from transform3d: " + targeting.get().getTransform3d().getY());
         
         PIDController sampleController = new PIDController(1, 0, 0);
-        System.out.println("X velocity determined: " + sampleController.calculate(targeting.get().getTransform3d().getX()));
-        System.out.println("Y velocity determined: " + sampleController.calculate(targeting.get().getTransform3d().getY()));
+        System.out.println("X velocity determined: " + sampleController.calculate(targeting.get().getTransform3d().getX(), 0));
+        System.out.println("Y velocity determined: " + sampleController.calculate(targeting.get().getTransform3d().getY(), 0));
     }
 
 }

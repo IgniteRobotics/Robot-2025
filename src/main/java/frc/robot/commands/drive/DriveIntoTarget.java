@@ -7,11 +7,14 @@ package frc.robot.commands.drive;
 import java.util.Optional;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Preferences;
 import frc.robot.statemachines.AllianceState;
 import frc.robot.statemachines.CoralState;
+import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
@@ -24,7 +27,8 @@ import edu.wpi.first.epilogue.Logged;
 public class DriveIntoTarget extends Command {
   private final CommandSwerveDrivetrain m_drive;
   PhotonCameraWrapper m_pcw;
-  PIDController driveXController;
+  ProfiledPIDController driveXController;
+  Constraints m_XConstraints;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   private int targetIDs[] = {};
@@ -43,9 +47,12 @@ public class DriveIntoTarget extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveXController = new PIDController(Preferences.alignDriveXKP.get(), Preferences.alignDriveXKI.get(), Preferences.alignDriveXKD.get());
+    
+    m_XConstraints = new Constraints(Preferences.profiledDriveXMaxVel.get(), Preferences.profiledDriveXMaxAcc.get());
+    driveXController = new ProfiledPIDController(Preferences.profiledDriveXKP.get(), Preferences.profiledDriveXKI.get(), Preferences.profiledDriveXKD.get(), m_XConstraints);
     driveXController.setTolerance(Preferences.xAlignTolerancePreference.get());
-  
+    driveXController.setIZone(Double.POSITIVE_INFINITY);
+    
     targetIDs = AllianceState.getInstance().getReefTags();
 
   }
@@ -61,8 +68,8 @@ public class DriveIntoTarget extends Command {
     if(targeting.isPresent()){
     
       m_distanceMeters = 0.347;
-      driveX = driveXController.calculate(targeting.get().getDistance(), m_distanceMeters);
-      SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getDistance());
+      driveX = driveXController.calculate(targeting.get().getTransform3d().getX(), m_distanceMeters);
+      SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getTransform3d().getX());
     
     }
 

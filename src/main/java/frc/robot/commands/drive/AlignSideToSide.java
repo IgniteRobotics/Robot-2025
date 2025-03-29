@@ -7,6 +7,8 @@ package frc.robot.commands.drive;
 import java.util.Optional;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Preferences;
@@ -24,10 +26,9 @@ import edu.wpi.first.epilogue.Logged;
 public class AlignSideToSide extends Command {
   private final CommandSwerveDrivetrain m_drive;
   PhotonCameraWrapper m_pcw;
-  PIDController rotationController;
-  PIDController driveYController;
-  PIDController driveXController;
+  ProfiledPIDController driveYController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+  Constraints m_YConstraints;
   
   private int targetIDs[] = {};
 
@@ -45,8 +46,10 @@ public class AlignSideToSide extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveYController = new PIDController(Preferences.alignDriveYKP.get(), Preferences.alignDriveYKI.get(), Preferences.alignDriveYKD.get());
+    m_YConstraints = new Constraints(Preferences.profiledDriveYMaxVel.get(), Preferences.profiledDriveYMaxAcc.get());
+    driveYController = new ProfiledPIDController(Preferences.profiledDriveYKP.get(), Preferences.profiledDriveYKI.get(), Preferences.profiledDriveYKD.get(), m_YConstraints);
     driveYController.setTolerance(Preferences.yAlignTolerancePreference.get());
+    driveYController.setIZone(Double.POSITIVE_INFINITY);
   
     targetIDs = AllianceState.getInstance().getReefTags();
     m_distanceMeters = Preferences.coralXDriveOffset.get();
@@ -63,9 +66,7 @@ public class AlignSideToSide extends Command {
     double driveY;
 
     if(targeting.isPresent()){
-    
-      
-      driveY = -driveYController.calculate(targeting.get().getYaw(), 0);
+      driveY = driveYController.calculate(targeting.get().getTransform3d().getY(), 0);
     }
 
     else{

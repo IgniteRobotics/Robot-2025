@@ -323,7 +323,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public void driveRobotCentric(double x, double y, double rot){
         SwerveRequest.RobotCentric m_driveRequest = new SwerveRequest.RobotCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+            .withDriveRequestType(DriveRequestType.Velocity)
             .withSteerRequestType(SteerRequestType.MotionMagicExpo);
         this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
     }
