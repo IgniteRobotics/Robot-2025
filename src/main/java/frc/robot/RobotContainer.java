@@ -87,8 +87,8 @@ public class RobotContainer {
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
-            .withDriveRequestType(DriveRequestType.Velocity);
-            
+        .withDriveRequestType(DriveRequestType.Velocity);
+
     private final Telemetry logger = new Telemetry(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond));
 
     private final CommandXboxController joystick = new CommandXboxController(0);
@@ -198,9 +198,9 @@ public class RobotContainer {
 
         configureSubsytemDefaultCommands();
         //configureBindings();
-        configureTestBindings();
         //TODO MUST REMOVE
         //configureTestBindings();
+        configureOdometryTestBindings();
         configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -377,9 +377,23 @@ public class RobotContainer {
     }
 
     private void configureOdometryTestBindings(){
-        joystick.a().whileTrue(testTurnByAngle);
-        joystick.b().whileTrue(testDriveBySpeed);
-        joystick.x().whileTrue(testDriveByRPS);
+        //joystick.a().onTrue(testTurnByAngle)
+        joystick.b().onTrue(drivetrain.applyRequest(
+                () -> forwardStraight.withVelocityX(2)
+            ))
+        .onFalse(drivetrain.applyRequest(
+            () -> forwardStraight.withVelocityX(0)
+        ));
+        
+        //joystick.x().whileTrue(testDriveByRPS);
+        /*
+        joystick.a().onTrue(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(Math.PI/2))
+        ))
+        .onFalse(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(0))
+        ));
+        */
     }
 
     public Command getAutonomousCommand() {

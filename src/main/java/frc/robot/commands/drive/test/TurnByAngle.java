@@ -34,26 +34,26 @@ public class TurnByAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(m_currentAngle)));
+    m_drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(Math.toRadians(m_currentAngle))));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     SmartDashboard.putNumber("test/drive/steer/targetAngle", m_currentAngle);
-    m_drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(m_currentAngle)));
-    m_currentAngle += m_increment.getAsDouble() % 360;
+    m_drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(Math.toRadians(m_currentAngle))));
+    m_currentAngle = (m_currentAngle + m_increment.getAsDouble()) % 360;
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0)));
+    //m_drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0)));
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
