@@ -59,9 +59,6 @@ import frc.robot.commands.drive.DriveIntoTarget;
 import frc.robot.commands.drive.ManualDriveAlignment;
 import frc.robot.commands.drive.ProfiledAlignToReefTags;
 import frc.robot.commands.drive.RotateToHeading;
-import frc.robot.commands.drive.test.DriveByRPS;
-import frc.robot.commands.drive.test.DriveBySpeed;
-import frc.robot.commands.drive.test.TurnByAngle;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.commands.test.VisionTest;
@@ -145,14 +142,7 @@ public class RobotContainer {
 
     private AlgaeState m_AlgaeState = AlgaeState.getInstance();
 
-    private final Command setWheelsToZero = new InstantCommand(() -> drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0.0))));
-
-    // ******************** Testing Commands ********************
-    private final Command testTurnByAngle = new TurnByAngle(drivetrain, 0.0, () -> Preferences.driveTestTurnAngle.get());
-    private final Command testDriveBySpeed = new DriveBySpeed(drivetrain, Preferences.driveTestSpeed);
-    private final Command testDriveByRPS = new DriveByRPS(drivetrain, Preferences.driveTestRPS);
-    
-
+    private final Command setWheelsToZero = new InstantCommand(() -> drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0.0))));   
 
     public RobotContainer() {
         
@@ -279,7 +269,6 @@ public class RobotContainer {
 
         SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(0.5)));
         SmartDashboard.putData("Set Elevator PID", new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG, Preferences.elevatorkS)));
-        SmartDashboard.putData("test/turnModules", testTurnByAngle);
     
 
         joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
@@ -380,7 +369,6 @@ public class RobotContainer {
     }
 
     private void configureOdometryTestBindings(){
-        //joystick.a().onTrue(testTurnByAngle)
         joystick.b().onTrue(drivetrain.applyRequest(
                 () -> forwardStraight.withVelocityX(2)
             ))
@@ -388,15 +376,13 @@ public class RobotContainer {
             () -> forwardStraight.withVelocityX(0)
         ));
         
-        //joystick.x().whileTrue(testDriveByRPS);
-        /*
         joystick.a().onTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(Math.PI/2))
         ))
         .onFalse(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(0))
         ));
-        */
+        
     }
 
     public Command getAutonomousCommand() {
