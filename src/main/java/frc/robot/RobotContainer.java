@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.algae.IntakeAlgae;
+import frc.robot.commands.auton.AutonAlignToHPTag;
 import frc.robot.commands.auton.AutonScoreCoralGroup;
 import frc.robot.commands.composite.AutoScoreCoralGroup;
 
@@ -159,20 +160,27 @@ public class RobotContainer {
 
         Command driveInCoralLeftL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_LEFT);
         Command driveInCoralRightL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_RIGHT);
+        Command intakeAtHP = new AutonAlignToHPTag(drivetrain, m_PhotonCameraWrapper).andThen(new WaitUntilCommand(() -> CoralState.getInstance().hasCoral()));
 
+
+        NamedCommands.registerCommand("Score Coral Left Level 4", driveInCoralLeftL4);
+        NamedCommands.registerCommand("Score Coral Right Level 4", driveInCoralRightL4);
+        NamedCommands.registerCommand("Intake At HP", intakeAtHP);
+        
         autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
         //autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
         autoChooser.addOption("Simple Drive Auton", AutoBuilder.buildAuto("Simple Auton"));
         autoChooser.addOption("Simple Drive Auton 2", AutoBuilder.buildAuto("Simple Auton 2"));
         autoChooser.addOption("Better Test Auton", AutoBuilder.buildAuto("Better Test Auton"));
+        autoChooser.addOption("Score 1 Coral Right", AutoBuilder.buildAuto("1 Coral Level 4 Right"));
         //autoChooser.addOption("3 Align Auton", AutoBuilder.buildAuto("3 Align Auton"));
-        //utoChooser.addOption("Straight In Level 4 Right", AutoBuilder.buildAuto("1 Coral Level 4 Right"));
         autoChooser.addOption("Drive Coral Left L4", driveInCoralLeftL4);
         autoChooser.addOption("Drive Coral Right L4", driveInCoralRightL4);
         autoChooser.addOption("TroughBump", AutoBuilder.buildAuto("TroughBump"));
         autoChooser.addOption("1MeterAndTurn", AutoBuilder.buildAuto("DriveAndTurn"));
         autoChooser.addOption("TestDriveForward", AutoBuilder.buildAuto("TestDriveForward"));
         
+
         // autoChooser.addOption("Line Up and Trough", new RunCommand(() -> drivetrain.driveRobotCentric(Preferences.autonYDrive.getValue(), 0, 0)).withTimeout(2)
         //     .alongWith(new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference)))
         //     .andThen(new WaitCommand(1))

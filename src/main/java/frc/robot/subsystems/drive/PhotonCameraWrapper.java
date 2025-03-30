@@ -85,6 +85,7 @@ public class PhotonCameraWrapper{
         
     }
 
+    //for multiple targets
     public Optional<TargetInfo> seekTargets(int[] ids, PhotonCamera camera){
 
         ArrayList< Optional<PhotonTrackedTarget> > targets = new ArrayList< Optional<PhotonTrackedTarget> >();
@@ -116,6 +117,20 @@ public class PhotonCameraWrapper{
         
         return Optional.empty();
 
+    }
+
+
+    //for one target
+    public Optional<TargetInfo> seekTargets(int id, PhotonCamera camera){
+
+        var newResult = m_driveState.getLatestPhotonVisionResult(camera);
+        Optional<PhotonTrackedTarget> target = lookForTarget(newResult, id);
+
+        if(target.isPresent() && target.get().getPoseAmbiguity() < CameraConstants.MINIMUM_AMBIGUITY){
+            return Optional.of(new TargetInfo(target.get().getBestCameraToTarget(), target.get().getYaw(), target.get().getFiducialId(), camera.getName()));
+        }
+    
+        return Optional.empty();
     }
 
     private Optional<PhotonTrackedTarget> lookForTarget(PhotonPipelineResult result, int targetId){
