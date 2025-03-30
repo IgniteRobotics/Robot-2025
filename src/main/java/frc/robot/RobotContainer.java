@@ -41,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.algae.IntakeAlgae;
 import frc.robot.commands.auton.AutonAlignToHPTag;
+import frc.robot.commands.auton.AutonAlignToReefTag;
 import frc.robot.commands.auton.AutonScoreCoralGroup;
 import frc.robot.commands.composite.AutoScoreCoralGroup;
 
@@ -166,14 +167,30 @@ public class RobotContainer {
         NamedCommands.registerCommand("Score Coral Left Level 4", driveInCoralLeftL4);
         NamedCommands.registerCommand("Score Coral Right Level 4", driveInCoralRightL4);
         NamedCommands.registerCommand("Intake At HP", intakeAtHP);
+
+        Command alignToCoralLeftL4 = new InstantCommand(() -> m_CoralState.setCoralTarget(CoralTarget.L4_LEFT))
+            .andThen(new AutonAlignToReefTag(drivetrain, drivetrain.m_photonCameraWrapper))
+            .andThen(new WaitCommand(2));
+
+        Command alignToCoralRightL4 = new InstantCommand(() -> m_CoralState.setCoralTarget(CoralTarget.L4_RIGHT))
+            .andThen(new AutonAlignToReefTag(drivetrain, drivetrain.m_photonCameraWrapper))
+            .andThen(new WaitCommand(2));
+
+        Command alignToHP = new AutonAlignToHPTag(drivetrain, drivetrain.m_photonCameraWrapper)
+            .andThen(new WaitCommand(2));
+
+        NamedCommands.registerCommand("Align Left", alignToCoralLeftL4);
+        NamedCommands.registerCommand("Align Right", alignToCoralRightL4);
+        NamedCommands.registerCommand("Align At HP", alignToHP);
+        
         
         autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
-        //autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
+        autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
         autoChooser.addOption("Simple Drive Auton", AutoBuilder.buildAuto("Simple Auton"));
         autoChooser.addOption("Simple Drive Auton 2", AutoBuilder.buildAuto("Simple Auton 2"));
         autoChooser.addOption("Better Test Auton", AutoBuilder.buildAuto("Better Test Auton"));
         autoChooser.addOption("Score 1 Coral Right", AutoBuilder.buildAuto("1 Coral Level 4 Right"));
-        //autoChooser.addOption("3 Align Auton", AutoBuilder.buildAuto("3 Align Auton"));
+        autoChooser.addOption("3 Align Auton", AutoBuilder.buildAuto("3 Align Auton"));
         autoChooser.addOption("Drive Coral Left L4", driveInCoralLeftL4);
         autoChooser.addOption("Drive Coral Right L4", driveInCoralRightL4);
         autoChooser.addOption("TroughBump", AutoBuilder.buildAuto("TroughBump"));
