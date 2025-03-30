@@ -330,6 +330,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     @Override
     public void periodic() {
+
+        SmartDashboard.putBoolean("Is Nerfed", DriveState.getInstance().isNerfed());
+
         tagPosesFieldRelative = new LinkedList<Pose3d>();
         tagsUsed = new LinkedList<TrackedAprilTag>();
         if (Robot.isSimulation()){

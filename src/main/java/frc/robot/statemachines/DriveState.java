@@ -38,11 +38,14 @@ public class DriveState {
     
     private static double maxAngularRate;
 
+    private static boolean nerfed;
+
     Map<PhotonCamera, PhotonPipelineResult> cameraResults = new HashMap<>(){};
 
     private DriveState() {
         maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
         maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED;
+        nerfed = false;
     }
 
     public static synchronized DriveState getInstance()
@@ -124,12 +127,20 @@ public class DriveState {
     public void nerf(){
         maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)*Preferences.nerfFactor.getValue();
         maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED*Preferences.nerfFactor.getValue();
+        nerfed = true;
     }
 
     public void unNerf(){
         maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
         maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED;
+        nerfed = false;
     }
+
+    public boolean isNerfed(){
+        return nerfed;
+    }
+
+
 
     //**********Vision***********//
     public void setLatestPhotonVisionResult(PhotonCamera camera, PhotonPipelineResult newResult){
