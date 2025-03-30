@@ -47,6 +47,8 @@ public class CameraConstants {
     public static final double Y_LEFT_CORAL_OFFSET_METERS = 0.119;
     public static final double Y_RIGHT_CORAL_OFFSET_METERS = -0.081;
 
+    public static final double X_OFFSET_METERS = 0.37;
+
     //sets of tag ids for targeting
     public static final int[] RED_HUMAN_PLAYER_TAGS = {1,2};
     public static final int[] BLUE_HUMAN_PLAYER_TAGS = {12,13};

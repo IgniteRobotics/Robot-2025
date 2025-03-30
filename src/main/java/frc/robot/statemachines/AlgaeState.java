@@ -92,7 +92,7 @@ public class AlgaeState {
         else if (getAlgaeTarget() == AlgaeTarget.HIGH_REEF){ 
                 return Preferences.elevatorHighAlgaeReefPreference.getValue();
         } else {
-            return 0;
+            return ElevatorConstants.FLOOR.GROUND.position;
         }
     }
 

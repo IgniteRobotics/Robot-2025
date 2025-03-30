@@ -289,6 +289,9 @@ public class RobotContainer {
 
         //joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
 
+        SmartDashboard.putData("Nerf", new InstantCommand(() -> m_driveState.nerf()));
+        SmartDashboard.putData("UnNerf", new InstantCommand(() -> m_driveState.unNerf()));
+        
         SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(Preferences.servoPosition)));
         SmartDashboard.putData("Set Elevator PID", new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG, Preferences.elevatorkS)));
     
@@ -315,42 +318,36 @@ public class RobotContainer {
 
         
         joystick.x().whileTrue(
-            new ToSetpoint(elevator, ElevatorConstants.ALGAE.PROCESSOR.height).withTimeout(2).alongWith(
-                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle)).until(() -> collector.isWristAtPosition()).withTimeout(2)
-            ).andThen(new WaitUntilCommand(joystick.rightTrigger()).andThen(
-                new RunCommand(() -> collector.outtakeAlgae()).withTimeout( 1))
-            )
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.PROCESSOR.height))
+                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle)))
+                .andThen(new WaitUntilCommand(joystick.rightTrigger()))
+                .andThen(new InstantCommand(() -> collector.outtakeAlgae()))
         ).onFalse(
-            new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
-                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))).alongWith(
-                new InstantCommand(() -> collector.stopAlgaeMotor()))
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))
+                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle)))
+                .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
         );
 
-        joystick.b().onTrue(
-            new ElevatorToAlgaePreset(elevator).alongWith(
-                new RunCommand(() -> collector.setToIntakePosition()).alongWith(
-                    new ManualDriveAlignment(drivetrain,() -> joystick.getLeftY(),() ->  joystick.getLeftX(), () -> joystick.getRightX()).alongWith(
-                        new IntakeAlgae(collector)
-                    )
+        joystick.b().whileTrue(
+            new InstantCommand(() -> elevator.setPositionRevolutions(AlgaeState.getInstance().getAlgaeHeight()))
+                .andThen(new InstantCommand(() -> collector.setToIntakePosition()))
+                .andThen(new ManualDriveAlignment(drivetrain,() -> joystick.getLeftY(),() ->  joystick.getLeftX(), () -> joystick.getRightX())
+                    .alongWith(new IntakeAlgae(collector))
                 )
-            )
         ).onFalse(
-
-            new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
-                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))
-            )
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))
+                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle)))
         );
 
-        joystick.y().onTrue(
-            new ToSetpoint(elevator, ElevatorConstants.ALGAE.BARGE.height).alongWith(
-                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.BARGE.angle)).until(() -> collector.isWristAtPosition())
-            ).andThen(new WaitUntilCommand(joystick.rightTrigger()).andThen(
-                new RunCommand(() -> collector.outtakeAlgae()).withTimeout(.5))
-            )
+        joystick.y().whileTrue(
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.BARGE.height))
+                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.BARGE.angle)))
+                .andThen(new WaitUntilCommand(joystick.rightTrigger()))
+                .andThen(new RunCommand(() -> collector.outtakeAlgae()))
         ).onFalse(
-            new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
-                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))).alongWith(
-                new InstantCommand(() -> collector.stopAlgaeMotor()))
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))
+                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle)))
+                .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
         );
 
         joystick.back().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll())

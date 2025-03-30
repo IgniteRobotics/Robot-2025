@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Preferences;
 import frc.robot.statemachines.AllianceState;
 import frc.robot.statemachines.CoralState;
+import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
@@ -121,7 +122,7 @@ public class AutonAlignToReefTag extends Command {
         
     
       
-        m_distanceMeters = 0.37;
+        m_distanceMeters = CameraConstants.X_OFFSET_METERS;
         m_driveX = driveXController.calculate(targeting.get().getTransform3d().getX(), m_distanceMeters);
         //if Y alignment is still running, scale X alignment power to curve in.
         // if (!atDriveYGoal) {

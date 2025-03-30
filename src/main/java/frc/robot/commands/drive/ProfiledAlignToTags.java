@@ -21,6 +21,7 @@ import frc.robot.Preferences;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.AllianceState;
 import frc.robot.statemachines.CoralState;
+import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
@@ -57,9 +58,9 @@ public class ProfiledAlignToTags extends Command {
 
   private double m_distanceMeters;
 
-  private double m_rotation = 0;
-  private double m_driveX = 0;
-  private double m_driveY = 0;
+  private double m_rotation;
+  private double m_driveX ;
+  private double m_driveY;
   
   /** Creates a new AlignToTarget. */
   public ProfiledAlignToTags(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, Supplier<int[]> idSupplier, Supplier<PhotonCamera> cameraSupplier, DoubleSupplier xInput, DoubleSupplier yInput){
@@ -148,8 +149,10 @@ public class ProfiledAlignToTags extends Command {
         }
       
         if(!driverOverrideX){
-          m_distanceMeters = 0.328; //update based on field measurements.
+          m_distanceMeters = CameraConstants.X_OFFSET_METERS; //update based on field measurements.
           m_driveX = driveXController.calculate(targeting.get().getTransform3d().getX(), m_distanceMeters);
+          //blur is bad
+          m_driveX = MathUtil.clamp(m_driveX, -2, 2);
           //if Y alignment is still running, scale X alignment power to curve in.
           // if (!atDriveYGoal) {
           //   m_driveX = MathUtil.clamp(m_driveX, -m_driveX*0.5, m_driveX*0.5);
