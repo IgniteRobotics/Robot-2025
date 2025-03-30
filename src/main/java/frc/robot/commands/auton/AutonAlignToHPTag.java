@@ -81,7 +81,7 @@ public class AutonAlignToHPTag extends Command {
   @Override
   public void execute() {
 
-    Optional<TargetInfo> targeting = m_pcw.seekTargets(AllianceState.getInstance().getHumanPlayerTags(), CameraConstants.photonCameraOuttakeRight);
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(AllianceState.getInstance().getHumanPlayerTags(), CameraConstants.photonCameraIntake);
 
     m_rotation = 0;
     m_driveX = 0;

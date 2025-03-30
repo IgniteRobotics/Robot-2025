@@ -42,6 +42,8 @@ public class ProfiledAlignToTags extends Command {
   Constraints m_XConstraints;
   Constraints m_RotConstraints;
 
+  private int lockedTarget;
+
   private boolean doTranslation;
 
   private boolean driverOverrideY;
@@ -74,6 +76,9 @@ public class ProfiledAlignToTags extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
+    driverOverrideX = false;
+    driverOverrideY = false;
     
     rotationController = new PIDController(Preferences.profiledAlignRotKP.get(), Preferences.profiledAlignRotKI.get(), Preferences.profiledAlignRotKD.get());
     rotationController.setTolerance(Preferences.rotationTolerancePreference.get());
@@ -90,20 +95,30 @@ public class ProfiledAlignToTags extends Command {
     driveXController.setIZone(Double.POSITIVE_INFINITY);
 
     doTranslation = false;
+    lockedTarget = -1;
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    SmartDashboard.putBoolean("Can do translation", doTranslation);
     
-    Optional<TargetInfo> targeting = m_pcw.seekTargets(m_idSupplier.get(), m_cameraSupplier.get());
+    //locks to a target to prevent "confusion"
+    Optional<TargetInfo> targeting;
+    if(lockedTarget == -1)
+      targeting = m_pcw.seekTargets(m_idSupplier.get(), m_cameraSupplier.get());
+    else 
+      targeting = m_pcw.seekTargets(lockedTarget, m_cameraSupplier.get());
 
     m_rotation = 0;
     m_driveX = 0;
     m_driveY = 0;
 
     if(targeting.isPresent()){
+
+      lockedTarget = targeting.get().getTagId();
 
       SmartDashboard.putNumber("Alignment/Data/TargetID", targeting.get().getTagId());
       SmartDashboard.putNumber("Alignment/Data/TargetX", targeting.get().getTransform3d().getX());

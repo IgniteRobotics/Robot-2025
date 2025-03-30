@@ -209,9 +209,9 @@ public class RobotContainer {
 
 
         configureSubsytemDefaultCommands();
-        //configureBindings();
+        configureBindings();
         //TODO MUST REMOVE
-        configureTestBindings();
+        //configureTestBindings();
         //configureOdometryTestBindings();
         configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
@@ -302,7 +302,7 @@ public class RobotContainer {
 
         //score coral
         joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
-                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), () -> joystick.getLeftX(), () -> joystick.getRightX(), joystick.rightTrigger(), joystick.leftTrigger())
+                ()-> joystick.getLeftY(), () -> joystick.getLeftX(), joystick.rightTrigger(), joystick.leftTrigger())
         )
 
         // joystick.a().whileTrue(new SemiAutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 

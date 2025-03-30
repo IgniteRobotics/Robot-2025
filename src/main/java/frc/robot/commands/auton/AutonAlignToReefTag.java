@@ -43,6 +43,8 @@ public class AutonAlignToReefTag extends Command {
   
   private double m_distanceMeters;
 
+  private int lockedTarget;
+
   private double m_rotation = 0;
   private double m_driveX = 0;
   private double m_driveY = 0;
@@ -74,19 +76,26 @@ public class AutonAlignToReefTag extends Command {
     driveXController.setIZone(Double.POSITIVE_INFINITY);
 
     doTranslation = false;
+    lockedTarget = -1;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    Optional<TargetInfo> targeting = m_pcw.seekTargets(AllianceState.getInstance().getReefTags(), CoralState.getInstance().pickReefCamera());
+    Optional<TargetInfo> targeting;
+    if(lockedTarget == -1)
+      targeting = m_pcw.seekTargets(AllianceState.getInstance().getReefTags(), CoralState.getInstance().pickReefCamera());
+    else
+      targeting = m_pcw.seekTargets(lockedTarget, CoralState.getInstance().pickReefCamera());
 
     m_rotation = 0;
     m_driveX = 0;
     m_driveY = 0;
 
     if(targeting.isPresent()){
+
+      lockedTarget = targeting.get().getTagId();
 
       double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());
       m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
@@ -112,7 +121,7 @@ public class AutonAlignToReefTag extends Command {
         
     
       
-        m_distanceMeters = 0.347;
+        m_distanceMeters = 0.37;
         m_driveX = driveXController.calculate(targeting.get().getTransform3d().getX(), m_distanceMeters);
         //if Y alignment is still running, scale X alignment power to curve in.
         // if (!atDriveYGoal) {
