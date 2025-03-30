@@ -319,7 +319,7 @@ public class RobotContainer {
         
         joystick.x().whileTrue(
             new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.PROCESSOR.height))
-                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle)))
+                .andThen(new InstantCommand(() -> collector.setWristPosition(Preferences.collectorProcessorWristPosition)))
                 .andThen(new WaitUntilCommand(joystick.rightTrigger()))
                 .andThen(new InstantCommand(() -> collector.outtakeAlgae()))
         ).onFalse(
@@ -341,7 +341,7 @@ public class RobotContainer {
 
         joystick.y().whileTrue(
             new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.BARGE.height))
-                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.BARGE.angle)))
+                .andThen(new InstantCommand(() -> collector.setWristPosition(Preferences.collectorBargeWristPosition)))
                 .andThen(new WaitUntilCommand(joystick.rightTrigger()))
                 .andThen(new RunCommand(() -> collector.outtakeAlgae()))
         ).onFalse(

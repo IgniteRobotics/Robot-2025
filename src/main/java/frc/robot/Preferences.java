@@ -94,8 +94,8 @@ public class Preferences {
     public static DoublePreference algaeIntakeCurrentLimit = new DoublePreference("AlgaeCollector/IntakeCurrentLimit", AlgaeCollectorConstants.ALGAE_INTAKE_CURRENT_LIMIT);
 
     public static DoublePreference collectorStowPosition = new DoublePreference("AlgaeCollector/Wrist/Stow Position", AlgaeCollectorConstants.WRIST.STOW.angle);
-    public static DoublePreference collectorWristPosition = new DoublePreference("AlgaeCollector/Wrist/Position",0);
-
+    public static DoublePreference collectorProcessorWristPosition = new DoublePreference("AlgaeCollector/Wrist/Processor Position",0);
+    public static DoublePreference collectorBargeWristPosition = new DoublePreference("AlgaeCollector/Wrist/Barge Position",0);
     public static DoublePreference collectorOuttakeDelay = new DoublePreference("AlgaeCollector/Outtake Delay", 0.5);
 
     // ********** Climber **********
