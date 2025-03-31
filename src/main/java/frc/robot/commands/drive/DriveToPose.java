@@ -90,7 +90,7 @@ public class DriveToPose extends Command {
       m_targetPoseFieldRelative = m_targetPoseSupplier.get();
     }
     
-    if (m_targetPoseFieldRelative == null) {
+    if (m_targetPoseFieldRelative != null) {
      
       //current field relative pose
       Pose2d currentPose = m_driveTrain.getPose();

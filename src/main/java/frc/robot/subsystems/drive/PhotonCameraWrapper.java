@@ -115,6 +115,12 @@ public class PhotonCameraWrapper{
         }
         
         
+
+        if (Robot.isSimulation()){
+            return Optional.of(new TargetInfo(new Transform3d(3, 2, 0, new Rotation3d(0, 15, 10)),
+            10, 18, CameraConstants.photonCameraNameOuttakeLeft));
+        }
+
         return Optional.empty();
 
     }
@@ -129,29 +135,35 @@ public class PhotonCameraWrapper{
         if(target.isPresent() && target.get().getPoseAmbiguity() < CameraConstants.MINIMUM_AMBIGUITY){
             return Optional.of(new TargetInfo(target.get().getBestCameraToTarget(), target.get().getYaw(), target.get().getFiducialId(), camera.getName()));
         }
+
+        if (Robot.isSimulation()){
+            return Optional.of(new TargetInfo(new Transform3d(3, 2, 0, new Rotation3d(0, 15, 10)),
+            10, 18, CameraConstants.photonCameraNameOuttakeLeft));
+        }
     
         return Optional.empty();
     }
 
     private Optional<PhotonTrackedTarget> lookForTarget(PhotonPipelineResult result, int targetId){
+        if(Robot.isSimulation()){   //TODO: Change values (after TargetId 2 addition values, see class)
+            return Optional.of(new PhotonTrackedTarget(10, 15, 1, 0.0, targetId, -1, -1,
+                new Transform3d(3, 2, 0, new Rotation3d(0.0, 15, 10)),
+                new Transform3d(3, 2, 0, new Rotation3d(0.0, 15, 10)),
+             0.0, 
+             new ArrayList<TargetCorner>(4), 
+             new ArrayList<TargetCorner>(4)
+             ));
+        }
+
+
         for (var target : result.getTargets()){
                 if (targetId == target.getFiducialId()){
                     return Optional.of(target) ;
                 }
             }
 
-        if (Robot.isReal()){
-            return Optional.empty();
-        } else {
-            //TODO: Change values (after TargetId 2 addition values, see class)
-            return Optional.of(new PhotonTrackedTarget(0, 0.0, 0, 0.0, targetId, -1, -1,
-                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0)),
-                new Transform3d(1, 1, 1, new Rotation3d(0.0, 0.0, 0)),
-             0.0, 
-             new ArrayList<TargetCorner>(4), 
-             new ArrayList<TargetCorner>(4)
-             ));
-        }
+
+        return Optional.empty();
     }
 
     public void setPipeline(int index){
