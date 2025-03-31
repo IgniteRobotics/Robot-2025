@@ -98,6 +98,10 @@ public class Preferences {
     public static DoublePreference collectorBargeWristPosition = new DoublePreference("AlgaeCollector/Wrist/Barge Position",0);
     public static DoublePreference collectorOuttakeDelay = new DoublePreference("AlgaeCollector/Outtake Delay", 0.5);
 
+    public static DoublePreference collectorMMCruiseVelocity = new DoublePreference("AlgaeCollector/Wrist/Motion Magic/Cruise Velocity", AlgaeCollectorConstants.WRIST_MM_CRUISE_VELOCITY);
+    public static DoublePreference collectorMMAcceleration = new DoublePreference("AlgaeCollector/Wrist/Motion Magic/Acceleration", AlgaeCollectorConstants.WRIST_MM_ACCEL);
+    public static DoublePreference collectorMMJerk = new DoublePreference("AlgaeCollector/Wrist/Motion Magic/Jerk", AlgaeCollectorConstants.WRIST_MM_JERK);
+
     // ********** Climber **********
     public static DoublePreference climberkV = new DoublePreference("Climber/kV", ClimberConstants.CLIMBER_kV);
     public static DoublePreference climberkP = new DoublePreference("Climber/kP", ClimberConstants.CLIMBER_kP);

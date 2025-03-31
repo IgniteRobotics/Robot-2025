@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.algae;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.ProximityParamsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -33,6 +34,7 @@ public class AlgaeCollector extends SubsystemBase {
   private SoftwareLimitSwitchConfigs m_wristSoftLimitConfigs;
   private TalonFXConfiguration m_wristTalonFXConfiguration;
   private MotorOutputConfigs m_wristMotorOutputConfigs;
+  private MotionMagicConfigs m_wristMMConfigs;
 
   private double m_wristTargetPosition;
 
@@ -59,13 +61,18 @@ public class AlgaeCollector extends SubsystemBase {
     m_wristSoftLimitConfigs = AlgaeCollectorConstants.createWristSoftLimitConfigs();
     m_wristMotorOutputConfigs = AlgaeCollectorConstants.createWristMotorOutputConfigs();
     m_wristMotor.getConfigurator().apply(m_wristMotorOutputConfigs);
+    m_wristMMConfigs = AlgaeCollectorConstants.createWristMotionMagicConfigs();
+    m_wristMotor.getConfigurator().apply(m_wristMMConfigs);
     m_wristMotor.setPosition(0.282715);
 
   }
 
-
   public void stopAlgaeMotor(){
     m_algaeMotor.set(0);
+  }
+
+  public void stopWristMotor(){
+    m_wristMotor.stopMotor();
   }
 
   public void intakeAlgae(){
@@ -113,6 +120,14 @@ public class AlgaeCollector extends SubsystemBase {
     } else {
       return false;
     }
+  }
+
+  public void setWristMotionMagic(DoublePreference CV, DoublePreference A, DoublePreference J){
+    m_wristMotor.getConfigurator().refresh(m_wristMMConfigs);
+    m_wristMMConfigs.MotionMagicCruiseVelocity = CV.getValue();
+    m_wristMMConfigs.MotionMagicAcceleration = A.getValue();
+    m_wristMMConfigs.MotionMagicJerk = J.getValue();
+    m_wristMotor.getConfigurator().apply(m_wristMMConfigs);
   }
 
   @Override

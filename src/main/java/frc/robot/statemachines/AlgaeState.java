@@ -87,10 +87,10 @@ public class AlgaeState {
             return ElevatorConstants.ALGAE.PROCESSOR.height;
         }
         else if (getAlgaeTarget() == AlgaeTarget.LOW_REEF){
-                return Preferences.elevatorLowAlgaeReefPreference.getValue();
+                return ElevatorConstants.ALGAE.LOW_REEF.height;
         }
         else if (getAlgaeTarget() == AlgaeTarget.HIGH_REEF){ 
-                return Preferences.elevatorHighAlgaeReefPreference.getValue();
+                return ElevatorConstants.ALGAE.HIGH_REEF.height;
         } else {
             return ElevatorConstants.FLOOR.GROUND.position;
         }
