@@ -32,6 +32,8 @@ public class DriveState {
 
     private static Pose2d robotPose2d;
 
+    private static Pose2d targetPose2d;
+
     private static double robotYaw;
 
     private static double maxSpeed;
@@ -60,6 +62,14 @@ public class DriveState {
 
     public Pose2d getPose2d(){
         return robotPose2d;
+    }
+
+    public Pose2d getTargetPose2d(){
+        return targetPose2d;
+    }
+
+    public synchronized void setTargetPose2d(Pose2d newPose){
+        targetPose2d = newPose;
     }
 
     public synchronized void setYaw(double yaw){
