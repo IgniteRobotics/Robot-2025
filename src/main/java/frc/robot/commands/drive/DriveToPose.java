@@ -67,11 +67,13 @@ public class DriveToPose extends Command {
     m_YConstraints = new Constraints(Preferences.profiledDriveYMaxVel.get(), Preferences.profiledDriveYMaxAcc.get());
     m_driveYController = new ProfiledPIDController(Preferences.profiledDriveYKP.get(), Preferences.profiledDriveYKI.get(), Preferences.profiledDriveYKD.get(), m_YConstraints);
     m_driveYController.setTolerance(Preferences.yAlignTolerancePreference.get());
+    m_driveYController.reset(m_initialBotPoseFieldRelative.getY(), m_driveTrain.getState().Speeds.vxMetersPerSecond);
     m_driveYController.setIZone(Double.POSITIVE_INFINITY);
 
     m_XConstraints = new Constraints(Preferences.profiledDriveXMaxVel.get(), Preferences.profiledDriveXMaxAcc.get());
     m_driveXController = new ProfiledPIDController(Preferences.profiledDriveXKP.get(), Preferences.profiledDriveXKI.get(), Preferences.profiledDriveXKD.get(), m_XConstraints);
     m_driveXController.setTolerance(Preferences.xAlignTolerancePreference.get());
+    m_driveXController.reset(m_initialBotPoseFieldRelative.getX(), m_driveTrain.getState().Speeds.vyMetersPerSecond);
     m_driveXController.setIZone(Double.POSITIVE_INFINITY);
 
   }
@@ -103,6 +105,8 @@ public class DriveToPose extends Command {
 
 
       if (!m_driverOverrideY) {
+        
+        m_driveYController.reset(currentPose.getY(), m_driveTrain.getState().Speeds.vxMetersPerSecond);
         driveY = m_driveYController.calculate(currentPose.getY(), m_targetPoseFieldRelative.getY());
         driveY = MathUtil.clamp(driveY, -1, 1);
         SmartDashboard.putNumber("Alignment/Data/YError", m_driveYController.getPositionError());
@@ -110,6 +114,7 @@ public class DriveToPose extends Command {
       }
 
       if (!m_driverOverrideX) {
+        m_driveXController.reset(currentPose.getX(), m_driveTrain.getState().Speeds.vyMetersPerSecond);
         driveX = m_driveXController.calculate(currentPose.getX(), m_targetPoseFieldRelative.getX());
         driveX = MathUtil.clamp(driveX, -1, 1);
         SmartDashboard.putNumber("Alignment/Data/DistanceError", m_driveXController.getPositionError());
