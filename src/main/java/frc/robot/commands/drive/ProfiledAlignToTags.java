@@ -6,6 +6,9 @@ package frc.robot.commands.drive;
 
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
+import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -18,6 +21,7 @@ import frc.robot.Preferences;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.AllianceState;
 import frc.robot.statemachines.CoralState;
+import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
@@ -27,7 +31,7 @@ import edu.wpi.first.epilogue.Logged;
 
 
 @Logged
-public class ProfiledAlignToReefTags extends Command {
+public class ProfiledAlignToTags extends Command {
   private final CommandSwerveDrivetrain m_drive;
   PhotonCameraWrapper m_pcw;
     PIDController rotationController;
@@ -39,29 +43,31 @@ public class ProfiledAlignToReefTags extends Command {
   Constraints m_XConstraints;
   Constraints m_RotConstraints;
 
-  private boolean atRotationGoal;
-  private boolean atDriveYGoal;
-  private boolean atDriveXGoal;
+  private int lockedTarget;
+
+  private boolean doTranslation;
 
   private boolean driverOverrideY;
   private boolean driverOverrideX;
   
-  private int targetIDs[] = {};
-
+  private Supplier<int[]> m_idSupplier;
+  private Supplier<PhotonCamera> m_cameraSupplier;
 
   private final DoubleSupplier m_xInput;
   private final DoubleSupplier m_yInput;
 
   private double m_distanceMeters;
 
-  private double m_rotation = 0;
-  private double m_driveX = 0;
-  private double m_driveY = 0;
+  private double m_rotation;
+  private double m_driveX ;
+  private double m_driveY;
   
   /** Creates a new AlignToTarget. */
-  public ProfiledAlignToReefTags(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, DoubleSupplier xInput, DoubleSupplier yInput){
+  public ProfiledAlignToTags(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw, Supplier<int[]> idSupplier, Supplier<PhotonCamera> cameraSupplier, DoubleSupplier xInput, DoubleSupplier yInput){
     m_drive = drive;
     m_pcw = pcw;
+    m_idSupplier = idSupplier;
+    m_cameraSupplier = cameraSupplier;
     m_xInput = xInput;
     m_yInput = yInput;
     addRequirements(m_drive);
@@ -71,6 +77,9 @@ public class ProfiledAlignToReefTags extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
+    driverOverrideX = false;
+    driverOverrideY = false;
     
     rotationController = new PIDController(Preferences.profiledAlignRotKP.get(), Preferences.profiledAlignRotKI.get(), Preferences.profiledAlignRotKD.get());
     rotationController.setTolerance(Preferences.rotationTolerancePreference.get());
@@ -86,19 +95,23 @@ public class ProfiledAlignToReefTags extends Command {
     driveXController.setTolerance(Preferences.xAlignTolerancePreference.get());
     driveXController.setIZone(Double.POSITIVE_INFINITY);
 
-    targetIDs = AllianceState.getInstance().getReefTags();
-
-    atRotationGoal = false;
-    atDriveYGoal = false;
-    atDriveXGoal = false;
+    doTranslation = false;
+    lockedTarget = -1;
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    SmartDashboard.putBoolean("Can do translation", doTranslation);
     
-    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, CoralState.getInstance().pickReefCamera());
+    //locks to a target to prevent "confusion"
+    Optional<TargetInfo> targeting;
+    if(lockedTarget == -1)
+      targeting = m_pcw.seekTargets(m_idSupplier.get(), m_cameraSupplier.get());
+    else 
+      targeting = m_pcw.seekTargets(lockedTarget, m_cameraSupplier.get());
 
     m_rotation = 0;
     m_driveX = 0;
@@ -106,37 +119,40 @@ public class ProfiledAlignToReefTags extends Command {
 
     if(targeting.isPresent()){
 
+      lockedTarget = targeting.get().getTagId();
+
       SmartDashboard.putNumber("Alignment/Data/TargetID", targeting.get().getTagId());
       SmartDashboard.putNumber("Alignment/Data/TargetX", targeting.get().getTransform3d().getX());
       SmartDashboard.putNumber("Alignment/Data/TargetY", targeting.get().getTransform3d().getY());
 
-      if(!atRotationGoal){
-        double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());
-        m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
-        SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
-        SmartDashboard.putNumber("Alignment/Data/HeadingError", rotationController.getPositionError());
-        SmartDashboard.putNumber("Alignment/Data/HeadingAccumulatedError", rotationController.getAccumulatedError());
-        SmartDashboard.putBoolean("Alignment/Data/atRotationSetpoint", rotationController.atSetpoint());
+      
+      double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());
+      m_rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
+      SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
+      SmartDashboard.putNumber("Alignment/Data/HeadingError", rotationController.getPositionError());
+      SmartDashboard.putNumber("Alignment/Data/HeadingAccumulatedError", rotationController.getAccumulatedError());
+      SmartDashboard.putBoolean("Alignment/Data/atRotationSetpoint", rotationController.atSetpoint());
 
-        atRotationGoal = rotationController.atSetpoint();
+      if(rotationController.atSetpoint()){
+        doTranslation = true;
       }
 
-      else {
+      if(doTranslation){
       
         if(!driverOverrideY){
-          m_driveY = driveYController.calculate(targeting.get().getTransform3d().getY(), 0);
+          m_driveY = driveYController.calculate(targeting.get().getTransform3d().getY(), CoralState.getInstance().getYCoralOffsetMeters());
           m_driveY = MathUtil.clamp(m_driveY, -2, 2);
           SmartDashboard.putNumber("Alignment/Data/YError", driveYController.getPositionError());
           SmartDashboard.putNumber("Alignment/Data/YAccumulatedError", driveYController.getAccumulatedError());
 
           SmartDashboard.putBoolean("Alignment/Data/atYSetpoint", driveYController.atSetpoint());
-          
-          atDriveYGoal = driveYController.atSetpoint(); 
         }
       
         if(!driverOverrideX){
-          m_distanceMeters = 0.347;
+          m_distanceMeters = CameraConstants.X_OFFSET_METERS; //update based on field measurements.
           m_driveX = driveXController.calculate(targeting.get().getTransform3d().getX(), m_distanceMeters);
+          //blur is bad
+          m_driveX = MathUtil.clamp(m_driveX, -2, 2);
           //if Y alignment is still running, scale X alignment power to curve in.
           // if (!atDriveYGoal) {
           //   m_driveX = MathUtil.clamp(m_driveX, -m_driveX*0.5, m_driveX*0.5);
@@ -144,9 +160,6 @@ public class ProfiledAlignToReefTags extends Command {
           SmartDashboard.putNumber("Alignment/Data/DistanceError", driveXController.getPositionError());
           SmartDashboard.putNumber("Alignment/Data/DistanceAccumulatedError", driveXController.getAccumulatedError());
           SmartDashboard.putBoolean("Alignment/Data/atXSetpoint", driveXController.atSetpoint());
-
-
-          atDriveXGoal = driveXController.atSetpoint();
         }
       }
     }
@@ -165,8 +178,6 @@ public class ProfiledAlignToReefTags extends Command {
     } else if (driverOverrideY && (m_xInput == null || Math.abs(m_yInput.getAsDouble()) <= TunerConstants.DEADBAND_FACTOR)){
       m_driveY = 0;
     }
-
-    
 
     SmartDashboard.putNumber("Alignment/Power/rotation", m_rotation);
     SmartDashboard.putNumber("Alignment/Power/driveX", m_driveX);

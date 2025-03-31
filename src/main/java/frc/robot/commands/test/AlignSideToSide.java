@@ -31,10 +31,6 @@ public class AlignSideToSide extends Command {
   Constraints m_YConstraints;
   
   private int targetIDs[] = {};
-
-
-  private double m_distanceMeters;
-  private double m_yawDegrees;
   
   /** Creates a new AlignToTarget. */
   public AlignSideToSide(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw){
@@ -52,9 +48,6 @@ public class AlignSideToSide extends Command {
     driveYController.setIZone(Double.POSITIVE_INFINITY);
   
     targetIDs = AllianceState.getInstance().getReefTags();
-    m_distanceMeters = Preferences.coralXDriveOffset.get();
-    m_yawDegrees = CoralState.getInstance().getYCoralAlignment(m_distanceMeters);
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.

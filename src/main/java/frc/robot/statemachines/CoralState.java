@@ -117,16 +117,6 @@ public class CoralState {
         }
     }
 
-    public double getYCoralAlignment(double d){
-        if(coralTarget == CoralTarget.L4_LEFT || coralTarget == CoralTarget.L3_LEFT || coralTarget == CoralTarget.L2_LEFT){
-            return CameraConstants.getCorallYawOffsetDegreesLeft(d);
-        }
-        else if(coralTarget == CoralTarget.L4_RIGHT || coralTarget == CoralTarget.L3_RIGHT || coralTarget == CoralTarget.L2_RIGHT){
-            return CameraConstants.getCorallYawOffsetDegreesRight(d);
-        }
-        else return 0.0;
-    }
-
     public void setHasCoral(boolean bool){
         hasCoral = bool;
     }
@@ -146,4 +136,14 @@ public class CoralState {
           return CameraConstants.photonCameraOuttakeRight;
         }
       }
+
+    public double getYCoralOffsetMeters(){
+        if(coralTarget == CoralTarget.L4_LEFT || coralTarget == CoralTarget.L3_LEFT || coralTarget == CoralTarget.L2_LEFT){
+            return CameraConstants.Y_LEFT_CORAL_OFFSET_METERS;
+        }
+        else if(coralTarget == CoralTarget.L4_RIGHT || coralTarget == CoralTarget.L3_RIGHT || coralTarget == CoralTarget.L2_RIGHT){
+            return CameraConstants.Y_RIGHT_CORAL_OFFSET_METERS;
+        }
+        else return 0.0;
+    }
 }

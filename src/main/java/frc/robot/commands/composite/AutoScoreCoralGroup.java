@@ -13,9 +13,10 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.drive.ManualDriveAlignment;
-import frc.robot.commands.drive.ProfiledAlignToReefTags;
+import frc.robot.commands.drive.ProfiledAlignToTags;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.elevator.ElevatorToCoralPreset;
+import frc.robot.statemachines.AllianceState;
 import frc.robot.statemachines.CoralState;
 import frc.robot.statemachines.CoralState.CoralTarget;
 import frc.robot.subsystems.Elevator.Elevator;
@@ -30,22 +31,19 @@ public class AutoScoreCoralGroup extends ParallelCommandGroup{
   private Elevator m_Elevator;
   private Corraler m_Corraler;
   private PhotonCameraWrapper m_PhotonCameraWrapper;
-  private DoublePreference m_distancePreference;
   private DoubleSupplier m_DriveFwdBackSupplier;
   private DoubleSupplier m_DriveSideSupplier;
-  private DoubleSupplier m_RotSupplier;
   private BooleanSupplier m_raiseElevator;
   private BooleanSupplier m_releaseCoral;
 
 
   /** Creates a new CommandFactory. */
   public AutoScoreCoralGroup(CommandSwerveDrivetrain swerveDrivetrain, Elevator elevator, Corraler corraler, 
-      PhotonCameraWrapper photonCameraWrapper, DoublePreference distancePreference, DoubleSupplier driveFwdBackSupplier, DoubleSupplier driveSideSupplier, DoubleSupplier rotSupplier, BooleanSupplier raiseElevator, BooleanSupplier releaseCoral){
+      PhotonCameraWrapper photonCameraWrapper, DoubleSupplier driveFwdBackSupplier, DoubleSupplier driveSideSupplier, BooleanSupplier raiseElevator, BooleanSupplier releaseCoral){
     m_swerveDrivetrain = swerveDrivetrain;
     m_Elevator = elevator;
     m_Corraler = corraler;
     m_PhotonCameraWrapper = photonCameraWrapper;
-    m_distancePreference = distancePreference;
     m_DriveFwdBackSupplier = driveFwdBackSupplier;
     m_DriveSideSupplier = driveSideSupplier;
     m_raiseElevator = raiseElevator;
@@ -68,7 +66,8 @@ public class AutoScoreCoralGroup extends ParallelCommandGroup{
     // return new ProfiledAlignToReefTags(m_swerveDrivetrain, m_PhotonCameraWrapper,
     //     m_DriveFwdBackSupplier, m_DriveSideSupplier);
   
-    return new ManualDriveAlignment(m_swerveDrivetrain, m_DriveFwdBackSupplier, m_DriveSideSupplier, m_RotSupplier);
+    return new ProfiledAlignToTags(m_swerveDrivetrain, m_PhotonCameraWrapper, () -> AllianceState.getInstance().getReefTags(),
+      () -> CoralState.getInstance().pickReefCamera(), m_DriveFwdBackSupplier, m_DriveSideSupplier);
   }
 
   // private Command createCoralCommand(){
@@ -79,4 +78,3 @@ public class AutoScoreCoralGroup extends ParallelCommandGroup{
  
 
 }
-
