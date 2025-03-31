@@ -147,8 +147,15 @@ public class DriveState {
     }
 
     public PhotonPipelineResult getLatestPhotonVisionResult(PhotonCamera camera){
-        if(cameraResults.containsKey(camera))return cameraResults.get(camera);
-        else return null;
+        return cameraResults.get(camera);
+    }
+
+    public void nullify(PhotonCamera camera){
+        cameraResults.put(camera, null);
+    }
+
+    public boolean hasPhotonVisionResult(PhotonCamera camera){
+        return cameraResults.containsKey(camera) && cameraResults.get(camera) != null;
     }
 
 

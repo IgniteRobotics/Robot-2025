@@ -460,6 +460,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeLeft, latestResult);
             }
 
+            else m_driveState.nullify(CameraConstants.photonCameraOuttakeLeft);
+
             for(var result: outtakeLeftResults){
                 Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeLeft.update(result);
                 if(!estimatedPose.isEmpty()){
@@ -478,6 +480,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeRight, latestResult);
             }
 
+            else m_driveState.nullify(CameraConstants.photonCameraOuttakeRight);
+
             for(var result: outtakeRightResults){
                 Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeRight.update(result);
                 if(!estimatedPose.isEmpty()){
@@ -495,6 +499,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 var latestResult = intakeResults.get(intakeResults.size()-1);
                 m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraIntake, latestResult);
             }
+
+            else m_driveState.nullify(CameraConstants.photonCameraIntake);
 
             for(var result: intakeResults){
                 Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorIntake.update(result);
