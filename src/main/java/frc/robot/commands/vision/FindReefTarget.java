@@ -30,6 +30,7 @@ public class FindReefTarget extends Command {
   private final Supplier<PhotonCamera> m_cameraSupplier;
   private int lockedTarget = -1;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+  private boolean finished = false;
 
   /** Creates a new FindReefTarget. */
   public FindReefTarget(PhotonCameraWrapper photonCameraWrapper, Supplier<int[]> idSupplier, Supplier<PhotonCamera> cameraSupplier) {
@@ -43,6 +44,7 @@ public class FindReefTarget extends Command {
   @Override
   public void initialize() {
     DriveState.getInstance().setTargetPose2d(null);
+    finished = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -57,19 +59,29 @@ public class FindReefTarget extends Command {
       if(targeting.isPresent()){
 
         lockedTarget = targeting.get().getTagId();
+        DriveState.getInstance().lockToCamera(targeting.get().getCamera());
 
         //modify the target's transform by the offsets
+
+        
         Transform2d targetTransform = new Transform2d(
-          targeting.get().getTransform3d().getTranslation().getX() + CameraConstants.X_OFFSET_METERS,
+          targeting.get().getTransform3d().getTranslation().getX() - CameraConstants.X_OFFSET_METERS,
           targeting.get().getTransform3d().getTranslation().getY() + CoralState.getInstance().getYCoralOffsetMeters(),
           targeting.get().getTransform3d().getRotation().toRotation2d()
         );
 
+        Transform2d cam2Robot = new Transform2d(
+          CoralState.getInstance().getCameraTransform().getX(),
+          CoralState.getInstance().getCameraTransform().getY(),
+          CoralState.getInstance().getCameraTransform().getRotation().toRotation2d()
+        );
+
         //start at the robot, moved to the camera, then to the target's position, then modify by the offset
         Pose2d targetPose = DriveState.getInstance().getPose2d()
-          .plus(targetTransform);
+          .plus(cam2Robot).plus(targetTransform);
 
         DriveState.getInstance().setTargetPose2d(targetPose);
+        finished = true;
 
       }
   }
@@ -77,12 +89,13 @@ public class FindReefTarget extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    DriveState.getInstance().setTargetPose2d(null);
+    // DriveState.getInstance().setTargetPose2d(null);
+    // DriveState.getInstance().unlockCameras();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return finished;
   }
 }

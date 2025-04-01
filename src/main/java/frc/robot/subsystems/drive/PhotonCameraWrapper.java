@@ -40,15 +40,15 @@ public class PhotonCameraWrapper{
     public class TargetInfo{
         private double yaw;
 
-        private String cameraName;
+        private PhotonCamera m_camera;
 
         private int m_tag_Id;
 
         private Transform3d m_transform3d;
 
-        public TargetInfo(Transform3d transform3d, double yaw, int tag_Id, String name){
+        public TargetInfo(Transform3d transform3d, double yaw, int tag_Id, PhotonCamera camera){
             this.yaw = yaw;
-            this.cameraName = name;
+            this.m_camera = camera;
             this.m_transform3d = transform3d;
             this.m_tag_Id = tag_Id;
         }
@@ -73,8 +73,8 @@ public class PhotonCameraWrapper{
             this.m_tag_Id = tag_Id;
         }
 
-        public String getCameraName(){
-            return cameraName;
+        public PhotonCamera getCamera(){
+            return m_camera;
         }
     }
 
@@ -115,14 +115,14 @@ public class PhotonCameraWrapper{
             }
 
             return Optional.of(new TargetInfo(target.get().getBestCameraToTarget(),
-                target.get().getYaw(), target.get().getFiducialId(), camera.getName()));
+                target.get().getYaw(), target.get().getFiducialId(), camera));
         }
         
         
 
         if (Robot.isSimulation()){
             return Optional.of(new TargetInfo(new Transform3d(3, 2, 0, new Rotation3d(0, 15, 10)),
-            10, 18, CameraConstants.photonCameraNameOuttakeLeft));
+            10, 18, CameraConstants.photonCameraOuttakeLeft));
         }
 
         return Optional.empty();
@@ -141,12 +141,12 @@ public class PhotonCameraWrapper{
         Optional<PhotonTrackedTarget> target = lookForTarget(newResult, id);
 
         if(target.isPresent() && target.get().getPoseAmbiguity() < CameraConstants.MINIMUM_AMBIGUITY){
-            return Optional.of(new TargetInfo(target.get().getBestCameraToTarget(), target.get().getYaw(), target.get().getFiducialId(), camera.getName()));
+            return Optional.of(new TargetInfo(target.get().getBestCameraToTarget(), target.get().getYaw(), target.get().getFiducialId(), camera));
         }
 
         if (Robot.isSimulation()){
             return Optional.of(new TargetInfo(new Transform3d(3, 2, 0, new Rotation3d(0, 15, 10)),
-            10, 18, CameraConstants.photonCameraNameOuttakeLeft));
+            10, 18, CameraConstants.photonCameraOuttakeLeft));
         }
     
         return Optional.empty();

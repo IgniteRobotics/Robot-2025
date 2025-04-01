@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Preferences;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.drive.CameraConstants;
 import frc.zones.Grid;
 import frc.zones.Zone;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -41,6 +42,11 @@ public class DriveState {
     private static double maxAngularRate;
 
     Map<PhotonCamera, PhotonPipelineResult> cameraResults = new HashMap<>(){};
+
+    //use pose estimators
+    private boolean useOuttakeLeftEstimation = true;
+    private boolean useOuttakeRightEstimation = true;
+    private boolean useIntakeEstimation = true;
 
     private DriveState() {
         maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
@@ -142,6 +148,44 @@ public class DriveState {
     }
 
     //**********Vision***********//
+    public void lockToCamera(PhotonCamera camera){
+        if(camera == CameraConstants.photonCameraOuttakeLeft){
+            useIntakeEstimation= false;
+            useOuttakeLeftEstimation = true;
+            useOuttakeRightEstimation = false;
+        }
+
+        else if(camera == CameraConstants.photonCameraOuttakeRight){
+            useIntakeEstimation = false;
+            useOuttakeLeftEstimation = false;
+            useOuttakeRightEstimation = true;
+        }
+
+        else {
+            useIntakeEstimation = true;
+            useOuttakeLeftEstimation = false;
+            useOuttakeRightEstimation = false;
+        }
+    }
+
+    public void unlockCameras(){
+        useOuttakeLeftEstimation = true;
+        useOuttakeRightEstimation = true;
+        useIntakeEstimation = true;
+    }
+
+    public boolean useLeftOuttakeCamera(){
+        return useOuttakeLeftEstimation;
+    }
+
+    public boolean useRightOuttakeCamera(){
+        return useOuttakeRightEstimation;
+    }
+
+    public boolean useIntakeCamera(){
+        return useIntakeEstimation;
+    }
+    
     public void setLatestPhotonVisionResult(PhotonCamera camera, PhotonPipelineResult newResult){
         cameraResults.put(camera, newResult);
     }

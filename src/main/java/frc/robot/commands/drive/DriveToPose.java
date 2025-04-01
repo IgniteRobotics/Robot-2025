@@ -106,19 +106,23 @@ public class DriveToPose extends Command {
 
       if (!m_driverOverrideY) {
         
-        m_driveYController.reset(currentPose.getY(), m_driveTrain.getState().Speeds.vxMetersPerSecond);
+        //m_driveYController.reset(currentPose.getY(), m_driveTrain.getState().Speeds.vxMetersPerSecond);
         driveY = m_driveYController.calculate(currentPose.getY(), m_targetPoseFieldRelative.getY());
         driveY = MathUtil.clamp(driveY, -1, 1);
+        //ignore this
         SmartDashboard.putNumber("Alignment/Data/YError", m_driveYController.getPositionError());
-        SmartDashboard.putBoolean("Alignment/Data/atYSetpoint", m_driveYController.atSetpoint());
+        
+        SmartDashboard.putBoolean("Alignment/Data/atYGoal", m_driveYController.atGoal());
       }
 
       if (!m_driverOverrideX) {
-        m_driveXController.reset(currentPose.getX(), m_driveTrain.getState().Speeds.vyMetersPerSecond);
+        //m_driveXController.reset(currentPose.getX(), m_driveTrain.getState().Speeds.vyMetersPerSecond);
         driveX = m_driveXController.calculate(currentPose.getX(), m_targetPoseFieldRelative.getX());
         driveX = MathUtil.clamp(driveX, -1, 1);
+        //Ignore this (bad)
         SmartDashboard.putNumber("Alignment/Data/DistanceError", m_driveXController.getPositionError());
-        SmartDashboard.putBoolean("Alignment/Data/atDistanceSetpoint", m_driveXController.atSetpoint());
+        
+        SmartDashboard.putBoolean("Alignment/Data/atDistanceGoal", m_driveXController.atGoal());
       }
     }
 
@@ -143,7 +147,7 @@ public class DriveToPose extends Command {
     SmartDashboard.putNumber("Alignment/Power/driveX", driveX);
     SmartDashboard.putNumber("Alignment/Power/driveY", driveY);
     
-    m_driveTrain.driveRobotCentric(driveX, driveY, rotation);
+    m_driveTrain.autoDrive(driveX, driveY, rotation);
 
   }
 
@@ -160,7 +164,7 @@ public class DriveToPose extends Command {
     if (m_allowDriverOverride){
       return false;
     } else {
-      return m_rotationController.atSetpoint() && m_driveXController.atSetpoint() && m_driveYController.atSetpoint();
+      return m_rotationController.atSetpoint() && m_driveXController.atGoal() && m_driveYController.atGoal();
     }
   }
 }
