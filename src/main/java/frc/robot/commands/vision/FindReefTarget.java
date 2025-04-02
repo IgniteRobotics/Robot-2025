@@ -44,6 +44,7 @@ public class FindReefTarget extends Command {
   @Override
   public void initialize() {
     DriveState.getInstance().setTargetPose2d(null);
+    lockedTarget = -1;
     finished = false;
   }
 
@@ -78,7 +79,7 @@ public class FindReefTarget extends Command {
         //robot offset the center of the robot to position for coral.
         // don't rotate since the robot to cam transofrm is already rotated.
         Transform2d robotToCoral = new Transform2d(
-          -1 * (Math.abs(CameraConstants.X_OFFSET_METERS) + Math.abs(CoralState.getInstance().getCameraTransform().getX())),
+          (Math.abs(CameraConstants.X_OFFSET_METERS) + Math.abs(CoralState.getInstance().getCameraTransform().getX())),
           CoralState.getInstance().getYCoralOffsetMeters(),
           new edu.wpi.first.math.geometry.Rotation2d()
         );
@@ -96,7 +97,7 @@ public class FindReefTarget extends Command {
   @Override
   public void end(boolean interrupted) {
     // DriveState.getInstance().setTargetPose2d(null);
-    // DriveState.getInstance().unlockCameras();
+    DriveState.getInstance().unlockCameras();
   }
 
   // Returns true when the command should end.

@@ -108,7 +108,7 @@ public class DriveToPose extends Command {
         
         //m_driveYController.reset(currentPose.getY(), m_driveTrain.getState().Speeds.vxMetersPerSecond);
         driveY = m_driveYController.calculate(currentPose.getY(), m_targetPoseFieldRelative.getY());
-        driveY = MathUtil.clamp(driveY, -1, 1);
+        driveY = MathUtil.clamp(driveY, -2.5, 2.5);
         //ignore this
         SmartDashboard.putNumber("Alignment/Data/YError", m_driveYController.getPositionError());
         
@@ -118,7 +118,7 @@ public class DriveToPose extends Command {
       if (!m_driverOverrideX) {
         //m_driveXController.reset(currentPose.getX(), m_driveTrain.getState().Speeds.vyMetersPerSecond);
         driveX = m_driveXController.calculate(currentPose.getX(), m_targetPoseFieldRelative.getX());
-        driveX = MathUtil.clamp(driveX, -1, 1);
+        driveX = MathUtil.clamp(driveX, -2.5, 2.5);
         //Ignore this (bad)
         SmartDashboard.putNumber("Alignment/Data/DistanceError", m_driveXController.getPositionError());
         
