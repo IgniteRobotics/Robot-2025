@@ -89,7 +89,7 @@ public class FindReefTarget extends Command {
           .plus(robotToCamera).plus(cam2Target).plus(robotToCoral);
 
         DriveState.getInstance().setTargetPose2d(targetPose);
-        finished = true;
+        //finished = true;
       }
   }
 
