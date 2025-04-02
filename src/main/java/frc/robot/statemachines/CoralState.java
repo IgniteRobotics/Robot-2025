@@ -10,6 +10,7 @@ import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
+import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.algae.AlgaeCollectorConstants;
 import frc.robot.subsystems.drive.CameraConstants;
@@ -134,6 +135,18 @@ public class CoralState {
         }
         else{
           return CameraConstants.photonCameraOuttakeRight;
+        }
+      }
+
+    public Transform3d getCameraTransform(){
+        //LEFT CAMERA IS ZERO
+        //ALIGN TO LEFT POST IS LEFT CAMERA (I HOPE!)
+        CoralState c = CoralState.getInstance();
+        if (c.coralTargetL2_LEFT() || c.coralTargetL3_LEFT() || c.coralTargetL4_LEFT() || c.coralTarget_TROUGH()){
+          return CameraConstants.photonCameraTransformOuttakeLeft;
+        }
+        else{
+          return CameraConstants.photonCameraTransformOuttakeRight;
         }
       }
 

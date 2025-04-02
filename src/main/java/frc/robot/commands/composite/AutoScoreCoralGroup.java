@@ -12,12 +12,15 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.commands.drive.DriveToPoseNoProfile;
 import frc.robot.commands.drive.ManualDriveAlignment;
 import frc.robot.commands.drive.ProfiledAlignToTags;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.elevator.ElevatorToCoralPreset;
+import frc.robot.commands.vision.FindReefTarget;
 import frc.robot.statemachines.AllianceState;
 import frc.robot.statemachines.CoralState;
+import frc.robot.statemachines.DriveState;
 import frc.robot.statemachines.CoralState.CoralTarget;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.coral.Corraler;
@@ -53,7 +56,8 @@ public class AutoScoreCoralGroup extends ParallelCommandGroup{
   }
 
   public ParallelCommandGroup createCommand(){
-    return createAlignCommand()
+    return new DriveToPoseNoProfile(m_swerveDrivetrain, () -> DriveState.getInstance().getTargetPose2d(), m_DriveFwdBackSupplier, m_DriveSideSupplier, true)
+      .alongWith(new FindReefTarget(m_PhotonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera()))
       .alongWith(new WaitUntilCommand(m_raiseElevator)
                   .andThen(new ElevatorToCoralPreset(m_Elevator)
                   .andThen(new WaitUntilCommand(m_releaseCoral)
@@ -61,20 +65,4 @@ public class AutoScoreCoralGroup extends ParallelCommandGroup{
                             .andThen(new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.NONE)))))
       );
   }
-
-  private Command createAlignCommand(){
-    // return new ProfiledAlignToReefTags(m_swerveDrivetrain, m_PhotonCameraWrapper,
-    //     m_DriveFwdBackSupplier, m_DriveSideSupplier);
-  
-    return new ProfiledAlignToTags(m_swerveDrivetrain, m_PhotonCameraWrapper, () -> AllianceState.getInstance().getReefTags(),
-      () -> CoralState.getInstance().pickReefCamera(), m_DriveFwdBackSupplier, m_DriveSideSupplier);
-  }
-
-  // private Command createCoralCommand(){
-  //  return 
-  // }
-
-  
- 
-
 }

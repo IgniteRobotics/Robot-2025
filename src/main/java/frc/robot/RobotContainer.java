@@ -47,6 +47,8 @@ import frc.robot.commands.composite.AutoScoreCoralGroup;
 
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
+import frc.robot.commands.drive.DriveToPose;
+import frc.robot.commands.drive.DriveToPoseNoProfile;
 import frc.robot.commands.drive.ManualDriveAlignment;
 import frc.robot.commands.drive.ProfiledAlignToTags;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
@@ -55,6 +57,7 @@ import frc.robot.commands.test.AlignSideToSide;
 import frc.robot.commands.test.DriveIntoTarget;
 import frc.robot.commands.test.RotateToHeading;
 import frc.robot.commands.test.VisionTest;
+import frc.robot.commands.vision.FindReefTarget;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.AllianceState;
 import frc.robot.statemachines.CoralState;
@@ -392,20 +395,21 @@ public class RobotContainer {
     }
 
     private void configureOdometryTestBindings(){
-        joystick.b().onTrue(drivetrain.applyRequest(
-                () -> forwardStraight.withVelocityX(2)
-            ))
-        .onFalse(drivetrain.applyRequest(
-            () -> forwardStraight.withVelocityX(0)
-        ));
+
         
-        joystick.a().onTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(Math.PI/2))
-        ))
-        .onFalse(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(0))
-        ));
+        joystick.a().whileTrue(
+         new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.L4_LEFT))
+            .andThen(new FindReefTarget(m_PhotonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera())   
+                .alongWith(new DriveToPoseNoProfile(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null,false)))
+        ).onFalse(new InstantCommand(() -> DriveState.getInstance().unlockCameras())
+        );
         
+        joystick.b().whileTrue(
+         new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.L4_LEFT))
+            .andThen(new FindReefTarget(m_PhotonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera())   
+                .alongWith(new DriveToPose(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null,false)))
+        ).onFalse(new InstantCommand(() -> DriveState.getInstance().unlockCameras())
+        );
     }
 
     public Command getAutonomousCommand() {

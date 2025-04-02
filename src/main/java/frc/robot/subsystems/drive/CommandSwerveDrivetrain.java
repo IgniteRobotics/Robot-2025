@@ -71,11 +71,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
-    //use pose estimators
-    private boolean useOuttakeLeftEstimation = true;
-    private boolean useOuttakeRightEstimation = true;
-    private boolean useIntakeEstimation = true;
-
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -328,6 +323,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
     }
 
+    public void autoDrive(double x, double y, double rot){
+        SwerveRequest.FieldCentric m_driveRequest = new SwerveRequest.FieldCentric()
+            .withDriveRequestType(DriveRequestType.Velocity)
+            .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+        this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
+    }
+
     @Override
     public void periodic() {
         tagPosesFieldRelative = new LinkedList<Pose3d>();
@@ -419,39 +421,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return this.getState().Pose.getRotation().getDegrees();
     }
 
-    public void lockToCamera(PhotonCamera camera){
-        if(camera == CameraConstants.photonCameraOuttakeLeft){
-            useIntakeEstimation= false;
-            useOuttakeLeftEstimation = true;
-            useOuttakeRightEstimation = false;
-        }
-
-        if(camera == CameraConstants.photonCameraOuttakeRight){
-            useIntakeEstimation = false;
-            useOuttakeLeftEstimation = false;
-            useOuttakeRightEstimation = true;
-        }
-
-        else {
-            useIntakeEstimation = true;
-            useOuttakeLeftEstimation = false;
-            useOuttakeRightEstimation = false;
-        }
-    }
-
-    public void unlockCameras(){
-        useOuttakeLeftEstimation = true;
-        useOuttakeRightEstimation = true;
-        useIntakeEstimation = true;
-    }
-
     public void calculateGlobalPose(){
         lastLeftTransform3d = null;
         lastRightTransform3d = null;
         lrTransformDelta = null;
 
         //outtake left
-        if(useOuttakeLeftEstimation){
+        if(DriveState.getInstance().useLeftOuttakeCamera()){
             CameraConstants.photonPoseEstimatorOuttakeLeft.setReferencePose(getPose());
             var outtakeLeftResults = CameraConstants.photonCameraOuttakeLeft.getAllUnreadResults();
 
@@ -459,6 +435,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 var latestResult = outtakeLeftResults.get(outtakeLeftResults.size()-1);
                 m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeLeft, latestResult);
             }
+
+            else m_driveState.nullify(CameraConstants.photonCameraOuttakeLeft);
 
             for(var result: outtakeLeftResults){
                 Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeLeft.update(result);
@@ -469,7 +447,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
 
         //outtake right
-        if(useOuttakeRightEstimation){
+        if(DriveState.getInstance().useRightOuttakeCamera()){
             CameraConstants.photonPoseEstimatorOuttakeRight.setReferencePose(getPose());
             var outtakeRightResults = CameraConstants.photonCameraOuttakeRight.getAllUnreadResults();
 
@@ -477,6 +455,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 var latestResult = outtakeRightResults.get(outtakeRightResults.size()-1);
                 m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraOuttakeRight, latestResult);
             }
+
+            else m_driveState.nullify(CameraConstants.photonCameraOuttakeRight);
 
             for(var result: outtakeRightResults){
                 Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorOuttakeRight.update(result);
@@ -487,7 +467,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
 
         //intake
-        if(useIntakeEstimation){
+        if(DriveState.getInstance().useIntakeCamera()){
             CameraConstants.photonPoseEstimatorIntake.setReferencePose(getPose());
             var intakeResults = CameraConstants.photonCameraIntake.getAllUnreadResults();
 
@@ -495,6 +475,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 var latestResult = intakeResults.get(intakeResults.size()-1);
                 m_driveState.setLatestPhotonVisionResult(CameraConstants.photonCameraIntake, latestResult);
             }
+
+            else m_driveState.nullify(CameraConstants.photonCameraIntake);
 
             for(var result: intakeResults){
                 Optional<EstimatedRobotPose> estimatedPose = CameraConstants.photonPoseEstimatorIntake.update(result);
@@ -587,7 +569,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             thetaStd = 0.75;
         }
 
-        this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds() - 200.0/1000.0, VecBuilder.fill(xyStds, xyStds, thetaStd));
+        this.addVisionMeasurement(pose.estimatedPose.toPose2d(), Utils.getCurrentTimeSeconds() - 30.0/1000.0, VecBuilder.fill(xyStds, xyStds, thetaStd));
 
     }
 
