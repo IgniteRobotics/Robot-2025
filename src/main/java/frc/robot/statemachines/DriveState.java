@@ -7,6 +7,7 @@ package frc.robot.statemachines;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.epilogue.Logged;
@@ -14,7 +15,9 @@ import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Preferences;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.drive.CameraConstants;
 import frc.zones.Grid;
 import frc.zones.Zone;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -30,12 +33,24 @@ public class DriveState {
 
     private static Pose2d robotPose2d;
 
+    private static Pose2d targetPose2d;
+
     private static double robotYaw;
 
-    Map<String, PhotonPipelineResult> cameraResults = new HashMap<>(){};
+    private static double maxSpeed;
+    
+    private static double maxAngularRate;
+
+    Map<PhotonCamera, PhotonPipelineResult> cameraResults = new HashMap<>(){};
+
+    //use pose estimators
+    private boolean useOuttakeLeftEstimation = true;
+    private boolean useOuttakeRightEstimation = true;
+    private boolean useIntakeEstimation = true;
 
     private DriveState() {
-
+        maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+        maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED;
     }
 
     public static synchronized DriveState getInstance()
@@ -53,6 +68,14 @@ public class DriveState {
 
     public Pose2d getPose2d(){
         return robotPose2d;
+    }
+
+    public Pose2d getTargetPose2d(){
+        return targetPose2d;
+    }
+
+    public synchronized void setTargetPose2d(Pose2d newPose){
+        targetPose2d = newPose;
     }
 
     public synchronized void setYaw(double yaw){
@@ -100,7 +123,7 @@ public class DriveState {
         }
         else return getZone().maxSpeed.doubleValue();
         */
-        return TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+        return maxSpeed;
     }
 
     @Logged(name = "Max Rotation", importance = Importance.CRITICAL)
@@ -111,17 +134,72 @@ public class DriveState {
         }
         else return getZone().maxRotation.doubleValue();
         */
-        return TunerConstants.MAX_ANGULAR_SPEED;
+        return maxAngularRate;
+    }
+
+    public void nerf(){
+        maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)*Preferences.nerfFactor.getValue();
+        maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED*Preferences.nerfFactor.getValue();
+    }
+
+    public void unNerf(){
+        maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+        maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED;
     }
 
     //**********Vision***********//
-    public void setLatestPhotonVisionResult(String camera, PhotonPipelineResult newResult){
+    public void lockToCamera(PhotonCamera camera){
+        if(camera == CameraConstants.photonCameraOuttakeLeft){
+            useIntakeEstimation= false;
+            useOuttakeLeftEstimation = true;
+            useOuttakeRightEstimation = false;
+        }
+
+        else if(camera == CameraConstants.photonCameraOuttakeRight){
+            useIntakeEstimation = false;
+            useOuttakeLeftEstimation = false;
+            useOuttakeRightEstimation = true;
+        }
+
+        else {
+            useIntakeEstimation = true;
+            useOuttakeLeftEstimation = false;
+            useOuttakeRightEstimation = false;
+        }
+    }
+
+    public void unlockCameras(){
+        useOuttakeLeftEstimation = true;
+        useOuttakeRightEstimation = true;
+        useIntakeEstimation = true;
+    }
+
+    public boolean useLeftOuttakeCamera(){
+        return useOuttakeLeftEstimation;
+    }
+
+    public boolean useRightOuttakeCamera(){
+        return useOuttakeRightEstimation;
+    }
+
+    public boolean useIntakeCamera(){
+        return useIntakeEstimation;
+    }
+    
+    public void setLatestPhotonVisionResult(PhotonCamera camera, PhotonPipelineResult newResult){
         cameraResults.put(camera, newResult);
     }
 
-    public PhotonPipelineResult getLatestPhotonVisionResult(String camera){
-        if(cameraResults.containsKey(camera))return cameraResults.get(camera);
-        else return null;
+    public PhotonPipelineResult getLatestPhotonVisionResult(PhotonCamera camera){
+        return cameraResults.get(camera);
+    }
+
+    public void nullify(PhotonCamera camera){
+        cameraResults.put(camera, null);
+    }
+
+    public boolean hasPhotonVisionResult(PhotonCamera camera){
+        return cameraResults.containsKey(camera) && cameraResults.get(camera) != null;
     }
 
 

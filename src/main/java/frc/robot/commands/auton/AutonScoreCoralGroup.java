@@ -11,11 +11,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Preferences;
 import frc.robot.commands.corraler.OuttakeCommand;
+import frc.robot.commands.drive.DriveToPoseNoProfile;
 import frc.robot.commands.elevator.ElevatorToCoralPreset;
 import frc.robot.commands.elevator.ToSetpoint;
+import frc.robot.commands.vision.FindReefTarget;
+import frc.robot.statemachines.AllianceState;
 import frc.robot.statemachines.CoralState;
 import frc.robot.statemachines.CoralState.CoralTarget;
+import frc.robot.statemachines.DriveState;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.coral.Corraler;
@@ -47,7 +52,9 @@ public class AutonScoreCoralGroup extends ParallelCommandGroup{
 
   public SequentialCommandGroup createCommand(){
     return new InstantCommand(() -> CoralState.getInstance().setCoralTarget(m_Position))
-        .andThen(new AutonAlignToReefTags(m_swerveDrivetrain, m_PhotonCameraWrapper))
+        .andThen(new DriveToPoseNoProfile(m_swerveDrivetrain, () -> DriveState.getInstance().getTargetPose2d(), m_DriveFwdBackSupplier, m_DriveSideSupplier, true)
+          .alongWith(new FindReefTarget(m_PhotonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera())))
+          .withTimeout(Preferences.autonDriveTimeoutPreference.getValue())
         .andThen(new ElevatorToCoralPreset(m_Elevator))
         .andThen(new OuttakeCommand(m_Corraler))
         .andThen(new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.NONE)))

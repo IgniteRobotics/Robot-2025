@@ -15,7 +15,8 @@ import frc.robot.subsystems.algae.AlgaeCollectorConstants;
 public class Preferences {
 
     // ********** Drive *********//
-
+    public static DoublePreference nerfFactor = new DoublePreference("Nerf Factor", 0.35);
+    public static DoublePreference alignTimeout = new DoublePreference("Alignment Timeout", 1.5);
     
     public static DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", DriveCommandConstants.ROTATION_P);
     public static DoublePreference alignRotKD = new DoublePreference("alignCommand/rotation/kD", DriveCommandConstants.ROTATION_D);
@@ -43,7 +44,7 @@ public class Preferences {
 
     public static DoublePreference profiledDriveXKP = new DoublePreference("profiledAlignCommand/driveX/kP", DriveCommandConstants.DRIVE_X_P);
     public static DoublePreference profiledDriveXKD = new DoublePreference("profiledAlignCommand/driveX/kD", DriveCommandConstants.DRIVE_X_D);
-    public static DoublePreference profiledDriveXKI = new DoublePreference("profiledAlignCommand/driveX/kI", 3);
+    public static DoublePreference profiledDriveXKI = new DoublePreference("profiledAlignCommand/driveX/kI", 0);
     public static DoublePreference profiledDriveXMaxVel = new DoublePreference("profiledAlignCommand/driveX/maxVel", 6);
     public static DoublePreference profiledDriveXMaxAcc = new DoublePreference("profiledAlignCommand/driveX/maxAcc", 12);
 
@@ -57,6 +58,11 @@ public class Preferences {
     public static DoublePreference xySlowLimitPreference = new DoublePreference("drive/xySlowLimitMPS", DriveCommandConstants.SLOW_DRIVE_XY_FACTOR);
     public static DoublePreference rotationSlowLimitPreference = new DoublePreference("drive/rotationSlowLimitRadPS", DriveCommandConstants.SLOW_DRIVE_ROTATION_FACTOR);
     public static DoublePreference autonYDrive = new DoublePreference("drive/yAutonDrive", -5);
+
+    public static DoublePreference driveTestTurnAngle = new DoublePreference("drive/test/turnAngle", 60);
+    public static DoublePreference driveTestRPS = new DoublePreference("drive/test/RPS", 2);
+    public static DoublePreference driveTestSpeed = new DoublePreference("drive/test/speed", 2);
+    
     
 
     // ********** Elevator **********
@@ -112,6 +118,9 @@ public class Preferences {
 
     public static DoublePreference climberPos1 = new DoublePreference("Climber/Position 1", 1);
     public static DoublePreference climberPos2 = new DoublePreference("Climber/Position 2", 2);
+
+    //********** auton **********
+    public static DoublePreference autonDriveTimeoutPreference = new DoublePreference("auton/drive/timeout", 4);
 
     
 }

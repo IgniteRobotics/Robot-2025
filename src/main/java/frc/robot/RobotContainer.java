@@ -12,6 +12,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -39,27 +40,24 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.algae.IntakeAlgae;
-import frc.robot.commands.auton.AutonComposites;
+import frc.robot.commands.auton.AutonAlignToHPTag;
+import frc.robot.commands.auton.AutonAlignToReefTag;
 import frc.robot.commands.auton.AutonScoreCoralGroup;
 import frc.robot.commands.composite.AutoScoreCoralGroup;
 
-import frc.robot.commands.composite.OuttakeAlgae;
-import frc.robot.commands.composite.Score;
-import frc.robot.commands.composite.ScoreAlgae;
-import frc.robot.commands.composite.ScoreCoral;
-import frc.robot.commands.composite.SemiAutoScoreCoralGroup;
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
-import frc.robot.commands.drive.AlignIntakeSide;
-import frc.robot.commands.drive.AlignSideToSide;
-import frc.robot.commands.drive.AlignThenDrive;
-import frc.robot.commands.drive.AlignToReefTags;
-import frc.robot.commands.drive.DriveIntoTarget;
+import frc.robot.commands.drive.DriveToPose;
+import frc.robot.commands.drive.DriveToPoseNoProfile;
 import frc.robot.commands.drive.ManualDriveAlignment;
-import frc.robot.commands.drive.ProfiledAlignToReefTags;
-import frc.robot.commands.drive.RotateToHeading;
+import frc.robot.commands.drive.ProfiledAlignToTags;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
 import frc.robot.commands.elevator.ToSetpoint;
+import frc.robot.commands.test.AlignSideToSide;
+import frc.robot.commands.test.DriveIntoTarget;
+import frc.robot.commands.test.RotateToHeading;
+import frc.robot.commands.test.VisionTest;
+import frc.robot.commands.vision.FindReefTarget;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.AllianceState;
 import frc.robot.statemachines.CoralState;
@@ -82,7 +80,7 @@ public class RobotContainer {
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+        .withDriveRequestType(DriveRequestType.Velocity);
 
     private final Telemetry logger = new Telemetry(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond));
 
@@ -139,11 +137,12 @@ public class RobotContainer {
     private CoralState m_CoralState = CoralState.getInstance();
 
     private AlgaeState m_AlgaeState = AlgaeState.getInstance();
-    
 
+    private final Command setWheelsToZero = new InstantCommand(() -> drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0.0))));   
 
     public RobotContainer() {
         
+        /* 
         NamedCommands.registerCommand("Score Level 4 at Reef K", AutonComposites.ScoreLevel4ReefK(drivetrain, m_PhotonCameraWrapper, elevator, corraler));
         NamedCommands.registerCommand("Score Level 4 at Reef L", AutonComposites.ScoreLevel4ReefL(drivetrain, m_PhotonCameraWrapper, elevator, corraler));
         NamedCommands.registerCommand("Score Level 4 at Reef J", AutonComposites.ScoreLevel4ReefJ(drivetrain, m_PhotonCameraWrapper, elevator, corraler));
@@ -155,22 +154,53 @@ public class RobotContainer {
         NamedCommands.registerCommand("Align To HP and Wait", AutonComposites.AlignHP(drivetrain, m_PhotonCameraWrapper));
 
         NamedCommands.registerCommand("Place Coral Level 4", AutonComposites.ScoreLevel4(elevator, corraler));
+        */
+
         NamedCommands.registerCommand("Raise to trough", new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference.getValue()))
                 .andThen(new WaitCommand(7))
                 .andThen(new  InstantCommand(() -> elevator.setSlowPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))));
+        NamedCommands.registerCommand("Set Wheels to Zero", setWheelsToZero);
+        
 
         Command driveInCoralLeftL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_LEFT);
         Command driveInCoralRightL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_RIGHT);
+        Command intakeAtHP = new AutonAlignToHPTag(drivetrain, m_PhotonCameraWrapper).andThen(new WaitUntilCommand(() -> CoralState.getInstance().hasCoral()));
 
+
+        NamedCommands.registerCommand("Score Coral Left Level 4", driveInCoralLeftL4);
+        NamedCommands.registerCommand("Score Coral Right Level 4", driveInCoralRightL4);
+        NamedCommands.registerCommand("Intake At HP", intakeAtHP);
+
+        Command alignToCoralLeftL4 = new InstantCommand(() -> m_CoralState.setCoralTarget(CoralTarget.L4_LEFT))
+            .andThen(new AutonAlignToReefTag(drivetrain, drivetrain.m_photonCameraWrapper))
+            .andThen(new WaitCommand(2));
+
+        Command alignToCoralRightL4 = new InstantCommand(() -> m_CoralState.setCoralTarget(CoralTarget.L4_RIGHT))
+            .andThen(new AutonAlignToReefTag(drivetrain, drivetrain.m_photonCameraWrapper))
+            .andThen(new WaitCommand(2));
+
+        Command alignToHP = new AutonAlignToHPTag(drivetrain, drivetrain.m_photonCameraWrapper)
+            .andThen(new WaitCommand(2));
+
+        NamedCommands.registerCommand("Align Left", alignToCoralLeftL4);
+        NamedCommands.registerCommand("Align Right", alignToCoralRightL4);
+        NamedCommands.registerCommand("Align At HP", alignToHP);
+        
+        
         autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
         autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
         autoChooser.addOption("Simple Drive Auton", AutoBuilder.buildAuto("Simple Auton"));
+        autoChooser.addOption("Simple Drive Auton 2", AutoBuilder.buildAuto("Simple Auton 2"));
+        autoChooser.addOption("Better Test Auton", AutoBuilder.buildAuto("Better Test Auton"));
+        autoChooser.addOption("Score 1 Coral Right", AutoBuilder.buildAuto("1 Coral Level 4 Right"));
         autoChooser.addOption("3 Align Auton", AutoBuilder.buildAuto("3 Align Auton"));
-        autoChooser.addOption("Straight In Level 4 Right", AutoBuilder.buildAuto("1 Coral Level 4 Right"));
         autoChooser.addOption("Drive Coral Left L4", driveInCoralLeftL4);
         autoChooser.addOption("Drive Coral Right L4", driveInCoralRightL4);
         autoChooser.addOption("TroughBump", AutoBuilder.buildAuto("TroughBump"));
+        autoChooser.addOption("1MeterAndTurn", AutoBuilder.buildAuto("DriveAndTurn"));
+        autoChooser.addOption("TestDriveForward", AutoBuilder.buildAuto("TestDriveForward"));
         
+
         // autoChooser.addOption("Line Up and Trough", new RunCommand(() -> drivetrain.driveRobotCentric(Preferences.autonYDrive.getValue(), 0, 0)).withTimeout(2)
         //     .alongWith(new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference)))
         //     .andThen(new WaitCommand(1))
@@ -185,6 +215,7 @@ public class RobotContainer {
         configureBindings();
         //TODO MUST REMOVE
         //configureTestBindings();
+        //configureOdometryTestBindings();
         configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -213,9 +244,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * m_driveState.getMaxSpeed()) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * m_driveState.getMaxSpeed()) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * m_driveState.getMaxRotation()) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-1 * Math.copySign(Math.pow(joystick.getLeftY(),2), joystick.getLeftY()) * m_driveState.getMaxSpeed()) // Drive forward with negative Y (forward)
+                    .withVelocityY(-1 * Math.copySign(Math.pow(joystick.getLeftX(), 2), joystick.getLeftX()) * m_driveState.getMaxSpeed()) // Drive left with negative X (left)
+                    .withRotationalRate(-1 * Math.copySign(Math.pow(joystick.getRightX(), 2), joystick.getRightX()) * m_driveState.getMaxRotation()) // Drive counterclockwise with negative X (left)
             )
         );
         
@@ -230,6 +261,8 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+
+        SmartDashboard.putData("Vision Test", new InstantCommand(() -> VisionTest.VisionValueTest(drivetrain.m_photonCameraWrapper)));
 
         // SmartDashboard.putData("Elevator Ground", new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position)));
         // SmartDashboard.putData("Elevator Trough", new ScoreCoral(elevator, corraler, ElevatorConstants.FLOOR.TROUGH.position, ElevatorConstants.FLOOR.GROUND.position));
@@ -259,8 +292,12 @@ public class RobotContainer {
 
         //joystick.rightBumper().whileTrue(new AlignToTarget(drivetrain, drivetrain.m_photonCameraWrapper, 18, Preferences.alignAdj));
 
-        SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(0.5)));
+        SmartDashboard.putData("Nerf", new InstantCommand(() -> m_driveState.nerf()));
+        SmartDashboard.putData("UnNerf", new InstantCommand(() -> m_driveState.unNerf()));
+        
+        SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(Preferences.servoPosition)));
         SmartDashboard.putData("Set Elevator PID", new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG, Preferences.elevatorkS)));
+    
 
         joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
                     .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
@@ -271,7 +308,7 @@ public class RobotContainer {
 
         //score coral
         joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
-                Preferences.coralXDriveOffset, ()-> joystick.getLeftY(), () -> joystick.getLeftX(), () -> joystick.getRightX(), joystick.rightTrigger(), joystick.leftTrigger())
+                ()-> joystick.getLeftY(), () -> joystick.getLeftX(), joystick.rightTrigger(), joystick.leftTrigger())
         )
 
         // joystick.a().whileTrue(new SemiAutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
@@ -284,42 +321,36 @@ public class RobotContainer {
 
         
         joystick.x().whileTrue(
-            new ToSetpoint(elevator, ElevatorConstants.ALGAE.PROCESSOR.height).withTimeout(2).alongWith(
-                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle)).until(() -> collector.isWristAtPosition()).withTimeout(2)
-            ).andThen(new WaitUntilCommand(joystick.rightTrigger()).andThen(
-                new RunCommand(() -> collector.outtakeAlgae()).withTimeout( 1))
-            )
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.PROCESSOR.height))
+                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle)))
+                .andThen(new WaitUntilCommand(joystick.rightTrigger()))
+                .andThen(new InstantCommand(() -> collector.outtakeAlgae()))
         ).onFalse(
-            new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
-                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))).alongWith(
-                new InstantCommand(() -> collector.stopAlgaeMotor()))
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))
+                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle)))
+                .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
         );
 
-        joystick.b().onTrue(
-            new ElevatorToAlgaePreset(elevator).alongWith(
-                new RunCommand(() -> collector.setToIntakePosition()).alongWith(
-                    new ManualDriveAlignment(drivetrain,() -> joystick.getLeftY(),() ->  joystick.getLeftX(), () -> joystick.getRightX()).alongWith(
-                        new IntakeAlgae(collector)
-                    )
+        joystick.b().whileTrue(
+            new InstantCommand(() -> elevator.setPositionRevolutions(AlgaeState.getInstance().getAlgaeHeight()))
+                .andThen(new InstantCommand(() -> collector.setToIntakePosition()))
+                .andThen(new ManualDriveAlignment(drivetrain,() -> joystick.getLeftY(),() ->  joystick.getLeftX(), () -> joystick.getRightX())
+                    .alongWith(new IntakeAlgae(collector))
                 )
-            )
         ).onFalse(
-
-            new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
-                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))
-            )
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))
+                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle)))
         );
 
-        joystick.y().onTrue(
-            new ToSetpoint(elevator, ElevatorConstants.ALGAE.BARGE.height).alongWith(
-                new RunCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.BARGE.angle)).until(() -> collector.isWristAtPosition())
-            ).andThen(new WaitUntilCommand(joystick.rightTrigger()).andThen(
-                new RunCommand(() -> collector.outtakeAlgae()).withTimeout(.5))
-            )
+        joystick.y().whileTrue(
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.BARGE.height))
+                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.BARGE.angle)))
+                .andThen(new WaitUntilCommand(joystick.rightTrigger()))
+                .andThen(new RunCommand(() -> collector.outtakeAlgae()))
         ).onFalse(
-            new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position).alongWith(
-                new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle))).alongWith(
-                new InstantCommand(() -> collector.stopAlgaeMotor()))
+            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))
+                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle)))
+                .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
         );
 
         joystick.back().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll())
@@ -334,8 +365,16 @@ public class RobotContainer {
 
     private void configureTestBindings() {
 
+        SmartDashboard.putData("Nerf", new InstantCommand(() -> m_driveState.nerf()));
+        SmartDashboard.putData("UnNerf", new InstantCommand(() -> m_driveState.unNerf()));
+
+        SmartDashboard.putData("Vison Test", new InstantCommand(() -> VisionTest.VisionValueTest(drivetrain.m_photonCameraWrapper)));
+
         SmartDashboard.putData("Climber Test", new RunCommand(() -> climber.setServoPosition(Preferences.servoPosition)));
 
+        SmartDashboard.putData("Set Level 4 Left", new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.L4_LEFT)));
+        SmartDashboard.putData("Set Level 4 Right", new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.L4_RIGHT)));
+        
         joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
                     .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
         joystick.povDown().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))
@@ -346,13 +385,31 @@ public class RobotContainer {
         joystick.a().whileTrue(new RotateToHeading(drivetrain, m_PhotonCameraWrapper));
         joystick.y().whileTrue(new AlignSideToSide(drivetrain, m_PhotonCameraWrapper));
         joystick.x().whileTrue(new DriveIntoTarget(drivetrain, m_PhotonCameraWrapper));
-        joystick.b().whileTrue(new ProfiledAlignToReefTags(drivetrain, m_PhotonCameraWrapper, ()-> joystick.getLeftY(), () -> joystick.getLeftX()));
+        joystick.b().whileTrue(new ProfiledAlignToTags(drivetrain, m_PhotonCameraWrapper, () -> m_allianceState.getReefTags(), () -> m_CoralState.pickReefCamera(), () -> joystick.getLeftY(), () -> joystick.getLeftX()));
 
+        
         joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         joystick.leftBumper().onTrue(new OuttakeCommand(corraler));
-
     
+    }
+
+    private void configureOdometryTestBindings(){
+
+        
+        joystick.a().whileTrue(
+         new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.L4_LEFT))
+            .andThen(new FindReefTarget(m_PhotonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera())   
+                .alongWith(new DriveToPoseNoProfile(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null,false)))
+        ).onFalse(new InstantCommand(() -> DriveState.getInstance().unlockCameras())
+        );
+        
+        joystick.b().whileTrue(
+         new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.L4_LEFT))
+            .andThen(new FindReefTarget(m_PhotonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera())   
+                .alongWith(new DriveToPose(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null,false)))
+        ).onFalse(new InstantCommand(() -> DriveState.getInstance().unlockCameras())
+        );
     }
 
     public Command getAutonomousCommand() {

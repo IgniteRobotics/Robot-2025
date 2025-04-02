@@ -2,16 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.drive;
+package frc.robot.commands.test;
 
 import java.util.Optional;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Preferences;
 import frc.robot.statemachines.AllianceState;
 import frc.robot.statemachines.CoralState;
+import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
@@ -21,22 +24,21 @@ import edu.wpi.first.epilogue.Logged;
 
 
 @Logged
-public class RotateToHeading extends Command {
+public class DriveIntoTarget extends Command {
   private final CommandSwerveDrivetrain m_drive;
   PhotonCameraWrapper m_pcw;
-  PIDController rotationController;
-  PIDController driveYController;
-  PIDController driveXController;
+  ProfiledPIDController driveXController;
+  Constraints m_XConstraints;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-  private int m_cameraId;
-  
   private int targetIDs[] = {};
 
-  double rotation;
+
+  private double m_distanceMeters;
+  private double m_yawDegrees;
   
   /** Creates a new AlignToTarget. */
-  public RotateToHeading(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw){
+  public DriveIntoTarget(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw){
     m_drive = drive;
     m_pcw = pcw;
     addRequirements(m_drive);
@@ -45,42 +47,52 @@ public class RotateToHeading extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    rotationController = new PIDController(Preferences.alignRotKP.get(), Preferences.alignRotKI.get(), Preferences.alignRotKD.get());
-    rotationController.setTolerance(Preferences.rotationTolerancePreference.get());
-    rotationController.enableContinuousInput(-180, 180);
-
+    
+    m_XConstraints = new Constraints(Preferences.profiledDriveXMaxVel.get(), Preferences.profiledDriveXMaxAcc.get());
+    driveXController = new ProfiledPIDController(Preferences.profiledDriveXKP.get(), Preferences.profiledDriveXKI.get(), Preferences.profiledDriveXKD.get(), m_XConstraints);
+    driveXController.setTolerance(Preferences.xAlignTolerancePreference.get());
+    driveXController.setIZone(Double.POSITIVE_INFINITY);
+    
     targetIDs = AllianceState.getInstance().getReefTags();
-    m_cameraId = CoralState.getInstance().pickCamera();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    rotation = 0;
-
-    Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, m_cameraId);
+    //Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
+    
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, CoralState.getInstance().pickReefCamera());
+    double driveX;
 
     if(targeting.isPresent()){
-      double targetHeading = Math.toDegrees(aprilTags.getTagPose(targeting.get().getTagId()).get().getRotation().getZ());
-      rotation = rotationController.calculate(m_drive.getYaw(), targetHeading);
-      SmartDashboard.putNumber("Alignment/Data/Heading", targetHeading);
+    
+      m_distanceMeters = 0.347;
+      driveX = driveXController.calculate(targeting.get().getTransform3d().getX(), m_distanceMeters);
+      SmartDashboard.putNumber("Alignment/Data/Distance", targeting.get().getTransform3d().getX());
+    
     }
 
-    SmartDashboard.putNumber("Alignment/Power/rotation", rotation);
+    else{
+      driveX = 0;
+    }
+  
     
-    m_drive.driveRobotCentric(0, 0, rotation);
+
+    SmartDashboard.putNumber("Alignment/Power/driveX", driveX);
+    
+    m_drive.driveRobotCentric(driveX, 0, 0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drive.driveRobotCentric(0,0,0);
+    m_drive.driveRobotCentric(0, 0, 0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return rotationController.atSetpoint();
+    return driveXController.atSetpoint();
   }
 }

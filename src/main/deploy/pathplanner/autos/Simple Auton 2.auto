@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "StraightInR4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score Coral Right Level 4"
+            "pathName": "Simple Path 2"
           }
         }
       ]

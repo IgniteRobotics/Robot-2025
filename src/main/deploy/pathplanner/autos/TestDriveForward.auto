@@ -5,15 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "StraightInR4"
+            "name": "Set Wheels to Zero"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Score Coral Right Level 4"
+            "pathName": "1MeterStraight"
           }
         }
       ]

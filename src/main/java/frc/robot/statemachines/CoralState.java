@@ -6,8 +6,11 @@ package frc.robot.statemachines;
 
 import java.util.function.DoubleSupplier;
 
+import org.photonvision.PhotonCamera;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
+import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.algae.AlgaeCollectorConstants;
 import frc.robot.subsystems.drive.CameraConstants;
@@ -115,16 +118,6 @@ public class CoralState {
         }
     }
 
-    public double getYCoralAlignment(double d){
-        if(coralTarget == CoralTarget.L4_LEFT || coralTarget == CoralTarget.L3_LEFT || coralTarget == CoralTarget.L2_LEFT){
-            return CameraConstants.getCorallYawOffsetDegreesLeft(d);
-        }
-        else if(coralTarget == CoralTarget.L4_RIGHT || coralTarget == CoralTarget.L3_RIGHT || coralTarget == CoralTarget.L2_RIGHT){
-            return CameraConstants.getCorallYawOffsetDegreesRight(d);
-        }
-        else return 0.0;
-    }
-
     public void setHasCoral(boolean bool){
         hasCoral = bool;
     }
@@ -133,15 +126,37 @@ public class CoralState {
         return hasCoral;
     }
 
-    public int pickCamera(){
+    public PhotonCamera pickReefCamera(){
         //LEFT CAMERA IS ZERO
         //ALIGN TO LEFT POST IS LEFT CAMERA (I HOPE!)
         CoralState c = CoralState.getInstance();
         if (c.coralTargetL2_LEFT() || c.coralTargetL3_LEFT() || c.coralTargetL4_LEFT() || c.coralTarget_TROUGH()){
-          return 0;
+          return CameraConstants.photonCameraOuttakeLeft;
         }
         else{
-          return 1;
+          return CameraConstants.photonCameraOuttakeRight;
         }
       }
+
+    public Transform3d getCameraTransform(){
+        //LEFT CAMERA IS ZERO
+        //ALIGN TO LEFT POST IS LEFT CAMERA (I HOPE!)
+        CoralState c = CoralState.getInstance();
+        if (c.coralTargetL2_LEFT() || c.coralTargetL3_LEFT() || c.coralTargetL4_LEFT() || c.coralTarget_TROUGH()){
+          return CameraConstants.photonCameraTransformOuttakeLeft;
+        }
+        else{
+          return CameraConstants.photonCameraTransformOuttakeRight;
+        }
+      }
+
+    public double getYCoralOffsetMeters(){
+        if(coralTarget == CoralTarget.L4_LEFT || coralTarget == CoralTarget.L3_LEFT || coralTarget == CoralTarget.L2_LEFT){
+            return CameraConstants.Y_LEFT_CORAL_OFFSET_METERS;
+        }
+        else if(coralTarget == CoralTarget.L4_RIGHT || coralTarget == CoralTarget.L3_RIGHT || coralTarget == CoralTarget.L2_RIGHT){
+            return CameraConstants.Y_RIGHT_CORAL_OFFSET_METERS;
+        }
+        else return 0.0;
+    }
 }

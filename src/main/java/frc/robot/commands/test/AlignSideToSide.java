@@ -2,11 +2,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.drive;
+package frc.robot.commands.test;
 
 import java.util.Optional;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Preferences;
@@ -24,18 +26,11 @@ import edu.wpi.first.epilogue.Logged;
 public class AlignSideToSide extends Command {
   private final CommandSwerveDrivetrain m_drive;
   PhotonCameraWrapper m_pcw;
-  PIDController rotationController;
-  PIDController driveYController;
-  PIDController driveXController;
+  ProfiledPIDController driveYController;
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-
-  private int m_cameraId;
+  Constraints m_YConstraints;
   
   private int targetIDs[] = {};
-
-
-  private double m_distanceMeters;
-  private double m_yawDegrees;
   
   /** Creates a new AlignToTarget. */
   public AlignSideToSide(CommandSwerveDrivetrain drive,  PhotonCameraWrapper pcw){
@@ -47,14 +42,12 @@ public class AlignSideToSide extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveYController = new PIDController(Preferences.alignDriveYKP.get(), Preferences.alignDriveYKI.get(), Preferences.alignDriveYKD.get());
+    m_YConstraints = new Constraints(Preferences.profiledDriveYMaxVel.get(), Preferences.profiledDriveYMaxAcc.get());
+    driveYController = new ProfiledPIDController(Preferences.profiledDriveYKP.get(), Preferences.profiledDriveYKI.get(), Preferences.profiledDriveYKD.get(), m_YConstraints);
     driveYController.setTolerance(Preferences.yAlignTolerancePreference.get());
+    driveYController.setIZone(Double.POSITIVE_INFINITY);
   
     targetIDs = AllianceState.getInstance().getReefTags();
-    m_cameraId = CoralState.getInstance().pickCamera();
-    m_distanceMeters = Preferences.coralXDriveOffset.get();
-    m_yawDegrees = CoralState.getInstance().getYCoralAlignment(m_distanceMeters);
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -62,13 +55,11 @@ public class AlignSideToSide extends Command {
   public void execute() {
     //Optional<TargetInfo> targeting = m_pcw.seekGeneralTargets(targetIDs, m_cameraId);
     
-    Optional<TargetInfo> targeting = m_pcw.seekOuttakeTargets(targetIDs, m_cameraId);
+    Optional<TargetInfo> targeting = m_pcw.seekTargets(targetIDs, CoralState.getInstance().pickReefCamera());
     double driveY;
 
     if(targeting.isPresent()){
-    
-      
-      driveY = -driveYController.calculate(targeting.get().getYaw(), 0);
+      driveY = driveYController.calculate(targeting.get().getTransform3d().getY(), 0);
     }
 
     else{
