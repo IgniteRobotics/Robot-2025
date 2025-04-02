@@ -61,28 +61,34 @@ public class FindReefTarget extends Command {
         lockedTarget = targeting.get().getTagId();
         DriveState.getInstance().lockToCamera(targeting.get().getCamera());
 
-        //modify the target's transform by the offsets
-
-        
-        Transform2d targetTransform = new Transform2d(
-          targeting.get().getTransform3d().getTranslation().getX() - CameraConstants.X_OFFSET_METERS,
-          targeting.get().getTransform3d().getTranslation().getY() + CoralState.getInstance().getYCoralOffsetMeters(),
+        //camera to target
+        Transform2d cam2Target = new Transform2d(
+          targeting.get().getTransform3d().getTranslation().getX(),
+          targeting.get().getTransform3d().getTranslation().getY(),
           targeting.get().getTransform3d().getRotation().toRotation2d()
         );
 
-        Transform2d cam2Robot = new Transform2d(
+        //robot to camera.
+        Transform2d robotToCamera = new Transform2d(
           CoralState.getInstance().getCameraTransform().getX(),
           CoralState.getInstance().getCameraTransform().getY(),
           CoralState.getInstance().getCameraTransform().getRotation().toRotation2d()
         );
 
-        //start at the robot, moved to the camera, then to the target's position, then modify by the offset
+        //robot offset the center of the robot to position for coral.
+        // don't rotate since the robot to cam transofrm is already rotated.
+        Transform2d robotToCoral = new Transform2d(
+          -1 * (Math.abs(CameraConstants.X_OFFSET_METERS) + Math.abs(CoralState.getInstance().getCameraTransform().getX())),
+          CoralState.getInstance().getYCoralOffsetMeters(),
+          new edu.wpi.first.math.geometry.Rotation2d()
+        );
+
+        //start at the robot, moveto the camera, then to the target's position, then modify by the offsets
         Pose2d targetPose = DriveState.getInstance().getPose2d()
-          .plus(cam2Robot).plus(targetTransform);
+          .plus(robotToCamera).plus(cam2Target).plus(robotToCoral);
 
         DriveState.getInstance().setTargetPose2d(targetPose);
         finished = true;
-
       }
   }
 
