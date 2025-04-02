@@ -119,5 +119,8 @@ public class Preferences {
     public static DoublePreference climberPos1 = new DoublePreference("Climber/Position 1", 1);
     public static DoublePreference climberPos2 = new DoublePreference("Climber/Position 2", 2);
 
+    //********** auton **********
+    public static DoublePreference autonDriveTimeoutPreference = new DoublePreference("auton/drive/timeout", 4);
+
     
 }
