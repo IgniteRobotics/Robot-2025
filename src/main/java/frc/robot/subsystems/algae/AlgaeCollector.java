@@ -61,6 +61,7 @@ public class AlgaeCollector extends SubsystemBase {
     m_wristMotor.getConfigurator().apply(m_wristMotorOutputConfigs);
     m_wristMotor.setPosition(0.282715);
 
+    stow();
   }
 
 
@@ -94,11 +95,11 @@ public class AlgaeCollector extends SubsystemBase {
   }
 
   public void setToIntakePosition(){
-    setWristPosition(AlgaeCollectorConstants.WRIST.REEF.angle);
+    setWristPosition(Preferences.collectorIntakePosition);
   }
 
   public void stow(){
-    setWristPosition(Preferences.collectorStowPosition);
+    setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle);
   }
 
   @Logged

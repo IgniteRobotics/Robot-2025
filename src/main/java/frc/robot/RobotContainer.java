@@ -45,7 +45,6 @@ import frc.robot.commands.composite.AutoScoreCoralGroup;
 
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
-import frc.robot.commands.drive.DriveToPose;
 import frc.robot.commands.drive.DriveToPoseNoProfile;
 import frc.robot.commands.drive.ManualDriveAlignment;
 import frc.robot.commands.drive.ProfiledAlignToTags;
@@ -257,12 +256,6 @@ public class RobotContainer {
         
 
         corraler.setDefaultCommand(corralerDefaultCommand);
-
-        
-
-        // elevator.setDefaultCommand(new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position));  
-
-        collector.setDefaultCommand(new RunCommand(() -> collector.stow(), collector));
     }
 
     private void configureBindings() {
@@ -331,7 +324,7 @@ public class RobotContainer {
                 .andThen(new InstantCommand(() -> collector.outtakeAlgae()))
         ).onFalse(
             new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))
-                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle)))
+                .andThen(new InstantCommand(() -> collector.stow()))
                 .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
         );
 
@@ -343,7 +336,7 @@ public class RobotContainer {
                 )
         ).onFalse(
             new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))
-                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle)))
+                .andThen(new InstantCommand(() -> collector.stow()))
         );
 
         joystick.y().whileTrue(
@@ -354,7 +347,7 @@ public class RobotContainer {
                 .andThen(new RunCommand(() -> collector.outtakeAlgae()))
         ).onFalse(
             new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))
-                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle)))
+                .andThen(new InstantCommand(() -> collector.stow()))
                 .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
                 .andThen(new InstantCommand(() -> DriveState.getInstance().unNerf()))
         );
@@ -413,7 +406,7 @@ public class RobotContainer {
         joystick.b().whileTrue(
          new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.L4_LEFT))
             .andThen(new FindReefTarget(m_PhotonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera())   
-                .alongWith(new DriveToPose(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null,false)))
+                .alongWith(new DriveToPoseNoProfile(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null,false)))
         ).onFalse(new InstantCommand(() -> DriveState.getInstance().unlockCameras())
         );
     }

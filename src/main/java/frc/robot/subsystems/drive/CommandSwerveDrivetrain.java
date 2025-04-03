@@ -22,6 +22,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -323,11 +324,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
     }
 
-    public void autoDrive(double x, double y, double rot){
-        SwerveRequest.FieldCentric m_driveRequest = new SwerveRequest.FieldCentric()
-            .withDriveRequestType(DriveRequestType.Velocity)
-            .withSteerRequestType(SteerRequestType.MotionMagicExpo);
-        this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
+    public void autoDrive(double x, double y, double rot, boolean driveWithControllers){
+        if(driveWithControllers){
+            SwerveRequest.FieldCentric m_driveRequest = new SwerveRequest.FieldCentric()
+                .withDriveRequestType(DriveRequestType.Velocity)
+                .withSteerRequestType(SteerRequestType.MotionMagicExpo)
+                .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
+            this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
+        }
+        else{
+            SwerveRequest.FieldCentric m_driveRequest = new SwerveRequest.FieldCentric()
+                .withDriveRequestType(DriveRequestType.Velocity)
+                .withSteerRequestType(SteerRequestType.MotionMagicExpo)
+                .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
+            this.setControl(m_driveRequest.withVelocityX(x).withVelocityY(y).withRotationalRate(rot));
+        }
     }
 
     @Override
