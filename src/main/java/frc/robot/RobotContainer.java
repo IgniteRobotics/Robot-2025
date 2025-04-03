@@ -347,7 +347,8 @@ public class RobotContainer {
         );
 
         joystick.y().whileTrue(
-            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.BARGE.height))
+            new InstantCommand(() -> DriveState.getInstance().nerf())
+                .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.BARGE.height)))
                 .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.BARGE.angle)))
                 .andThen(new WaitUntilCommand(joystick.rightTrigger()))
                 .andThen(new RunCommand(() -> collector.outtakeAlgae()))
@@ -355,6 +356,7 @@ public class RobotContainer {
             new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))
                 .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle)))
                 .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
+                .andThen(new InstantCommand(() -> DriveState.getInstance().unNerf()))
         );
 
         joystick.back().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll())
