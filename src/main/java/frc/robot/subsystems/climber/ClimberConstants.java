@@ -17,12 +17,8 @@ import com.ctre.phoenix6.controls.Follower;
 public class ClimberConstants {
 
         //Motor
-        public static final int kclimberMotorLeaderId = 14;
-        public static final int kclimberMotorFollowerId = 15;
+        public static final int kclimberMotorLeaderId = 15;
         public static final TalonFX CLIMBER_LEADER_MOTOR = new TalonFX(kclimberMotorLeaderId);
-        public static final TalonFX CLIMBER_FOLLOWER_MOTOR = new TalonFX(kclimberMotorFollowerId){{
-            setControl(new Follower(kclimberMotorLeaderId, true));
-        }};
 
         public static final int RIGHT_SERVO_PORT = 0;
         public static final int LEFT_SERVO_PORT = 1;
@@ -75,15 +71,7 @@ public class ClimberConstants {
             return newConfigs;
         }
 
-        //MotorConfigs
         public static MotorOutputConfigs createLeaderMotorOutputConfigs(){
-            MotorOutputConfigs newConfigs = new MotorOutputConfigs();
-            newConfigs.Inverted = InvertedValue.Clockwise_Positive;
-            newConfigs.NeutralMode = NeutralModeValue.Brake;
-            return newConfigs;
-        }
-
-        public static MotorOutputConfigs createFollowerMotorOutputConfigs(){
             MotorOutputConfigs newConfigs = new MotorOutputConfigs();
             newConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
             newConfigs.NeutralMode = NeutralModeValue.Brake;
