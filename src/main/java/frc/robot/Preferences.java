@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.drive.DriveCommandConstants;
 import frc.robot.subsystems.climber.ClimberConstants;
+import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.algae.AlgaeCollector;
 import frc.robot.subsystems.algae.AlgaeCollectorConstants;
@@ -17,6 +18,10 @@ public class Preferences {
     // ********** Drive *********//
     public static DoublePreference nerfFactor = new DoublePreference("Nerf Factor", 0.35);
     public static DoublePreference alignTimeout = new DoublePreference("Alignment Timeout", 1.5);
+
+    public static DoublePreference alignYOffsetRight = new DoublePreference("alignCommand/driveY/offset/right", CameraConstants.Y_RIGHT_CORAL_OFFSET_METERS);
+    public static DoublePreference alignYOffsetLeft = new DoublePreference("alignCommand/driveY/offset/left", CameraConstants.Y_LEFT_CORAL_OFFSET_METERS);
+    public static DoublePreference alignXOffset = new DoublePreference("alignCommand/driveX/offset", CameraConstants.X_OFFSET_METERS);
     
     public static DoublePreference alignRotKP = new DoublePreference("alignCommand/rotation/kP", DriveCommandConstants.ROTATION_P);
     public static DoublePreference alignRotKD = new DoublePreference("alignCommand/rotation/kD", DriveCommandConstants.ROTATION_D);

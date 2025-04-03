@@ -44,8 +44,8 @@ public class CameraConstants {
         put("OUTTAKE_RIGHT", 0.3429);
     }};
 
-    public static final double Y_LEFT_CORAL_OFFSET_METERS = 0.119;
-    public static final double Y_RIGHT_CORAL_OFFSET_METERS = -0.081;
+    public static final double Y_LEFT_CORAL_OFFSET_METERS = -0.16;
+    public static final double Y_RIGHT_CORAL_OFFSET_METERS = 0.18;
 
     public static final double X_OFFSET_METERS = 0.37;
 

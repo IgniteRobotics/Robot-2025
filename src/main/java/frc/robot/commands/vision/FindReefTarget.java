@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Preferences;
 import frc.robot.statemachines.CoralState;
 import frc.robot.statemachines.DriveState;
 import frc.robot.subsystems.drive.CameraConstants;
@@ -77,7 +78,7 @@ public class FindReefTarget extends Command {
         //robot offset the center of the robot to position for coral.
         // don't rotate since the robot to cam transofrm is already rotated.
         Transform2d robotToCoral = new Transform2d(
-          (Math.abs(CameraConstants.X_OFFSET_METERS) + Math.abs(CoralState.getInstance().getCameraTransform().getX())),
+          (Math.abs(Preferences.alignXOffset.getValue()) + Math.abs(CoralState.getInstance().getCameraTransform().getX())),
           CoralState.getInstance().getYCoralOffsetMeters(),
           new edu.wpi.first.math.geometry.Rotation2d()
         );

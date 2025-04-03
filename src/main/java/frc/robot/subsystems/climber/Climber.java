@@ -95,6 +95,8 @@ public class Climber implements Subsystem {
     m_rightServo = new Servo(ClimberConstants.RIGHT_SERVO_PORT);
     m_leftServo = new Servo(ClimberConstants.LEFT_SERVO_PORT);
 
+    m_climberMotorLeader.setPosition(0);
+
 
   }
 
@@ -171,7 +173,7 @@ public class Climber implements Subsystem {
     m_MMJerk = m_motionMagicConfigs.MotionMagicJerk;
   }
 
-  // @NotLogged
+   //NotLogged
   // public double getClimberkP(){
   //   m_Slot0Configs = new Slot0Configs();
   //   m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);

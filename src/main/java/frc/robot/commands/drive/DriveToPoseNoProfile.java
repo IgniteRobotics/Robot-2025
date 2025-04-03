@@ -58,6 +58,8 @@ public class DriveToPoseNoProfile
   @Override
   public void initialize() {
     m_initialBotPoseFieldRelative = m_driveTrain.getPose();
+    m_driverOverrideX = false;
+    m_driverOverrideY = false;
   
 
     m_rotationController = new PIDController(Preferences.alignRotKP.get(), Preferences.alignRotKI.get(), Preferences.alignRotKD.get());
