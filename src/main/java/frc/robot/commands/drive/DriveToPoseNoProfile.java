@@ -155,7 +155,7 @@ public class DriveToPoseNoProfile
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_driveTrain.driveRobotCentric(0, 0,0);
+    m_driveTrain.autoDrive(0, 0,0);
   }
 
 

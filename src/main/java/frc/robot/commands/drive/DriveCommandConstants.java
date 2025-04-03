@@ -13,11 +13,11 @@ public class DriveCommandConstants {
     public static final double ROTATION_P = 0.1;
     public static final double ROTATION_D = 0.00005;
 
-    public static final double DRIVE_X_P = 2.6;
+    public static final double DRIVE_X_P = 2.9;
     public static final double DRIVE_X_D = 0.015;
 
     public static final double DRIVE_Y_P = 2.6;
-    public static final double DRIVE_Y_D = 0.000001;
+    public static final double DRIVE_Y_D = 0.015;
 
     public static final double DRIVE_Y_TOLERANCE = 0.1;
     public static final double DRIVE_X_TOLERANCE = 0.01;
