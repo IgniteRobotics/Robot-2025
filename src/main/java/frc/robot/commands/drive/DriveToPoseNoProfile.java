@@ -60,6 +60,7 @@ public class DriveToPoseNoProfile
   @Override
   public void initialize() {
     m_initialBotPoseFieldRelative = m_driveTrain.getPose();
+    m_targetPoseFieldRelative = null;
     m_driverOverride = false;
   
 
@@ -110,7 +111,7 @@ public class DriveToPoseNoProfile
         
         //m_driveYController.reset(currentPose.getY(), m_driveTrain.getState().Speeds.vxMetersPerSecond);
         driveY = m_driveYController.calculate(currentPose.getY(), m_targetPoseFieldRelative.getY());
-        driveY = MathUtil.clamp(driveY, -2.5, 2.5);
+        driveY = MathUtil.clamp(driveY, -1*Preferences.maxAlignDriveVelocity.getValue(), Preferences.maxAlignDriveVelocity.getValue());
         //ignore this
         SmartDashboard.putNumber("Alignment/Data/YError", m_driveYController.getPositionError());
         
@@ -118,7 +119,7 @@ public class DriveToPoseNoProfile
       
         //m_driveXController.reset(currentPose.getX(), m_driveTrain.getState().Speeds.vyMetersPerSecond);
         driveX = m_driveXController.calculate(currentPose.getX(), m_targetPoseFieldRelative.getX());
-        driveX = MathUtil.clamp(driveX, -2.5, 2.5);
+        driveX = MathUtil.clamp(driveX, -1*Preferences.maxAlignDriveVelocity.getValue(), Preferences.maxAlignDriveVelocity.getValue());
         //Ignore this (bad)
         SmartDashboard.putNumber("Alignment/Data/DistanceError", m_driveXController.getPositionError());
         

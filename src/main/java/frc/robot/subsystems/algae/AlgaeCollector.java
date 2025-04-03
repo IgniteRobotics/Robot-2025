@@ -99,7 +99,7 @@ public class AlgaeCollector extends SubsystemBase {
   }
 
   public void stow(){
-    setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle);
+    setWristPosition(Preferences.collectorStowPosition);
   }
 
   @Logged

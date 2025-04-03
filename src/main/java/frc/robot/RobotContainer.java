@@ -238,7 +238,8 @@ public class RobotContainer {
         coralCancelButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.NONE)));
         climbTrigger.onTrue(new InstantCommand(() -> climber.setServoPosition(0))
             .andThen(new InstantCommand(() -> DriveState.getInstance().nerf())));
-        climbTrigger.onFalse(new InstantCommand(() -> DriveState.getInstance().unNerf()));
+        climbTrigger.onFalse(new InstantCommand(() -> DriveState.getInstance().unNerf())
+            .andThen(new InstantCommand(() -> climber.setServoPosition(0.5))));
     }
 
     private void configureSubsytemDefaultCommands(){
@@ -297,8 +298,8 @@ public class RobotContainer {
         SmartDashboard.putData("Set Elevator PID", new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG, Preferences.elevatorkS)));
     
 
-        joystick.povUp().onTrue(new InstantCommand(() -> climber.setPositionRevolutions(-135.64)));
-        joystick.povDown().onTrue(new InstantCommand(() -> climber.setPositionRevolutions(128.98)));
+        joystick.povUp().onTrue(new InstantCommand(() -> climber.setPositionRevolutions(Preferences.climberPos1)));
+        joystick.povDown().onTrue(new InstantCommand(() -> climber.setPositionRevolutions(Preferences.climberPos2)));
 
         joystick.povLeft().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
         

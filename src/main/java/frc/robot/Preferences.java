@@ -68,6 +68,7 @@ public class Preferences {
     public static DoublePreference driveTestRPS = new DoublePreference("drive/test/RPS", 2);
     public static DoublePreference driveTestSpeed = new DoublePreference("drive/test/speed", 2);
     
+    public static DoublePreference maxAlignDriveVelocity = new DoublePreference("alignCommand/driveVelocity", 2.5);
     
 
     // ********** Elevator **********
@@ -121,8 +122,8 @@ public class Preferences {
 
     public static DoublePreference servoPosition = new DoublePreference("Climber/Servo Position", 0);
 
-    public static DoublePreference climberPos1 = new DoublePreference("Climber/Position 1", 1);
-    public static DoublePreference climberPos2 = new DoublePreference("Climber/Position 2", 2);
+    public static DoublePreference climberPos1 = new DoublePreference("Climber/Position Climb", -135.64);
+    public static DoublePreference climberPos2 = new DoublePreference("Climber/Position Reach", 128.98);
 
     //********** auton **********
     public static DoublePreference autonDriveTimeoutPreference = new DoublePreference("auton/drive/timeout", 4);
