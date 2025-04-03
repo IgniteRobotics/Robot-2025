@@ -40,8 +40,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.algae.IntakeAlgae;
-import frc.robot.commands.auton.AutonAlignToHPTag;
-import frc.robot.commands.auton.AutonAlignToReefTag;
+import frc.robot.commands.auton.AutonAlignToTag;
 import frc.robot.commands.auton.AutonScoreCoralGroup;
 import frc.robot.commands.composite.AutoScoreCoralGroup;
 
@@ -57,6 +56,7 @@ import frc.robot.commands.test.AlignSideToSide;
 import frc.robot.commands.test.DriveIntoTarget;
 import frc.robot.commands.test.RotateToHeading;
 import frc.robot.commands.test.VisionTest;
+import frc.robot.commands.vision.FindHPTarget;
 import frc.robot.commands.vision.FindReefTarget;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.AllianceState;
@@ -164,7 +164,9 @@ public class RobotContainer {
 
         Command driveInCoralLeftL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_LEFT);
         Command driveInCoralRightL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_RIGHT);
-        Command intakeAtHP = new AutonAlignToHPTag(drivetrain, m_PhotonCameraWrapper).andThen(new WaitUntilCommand(() -> CoralState.getInstance().hasCoral()));
+        Command intakeAtHP = new AutonAlignToTag(drivetrain, () -> DriveState.getInstance().getTargetPose2d())
+            .withDeadline(new FindHPTarget(drivetrain.m_photonCameraWrapper, () -> AllianceState.getInstance().getHumanPlayerTags(), () -> CameraConstants.photonCameraOuttakeRight))
+            .andThen(new WaitUntilCommand(() -> CoralState.getInstance().hasCoral()));
 
 
         NamedCommands.registerCommand("Score Coral Left Level 4", driveInCoralLeftL4);
@@ -172,14 +174,17 @@ public class RobotContainer {
         NamedCommands.registerCommand("Intake At HP", intakeAtHP);
 
         Command alignToCoralLeftL4 = new InstantCommand(() -> m_CoralState.setCoralTarget(CoralTarget.L4_LEFT))
-            .andThen(new AutonAlignToReefTag(drivetrain, drivetrain.m_photonCameraWrapper))
+            .andThen(new AutonAlignToTag(drivetrain, () -> DriveState.getInstance().getTargetPose2d())
+                .deadlineFor(new FindReefTarget(drivetrain.m_photonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera())))
             .andThen(new WaitCommand(2));
 
         Command alignToCoralRightL4 = new InstantCommand(() -> m_CoralState.setCoralTarget(CoralTarget.L4_RIGHT))
-            .andThen(new AutonAlignToReefTag(drivetrain, drivetrain.m_photonCameraWrapper))
+            .andThen(new AutonAlignToTag(drivetrain, () -> DriveState.getInstance().getTargetPose2d())
+                .deadlineFor(new FindReefTarget(drivetrain.m_photonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera())))
             .andThen(new WaitCommand(2));
 
-        Command alignToHP = new AutonAlignToHPTag(drivetrain, drivetrain.m_photonCameraWrapper)
+        Command alignToHP = new AutonAlignToTag(drivetrain, () -> DriveState.getInstance().getTargetPose2d())
+            .withDeadline(new FindHPTarget(drivetrain.m_photonCameraWrapper, () -> AllianceState.getInstance().getHumanPlayerTags(), () -> CameraConstants.photonCameraOuttakeRight))
             .andThen(new WaitCommand(2));
 
         NamedCommands.registerCommand("Align Left", alignToCoralLeftL4);

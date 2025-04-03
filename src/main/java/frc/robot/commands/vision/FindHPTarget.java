@@ -24,7 +24,7 @@ import frc.robot.subsystems.drive.PhotonCameraWrapper;
 import frc.robot.subsystems.drive.PhotonCameraWrapper.TargetInfo;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class FindReefTarget extends Command {
+public class FindHPTarget extends Command {
   private final PhotonCameraWrapper m_photonCameraWrapper;
   private final Supplier<int[]> m_idSupplier;
   private final Supplier<PhotonCamera> m_cameraSupplier;
@@ -32,7 +32,7 @@ public class FindReefTarget extends Command {
   AprilTagFieldLayout aprilTags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   /** Creates a new FindReefTarget. */
-  public FindReefTarget(PhotonCameraWrapper photonCameraWrapper, Supplier<int[]> idSupplier, Supplier<PhotonCamera> cameraSupplier) {
+  public FindHPTarget(PhotonCameraWrapper photonCameraWrapper, Supplier<int[]> idSupplier, Supplier<PhotonCamera> cameraSupplier) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_photonCameraWrapper = photonCameraWrapper;
     m_idSupplier = idSupplier;
@@ -74,17 +74,17 @@ public class FindReefTarget extends Command {
           CoralState.getInstance().getCameraTransform().getRotation().toRotation2d()
         );
 
-        //robot offset the center of the robot to position for coral.
+        //robot offset the center of the robot to position for intake
         // don't rotate since the robot to cam transofrm is already rotated.
-        Transform2d robotToCoral = new Transform2d(
+        Transform2d robotToIntakePosition = new Transform2d(
           (Math.abs(CameraConstants.X_OFFSET_METERS) + Math.abs(CoralState.getInstance().getCameraTransform().getX())),
-          CoralState.getInstance().getYCoralOffsetMeters(),
+          0,
           new edu.wpi.first.math.geometry.Rotation2d()
         );
 
         //start at the robot, moveto the camera, then to the target's position, then modify by the offsets
         Pose2d targetPose = DriveState.getInstance().getPose2d()
-          .plus(robotToCamera).plus(cam2Target).plus(robotToCoral);
+          .plus(robotToCamera).plus(cam2Target).plus(robotToIntakePosition);
 
         DriveState.getInstance().setTargetPose2d(targetPose);
         //finished = true;
@@ -104,3 +104,4 @@ public class FindReefTarget extends Command {
     return false;
   }
 }
+
