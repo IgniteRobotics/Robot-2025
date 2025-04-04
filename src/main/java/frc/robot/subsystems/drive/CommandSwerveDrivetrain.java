@@ -111,6 +111,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     @Logged(name = "LR Transform Delta", importance = Importance.CRITICAL)
     private Transform3d lrTransformDelta;
 
+    @Logged(name = "LEFT CAM OK", importance = Importance.CRITICAL)
+    private boolean leftCamOK;
+
+    @Logged(name = "RIGHT CAM OK", importance = Importance.CRITICAL)
+    private boolean rightCamOK;
+
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -349,6 +355,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             tagsUsed.add(new TrackedAprilTag(18, 0.45, 1.23, 0.4, -15.4, 1));
         }
 
+        checkCameraStreams();
+
         //SmartDashboard.putString("Zone", m_driveState.getZoneName());
 
         SmartDashboard.putNumber("Robot Pose X", getPose().getX());
@@ -430,6 +438,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     @Logged
     public double getYaw(){
         return this.getState().Pose.getRotation().getDegrees();
+    }
+
+    public void checkCameraStreams(){
+        leftCamOK = CameraConstants.photonCameraOuttakeLeft.isConnected();
+        rightCamOK = CameraConstants.photonCameraOuttakeRight.isConnected();
     }
 
     public void calculateGlobalPose(){
