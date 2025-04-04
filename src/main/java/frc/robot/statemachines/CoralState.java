@@ -35,6 +35,8 @@ public class CoralState {
 
     private boolean hasCoral = false;
 
+    private boolean isBlocked = false;
+
       //Desired Coral Targets
     public static enum CoralTarget {
         NONE("NONE"),
@@ -126,6 +128,16 @@ public class CoralState {
     public boolean hasCoral(){
         return hasCoral;
     }
+
+    public void setBlocked(boolean bool){
+        isBlocked = bool;
+    }
+
+    public boolean isBlocked(){
+        return isBlocked;
+    }
+
+    
 
     public PhotonCamera pickReefCamera(){
         //LEFT CAMERA IS ZERO

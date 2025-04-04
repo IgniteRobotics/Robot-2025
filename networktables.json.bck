@@ -566,5 +566,293 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/Nerf Factor",
+    "type": "double",
+    "value": 0.35,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/profiledAlignCommand/rotation/kP",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/profiledAlignCommand/rotation/kD",
+    "type": "double",
+    "value": 0.001,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/profiledAlignCommand/rotation/kI",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/profiledAlignCommand/rotation/maxVel",
+    "type": "double",
+    "value": 45.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/profiledAlignCommand/rotation/maxAcc",
+    "type": "double",
+    "value": 90.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/profiledAlignCommand/driveY/kP",
+    "type": "double",
+    "value": 0.2,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/profiledAlignCommand/driveY/kD",
+    "type": "double",
+    "value": 0.01,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/profiledAlignCommand/driveY/kI",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/profiledAlignCommand/driveY/maxVel",
+    "type": "double",
+    "value": 8.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/profiledAlignCommand/driveY/maxAcc",
+    "type": "double",
+    "value": 16.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/profiledAlignCommand/driveX/kP",
+    "type": "double",
+    "value": 2.6,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/profiledAlignCommand/driveX/kD",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/profiledAlignCommand/driveX/kI",
+    "type": "double",
+    "value": 3.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/profiledAlignCommand/driveX/maxVel",
+    "type": "double",
+    "value": 6.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/profiledAlignCommand/driveX/maxAcc",
+    "type": "double",
+    "value": 12.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/alignCommang/reefPushMPS",
+    "type": "double",
+    "value": 0.75,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/drive/xySlowLimitMPS",
+    "type": "double",
+    "value": 1.25,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/drive/rotationSlowLimitRadPS",
+    "type": "double",
+    "value": 1.5707963267948966,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/drive/yAutonDrive",
+    "type": "double",
+    "value": -5.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/drive/test/turnAngle",
+    "type": "double",
+    "value": 60.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/drive/test/RPS",
+    "type": "double",
+    "value": 2.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/drive/test/speed",
+    "type": "double",
+    "value": 2.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/TroughBump",
+    "type": "double",
+    "value": 4.61,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/ReefLowAlgaeHeight",
+    "type": "double",
+    "value": 2.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/ReefHighAlgaeHeight",
+    "type": "double",
+    "value": 10.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/AlgaeCollector/IntakeCurrentLimit",
+    "type": "double",
+    "value": 20.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Alignment Timeout",
+    "type": "double",
+    "value": 1.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/alignCommand/driveY/offset/right",
+    "type": "double",
+    "value": 0.18,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/alignCommand/driveY/offset/left",
+    "type": "double",
+    "value": -0.16,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/alignCommand/driveX/offset",
+    "type": "double",
+    "value": 0.37,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/alignCommand/driveVelocity",
+    "type": "double",
+    "value": 2.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/AlgaeCollector/Wrist/Intake Position",
+    "type": "double",
+    "value": -0.05,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/Position Climb",
+    "type": "double",
+    "value": -135.64,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/Position Reach",
+    "type": "double",
+    "value": 128.98,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/auton/drive/timeout",
+    "type": "double",
+    "value": 4.0,
+    "properties": {
+      "persistent": true
+    }
   }
 ]

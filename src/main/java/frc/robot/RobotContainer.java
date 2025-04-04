@@ -299,7 +299,7 @@ public class RobotContainer {
         SmartDashboard.putData("Set Elevator PID", new InstantCommand(() -> elevator.setElevatorPID(Preferences.elevatorkP, Preferences.elevatorkD, Preferences.elevatorkI, Preferences.elevatorkG, Preferences.elevatorkS)));
     
 
-        joystick.povUp().onTrue(new InstantCommand(() -> climber.setPositionRevolutions(Preferences.climberPos1)));
+        joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)));
         joystick.povDown().onTrue(new InstantCommand(() -> climber.setPositionRevolutions(Preferences.climberPos2)));
 
         joystick.povLeft().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));

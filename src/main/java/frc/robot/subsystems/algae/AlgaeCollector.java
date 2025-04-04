@@ -105,6 +105,7 @@ public class AlgaeCollector extends SubsystemBase {
     } else{
       setWristPosition(Preferences.collectorEmptyStowPosition.getValue());
     }
+    
   }
 
   @Logged
