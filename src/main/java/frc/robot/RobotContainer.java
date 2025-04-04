@@ -100,6 +100,7 @@ public class RobotContainer {
     private final JoystickButton coralCancelButton = new JoystickButton(manipulatorJoystick, 12);
 
     private final Trigger climbTrigger = new Trigger(() -> manipulatorJoystick.getY() < -0.98);
+    private final Trigger autoAlignCancelTrigger = new Trigger(() -> manipulatorJoystick.getX() < -0.98); 
 
     public final double default_Max_Speed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public final double maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED;
@@ -306,7 +307,7 @@ public class RobotContainer {
 
         //score coral
         joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
-                ()-> joystick.getLeftY(), () -> joystick.getLeftX(), joystick.rightTrigger(), joystick.leftTrigger())
+                ()-> joystick.getLeftY(), () -> joystick.getLeftX(), () -> joystick.getRightX(), joystick.rightTrigger(), joystick.leftTrigger(), autoAlignCancelTrigger)
         )
 
         // joystick.a().whileTrue(new SemiAutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
