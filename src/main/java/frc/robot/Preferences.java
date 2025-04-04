@@ -52,6 +52,8 @@ public class Preferences {
     public static DoublePreference maxAlignDriveVelocity = new DoublePreference("alignCommand/driveVelocity", 2.5);
     
 
+    public static DoublePreference autonIntakeTimeout = new DoublePreference("Auto/Intake Timeout");
+    public static DoublePreference autonAlignTimeout = new DoublePreference("Auto/Align Timeout");
     // ********** Elevator **********
     public static DoublePreference elevatorkV = new DoublePreference("Elevator/kV", ElevatorConstants.ELEVATOR_kV);
     public static DoublePreference elevatorkP = new DoublePreference("Elevator/kP", ElevatorConstants.ELEVATOR_kP);

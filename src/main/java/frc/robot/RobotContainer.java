@@ -165,7 +165,7 @@ public class RobotContainer {
             .withDeadline(new FindHPTarget(drivetrain.m_photonCameraWrapper, () -> AllianceState.getInstance().getHumanPlayerTags(), () -> CameraConstants.photonCameraIntake))
             .andThen(new WaitUntilCommand(() -> CoralState.getInstance().hasCoral()));
         */
-        Command intakeAtHP = new CorralerDefaultCommand(corraler).withTimeout(1.5);
+        Command intakeAtHP = new CorralerDefaultCommand(corraler).withTimeout(Preferences.autonIntakeTimeout.getValue());
 
         NamedCommands.registerCommand("Score Coral Left Level 4", driveInCoralLeftL4);
         NamedCommands.registerCommand("Score Coral Right Level 4", driveInCoralRightL4);
