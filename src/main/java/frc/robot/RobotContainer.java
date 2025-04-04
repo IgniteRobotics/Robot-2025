@@ -160,10 +160,12 @@ public class RobotContainer {
 
         Command driveInCoralLeftL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_LEFT);
         Command driveInCoralRightL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_RIGHT);
+        /* 
         Command intakeAtHP = new DriveToPoseNoProfile(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null, false)
             .withDeadline(new FindHPTarget(drivetrain.m_photonCameraWrapper, () -> AllianceState.getInstance().getHumanPlayerTags(), () -> CameraConstants.photonCameraIntake))
             .andThen(new WaitUntilCommand(() -> CoralState.getInstance().hasCoral()));
-
+        */
+        Command intakeAtHP = new CorralerDefaultCommand(corraler).withTimeout(1.5);
 
         NamedCommands.registerCommand("Score Coral Left Level 4", driveInCoralLeftL4);
         NamedCommands.registerCommand("Score Coral Right Level 4", driveInCoralRightL4);
