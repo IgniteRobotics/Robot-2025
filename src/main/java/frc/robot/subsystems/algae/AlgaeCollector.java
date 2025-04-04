@@ -101,9 +101,9 @@ public class AlgaeCollector extends SubsystemBase {
 
   public void stow(){
     if (AlgaeState.getInstance().hasAlgae()){
-      setWristPosition(Preferences.collectorFullStowPosition.getValue()); 
+      setWristPosition(0.12); 
     } else{
-      setWristPosition(Preferences.collectorEmptyStowPosition.getValue());
+      setWristPosition(0.2);
     }
     
   }
