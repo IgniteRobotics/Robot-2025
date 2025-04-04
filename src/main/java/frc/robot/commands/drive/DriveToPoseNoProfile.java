@@ -155,6 +155,7 @@ public class DriveToPoseNoProfile
   @Override
   public void end(boolean interrupted) {
     m_driveTrain.driveRobotCentric(0, 0, 0);
+    DriveState.getInstance().setTargetPose2d(null);
   }
 
 

@@ -42,7 +42,7 @@ import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.algae.IntakeAlgae;
 import frc.robot.commands.auton.AutonScoreCoralGroup;
 import frc.robot.commands.composite.AutoScoreCoralGroup;
-
+import frc.robot.commands.composite.ManualScoreCoralGroup;
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.drive.DriveToPoseNoProfile;
@@ -100,6 +100,7 @@ public class RobotContainer {
     private final JoystickButton coralCancelButton = new JoystickButton(manipulatorJoystick, 12);
 
     private final Trigger climbTrigger = new Trigger(() -> manipulatorJoystick.getY() < -0.98);
+    private final Trigger autoAlignCancelTrigger = new Trigger(() -> manipulatorJoystick.getX() < -0.98);
 
     public final double default_Max_Speed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public final double maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED;
@@ -154,6 +155,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Place Coral Level 4", AutonComposites.ScoreLevel4(elevator, corraler));
         */
 
+        SmartDashboard.putData("Check Disable Trigger Value", new InstantCommand(() -> SmartDashboard.putNumber("Disable Trigger Value", manipulatorJoystick.getX())));
         NamedCommands.registerCommand("Raise to trough", new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference.getValue()))
                 .andThen(new WaitCommand(7))
                 .andThen(new  InstantCommand(() -> elevator.setSlowPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))));
@@ -240,6 +242,12 @@ public class RobotContainer {
             .andThen(new InstantCommand(() -> DriveState.getInstance().nerf())));
         climbTrigger.onFalse(new InstantCommand(() -> DriveState.getInstance().unNerf())
             .andThen(new InstantCommand(() -> climber.setServoPosition(0.5))));
+
+        autoAlignCancelTrigger.onTrue(new InstantCommand(() -> joystick.a().whileTrue(
+            new ManualScoreCoralGroup(elevator, corraler, joystick.rightTrigger(), joystick.leftTrigger()))));
+        autoAlignCancelTrigger.onFalse(new InstantCommand(() -> joystick.a().whileTrue(
+            new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
+                ()-> joystick.getLeftY(), () -> joystick.getLeftX(), joystick.rightTrigger(), joystick.leftTrigger()))));
     }
 
     private void configureSubsytemDefaultCommands(){
@@ -306,7 +314,7 @@ public class RobotContainer {
 
         //score coral
         joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
-                ()-> joystick.getLeftY(), () -> joystick.getLeftX(), joystick.rightTrigger(), joystick.leftTrigger())
+        ()-> joystick.getLeftY(), () -> joystick.getLeftX(), joystick.rightTrigger(), joystick.leftTrigger())
         )
 
         // joystick.a().whileTrue(new SemiAutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
