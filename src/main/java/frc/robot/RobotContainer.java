@@ -47,11 +47,8 @@ import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.drive.DriveToPoseNoProfile;
 import frc.robot.commands.drive.ManualDriveAlignment;
-import frc.robot.commands.drive.ProfiledAlignToTags;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
 import frc.robot.commands.elevator.ToSetpoint;
-import frc.robot.commands.test.AlignSideToSide;
-import frc.robot.commands.test.DriveIntoTarget;
 import frc.robot.commands.test.RotateToHeading;
 import frc.robot.commands.test.VisionTest;
 import frc.robot.commands.vision.FindHPTarget;
@@ -306,6 +303,9 @@ public class RobotContainer {
             .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
 
         joystick.povLeft().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
+
+        joystick.povRight().onTrue(new InstantCommand(() -> collector.setWristPosition(0.12))
+            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(Preferences.climbingElevatorHeight))));
         
 
         //score coral
@@ -389,9 +389,9 @@ public class RobotContainer {
         
 
         joystick.a().whileTrue(new RotateToHeading(drivetrain, m_PhotonCameraWrapper));
-        joystick.y().whileTrue(new AlignSideToSide(drivetrain, m_PhotonCameraWrapper));
-        joystick.x().whileTrue(new DriveIntoTarget(drivetrain, m_PhotonCameraWrapper));
-        joystick.b().whileTrue(new ProfiledAlignToTags(drivetrain, m_PhotonCameraWrapper, () -> m_allianceState.getReefTags(), () -> m_CoralState.pickReefCamera(), () -> joystick.getLeftY(), () -> joystick.getLeftX()));
+        //joystick.y().whileTrue(new AlignSideToSide(drivetrain, m_PhotonCameraWrapper));
+        //joystick.x().whileTrue(new DriveIntoTarget(drivetrain, m_PhotonCameraWrapper));
+        //joystick.b().whileTrue(new ProfiledAlignToTags(drivetrain, m_PhotonCameraWrapper, () -> m_allianceState.getReefTags(), () -> m_CoralState.pickReefCamera(), () -> joystick.getLeftY(), () -> joystick.getLeftX()));
 
         
         joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));

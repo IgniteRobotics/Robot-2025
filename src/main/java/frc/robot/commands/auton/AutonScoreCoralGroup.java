@@ -54,9 +54,8 @@ public class AutonScoreCoralGroup extends ParallelCommandGroup{
 
   public SequentialCommandGroup createCommand(){
     return new InstantCommand(() -> CoralState.getInstance().setCoralTarget(m_Position))
-        .andThen(new DriveToPoseNoProfile(m_swerveDrivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null, false)
+        .andThen(new DriveToPoseNoProfile(m_swerveDrivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null, false).withTimeout(3)
           .deadlineFor(new FindReefTarget(m_PhotonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera())))
-          .withTimeout(Preferences.alignTimeout.getValue())
         .andThen(new ElevatorToCoralPreset(m_Elevator))
         .andThen(new OuttakeCommand(m_Corraler))
         .andThen(new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.NONE)))
