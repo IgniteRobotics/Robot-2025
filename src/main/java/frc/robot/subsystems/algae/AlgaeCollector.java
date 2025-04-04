@@ -75,6 +75,7 @@ public class AlgaeCollector extends SubsystemBase {
 
   public void holdAlgae(){
     m_algaeMotor.set(Preferences.algaeHoldPower.getValue());
+    AlgaeState.getInstance().setHasAlgae(true);
   }
 
   public void outtakeAlgae(){
@@ -99,7 +100,11 @@ public class AlgaeCollector extends SubsystemBase {
   }
 
   public void stow(){
-    setWristPosition(Preferences.collectorStowPosition);
+    if (AlgaeState.getInstance().hasAlgae()){
+      setWristPosition(Preferences.collectorFullStowPosition.getValue()); 
+    } else{
+      setWristPosition(Preferences.collectorEmptyStowPosition.getValue());
+    }
   }
 
   @Logged
@@ -119,7 +124,6 @@ public class AlgaeCollector extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putString("Algae Target", m_algaeState.getAlgaeTargetName());
-    m_algaeState.setHasAlgae(seesAlgae());
   }
 
   //Voltage, Current, Temperature
