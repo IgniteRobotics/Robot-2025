@@ -235,7 +235,10 @@ public class RobotContainer {
         algaeBargeButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.BARGE)));
         coralCancelButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.NONE)));
         climbTrigger.onTrue(new InstantCommand(() -> climber.setServoPosition(0))
-            .andThen(new InstantCommand(() -> DriveState.getInstance().nerf())));
+            .andThen(new InstantCommand(() -> DriveState.getInstance().nerf()))
+            .andThen(new InstantCommand(() -> collector.setWristPosition(0.12)))
+            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(Preferences.climbingElevatorHeight))));
+
         climbTrigger.onFalse(new InstantCommand(() -> DriveState.getInstance().unNerf())
             .andThen(new InstantCommand(() -> climber.setServoPosition(0.5))));
     }
@@ -303,11 +306,7 @@ public class RobotContainer {
             .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
 
         joystick.povLeft().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
-
-        joystick.povRight().onTrue(new InstantCommand(() -> collector.setWristPosition(0.12))
-            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(Preferences.climbingElevatorHeight))));
         
-
         //score coral
         joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
                 ()-> joystick.getLeftY(), () -> joystick.getLeftX(), () -> joystick.getRightX(), joystick.rightTrigger(), joystick.leftTrigger(), autoAlignCancelTrigger)
