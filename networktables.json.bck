@@ -854,5 +854,21 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/AlgaeCollector/Wrist/Stow Position Full",
+    "type": "double",
+    "value": 0.12,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/AlgaeCollector/Wrist/Stow Position Empty",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
   }
 ]
