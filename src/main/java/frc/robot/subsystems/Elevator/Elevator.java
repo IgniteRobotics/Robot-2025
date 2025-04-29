@@ -15,6 +15,7 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.statemachines.CoralState;
 
 @Logged
 public class Elevator implements Subsystem {
@@ -110,9 +111,11 @@ public class Elevator implements Subsystem {
 
   @NotLogged
   public void setPositionRevolutions(double position) {
-    m_targetPosition = position;
-    //m_elevatorMotorLeader.setControl(m_MMPosition.withPosition(position).withSlot(0));
-    m_elevatorMotorLeader.setControl(m_MMPosition.withPosition(position).withSlot(0));
+    if(!CoralState.getInstance().isBlocked()){
+      m_targetPosition = position;
+      //m_elevatorMotorLeader.setControl(m_MMPosition.withPosition(position).withSlot(0));
+      m_elevatorMotorLeader.setControl(m_MMPosition.withPosition(position).withSlot(0));
+    }
   }
   
   @NotLogged
@@ -122,14 +125,16 @@ public class Elevator implements Subsystem {
 
 
   public void setSlowPositionRevolutions(double position) {
-    m_targetPosition = position;
-    //m_elevatorMotorLeader.setControl(m_MMPosition.withPosition(position).withSlot(0));
-    m_elevatorMotorLeader.setControl(
-      m_PositionVoltage
-        .withPosition(position)
-        .withVelocity(ElevatorConstants.ELEVATOR_SLOW_VELOCITY)
-        .withSlot(1)
-    );
+    if(!CoralState.getInstance().isBlocked()){
+      m_targetPosition = position;
+      //m_elevatorMotorLeader.setControl(m_MMPosition.withPosition(position).withSlot(0));
+      m_elevatorMotorLeader.setControl(
+        m_PositionVoltage
+          .withPosition(position)
+          .withVelocity(ElevatorConstants.ELEVATOR_SLOW_VELOCITY)
+          .withSlot(1)
+      );
+    }
   }
   
   @NotLogged

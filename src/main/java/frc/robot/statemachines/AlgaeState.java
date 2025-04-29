@@ -105,8 +105,10 @@ public class AlgaeState {
         }
         else if (getAlgaeTarget() == AlgaeTarget.LOW_REEF || getAlgaeTarget() == AlgaeTarget.HIGH_REEF){
             return AlgaeCollectorConstants.WRIST.REEF.angle;
-        } else {
-            return AlgaeCollectorConstants.WRIST.STOW.angle;
+        } else  if (hasAlgae){
+            return AlgaeCollectorConstants.WRIST.STOWFULL.angle;
+        } else {    
+            return AlgaeCollectorConstants.WRIST.STOWEMPTY.angle;
         }
     }
 

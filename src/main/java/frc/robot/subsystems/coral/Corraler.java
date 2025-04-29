@@ -83,6 +83,7 @@ public class Corraler extends SubsystemBase{
     public void periodic() {
         SmartDashboard.putString("Coral Target", m_coralState.getCoralTargetName());
         m_coralState.setHasCoral(!seesCoralEnter() && coralPreped());
+        m_coralState.setBlocked(seesCoralEnter());
     }
 
     //Voltage, Current, Temperature

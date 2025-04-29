@@ -40,23 +40,18 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.commands.algae.IntakeAlgae;
-import frc.robot.commands.auton.AutonAlignToHPTag;
-import frc.robot.commands.auton.AutonAlignToReefTag;
 import frc.robot.commands.auton.AutonScoreCoralGroup;
 import frc.robot.commands.composite.AutoScoreCoralGroup;
 
 import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
-import frc.robot.commands.drive.DriveToPose;
 import frc.robot.commands.drive.DriveToPoseNoProfile;
 import frc.robot.commands.drive.ManualDriveAlignment;
-import frc.robot.commands.drive.ProfiledAlignToTags;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
 import frc.robot.commands.elevator.ToSetpoint;
-import frc.robot.commands.test.AlignSideToSide;
-import frc.robot.commands.test.DriveIntoTarget;
 import frc.robot.commands.test.RotateToHeading;
 import frc.robot.commands.test.VisionTest;
+import frc.robot.commands.vision.FindHPTarget;
 import frc.robot.commands.vision.FindReefTarget;
 import frc.robot.generated.TunerConstants;
 import frc.robot.statemachines.AllianceState;
@@ -102,6 +97,7 @@ public class RobotContainer {
     private final JoystickButton coralCancelButton = new JoystickButton(manipulatorJoystick, 12);
 
     private final Trigger climbTrigger = new Trigger(() -> manipulatorJoystick.getY() < -0.98);
+    private final Trigger autoAlignCancelTrigger = new Trigger(() -> manipulatorJoystick.getX() < -0.98); 
 
     public final double default_Max_Speed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public final double maxAngularRate = TunerConstants.MAX_ANGULAR_SPEED;
@@ -164,22 +160,29 @@ public class RobotContainer {
 
         Command driveInCoralLeftL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_LEFT);
         Command driveInCoralRightL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_RIGHT);
-        Command intakeAtHP = new AutonAlignToHPTag(drivetrain, m_PhotonCameraWrapper).andThen(new WaitUntilCommand(() -> CoralState.getInstance().hasCoral()));
-
+        /* 
+        Command intakeAtHP = new DriveToPoseNoProfile(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null, false)
+            .withDeadline(new FindHPTarget(drivetrain.m_photonCameraWrapper, () -> AllianceState.getInstance().getHumanPlayerTags(), () -> CameraConstants.photonCameraIntake))
+            .andThen(new WaitUntilCommand(() -> CoralState.getInstance().hasCoral()));
+        */
+        Command intakeAtHP = new CorralerDefaultCommand(corraler).withTimeout(Preferences.autonIntakeTimeout.getValue());
 
         NamedCommands.registerCommand("Score Coral Left Level 4", driveInCoralLeftL4);
         NamedCommands.registerCommand("Score Coral Right Level 4", driveInCoralRightL4);
         NamedCommands.registerCommand("Intake At HP", intakeAtHP);
 
         Command alignToCoralLeftL4 = new InstantCommand(() -> m_CoralState.setCoralTarget(CoralTarget.L4_LEFT))
-            .andThen(new AutonAlignToReefTag(drivetrain, drivetrain.m_photonCameraWrapper))
+            .andThen(new DriveToPoseNoProfile(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null, false)
+                .deadlineFor(new FindReefTarget(drivetrain.m_photonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera())))
             .andThen(new WaitCommand(2));
 
         Command alignToCoralRightL4 = new InstantCommand(() -> m_CoralState.setCoralTarget(CoralTarget.L4_RIGHT))
-            .andThen(new AutonAlignToReefTag(drivetrain, drivetrain.m_photonCameraWrapper))
+            .andThen(new DriveToPoseNoProfile(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null, false)
+                .deadlineFor(new FindReefTarget(drivetrain.m_photonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera())))
             .andThen(new WaitCommand(2));
 
-        Command alignToHP = new AutonAlignToHPTag(drivetrain, drivetrain.m_photonCameraWrapper)
+        Command alignToHP = new DriveToPoseNoProfile(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null, false)
+            .withDeadline(new FindHPTarget(drivetrain.m_photonCameraWrapper, () -> AllianceState.getInstance().getHumanPlayerTags(), () -> CameraConstants.photonCameraIntake))
             .andThen(new WaitCommand(2));
 
         NamedCommands.registerCommand("Align Left", alignToCoralLeftL4);
@@ -188,18 +191,16 @@ public class RobotContainer {
         
         
         autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
-        autoChooser.addOption("3 Coral Auton", AutoBuilder.buildAuto("3 Coral Auton"));
+        autoChooser.addOption("3 Coral Auton Top", AutoBuilder.buildAuto("3 Coral Auton Top"));
+        autoChooser.addOption("3 Coral Auton Bottom", AutoBuilder.buildAuto("3 Coral Auton Bottom"));
+        autoChooser.addOption("1 Side Coral Auton Top", AutoBuilder.buildAuto("1 Side Coral Auton Top"));
+        autoChooser.addOption("1 Side Coral Auton Bottom", AutoBuilder.buildAuto("1 Side Coral Auton Bottom"));
         autoChooser.addOption("Simple Drive Auton", AutoBuilder.buildAuto("Simple Auton"));
         autoChooser.addOption("Simple Drive Auton 2", AutoBuilder.buildAuto("Simple Auton 2"));
-        autoChooser.addOption("Better Test Auton", AutoBuilder.buildAuto("Better Test Auton"));
         autoChooser.addOption("Score 1 Coral Right", AutoBuilder.buildAuto("1 Coral Level 4 Right"));
-        autoChooser.addOption("3 Align Auton", AutoBuilder.buildAuto("3 Align Auton"));
         autoChooser.addOption("Drive Coral Left L4", driveInCoralLeftL4);
         autoChooser.addOption("Drive Coral Right L4", driveInCoralRightL4);
-        autoChooser.addOption("TroughBump", AutoBuilder.buildAuto("TroughBump"));
-        autoChooser.addOption("1MeterAndTurn", AutoBuilder.buildAuto("DriveAndTurn"));
-        autoChooser.addOption("TestDriveForward", AutoBuilder.buildAuto("TestDriveForward"));
-        
+
 
         // autoChooser.addOption("Line Up and Trough", new RunCommand(() -> drivetrain.driveRobotCentric(Preferences.autonYDrive.getValue(), 0, 0)).withTimeout(2)
         //     .alongWith(new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference)))
@@ -233,8 +234,13 @@ public class RobotContainer {
         algaeReefHighButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.HIGH_REEF)));
         algaeBargeButton.onTrue(new InstantCommand(() -> m_AlgaeState.setAlgaeTarget(AlgaeState.AlgaeTarget.BARGE)));
         coralCancelButton.onTrue(new InstantCommand(() -> m_CoralState.setCoralTarget(CoralState.CoralTarget.NONE)));
-        climbTrigger.onTrue(new InstantCommand(() -> climber.setServoPosition(0)));
-        climbTrigger.onFalse(new InstantCommand(() -> climber.setServoPosition(0.5)));
+        climbTrigger.onTrue(new InstantCommand(() -> climber.setServoPosition(0))
+            .andThen(new InstantCommand(() -> DriveState.getInstance().nerf()))
+            .andThen(new InstantCommand(() -> collector.setWristPosition(0.12)))
+            .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(Preferences.climbingElevatorHeight))));
+
+        climbTrigger.onFalse(new InstantCommand(() -> DriveState.getInstance().unNerf())
+            .andThen(new InstantCommand(() -> climber.setServoPosition(0.5))));
     }
 
     private void configureSubsytemDefaultCommands(){
@@ -252,12 +258,6 @@ public class RobotContainer {
         
 
         corraler.setDefaultCommand(corralerDefaultCommand);
-
-        
-
-        // elevator.setDefaultCommand(new ToSetpoint(elevator, ElevatorConstants.FLOOR.GROUND.position));  
-
-        collector.setDefaultCommand(new RunCommand(() -> collector.stow(), collector));
     }
 
     private void configureBindings() {
@@ -300,15 +300,16 @@ public class RobotContainer {
     
 
         joystick.povUp().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberUpSpeed)))
-                    .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
+            .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
+
         joystick.povDown().onTrue(new InstantCommand(() -> climber.setSpeed(Preferences.climberDownSpeed)))
-                    .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
+            .onFalse(new InstantCommand(() -> climber.setSpeed(0)));
+
         joystick.povLeft().whileTrue(new InstantCommand(() -> climber.setSpeed(0)));
         
-
         //score coral
         joystick.a().whileTrue(new AutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
-                ()-> joystick.getLeftY(), () -> joystick.getLeftX(), joystick.rightTrigger(), joystick.leftTrigger())
+                ()-> joystick.getLeftY(), () -> joystick.getLeftX(), () -> joystick.getRightX(), joystick.rightTrigger(), joystick.leftTrigger(), autoAlignCancelTrigger)
         )
 
         // joystick.a().whileTrue(new SemiAutoScoreCoralGroup(drivetrain, elevator, corraler, drivetrain.m_photonCameraWrapper, 
@@ -324,10 +325,11 @@ public class RobotContainer {
             new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.PROCESSOR.height))
                 .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle)))
                 .andThen(new WaitUntilCommand(joystick.rightTrigger()))
-                .andThen(new InstantCommand(() -> collector.outtakeAlgae()))
+                .andThen(new InstantCommand(() -> collector.outtakeAlgae())
+                    .andThen(new InstantCommand(() -> AlgaeState.getInstance().setHasAlgae(false))))
         ).onFalse(
             new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))
-                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle)))
+                .andThen(new InstantCommand(() -> collector.stow()))
                 .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
         );
 
@@ -339,18 +341,21 @@ public class RobotContainer {
                 )
         ).onFalse(
             new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))
-                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle)))
+                .andThen(new InstantCommand(() -> collector.stow()))
         );
 
         joystick.y().whileTrue(
-            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.BARGE.height))
+            new InstantCommand(() -> DriveState.getInstance().nerf())
+                .andThen(new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.BARGE.height)))
                 .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.BARGE.angle)))
                 .andThen(new WaitUntilCommand(joystick.rightTrigger()))
-                .andThen(new RunCommand(() -> collector.outtakeAlgae()))
+                .andThen(new RunCommand(() -> collector.outtakeAlgae())
+                    .andThen(new InstantCommand(() -> AlgaeState.getInstance().setHasAlgae(false))))
         ).onFalse(
             new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))
-                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.STOW.angle)))
+                .andThen(new InstantCommand(() -> collector.stow()))
                 .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
+                .andThen(new InstantCommand(() -> DriveState.getInstance().unNerf()))
         );
 
         joystick.back().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll())
@@ -383,9 +388,9 @@ public class RobotContainer {
         
 
         joystick.a().whileTrue(new RotateToHeading(drivetrain, m_PhotonCameraWrapper));
-        joystick.y().whileTrue(new AlignSideToSide(drivetrain, m_PhotonCameraWrapper));
-        joystick.x().whileTrue(new DriveIntoTarget(drivetrain, m_PhotonCameraWrapper));
-        joystick.b().whileTrue(new ProfiledAlignToTags(drivetrain, m_PhotonCameraWrapper, () -> m_allianceState.getReefTags(), () -> m_CoralState.pickReefCamera(), () -> joystick.getLeftY(), () -> joystick.getLeftX()));
+        //joystick.y().whileTrue(new AlignSideToSide(drivetrain, m_PhotonCameraWrapper));
+        //joystick.x().whileTrue(new DriveIntoTarget(drivetrain, m_PhotonCameraWrapper));
+        //joystick.b().whileTrue(new ProfiledAlignToTags(drivetrain, m_PhotonCameraWrapper, () -> m_allianceState.getReefTags(), () -> m_CoralState.pickReefCamera(), () -> joystick.getLeftY(), () -> joystick.getLeftX()));
 
         
         joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -407,7 +412,7 @@ public class RobotContainer {
         joystick.b().whileTrue(
          new InstantCommand(() -> CoralState.getInstance().setCoralTarget(CoralTarget.L4_LEFT))
             .andThen(new FindReefTarget(m_PhotonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera())   
-                .alongWith(new DriveToPose(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null,false)))
+                .alongWith(new DriveToPoseNoProfile(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null,false)))
         ).onFalse(new InstantCommand(() -> DriveState.getInstance().unlockCameras())
         );
     }

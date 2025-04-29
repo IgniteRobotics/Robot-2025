@@ -11,6 +11,7 @@ import org.photonvision.PhotonCamera;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.Preferences;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.algae.AlgaeCollectorConstants;
 import frc.robot.subsystems.drive.CameraConstants;
@@ -33,6 +34,8 @@ public class CoralState {
     }
 
     private boolean hasCoral = false;
+
+    private boolean isBlocked = false;
 
       //Desired Coral Targets
     public static enum CoralTarget {
@@ -126,6 +129,16 @@ public class CoralState {
         return hasCoral;
     }
 
+    public void setBlocked(boolean bool){
+        isBlocked = bool;
+    }
+
+    public boolean isBlocked(){
+        return isBlocked;
+    }
+
+    
+
     public PhotonCamera pickReefCamera(){
         //LEFT CAMERA IS ZERO
         //ALIGN TO LEFT POST IS LEFT CAMERA (I HOPE!)
@@ -152,10 +165,10 @@ public class CoralState {
 
     public double getYCoralOffsetMeters(){
         if(coralTarget == CoralTarget.L4_LEFT || coralTarget == CoralTarget.L3_LEFT || coralTarget == CoralTarget.L2_LEFT){
-            return CameraConstants.Y_LEFT_CORAL_OFFSET_METERS;
+            return Preferences.alignYOffsetLeft.getValue();
         }
         else if(coralTarget == CoralTarget.L4_RIGHT || coralTarget == CoralTarget.L3_RIGHT || coralTarget == CoralTarget.L2_RIGHT){
-            return CameraConstants.Y_RIGHT_CORAL_OFFSET_METERS;
+            return Preferences.alignYOffsetRight.getValue();
         }
         else return 0.0;
     }
