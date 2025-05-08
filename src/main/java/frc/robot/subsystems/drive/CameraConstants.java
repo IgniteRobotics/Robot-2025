@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drive;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.function.DoubleSupplier;
 
@@ -12,15 +13,27 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.Robot;
 
 public class CameraConstants {
 
     private static final AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    private static AprilTagFieldLayout customLayout = getCustomLayout();
+
+    private static AprilTagFieldLayout getCustomLayout(){
+        try{
+            return AprilTagFieldLayout.loadFromResource("Figuring this out");
+        }
+        catch(IOException e){
+            System.out.println(e.getMessage());
+            return layout;
+        }
+    }
 
     public static final String photonCameraNameOuttakeLeft = "OUTTAKE_LEFT";
     public static final Transform3d photonCameraTransformOuttakeLeft= new Transform3d(new Translation3d(-.1277, 0.2667, .4964), new Rotation3d(0.0, -15 / 180.0 * Math.PI, Math.PI));
     public static final PhotonCamera photonCameraOuttakeLeft = new PhotonCamera(photonCameraNameOuttakeLeft);
-    public static final PhotonPoseEstimator photonPoseEstimatorOuttakeLeft = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraTransformOuttakeLeft);
+    public static final PhotonPoseEstimator photonPoseEstimatorOuttakeLeft = new PhotonPoseEstimator(customLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraTransformOuttakeLeft);
 
     // from pose delta
     //Rotation:
