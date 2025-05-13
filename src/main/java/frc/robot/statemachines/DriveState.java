@@ -217,7 +217,7 @@ public class DriveState {
         else if(initial > 0 && getPose2d().getX() > CUSTOM_FIELD_LENGTH){
             return 0;
         }
-        else if(initial > 0 && getPose2d().getX() < CUSTOM_FIELD_LENGTH - NEED_SPACE){
+        else if(initial > 0 && getPose2d().getX() > CUSTOM_FIELD_LENGTH - NEED_SPACE){
             return initial * 0.35;
         }
         else return initial;
