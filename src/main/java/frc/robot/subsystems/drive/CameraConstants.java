@@ -22,7 +22,7 @@ public class CameraConstants {
 
     private static AprilTagFieldLayout getCustomLayout(){
         try{
-            return AprilTagFieldLayout.loadFromResource("Figuring this out");
+            return new AprilTagFieldLayout("src/main/java/frc/robot/subsystems/drive/Custom/Field1.json");
         }
         catch(IOException e){
             System.out.println(e.getMessage());
@@ -41,12 +41,12 @@ public class CameraConstants {
     public static final String photonCameraNameOuttakeRight = "OUTTAKE_RIGHT";
     public static final Transform3d photonCameraTransformOuttakeRight = new Transform3d(new Translation3d(-.1277, -0.2667, .4964), new Rotation3d(0, (-15 / 180.0 * Math.PI), Math.PI));
     public static final PhotonCamera photonCameraOuttakeRight = new PhotonCamera(photonCameraNameOuttakeRight);
-    public static final PhotonPoseEstimator photonPoseEstimatorOuttakeRight = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraTransformOuttakeRight);
+    public static final PhotonPoseEstimator photonPoseEstimatorOuttakeRight = new PhotonPoseEstimator(customLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, photonCameraTransformOuttakeRight);
 
     public static final String photonCameraNameIntake = "INTAKE";
     public static final Transform3d photonCameraTransformIntake = new Transform3d(new Translation3d(.343, -0.271, .239), new Rotation3d(0.0, 15 / 180.0 * Math.PI,  0));
     public static final PhotonCamera photonCameraIntake = new PhotonCamera(photonCameraNameIntake);
-    public static final PhotonPoseEstimator photonPoseEstimatorIntake = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CameraConstants.photonCameraTransformIntake);
+    public static final PhotonPoseEstimator photonPoseEstimatorIntake = new PhotonPoseEstimator(customLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CameraConstants.photonCameraTransformIntake);
 
 
     public static final PhotonPoseEstimator[] allPhotonPoseEstimators= {photonPoseEstimatorOuttakeLeft, photonPoseEstimatorOuttakeRight, photonPoseEstimatorIntake};
