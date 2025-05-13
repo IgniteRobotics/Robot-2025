@@ -25,6 +25,9 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 @Logged
 public class DriveState {
 
+    public static final double CUSTOM_FIELD_LENGTH = 9.144;
+    public static final double CUSTOM_FIELD_WIDTH = 7.3152;
+
     private AllianceState allianceState = AllianceState.getInstance();
 
     private static DriveState single_instance = null;
@@ -200,6 +203,26 @@ public class DriveState {
 
     public boolean hasPhotonVisionResult(PhotonCamera camera){
         return cameraResults.containsKey(camera) && cameraResults.get(camera) != null;
+    }
+
+    public double customConstraintVelocityX(double initial){
+        if(initial < 0 && getPose2d().getX() < 0){
+            return 0;
+        }
+        else if(initial > 0 && getPose2d().getX() > CUSTOM_FIELD_LENGTH){
+            return 0;
+        }
+        else return initial;
+    }
+
+    public double customConstraintVelocityY(double initial){
+        if(initial < 0 && getPose2d().getY() < 0){
+            return 0;
+        }
+        else if(initial > 0 && getPose2d().getY() > CUSTOM_FIELD_WIDTH){
+            return 0;
+        }
+        else return initial;
     }
 
 
