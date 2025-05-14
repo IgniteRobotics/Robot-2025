@@ -205,35 +205,37 @@ public class DriveState {
     public static final double CUSTOM_FIELD_LENGTH = 9.144;
     public static final double CUSTOM_FIELD_WIDTH = 7.3152;
 
+    public static final double EDGE_SPACE = 0.6604;
+
     public static final double NEED_SPACE = 1;
 
     public double customConstraintVelocityX(double initial){
-        if(initial < 0 && getPose2d().getX() < 0){
+        if(initial < 0 && getPose2d().getX() < EDGE_SPACE){
             return 0;
         }
-        else if(initial < 0 && getPose2d().getX() < NEED_SPACE){
+        else if(initial < 0 && getPose2d().getX() < EDGE_SPACE + NEED_SPACE){
             return initial * 0.35;
         }
-        else if(initial > 0 && getPose2d().getX() > CUSTOM_FIELD_LENGTH){
+        else if(initial > 0 && getPose2d().getX() > CUSTOM_FIELD_LENGTH - EDGE_SPACE){
             return 0;
         }
-        else if(initial > 0 && getPose2d().getX() > CUSTOM_FIELD_LENGTH - NEED_SPACE){
+        else if(initial > 0 && getPose2d().getX() > CUSTOM_FIELD_LENGTH - EDGE_SPACE - NEED_SPACE){
             return initial * 0.35;
         }
         else return initial;
     }
 
     public double customConstraintVelocityY(double initial){
-        if(initial < 0 && getPose2d().getY() < 0){
+        if(initial < 0 && getPose2d().getY() < EDGE_SPACE){
             return 0;
         }
-        else if(initial < 0 && getPose2d().getY() < NEED_SPACE){
+        else if(initial < 0 && getPose2d().getY() < EDGE_SPACE + NEED_SPACE){
             return initial * 0.35;
         }
-        else if(initial > 0 && getPose2d().getY() > CUSTOM_FIELD_WIDTH){
+        else if(initial > 0 && getPose2d().getY() > CUSTOM_FIELD_WIDTH - EDGE_SPACE){
             return 0;
         }
-        else if(initial > 0 && getPose2d().getY() > CUSTOM_FIELD_WIDTH - NEED_SPACE){
+        else if(initial > 0 && getPose2d().getY() > CUSTOM_FIELD_WIDTH - EDGE_SPACE - NEED_SPACE){
             return initial * 0.35;
         }
         else return initial;
