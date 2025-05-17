@@ -72,6 +72,9 @@ public class CameraConstants {
     public static final int[] RED_BARGE_TAGS = {5,15};
     public static final int[] BLUE_BARGE_TAGS = {4,14};
 
+    //9(upper right) & 10 (lower left)
+    public static final int[] CUSTOM_REEF_TAGS = {9, 10};
+
     public static final double CORAL_REEF_STOP_DISTANCE_METERS = 0.359;
     
     public static final double ALGAE_REEF_STOP_DISTANCE_METERS = 1.0;

@@ -173,12 +173,12 @@ public class RobotContainer {
 
         Command alignToCoralLeftL4 = new InstantCommand(() -> m_CoralState.setCoralTarget(CoralTarget.L4_LEFT))
             .andThen(new DriveToPoseNoProfile(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null, false)
-                .deadlineFor(new FindReefTarget(drivetrain.m_photonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera())))
+                .deadlineFor(new FindReefTarget(drivetrain.m_photonCameraWrapper, () -> AllianceState.getInstance().getCustomReefTags(), () -> CoralState.getInstance().pickReefCamera())))
             .andThen(new WaitCommand(2));
 
         Command alignToCoralRightL4 = new InstantCommand(() -> m_CoralState.setCoralTarget(CoralTarget.L4_RIGHT))
             .andThen(new DriveToPoseNoProfile(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null, false)
-                .deadlineFor(new FindReefTarget(drivetrain.m_photonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera())))
+                .deadlineFor(new FindReefTarget(drivetrain.m_photonCameraWrapper, () -> AllianceState.getInstance().getCustomReefTags(), () -> CoralState.getInstance().pickReefCamera())))
             .andThen(new WaitCommand(2));
 
         Command alignToHP = new DriveToPoseNoProfile(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null, false)
@@ -399,6 +399,7 @@ public class RobotContainer {
     
     }
 
+    /* 
     private void configureOdometryTestBindings(){
 
         
@@ -416,6 +417,7 @@ public class RobotContainer {
         ).onFalse(new InstantCommand(() -> DriveState.getInstance().unlockCameras())
         );
     }
+    */
 
     public Command getAutonomousCommand() {
         /* First put the drivetrain into auto run mode, then run the auto */

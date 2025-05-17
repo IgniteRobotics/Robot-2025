@@ -49,6 +49,11 @@ public class AllianceState {
         else return CameraConstants.BLUE_REEF_TAGS;
     }
 
+    public int[] getCustomReefTags(){
+        return CameraConstants.CUSTOM_REEF_TAGS;
+    }
+
+
     public int[] getBargeTags(){
         if(getAlliance() == Alliance.Red){
             return CameraConstants.RED_BARGE_TAGS;

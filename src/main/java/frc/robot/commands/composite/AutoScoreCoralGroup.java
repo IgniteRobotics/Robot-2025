@@ -77,7 +77,7 @@ public class AutoScoreCoralGroup extends ParallelCommandGroup{
     new SelectCommand<>(
       Map.ofEntries(
         Map.entry(CommandSelector.AUTO_DRIVE, new DriveToPoseNoProfile(m_swerveDrivetrain, () -> DriveState.getInstance().getTargetPose2d(), m_DriveFwdBackSupplier, m_DriveSideSupplier, true)
-          .alongWith(new FindReefTarget(m_PhotonCameraWrapper, () -> AllianceState.getInstance().getReefTags(), () -> CoralState.getInstance().pickReefCamera()))),
+          .alongWith(new FindReefTarget(m_PhotonCameraWrapper, () -> AllianceState.getInstance().getCustomReefTags(), () -> CoralState.getInstance().pickReefCamera()))),
         Map.entry(CommandSelector.MANUAL_DRIVE, new ManualDriveAlignment(m_swerveDrivetrain, m_DriveFwdBackSupplier, m_DriveSideSupplier, m_RotSupplier))
       ),
       this::select
