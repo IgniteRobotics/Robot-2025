@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -18,6 +19,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.IdealStartingState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
@@ -25,6 +27,7 @@ import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -152,19 +155,41 @@ public class RobotContainer {
         NamedCommands.registerCommand("Place Coral Level 4", AutonComposites.ScoreLevel4(elevator, corraler));
         */
 
+
+        /* 
         NamedCommands.registerCommand("Raise to trough", new InstantCommand(() -> elevator.setSlowPositionRevolutions(Preferences.elevatorTroughBumpPreference.getValue()))
                 .andThen(new WaitCommand(7))
                 .andThen(new  InstantCommand(() -> elevator.setSlowPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))));
         NamedCommands.registerCommand("Set Wheels to Zero", setWheelsToZero);
-        
+        */
 
         Command driveInCoralLeftL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_LEFT);
-        Command driveInCoralRightL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_RIGHT);
+        Command driveInCoralRightL4 = new AutonScoreCoralGroup(drivetrain, elevator, corraler, m_PhotonCameraWrapper, CoralTarget.L4_RIGHT);        
+
+        PathPlannerPath scoreToIntake_CUSTOM = new PathPlannerPath(
+            Arrays.asList(new Waypoint(null, new Translation2d(3.66718617892, 4.40106210663), new Translation2d(4.579251103360639,4.434206547432943)),
+                new Waypoint(new Translation2d(7.6162335718347896,4.900132345055151), new Translation2d(8.66775,4.8768), null)),
+            new PathConstraints(3,3,540,720,12,false),
+            new IdealStartingState(0, new Rotation2d(60)),
+            new GoalEndState(0, new Rotation2d(0))
+        );
+
+        PathPlannerPath intakeToPrep_CUSTOM = new PathPlannerPath(
+            Arrays.asList(new Waypoint(null, new Translation2d(8.66775, 4.8768), new Translation2d(9.452833592972617, 5.077220461615676)),
+                new Waypoint(new Translation2d(4.723056956570196, 3.981147517888201), new Translation2d(5, 4), null)),
+            new PathConstraints(3,3, 540, 720, 12, false),
+            new IdealStartingState(0, new Rotation2d(0)), 
+            new GoalEndState(0, new Rotation2d(60)),
+            false
+        );
+        
         /* 
         Command intakeAtHP = new DriveToPoseNoProfile(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null, false)
             .withDeadline(new FindHPTarget(drivetrain.m_photonCameraWrapper, () -> AllianceState.getInstance().getHumanPlayerTags(), () -> CameraConstants.photonCameraIntake))
             .andThen(new WaitUntilCommand(() -> CoralState.getInstance().hasCoral()));
         */
+
+        /* 
         Command intakeAtHP = new CorralerDefaultCommand(corraler).withTimeout(Preferences.autonIntakeTimeout.getValue());
 
         NamedCommands.registerCommand("Score Coral Left Level 4", driveInCoralLeftL4);
@@ -188,9 +213,15 @@ public class RobotContainer {
         NamedCommands.registerCommand("Align Left", alignToCoralLeftL4);
         NamedCommands.registerCommand("Align Right", alignToCoralRightL4);
         NamedCommands.registerCommand("Align At HP", alignToHP);
-        
+        */
+        Command customAuton =  driveInCoralLeftL4
+            .andThen(AutoBuilder.followPath(scoreToIntake_CUSTOM))
+            .andThen(new RunCommand(() -> corraler.intakeCoral(), corraler).until(() -> corraler.coralPreped() && !corraler.seesCoralEnter()).finallyDo(() -> corraler.stopCoralMotor()))
+            .andThen(AutoBuilder.followPath(intakeToPrep_CUSTOM))
+            .andThen(driveInCoralRightL4);
         
         autoChooser = AutoBuilder.buildAutoChooser("Auto Chooser");
+        /*
         autoChooser.addOption("3 Coral Auton Top", AutoBuilder.buildAuto("3 Coral Auton Top"));
         autoChooser.addOption("3 Coral Auton Bottom", AutoBuilder.buildAuto("3 Coral Auton Bottom"));
         autoChooser.addOption("1 Side Coral Auton Top", AutoBuilder.buildAuto("1 Side Coral Auton Top"));
@@ -198,8 +229,10 @@ public class RobotContainer {
         autoChooser.addOption("Simple Drive Auton", AutoBuilder.buildAuto("Simple Auton"));
         autoChooser.addOption("Simple Drive Auton 2", AutoBuilder.buildAuto("Simple Auton 2"));
         autoChooser.addOption("Score 1 Coral Right", AutoBuilder.buildAuto("1 Coral Level 4 Right"));
+        */
         autoChooser.addOption("Drive Coral Left L4", driveInCoralLeftL4);
         autoChooser.addOption("Drive Coral Right L4", driveInCoralRightL4);
+        autoChooser.addOption("Custom Auton", customAuton);
 
 
         // autoChooser.addOption("Line Up and Trough", new RunCommand(() -> drivetrain.driveRobotCentric(Preferences.autonYDrive.getValue(), 0, 0)).withTimeout(2)
