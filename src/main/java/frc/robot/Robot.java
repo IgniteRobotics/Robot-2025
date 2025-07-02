@@ -6,14 +6,21 @@ package frc.robot;
 
 import com.ctre.phoenix6.Utils;
 
-import edu.wpi.first.epilogue.*;
-import edu.wpi.first.epilogue.logging.errors.ErrorHandler;
-import edu.wpi.first.epilogue.logging.FileLogger;
+import edu.wpi.first.epilogue.Epilogue;
+import edu.wpi.first.epilogue.EpilogueConfiguration;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.logging.EpilogueBackend;
+import edu.wpi.first.epilogue.logging.FileBackend;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.PreferenceTypes.DoublePreference;
+import frc.robot.commands.test.VisionTest;
+import frc.robot.statemachines.AllianceState;
 
 @Logged
 public class Robot extends TimedRobot {
@@ -21,9 +28,12 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
+  private CommandScheduler m_Scheduler;
+
   private final boolean kUseLimelight = false;
 
-  
+
+  private boolean logToFile = false;
   public Robot() {
     if(DriverStation.isFMSAttached()){
           Epilogue.configure(config -> {
@@ -49,6 +59,30 @@ public class Robot extends TimedRobot {
     DataLogManager.start();
     Epilogue.bind(this);
     m_robotContainer = new RobotContainer();
+    m_Scheduler = CommandScheduler.getInstance();
+    DataLogManager.start();
+    // Record both DS control and joystick data
+    DriverStation.startDataLog(DataLogManager.getLog());
+
+    Epilogue.bind(this);
+
+    StringLogEntry metaData = new StringLogEntry(DataLogManager.getLog(), "MetaData");
+    metaData.append("Project Name: " + BuildConstants.MAVEN_NAME);
+    metaData.append("Build Date: " + BuildConstants.BUILD_DATE);
+    metaData.append("Commit Hash: " + BuildConstants.GIT_SHA);
+    metaData.append("Git Date: " + BuildConstants.GIT_DATE);
+    metaData.append("Git Branch: " + BuildConstants.GIT_BRANCH);
+    switch (BuildConstants.DIRTY) {
+      case 0:
+        metaData.append("GitDirty: " + "All changes commited");
+        break;
+      case 1:
+        metaData.append("GitDirty: " + "Uncomitted changes");
+        break;
+      default:
+        metaData.append("GitDirty: " + "Unknown");
+        break;
+    }
   }
 
   @Override
@@ -69,6 +103,19 @@ public class Robot extends TimedRobot {
         m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds));
       }
     }
+
+
+    // if (DriverStation.isFMSAttached() && logToFile == false){
+    //   Epilogue.configure(config -> {
+        
+    //         config.backend = EpilogueBackend.multi(
+    //                 new FileBackend(DataLogManager.getLog())
+    //         );
+        
+    //   });
+    //   Epilogue.bind(this);
+    //   logToFile = true;
+    // }
   }
 
   @Override
@@ -118,7 +165,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testExit() {}
-
+  
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+
+  }
 }

@@ -1,0 +1,121 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.statemachines;
+
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Importance;
+import frc.robot.Preferences;
+import frc.robot.subsystems.Elevator.ElevatorConstants;
+import frc.robot.subsystems.algae.AlgaeCollectorConstants;
+
+@Logged
+public class AlgaeState {
+    private static AlgaeState single_instance = null;
+
+    private DriveState driveState = DriveState.getInstance();
+
+    private AlgaeState() {
+
+    }
+
+    public static synchronized AlgaeState getInstance()
+    {
+        if (single_instance == null)
+            single_instance = new AlgaeState();
+        return single_instance;
+    }
+
+    private boolean hasAlgae = false;
+
+    //Desired Algae Targets
+    public static enum AlgaeTarget {
+        NONE("NONE"),
+        PROCESSOR("PROCESSOR"),
+        LOW_REEF("LOW_REEF"),
+        HIGH_REEF("HIGH_REEF"),
+        BARGE("BARGE");
+
+        public final String name;
+        AlgaeTarget(String value){
+            name = value;
+        }
+    }
+
+    private AlgaeTarget algaeTarget = AlgaeTarget.NONE;
+
+    public void setAlgaeTarget(AlgaeTarget target){
+        algaeTarget = target;
+    }
+
+    public AlgaeTarget getAlgaeTarget(){
+        return algaeTarget;
+    }
+
+    @Logged(name = "Algae Target", importance = Importance.CRITICAL)
+    public String getAlgaeTargetName(){
+        return algaeTarget.name;
+    }
+
+    @Logged(name = "AT_PROCESSOR", importance = Importance.CRITICAL)
+    public boolean algaeTargetPROCESSOR(){
+        return algaeTarget == AlgaeTarget.PROCESSOR;
+    }
+
+    @Logged(name = "AT_LOW_REEF", importance = Importance.CRITICAL)
+    public boolean algaeTargetREEF_L2(){
+        return algaeTarget == AlgaeTarget.LOW_REEF;
+    }
+
+    @Logged(name = "AT_HIGH_REEF", importance = Importance.CRITICAL)
+    public boolean algaeTargetREEF_L3(){
+        return algaeTarget == AlgaeTarget.HIGH_REEF;
+    }
+
+
+    @Logged(name = "AT_BARGE", importance = Importance.CRITICAL)
+    public boolean algaeTargetBARGE(){
+        return algaeTarget == AlgaeTarget.BARGE;
+    }
+
+    public double getAlgaeHeight(){
+        if(getAlgaeTarget() == AlgaeTarget.BARGE){
+            return ElevatorConstants.ALGAE.BARGE.height;
+        }
+        else if (getAlgaeTarget() == AlgaeTarget.PROCESSOR){
+            return ElevatorConstants.ALGAE.PROCESSOR.height;
+        }
+        else if (getAlgaeTarget() == AlgaeTarget.LOW_REEF){
+                return Preferences.elevatorLowAlgaeReefPreference.getValue();
+        }
+        else if (getAlgaeTarget() == AlgaeTarget.HIGH_REEF){ 
+                return Preferences.elevatorHighAlgaeReefPreference.getValue();
+        } else {
+            return ElevatorConstants.FLOOR.GROUND.position;
+        }
+    }
+
+    public double getAlgaeWristPosition(){
+        if(getAlgaeTarget() == AlgaeTarget.BARGE){
+            return AlgaeCollectorConstants.WRIST.BARGE.angle;
+        }
+        else if (getAlgaeTarget() == AlgaeTarget.PROCESSOR){
+            return AlgaeCollectorConstants.WRIST.PROCESS.angle;
+        }
+        else if (getAlgaeTarget() == AlgaeTarget.LOW_REEF || getAlgaeTarget() == AlgaeTarget.HIGH_REEF){
+            return AlgaeCollectorConstants.WRIST.REEF.angle;
+        } else {
+            return AlgaeCollectorConstants.WRIST.STOW.angle;
+        }
+    }
+
+    public void setHasAlgae(boolean bool){
+        hasAlgae = bool;
+    }
+
+    public boolean hasAlgae(){
+        return hasAlgae;
+    }
+
+}
