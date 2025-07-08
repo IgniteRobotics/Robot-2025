@@ -103,7 +103,7 @@ public class DriveToPoseNoProfile
       SmartDashboard.putNumber("Alignment/Pose/TargetRot", m_targetPoseFieldRelative.getRotation().getDegrees());
 
       rotation = m_rotationController.calculate(m_driveTrain.getYaw(), m_targetPoseFieldRelative.getRotation().getDegrees());
-      SmartDashboard.putNumber("Alignment/Data/HeadingError", m_rotationController.getPositionError());
+      SmartDashboard.putNumber("Alignment/Data/HeadingError", m_rotationController.getError());
       SmartDashboard.putBoolean("Alignment/Data/atRotationSetpoint", m_rotationController.atSetpoint());
 
 
@@ -112,14 +112,14 @@ public class DriveToPoseNoProfile
         //m_driveYController.reset(currentPose.getY(), m_driveTrain.getState().Speeds.vxMetersPerSecond);
         driveY = m_driveYController.calculate(currentPose.getY(), m_targetPoseFieldRelative.getY());
         //ignore this
-        SmartDashboard.putNumber("Alignment/Data/YError", m_driveYController.getPositionError());
+        SmartDashboard.putNumber("Alignment/Data/YError", m_driveYController.getError());
         
         SmartDashboard.putBoolean("Alignment/Data/atYSetpoint", m_driveYController.atSetpoint());
       
         //m_driveXController.reset(currentPose.getX(), m_driveTrain.getState().Speeds.vyMetersPerSecond);
         driveX = m_driveXController.calculate(currentPose.getX(), m_targetPoseFieldRelative.getX());
         //Ignore this (bad)
-        SmartDashboard.putNumber("Alignment/Data/DistanceError", m_driveXController.getPositionError());
+        SmartDashboard.putNumber("Alignment/Data/DistanceError", m_driveXController.getError());
         
         SmartDashboard.putBoolean("Alignment/Data/atDistanceSetpoint", m_driveXController.atSetpoint());
 
