@@ -13,10 +13,13 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Preferences;
 import frc.robot.generated.TunerConstants;
+import frc.robot.statemachines.AllianceState;
 import frc.robot.statemachines.DriveState;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 
@@ -38,8 +41,7 @@ public class DriveToPoseNoProfile
   Constraints m_RotConstraints;
 
   boolean m_allowDriverOverride = false;
-  boolean m_driverOverrideX = false;
-  boolean m_driverOverrideY = false;
+  boolean m_driverOverride = false;
 
   private final DoubleSupplier m_xInput;
   private final DoubleSupplier m_yInput;
@@ -58,6 +60,8 @@ public class DriveToPoseNoProfile
   @Override
   public void initialize() {
     m_initialBotPoseFieldRelative = m_driveTrain.getPose();
+    m_targetPoseFieldRelative = null;
+    m_driverOverride = false;
   
 
     m_rotationController = new PIDController(Preferences.alignRotKP.get(), Preferences.alignRotKI.get(), Preferences.alignRotKD.get());
@@ -66,12 +70,12 @@ public class DriveToPoseNoProfile
     
     
     
-    m_driveYController = new PIDController(Preferences.alignDriveYKP.get(), Preferences.alignDriveYKI.get(), Preferences.alignDriveYKD.get());
-    m_driveYController.setTolerance(Preferences.yAlignTolerancePreference.get());
+    m_driveYController = new PIDController(Preferences.alignDriveKP.get(), Preferences.alignDriveKI.get(), Preferences.alignDriveKD.get());
+    m_driveYController.setTolerance(Preferences.driveYAlignTolerancePreference.get());
     m_driveYController.setIZone(Double.POSITIVE_INFINITY);
 
-    m_driveXController = new PIDController(Preferences.alignDriveXKP.get(), Preferences.alignDriveXKI.get(), Preferences.alignDriveXKD.get());
-    m_driveXController.setTolerance(Preferences.xAlignTolerancePreference.get());
+    m_driveXController = new PIDController(Preferences.alignDriveKP.get(), Preferences.alignDriveKI.get(), Preferences.alignDriveKD.get());
+    m_driveXController.setTolerance(Preferences.driveXAlignTolerancePreference.get());
     
     m_driveXController.setIZone(Double.POSITIVE_INFINITY);
 
@@ -99,46 +103,60 @@ public class DriveToPoseNoProfile
       SmartDashboard.putNumber("Alignment/Pose/TargetRot", m_targetPoseFieldRelative.getRotation().getDegrees());
 
       rotation = m_rotationController.calculate(m_driveTrain.getYaw(), m_targetPoseFieldRelative.getRotation().getDegrees());
-      SmartDashboard.putNumber("Alignment/Data/HeadingError", m_rotationController.getPositionError());
+      SmartDashboard.putNumber("Alignment/Data/HeadingError", m_rotationController.getError());
       SmartDashboard.putBoolean("Alignment/Data/atRotationSetpoint", m_rotationController.atSetpoint());
 
 
-      if (!m_driverOverrideY) {
+      if (!m_driverOverride) {
         
         //m_driveYController.reset(currentPose.getY(), m_driveTrain.getState().Speeds.vxMetersPerSecond);
         driveY = m_driveYController.calculate(currentPose.getY(), m_targetPoseFieldRelative.getY());
-        driveY = MathUtil.clamp(driveY, -2.5, 2.5);
         //ignore this
-        SmartDashboard.putNumber("Alignment/Data/YError", m_driveYController.getPositionError());
+        SmartDashboard.putNumber("Alignment/Data/YError", m_driveYController.getError());
         
         SmartDashboard.putBoolean("Alignment/Data/atYSetpoint", m_driveYController.atSetpoint());
-      }
-
-      if (!m_driverOverrideX) {
+      
         //m_driveXController.reset(currentPose.getX(), m_driveTrain.getState().Speeds.vyMetersPerSecond);
         driveX = m_driveXController.calculate(currentPose.getX(), m_targetPoseFieldRelative.getX());
-        driveX = MathUtil.clamp(driveX, -2.5, 2.5);
         //Ignore this (bad)
-        SmartDashboard.putNumber("Alignment/Data/DistanceError", m_driveXController.getPositionError());
+        SmartDashboard.putNumber("Alignment/Data/DistanceError", m_driveXController.getError());
         
         SmartDashboard.putBoolean("Alignment/Data/atDistanceSetpoint", m_driveXController.atSetpoint());
-      }
-    }
 
-    if (m_allowDriverOverride) {
-        //override with joystick input if present
-      if(m_xInput != null && Math.abs(m_xInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
-        m_driverOverrideX = true;
-        driveX = Preferences.xySlowLimitPreference.getValue()*m_xInput.getAsDouble();
-      } else if (m_driverOverrideX && (m_xInput == null || Math.abs(m_xInput.getAsDouble()) <= TunerConstants.DEADBAND_FACTOR)){
-        driveX = 0;
-      }
+        double maxVelocity = Preferences.maxAlignDriveVelocity.getValue();
 
-      if(m_yInput != null && Math.abs(m_yInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
-        m_driverOverrideY = true;
-        driveY = Preferences.xySlowLimitPreference.getValue()*m_yInput.getAsDouble();
-      } else if (m_driverOverrideY && (m_xInput == null || Math.abs(m_yInput.getAsDouble()) <= TunerConstants.DEADBAND_FACTOR)){
-        driveY = 0;
+        if(Math.abs(driveY) > Math.abs(driveX) && Math.abs(driveY) > maxVelocity){
+          driveY = MathUtil.clamp(driveY, -1* maxVelocity, maxVelocity);
+          double clampFactor = Math.abs(maxVelocity/driveY);
+          driveX = MathUtil.clamp(driveX, -1* maxVelocity * clampFactor, maxVelocity * clampFactor);
+        }
+        else if(Math.abs(driveX) > Math.abs(driveY) && Math.abs(driveX) > maxVelocity){
+          driveX = MathUtil.clamp(driveX, -1* maxVelocity, maxVelocity);
+          double clampFactor = Math.abs(maxVelocity/driveX);
+          driveY = MathUtil.clamp(driveY, -1* maxVelocity * clampFactor, maxVelocity * clampFactor);
+        }
+        else{
+          driveY = MathUtil.clamp(driveY, -1* maxVelocity, maxVelocity);
+          driveX = MathUtil.clamp(driveX, -1* maxVelocity, maxVelocity);
+        }
+      }
+    
+
+      if (m_allowDriverOverride) {
+          //override with joystick input if present
+        if(m_xInput != null && Math.abs(m_xInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
+          m_driverOverride = true;
+          driveX = Preferences.xySlowLimitPreference.getValue()*m_xInput.getAsDouble();
+        } else if (m_driverOverride && (m_xInput == null || Math.abs(m_xInput.getAsDouble()) <= TunerConstants.DEADBAND_FACTOR)){
+          driveX = 0;
+        }
+
+        if(m_yInput != null && Math.abs(m_yInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
+          m_driverOverride = true;
+          driveY = Preferences.xySlowLimitPreference.getValue()*m_yInput.getAsDouble();
+        } else if (m_driverOverride && (m_xInput == null || Math.abs(m_yInput.getAsDouble()) <= TunerConstants.DEADBAND_FACTOR)){
+          driveY = 0;
+        }
       }
     }
 
@@ -146,14 +164,15 @@ public class DriveToPoseNoProfile
     SmartDashboard.putNumber("Alignment/Power/driveX", driveX);
     SmartDashboard.putNumber("Alignment/Power/driveY", driveY);
     
-    m_driveTrain.autoDrive(driveX, driveY, rotation);
-
+    m_driveTrain.autoDrive(driveX, driveY, rotation, m_driverOverride);
+  
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_driveTrain.driveRobotCentric(0, 0,0);
+    m_driveTrain.driveRobotCentric(0, 0, 0);
   }
 
 

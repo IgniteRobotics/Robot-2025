@@ -1,0 +1,73 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start To Reef JI"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral Right Level 4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef J To HP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake At HP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HP To Reef LK"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral Left Level 4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef K To HP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake At HP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HP To Reef LK 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral Right Level 4"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

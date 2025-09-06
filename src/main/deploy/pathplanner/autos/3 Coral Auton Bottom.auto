@@ -7,31 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start To Reef JI"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score Coral Right Level 4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Reef J To HP"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake At HP"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "HP To Reef LK"
+            "pathName": "Start To Reef EF"
           }
         },
         {
@@ -43,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Reef K To HP"
+            "pathName": "Reef E To HP"
           }
         },
         {
@@ -55,13 +31,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "HP To Reef LK"
+            "pathName": "HP To Reef CD"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Score Coral Right Level 4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef D To HP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake At HP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HP To Reef CD"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral Left Level 4"
           }
         }
       ]

@@ -23,7 +23,6 @@ import frc.robot.PreferenceTypes.DoublePreference;
 @Logged
 public class Climber implements Subsystem {
     private final TalonFX m_climberMotorLeader;
-    private final TalonFX m_climberMotorFollower;
 
     private final Servo m_rightServo;
     private final Servo m_leftServo;
@@ -71,11 +70,9 @@ public class Climber implements Subsystem {
   /** Creates a new Climber. */
   public Climber() {
     m_climberMotorLeader = ClimberConstants.CLIMBER_LEADER_MOTOR; 
-    m_climberMotorFollower = ClimberConstants.CLIMBER_FOLLOWER_MOTOR;
 
     m_Slot0Configs = ClimberConstants.createSlot0Configs(); 
     m_climberMotorLeader.getConfigurator().apply(m_Slot0Configs);
-    m_climberMotorFollower.getConfigurator().apply(m_Slot0Configs);
 
     climberkP = m_Slot0Configs.kP;
     climberkD = m_Slot0Configs.kD;
@@ -84,11 +81,9 @@ public class Climber implements Subsystem {
 
     m_softLimitConfig = ClimberConstants.createSoftLimitConigs(); 
     m_climberMotorLeader.getConfigurator().apply(m_softLimitConfig);
-    m_climberMotorFollower.getConfigurator().apply(m_softLimitConfig);
 
     m_motionMagicConfigs = ClimberConstants.createMotionMagicConfigs();
     m_climberMotorLeader.getConfigurator().apply(m_motionMagicConfigs);
-    m_climberMotorFollower.getConfigurator().apply(m_motionMagicConfigs);
 
     m_MMCruiseVelocity = m_motionMagicConfigs.MotionMagicCruiseVelocity;
     m_MMAccel = m_motionMagicConfigs.MotionMagicAcceleration;
@@ -97,11 +92,10 @@ public class Climber implements Subsystem {
     m_leaderMotorConfig = ClimberConstants.createLeaderMotorOutputConfigs();
     m_climberMotorLeader.getConfigurator().apply(m_leaderMotorConfig);
 
-    m_followerMotorConfig = ClimberConstants.createFollowerMotorOutputConfigs();
-    m_climberMotorFollower.getConfigurator().apply(m_followerMotorConfig);
-
     m_rightServo = new Servo(ClimberConstants.RIGHT_SERVO_PORT);
     m_leftServo = new Servo(ClimberConstants.LEFT_SERVO_PORT);
+
+    m_climberMotorLeader.setPosition(0);
 
 
   }
@@ -159,7 +153,6 @@ public class Climber implements Subsystem {
     m_Slot0Configs.withKP(P.getValue()).withKD(D.getValue()).withKI(I.getValue()).withKG(G.getValue());
 
     m_climberMotorLeader.getConfigurator().apply(m_Slot0Configs);
-    m_climberMotorFollower.getConfigurator().apply(m_Slot0Configs);
 
     climberkP = m_Slot0Configs.kP;
     climberkD = m_Slot0Configs.kD;
@@ -174,14 +167,13 @@ public class Climber implements Subsystem {
     m_motionMagicConfigs.withMotionMagicCruiseVelocity(CV.getValue()).withMotionMagicAcceleration(A.getValue()).withMotionMagicJerk(J.getValue());
 
     m_climberMotorLeader.getConfigurator().apply(m_motionMagicConfigs);
-    m_climberMotorFollower.getConfigurator().apply(m_motionMagicConfigs);
 
     m_MMCruiseVelocity = m_motionMagicConfigs.MotionMagicCruiseVelocity;
     m_MMAccel = m_motionMagicConfigs.MotionMagicAcceleration;
     m_MMJerk = m_motionMagicConfigs.MotionMagicJerk;
   }
 
-  // @NotLogged
+   //NotLogged
   // public double getClimberkP(){
   //   m_Slot0Configs = new Slot0Configs();
   //   m_climberMotorLeader.getConfigurator().refresh(m_Slot0Configs);
@@ -242,23 +234,5 @@ public class Climber implements Subsystem {
   public double getLeaderTemperature(){
     return m_climberMotorLeader.getDeviceTemp().getValueAsDouble();
   }
-
-  @Logged(name = "Follower Motor Voltage", importance = Importance.CRITICAL)
-  public double getFollowerVoltage(){
-    return m_climberMotorFollower.getMotorVoltage().getValueAsDouble();
-  }
-
-  @Logged(name = "Follower Motor Current", importance = Importance.CRITICAL)
-  public double getFollowerCurrent(){
-    return m_climberMotorFollower.getSupplyCurrent().getValueAsDouble();
-  }
-
-  @Logged(name = "Follower Motor Temperature", importance = Importance.CRITICAL)
-  public double getFollowerTemperature(){
-    return m_climberMotorFollower.getDeviceTemp().getValueAsDouble();
-  }
-
-
-
 
 }
