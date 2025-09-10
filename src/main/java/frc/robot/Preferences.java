@@ -16,6 +16,14 @@ import frc.robot.subsystems.algae.AlgaeCollectorConstants;
 public class Preferences {
 
     // ********** Drive *********//
+
+    //PID
+    public static DoublePreference drivekP = new DoublePreference("Drivetrain Drive Motors kP", 0.2);
+    public static DoublePreference drivekD = new DoublePreference("Drivetrain Drive Motors kD", 0.0011);
+
+    public static DoublePreference steerkP = new DoublePreference("Drivetrain Steer Motors kP", 100);
+    public static DoublePreference steerkD = new DoublePreference("Drivetrain Steer Motors kD", 0.5);
+
     public static DoublePreference nerfFactor = new DoublePreference("Nerf Factor", 0.35);
     public static DoublePreference alignTimeout = new DoublePreference("Alignment Timeout", 1.5);
 

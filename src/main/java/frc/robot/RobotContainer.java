@@ -212,12 +212,13 @@ public class RobotContainer {
         SmartDashboard.putData("Auto Mode", autoChooser);
 
 
+        //TODO Test Mode
         configureSubsytemDefaultCommands();
-        configureBindings();
-        //TODO MUST REMOVE
+        configureDrivetrainPIDTestBindings();
+        //configureBindings();
         //configureTestBindings();
         //configureOdometryTestBindings();
-        configureManipulatorController(); 
+        //configureManipulatorController(); 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
@@ -415,6 +416,11 @@ public class RobotContainer {
                 .alongWith(new DriveToPoseNoProfile(drivetrain, () -> DriveState.getInstance().getTargetPose2d(), null, null,false)))
         ).onFalse(new InstantCommand(() -> DriveState.getInstance().unlockCameras())
         );
+    }
+
+    private void configureDrivetrainPIDTestBindings(){
+        joystick.a().onTrue(new InstantCommand(() -> drivetrain.setDrivePID(Preferences.drivekP, Preferences.drivekD)));
+        joystick.b().onTrue(new InstantCommand(() -> drivetrain.setSteerPID(Preferences.steerkP, Preferences.steerkD)));
     }
 
     public Command getAutonomousCommand() {

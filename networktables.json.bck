@@ -1,8 +1,40 @@
 [
   {
-    "name": "/Preferences/alignCommand/distanceAdjustment",
+    "name": "/Preferences/Nerf Factor",
     "type": "double",
-    "value": 0.0,
+    "value": 0.35,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Alignment Timeout",
+    "type": "double",
+    "value": 1.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/alignCommand/driveY/offset/right",
+    "type": "double",
+    "value": 0.18,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/alignCommand/driveY/offset/left",
+    "type": "double",
+    "value": -0.16,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/alignCommand/driveX/offset",
+    "type": "double",
+    "value": 0.37,
     "properties": {
       "persistent": true
     }
@@ -10,7 +42,7 @@
   {
     "name": "/Preferences/alignCommand/rotation/kP",
     "type": "double",
-    "value": 0.0,
+    "value": 0.1,
     "properties": {
       "persistent": true
     }
@@ -18,503 +50,7 @@
   {
     "name": "/Preferences/alignCommand/rotation/kD",
     "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/drive/x/kP",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/drive/x/kD",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/drive/y/kP",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/drive/y/KD",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator/kV",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator/kP",
-    "type": "double",
-    "value": 7.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator/kI",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator/kD",
-    "type": "double",
-    "value": 0.25,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator/kG",
-    "type": "double",
-    "value": 0.5,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator/kS",
-    "type": "double",
-    "value": 0.5,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator/Position",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator/Motion Magic/Jerk",
-    "type": "double",
-    "value": 2000.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator/Motion Magic/Acceleration",
-    "type": "double",
-    "value": 200.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator/Motion Magic/Cruise Velocity",
-    "type": "double",
-    "value": 100.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/EndEffector/Coral/IntakePower",
-    "type": "double",
-    "value": 0.25,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/EndEffector/Coral/OuttakePower",
-    "type": "double",
-    "value": 0.25,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/EndEffector/Wrist/Stow Position/No Algae",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/EndEffector/Wrist/Stow Position/WithAlgae",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Climber/kV",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Climber/kP",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Climber/kI",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Climber/kD",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Climber/kG",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Climber/kS",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Climber/Position",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Climber/Motion Magic/Jerk",
-    "type": "double",
-    "value": 101.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Climber/Motion Magic/Acceleration",
-    "type": "double",
-    "value": 10.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Climber/Motion Magic/Cruise Velocity",
-    "type": "double",
-    "value": 5.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Climber/Up Power",
-    "type": "double",
-    "value": 0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Clibmer/Down Power",
-    "type": "double",
-    "value": 0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/drive/kP",
-    "type": "double",
-    "value": 0.5,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/drive/kD",
-    "type": "double",
-    "value": 0.3,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/adjustment",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/EndEffector/Algae/IntakePower",
-    "type": "double",
-    "value": 0.25,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/EndEffector/Algae/OuttakePower",
-    "type": "double",
-    "value": 0.25,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/EndEffector/Algae/HopperPower",
-    "type": "double",
-    "value": 0.03,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/EndEffector/Wrist/Position",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/EndEffector/Outtake Delay",
-    "type": "double",
-    "value": 0.5,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Climber/Down Power",
-    "type": "double",
-    "value": 0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Climber/Servo Position",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/driveY/kP",
-    "type": "double",
-    "value": 0.5,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/driveY/kD",
-    "type": "double",
-    "value": 0.3,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/driveX/kP",
-    "type": "double",
-    "value": 0.5,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/driveX/kD",
-    "type": "double",
-    "value": 0.3,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Coraller/IntakePower",
-    "type": "double",
-    "value": 0.25,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Coraller/OuttakePower",
-    "type": "double",
-    "value": 0.25,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/AlgaeCollector/IntakePower",
-    "type": "double",
-    "value": 0.25,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/AlgaeCollector/OuttakePower",
-    "type": "double",
-    "value": 0.25,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/AlgaeCollector/HopperPower",
-    "type": "double",
-    "value": 0.03,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/AlgaeCollector/Wrist/Stow Position/No Algae",
-    "type": "double",
-    "value": 0.2,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/AlgaeCollector/Wrist/Stow Position/WithAlgae",
-    "type": "double",
-    "value": 0.2,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/AlgaeCollector/Wrist/Position",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/AlgaeCollector/Outtake Delay",
-    "type": "double",
-    "value": 0.5,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Coraller/XDriveOffset",
-    "type": "double",
-    "value": 0.02,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/AlgaeCollector/Wrist/Stow Position",
-    "type": "double",
-    "value": 0.2,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Climber/Position 1",
-    "type": "double",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Climber/Position 2",
-    "type": "double",
-    "value": 2.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator/Auton Height",
-    "type": "double",
-    "value": 3.4,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/rotationTolerance",
-    "type": "double",
-    "value": 0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/rotationTarget",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/yAlignTolerance",
-    "type": "double",
-    "value": 0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/xAlignTolerance",
-    "type": "double",
-    "value": 0.1,
+    "value": 5e-05,
     "properties": {
       "persistent": true
     }
@@ -528,7 +64,23 @@
     }
   },
   {
-    "name": "/Preferences/alignCommand/driveY/kI",
+    "name": "/Preferences/alignCommand/drive/kP",
+    "type": "double",
+    "value": 2.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/alignCommand/drive/kD",
+    "type": "double",
+    "value": 0.015,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/alignCommand/drive/kI",
     "type": "double",
     "value": 0.0,
     "properties": {
@@ -536,7 +88,7 @@
     }
   },
   {
-    "name": "/Preferences/alignCommand/driveX/kI",
+    "name": "/Preferences/alignCommand/adjustment",
     "type": "double",
     "value": 0.0,
     "properties": {
@@ -544,15 +96,7 @@
     }
   },
   {
-    "name": "/Preferences/AlgaeCollector/Wrist/Motion Magic/Cruise Velocity",
-    "type": "double",
-    "value": 0.5,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/AlgaeCollector/Wrist/Motion Magic/Acceleration",
+    "name": "/Preferences/alignCommand/rotationTolerance",
     "type": "double",
     "value": 1.0,
     "properties": {
@@ -560,39 +104,7 @@
     }
   },
   {
-    "name": "/Preferences/AlgaeCollector/Wrist/Motion Magic/Jerk",
-    "type": "double",
-    "value": 10.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Nerf Factor",
-    "type": "double",
-    "value": 0.35,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/profiledAlignCommand/rotation/kP",
-    "type": "double",
-    "value": 0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/profiledAlignCommand/rotation/kD",
-    "type": "double",
-    "value": 0.001,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/profiledAlignCommand/rotation/kI",
+    "name": "/Preferences/alignCommand/rotationTarget",
     "type": "double",
     "value": 0.0,
     "properties": {
@@ -600,31 +112,7 @@
     }
   },
   {
-    "name": "/Preferences/profiledAlignCommand/rotation/maxVel",
-    "type": "double",
-    "value": 45.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/profiledAlignCommand/rotation/maxAcc",
-    "type": "double",
-    "value": 90.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/profiledAlignCommand/driveY/kP",
-    "type": "double",
-    "value": 0.2,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/profiledAlignCommand/driveY/kD",
+    "name": "/Preferences/alignCommand/xAlignTolerance",
     "type": "double",
     "value": 0.01,
     "properties": {
@@ -632,65 +120,9 @@
     }
   },
   {
-    "name": "/Preferences/profiledAlignCommand/driveY/kI",
+    "name": "/Preferences/alignCommand/yAlignTolerance",
     "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/profiledAlignCommand/driveY/maxVel",
-    "type": "double",
-    "value": 8.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/profiledAlignCommand/driveY/maxAcc",
-    "type": "double",
-    "value": 16.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/profiledAlignCommand/driveX/kP",
-    "type": "double",
-    "value": 2.6,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/profiledAlignCommand/driveX/kD",
-    "type": "double",
-    "value": 0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/profiledAlignCommand/driveX/kI",
-    "type": "double",
-    "value": 3.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/profiledAlignCommand/driveX/maxVel",
-    "type": "double",
-    "value": 6.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/profiledAlignCommand/driveX/maxAcc",
-    "type": "double",
-    "value": 12.0,
+    "value": 0.01,
     "properties": {
       "persistent": true
     }
@@ -752,6 +184,110 @@
     }
   },
   {
+    "name": "/Preferences/alignCommand/driveVelocity",
+    "type": "double",
+    "value": 2.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Auto/Intake Timeout",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Auto/Align Timeout",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/kV",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/kP",
+    "type": "double",
+    "value": 7.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/kI",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/kD",
+    "type": "double",
+    "value": 0.25,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/kG",
+    "type": "double",
+    "value": 2.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/kS",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/Position",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/Motion Magic/Jerk",
+    "type": "double",
+    "value": 2000.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/Motion Magic/Acceleration",
+    "type": "double",
+    "value": 200.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator/Motion Magic/Cruise Velocity",
+    "type": "double",
+    "value": 100.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
     "name": "/Preferences/Elevator/TroughBump",
     "type": "double",
     "value": 4.61,
@@ -762,7 +298,7 @@
   {
     "name": "/Preferences/Elevator/ReefLowAlgaeHeight",
     "type": "double",
-    "value": 2.0,
+    "value": 1.0,
     "properties": {
       "persistent": true
     }
@@ -770,7 +306,55 @@
   {
     "name": "/Preferences/Elevator/ReefHighAlgaeHeight",
     "type": "double",
-    "value": 10.5,
+    "value": 9.8,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Coraller/IntakePower",
+    "type": "double",
+    "value": 0.25,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Coraller/OuttakePower",
+    "type": "double",
+    "value": 0.25,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Coraller/XDriveOffset",
+    "type": "double",
+    "value": 0.02,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/AlgaeCollector/IntakePower",
+    "type": "double",
+    "value": 0.25,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/AlgaeCollector/OuttakePower",
+    "type": "double",
+    "value": 0.25,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/AlgaeCollector/HopperPower",
+    "type": "double",
+    "value": 0.03,
     "properties": {
       "persistent": true
     }
@@ -784,41 +368,17 @@
     }
   },
   {
-    "name": "/Preferences/Alignment Timeout",
+    "name": "/Preferences/AlgaeCollector/Wrist/Stow Position Full",
     "type": "double",
-    "value": 1.5,
+    "value": 0.12,
     "properties": {
       "persistent": true
     }
   },
   {
-    "name": "/Preferences/alignCommand/driveY/offset/right",
+    "name": "/Preferences/AlgaeCollector/Wrist/Stow Position Empty",
     "type": "double",
-    "value": 0.18,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/driveY/offset/left",
-    "type": "double",
-    "value": -0.16,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/driveX/offset",
-    "type": "double",
-    "value": 0.37,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/alignCommand/driveVelocity",
-    "type": "double",
-    "value": 2.5,
+    "value": 0.2,
     "properties": {
       "persistent": true
     }
@@ -827,6 +387,118 @@
     "name": "/Preferences/AlgaeCollector/Wrist/Intake Position",
     "type": "double",
     "value": -0.05,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/AlgaeCollector/Outtake Delay",
+    "type": "double",
+    "value": 0.5,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/kV",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/kP",
+    "type": "double",
+    "value": 6.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/kI",
+    "type": "double",
+    "value": 1.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/kD",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/kG",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/kS",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/Position",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/Motion Magic/Jerk",
+    "type": "double",
+    "value": 1000.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/Motion Magic/Acceleration",
+    "type": "double",
+    "value": 100.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/Motion Magic/Cruise Velocity",
+    "type": "double",
+    "value": 50.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/Up Power",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/Down Power",
+    "type": "double",
+    "value": -0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Climber/Servo Position",
+    "type": "double",
+    "value": 0.0,
     "properties": {
       "persistent": true
     }
@@ -848,25 +520,17 @@
     }
   },
   {
+    "name": "/Preferences/Climber/Good Elevator Height",
+    "type": "double",
+    "value": 2.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
     "name": "/Preferences/auton/drive/timeout",
     "type": "double",
     "value": 4.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/AlgaeCollector/Wrist/Stow Position Full",
-    "type": "double",
-    "value": 0.12,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/AlgaeCollector/Wrist/Stow Position Empty",
-    "type": "double",
-    "value": 0.0,
     "properties": {
       "persistent": true
     }

@@ -17,6 +17,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -51,6 +52,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Robot;
+import frc.robot.PreferenceTypes.DoublePreference;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.statemachines.DriveState;
@@ -597,6 +599,22 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     }
 
+    public void setDrivePID(DoublePreference P, DoublePreference D){
+        for(int i = 0; i < 4; i++){
+            Slot0Configs newConfigs = new Slot0Configs();
+            this.getModule(i).getDriveMotor().getConfigurator().refresh(newConfigs);
+            newConfigs.withKP(P.getValue()).withKD(D.getValue());
+            this.getModule(i).getDriveMotor().getConfigurator().apply(newConfigs);
+        }
+    }
 
+    public void setSteerPID(DoublePreference P, DoublePreference D){
+        for(int i = 0; i < 4; i++){
+            Slot0Configs newConfigs = new Slot0Configs();
+            this.getModule(i).getSteerMotor().getConfigurator().refresh(newConfigs);
+            newConfigs.withKP(P.getValue()).withKD(D.getValue());
+            this.getModule(i).getSteerMotor().getConfigurator().apply(newConfigs);
+        }
+    }
 }
 
