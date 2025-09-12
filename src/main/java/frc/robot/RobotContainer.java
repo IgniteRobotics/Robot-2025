@@ -47,6 +47,7 @@ import frc.robot.commands.corraler.CorralerDefaultCommand;
 import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.drive.DriveToPoseNoProfile;
 import frc.robot.commands.drive.ManualDriveAlignment;
+import frc.robot.commands.drive.SlipTest;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.commands.test.RotateToHeading;
@@ -214,7 +215,7 @@ public class RobotContainer {
 
         //TODO Test Mode
         configureSubsytemDefaultCommands();
-        configureDrivetrainPIDTestBindings();
+        configureDrivetrainOdometryTestBindings();
         //configureBindings();
         //configureTestBindings();
         //configureOdometryTestBindings();
@@ -418,9 +419,10 @@ public class RobotContainer {
         );
     }
 
-    private void configureDrivetrainPIDTestBindings(){
+    private void configureDrivetrainOdometryTestBindings(){
         joystick.a().onTrue(new InstantCommand(() -> drivetrain.setDrivePID(Preferences.drivekP, Preferences.drivekD)));
         joystick.b().onTrue(new InstantCommand(() -> drivetrain.setSteerPID(Preferences.steerkP, Preferences.steerkD)));
+        joystick.y().whileTrue(new SlipTest(drivetrain));
     }
 
     public Command getAutonomousCommand() {

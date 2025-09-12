@@ -616,5 +616,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             this.getModule(i).getSteerMotor().getConfigurator().apply(newConfigs);
         }
     }
+
+    public void setDrivePower(double power){
+        for(int i = 0; i < 4; i++){
+            this.getModule(i).getSteerMotor().set(power);
+        }
+    }
+
+    public void printDriveMotorCurrents(){
+        System.out.println("Front Left current: " + this.getModule(0).getDriveMotor().getStatorCurrent().getValueAsDouble());
+        System.out.println("Front Right current: " + this.getModule(1).getDriveMotor().getStatorCurrent().getValueAsDouble());
+        System.out.println("Back Left current: " + this.getModule(2).getDriveMotor().getStatorCurrent().getValueAsDouble());
+        System.out.println("Back Right current: " + this.getModule(3).getDriveMotor().getStatorCurrent().getValueAsDouble());
+    }
 }
 
