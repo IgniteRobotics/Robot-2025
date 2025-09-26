@@ -48,6 +48,7 @@ import frc.robot.commands.corraler.OuttakeCommand;
 import frc.robot.commands.drive.DriveToPoseNoProfile;
 import frc.robot.commands.drive.ManualDriveAlignment;
 import frc.robot.commands.drive.SlipTest;
+import frc.robot.commands.drive.SlipTestIndividual;
 import frc.robot.commands.elevator.ElevatorToAlgaePreset;
 import frc.robot.commands.elevator.ToSetpoint;
 import frc.robot.commands.test.RotateToHeading;
@@ -63,6 +64,7 @@ import frc.robot.statemachines.CoralState.CoralTarget;
 import frc.robot.subsystems.drive.CameraConstants;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.PhotonCameraWrapper;
+import frc.robot.subsystems.drive.CommandSwerveDrivetrain.Wheel;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorConstants;
 import frc.robot.subsystems.algae.AlgaeCollector;
@@ -423,6 +425,10 @@ public class RobotContainer {
         joystick.a().onTrue(new InstantCommand(() -> drivetrain.setDrivePID(Preferences.drivekP, Preferences.drivekD)));
         joystick.b().onTrue(new InstantCommand(() -> drivetrain.setSteerPID(Preferences.steerkP, Preferences.steerkD)));
         joystick.y().whileTrue(new SlipTest(drivetrain));
+        joystick.povUp().whileTrue(new SlipTestIndividual(drivetrain, Wheel.FRONT_LEFT));
+        joystick.povLeft().whileTrue(new SlipTestIndividual(drivetrain, Wheel.REAR_LEFT));
+        joystick.povRight().whileTrue(new SlipTestIndividual(drivetrain, Wheel.FRONT_RIGHT));
+        joystick.povDown().whileTrue(new SlipTestIndividual(drivetrain, Wheel.REAR_RIGHT));
     }
 
     public Command getAutonomousCommand() {

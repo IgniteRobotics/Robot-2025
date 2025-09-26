@@ -619,15 +619,38 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public void setDrivePower(double power){
         for(int i = 0; i < 4; i++){
-            this.getModule(i).getSteerMotor().set(power);
+            this.getModule(i).getDriveMotor().set(power);
         }
     }
 
     public void printDriveMotorCurrents(){
         System.out.println("Front Left current: " + this.getModule(0).getDriveMotor().getStatorCurrent().getValueAsDouble());
         System.out.println("Front Right current: " + this.getModule(1).getDriveMotor().getStatorCurrent().getValueAsDouble());
-        System.out.println("Back Left current: " + this.getModule(2).getDriveMotor().getStatorCurrent().getValueAsDouble());
-        System.out.println("Back Right current: " + this.getModule(3).getDriveMotor().getStatorCurrent().getValueAsDouble());
+        System.out.println("Rear Left current: " + this.getModule(2).getDriveMotor().getStatorCurrent().getValueAsDouble());
+        System.out.println("Rear Right current: " + this.getModule(3).getDriveMotor().getStatorCurrent().getValueAsDouble());
+    }
+
+    public enum Wheel{
+        FRONT_LEFT("Front Left", 0),
+        FRONT_RIGHT("Front Right", 1),
+        REAR_LEFT("Rear Left", 2),
+        REAR_RIGHT("Rear Right", 3);
+
+        private final String name;
+        private final int module;
+
+        Wheel(String n, int m){
+            name = n;
+            module = m;
+        }
+
+        public String getName(){
+            return name;
+        }
+
+        public int getModuleInt(){
+            return module;
+        }
     }
 }
 
