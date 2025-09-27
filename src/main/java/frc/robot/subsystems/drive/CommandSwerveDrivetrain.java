@@ -17,8 +17,10 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
@@ -193,6 +195,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     ) {
         super(drivetrainConstants, modules);
         m_photonCameraWrapper = cameraWrapper;
+        //need to make sure that motors are clockwise positive
+        MotorOutputConfigs invertConfigs = new MotorOutputConfigs();
+        for(int i = 0; i < 4; i++){
+            this.getModule(i).getDriveMotor().getConfigurator().refresh(invertConfigs);
+            invertConfigs.withInverted(InvertedValue.Clockwise_Positive);
+            this.getModule(i).getDriveMotor().getConfigurator().apply(invertConfigs);
+        }
         if (Utils.isSimulation()) {
             startSimThread();
         }
