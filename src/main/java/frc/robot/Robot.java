@@ -35,29 +35,6 @@ public class Robot extends TimedRobot {
 
   private boolean logToFile = false;
   public Robot() {
-    if(DriverStation.isFMSAttached()){
-          Epilogue.configure(config -> {
-        // Log only to disk, instead of the default NetworkTables logging
-        // Note that this means data cannot be analyzed in realtime by a dashboard
-        config.dataLogger = new FileLogger(DataLogManager.getLog());
-
-      
-
-        // Change the root data path
-        config.root = "Telemetry";
-     });
-    }
-   else{
-      if (isSimulation()) {
-        Epilogue.configure(config -> {
-          config.errorHandler = ErrorHandler.crashOnError();
-        });         
-      }
-
-     DataLogManager.start(); 
-    }
-    DataLogManager.start();
-    Epilogue.bind(this);
     m_robotContainer = new RobotContainer();
     m_Scheduler = CommandScheduler.getInstance();
     DataLogManager.start();
