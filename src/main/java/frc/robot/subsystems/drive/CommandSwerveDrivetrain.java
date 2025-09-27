@@ -199,7 +199,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         MotorOutputConfigs invertConfigs = new MotorOutputConfigs();
         for(int i = 0; i < 4; i++){
             this.getModule(i).getDriveMotor().getConfigurator().refresh(invertConfigs);
-            invertConfigs.withInverted(InvertedValue.Clockwise_Positive);
+            if(i == 2) invertConfigs.withInverted(InvertedValue.CounterClockwise_Positive);
+            else invertConfigs.withInverted(InvertedValue.Clockwise_Positive);
             this.getModule(i).getDriveMotor().getConfigurator().apply(invertConfigs);
         }
         if (Utils.isSimulation()) {
@@ -406,8 +407,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         calculateGlobalPose();
 
     }
-
-    
 
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
