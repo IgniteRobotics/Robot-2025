@@ -89,6 +89,8 @@ public class Preferences {
 
     public static DoublePreference collectorOuttakeDelay = new DoublePreference("AlgaeCollector/Outtake Delay", 0.5);
 
+    public static DoublePreference wristSpeedRPS = new DoublePreference("AlgaeCollector/Wrist/Speed RPS",0.5);
+
     // ********** Climber **********
     public static DoublePreference climberkV = new DoublePreference("Climber/kV", ClimberConstants.CLIMBER_kV);
     public static DoublePreference climberkP = new DoublePreference("Climber/kP", ClimberConstants.CLIMBER_kP);
