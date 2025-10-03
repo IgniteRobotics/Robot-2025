@@ -84,7 +84,7 @@ public class AlgaeCollector extends SubsystemBase {
 
   public void setWristPosition(double position){
     m_wristTargetPosition = position;
-    m_wristMotor.setControl(new PositionVoltage(position).withSlot(0));
+    m_wristMotor.setControl(new PositionVoltage(position).withSlot(0).withVelocity(Preferences.wristSpeedRPS.getValue()));
   }
 
   public void setWristPosition(DoublePreference position){
