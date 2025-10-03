@@ -79,7 +79,7 @@ public class AlgaeCollector extends SubsystemBase {
   }
 
   public void outtakeAlgae(){
-    m_algaeMotor.set(Preferences.algaeOuttakePower.getValue());
+    m_algaeMotor.set(1);
   }
 
   public void setWristPosition(double position){
