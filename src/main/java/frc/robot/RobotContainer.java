@@ -333,7 +333,7 @@ public class RobotContainer {
                 .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
         );
 
-        joystick.b().whileTrue(
+        joystick.rightBumper().whileTrue(
             new InstantCommand(() -> elevator.setPositionRevolutions(AlgaeState.getInstance().getAlgaeHeight()))
                 .andThen(new InstantCommand(() -> collector.setToIntakePosition()))
                 .andThen(new ManualDriveAlignment(drivetrain,() -> joystick.getLeftY(),() ->  joystick.getLeftX(), () -> joystick.getRightX())
