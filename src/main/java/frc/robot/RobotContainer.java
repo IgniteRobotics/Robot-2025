@@ -321,14 +321,23 @@ public class RobotContainer {
             );
 
         
+        // joystick.x().whileTrue(
+        //     new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.PROCESSOR.height))
+        //         .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle)))
+        //         .andThen(new WaitUntilCommand(joystick.rightTrigger()))
+        //         .andThen(new InstantCommand(() -> collector.outtakeAlgae())
+        //             .andThen(new InstantCommand(() -> AlgaeState.getInstance().setHasAlgae(false))))
+        // ).onFalse(
+        //     new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))
+        //         .andThen(new InstantCommand(() -> collector.stow()))
+        //         .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
+        // );
+
         joystick.x().whileTrue(
-            new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.ALGAE.PROCESSOR.height))
-                .andThen(new InstantCommand(() -> collector.setWristPosition(AlgaeCollectorConstants.WRIST.PROCESS.angle)))
-                .andThen(new WaitUntilCommand(joystick.rightTrigger()))
-                .andThen(new InstantCommand(() -> collector.outtakeAlgae())
-                    .andThen(new InstantCommand(() -> AlgaeState.getInstance().setHasAlgae(false))))
+            new InstantCommand(() -> collector.outtakeAlgae())
         ).onFalse(
             new InstantCommand(() -> elevator.setPositionRevolutions(ElevatorConstants.FLOOR.GROUND.position))
+                .andThen(new InstantCommand(() -> AlgaeState.getInstance().setHasAlgae(false)))
                 .andThen(new InstantCommand(() -> collector.stow()))
                 .andThen(new InstantCommand(() -> collector.stopAlgaeMotor()))
         );
