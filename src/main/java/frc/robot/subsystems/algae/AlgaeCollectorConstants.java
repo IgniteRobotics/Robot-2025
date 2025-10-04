@@ -140,10 +140,10 @@ public class AlgaeCollectorConstants {
     public enum WRIST{
         
         PROCESS(0.12),
-        REEF(0.12),
-        BARGE(0.12),
-        STOWFULL(0.2),
-        STOWEMPTY(0.2);
+        REEF(0.092),
+        BARGE(0.23),
+        STOWFULL(0.23),
+        STOWEMPTY(0.23);
 
         public final double angle;
         WRIST(double value){
