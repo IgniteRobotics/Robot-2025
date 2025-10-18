@@ -61,7 +61,7 @@ public class ManualDriveAlignment extends Command {
     }
 
     if (m_rInput != null && Math.abs(m_rInput.getAsDouble()) > TunerConstants.DEADBAND_FACTOR){
-      m_rotation = Preferences.rotationSlowLimitPreference.getValue()*m_rInput.getAsDouble();
+      m_rotation = -1 * Preferences.rotationSlowLimitPreference.getValue()*m_rInput.getAsDouble();
     } else {
       m_rotation = 0;
     }
